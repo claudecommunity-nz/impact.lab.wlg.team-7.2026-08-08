@@ -20,7 +20,7 @@ Timings are cumulative. Total runtime ~2:00 at a natural speaking pace.
 
 > "Every city has a heartbeat. Foot traffic on Cuba Street, vehicles on the quays — it follows a rhythm. Tuesday morning looks like Tuesday morning.
 >
-> And the exceptions have a rhythm too: a cruise ship day, a Sevens weekend, school holidays. That isn't an anomaly. That's a different kind of normal."
+> And the exceptions have a rhythm too: a cruise ship day, Ed Sheeran at the Caketin, school holidays. These aren't anomaliess, they're just a different kind of normal."
 
 **Visual:** ECG-style trace of a week of foot traffic, with the expected baseline ghosted underneath and matching. Then a hard spike labelled *Cruise: [ship], 0700* — the spike turns amber, not red, because it was predicted.
 
