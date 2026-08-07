@@ -1,0 +1,18 @@
+# Data files are NOT committed — they belong to their publishers (see per-source
+# READMEs) and are large. Only definitions, scripts and docs live in this repo.
+*.duckdb
+*.duckdb.wal
+*.csv
+*.tsv
+*.parquet
+raw/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local / editor cruft
+.DS_Store
+Thumbs.db
+*.log

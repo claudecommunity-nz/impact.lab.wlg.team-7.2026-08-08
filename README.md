@@ -63,6 +63,16 @@ Three traps worth knowing before you lose an hour to them:
 - **One query is silently capped** (`footpaths` has 8,130 features; a request
   returns 2,000). Page properly, or check `exceededTransferLimit`.
 
+### Team 7 movement pipelines
+
+Our own movement signals for Problem 05 live under [`data/`](data/) — one folder
+per source, each with table definitions and load steps. Raw data is not committed
+(it belongs to its publishers); only definitions, scripts and docs.
+
+- **[`data/sensors/`](data/sensors/)** — WCC transport countlines: hourly pedestrian & vehicle counts by location, direction and mode (2023-11 → 2026-08, 34.7M rows in DuckDB).
+- **[`data/planes/`](data/planes/)** — Wellington Airport arrivals/departures ingester: cancellations, diversions and delays as an air-access disruption signal.
+- `data/google_traffic/`, `data/buses_trains/` — planned.
+
 ## Schedule
 
 | Time | What |
