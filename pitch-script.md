@@ -46,7 +46,7 @@ Timings are cumulative. Total runtime ~2:00 at a natural speaking pace.
 
 > "Here's the map. Green is breathing normally. Amber is diverging. Red is unexplained.
 >
-> *[click]* This is **[date / incident]** — watch the change propagate outward from the incident, ahead of the first report coming in."
+> *[click]* This is **April 19 (?)** — watch the change propagate outward from the incident, ahead of the first report coming in."
 
 **Visual:** screen recording of the prototype. Green nodes pulsing → one goes amber → neighbours follow as movement reroutes → origin flips red with a confidence callout. Timestamp ribbon showing *first public report: +[N] min*.
 
@@ -56,7 +56,7 @@ Timings are cumulative. Total runtime ~2:00 at a natural speaking pace.
 
 > "From there, tiered alerts. Duty controllers get the unexplained anomalies early — so they can verify, dispatch, or stand down before the calls start coming in.
 >
-> And where confidence is high, a public advisory — but only ever with a human pressing send."
+> And where confidence is high, a public advisory can be drafted ready for a human to dispatch."
 
 **Visual:** phone mockup receiving the internal alert (location, magnitude, *no matching closure or warning*, confidence). Beside it, a greyed second tier labelled *public advisory — human approval required*.
 
