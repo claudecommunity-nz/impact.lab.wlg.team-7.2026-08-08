@@ -10,8 +10,8 @@ republishing anything derived.
 |---|---|---|
 | [`sensors/`](sensors/) | **Loaded** | WCC transport countlines — hourly pedestrian & vehicle counts by location, direction, mode (2023-11 → 2026-08, 34.7M rows) |
 | [`planes/`](planes/) | **Ingester ready** | Wellington Airport arrivals/departures — cancellations, diversions, delays as an air-access disruption signal |
-| [`google_traffic/`](google_traffic/) | Planned | Road congestion / travel-time signal |
-| [`buses_trains/`](buses_trains/) | Planned | Public transport (Metlink) movement signal |
+| [`google_traffic/`](google_traffic/) | **Stub** | Road congestion / travel-time signal (Google Routes API) |
+| [`buses_trains/`](buses_trains/) | **Stub** | Public transport (Metlink) movement signal (GTFS-Realtime) |
 
 The shared idea: build a per-source baseline of "usual" movement, compare recent
 activity against it, and flag significant deviations onto the common operating
