@@ -1,0 +1,37 @@
+{
+  "schema": "movement-model-benchmark/v1",
+  "source": "Wellington City Council Transport Sensors",
+  "scope": "10 highest-volume countlines",
+  "metric": "mean_absolute_error",
+  "split": {
+    "method": "chronological",
+    "train_rows": 864424,
+    "validation_period": "2026-06",
+    "validation_rows": 83374,
+    "test_period": "2026-07",
+    "test_rows": 85984
+  },
+  "test_results": [
+    {
+      "model": "matched_weekday_hour_median",
+      "mae": 7.372,
+      "selected": true
+    },
+    {
+      "model": "xgboost_regressor",
+      "mae": 23.814,
+      "selected": false
+    },
+    {
+      "model": "linear_svr",
+      "mae": 32.859,
+      "selected": false
+    },
+    {
+      "model": "ridge_regression",
+      "mae": 42.024,
+      "selected": false
+    }
+  ],
+  "classification_note": "No verified incident labels are present. Logistic regression and classification SVM were not fit because pseudo-labels would make the evaluation circular."
+}

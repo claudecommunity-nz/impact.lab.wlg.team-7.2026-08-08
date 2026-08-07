@@ -1,0 +1,130 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+**Murmur** — measuring the city's heartbeat and detecting irregularities:
+movement-change signals from WCC Transport Sensors. Impact Lab
+Wellington Team 7, problem 05: *detect unusual changes in movement around the city*.
+Wellington City Council Emergency Management, Saturday 8 August 2026. One
+prototype, demoed in four minutes at 16:30.
+
+## Commands
+
+```powershell
+# Python detection pipeline
+python -m venv .venv
+.\.venv\Scripts\pip install -e ".[test]"
+.\.venv\Scripts\python -m pytest -q
+.\.venv\Scripts\python -m pytest tests/test_detector.py -q                       # one file
+.\.venv\Scripts\python -m pytest tests/test_detector.py::test_scores_large_drop_against_prior_matching_weekday_and_hour   # one test
+
+# Site (run from site/)
+npm install
+npm test          # runs `npm run build` first, then node --test against dist/
+npm run dev
+npm run lint
+```
+
+Rebuild the COP artifacts from the official WCC Parquet shards and countline CSV:
+
+```powershell
+.\.venv\Scripts\python scripts\build_demo.py `
+  --data-dir data\transport_sensors `
+  --metadata data\countline_meta_info.csv `
+  --target-at 2026-08-06T12:00:00+12:00 `
+  --output-dir site\public\cop\v1
+```
+
+`data/` is gitignored. Without the source Parquet you cannot re-run
+`build_demo.py` — work from the committed artifacts in `site/public/cop/v1/`.
+
+## Architecture
+
+Two halves joined by three committed JSON files. **Those files are the contract**,
+not an intermediate: the site never runs Python, and the pipeline never renders.
+
+```
+data/*.parquet ──▶ movement_anomaly ──▶ site/public/cop/v1/*.json{,geojson} ──▶ site (RSC + canvas)
+   (gitignored)      (scripts/build_demo.py)          (committed)
+```
+
+`src/movement_anomaly/`, in call order:
+
+- **`io.py`** — `pyarrow.dataset` over the shards, date-filtered on the *raw*
+  column name `_COL_1` before materialising. Metadata CSV read with
+  `COUNTLINE_ID`/`VIEWPOINT_ID` forced to string.
+- **`ingest.py`** — the source ships positional columns `_COL_0.._COL_5`. The
+  only place that mapping exists is `RAW_COLUMNS`. Duplicate observation keys
+  raise rather than aggregate.
+- **`pipeline.py`** — `analyze_snapshot` splits history from the target hour.
+  `--target-at` is offset-aware, but Parquet dates are naive Wellington local
+  time, so the target is converted to `Pacific/Auckland` and stripped of tz
+  before comparison. History is `[target - lookback_weeks, target)`, strictly
+  exclusive — no future leakage. Also computes `data_gaps`: baseline groups
+  expected at this weekday/hour that are absent from the current batch.
+- **`detector.py`** — median + MAD per `countline × transport_class × direction ×
+  dow × hour`, minimum 8 samples. The z-scale is
+  `max(1.4826·MAD, sqrt(expected+1), 1)`, so quiet, low-variance series cannot
+  manufacture huge scores. Three gates in `DetectorConfig` (z ≥ 4.5, absolute
+  change ≥ 10, relative change ≥ 35%) — change thresholds there, nowhere else.
+- **`contract.py`** — WGS84 `LineString` GeoJSON, `movement-signal/v1`. Note it
+  **inner-joins** metadata: a countline missing from the CSV silently drops its
+  signal, which breaks the site's `features.length === candidate_count` assertion.
+
+`validation.py` (chronological train/validation/test split) backs the model
+comparison in `docs/model-card.md` and `artifacts/model-benchmark.json`. The
+benchmark script itself is not in the repo; the result is committed. `scikit-learn`
+and `xgboost` live in the optional `benchmark` extra and nothing else imports them.
+
+`site/` is vinext (Next-style App Router on Vite) deployed to a Cloudflare Worker
+(`worker/index.ts`), not `next dev`. `app/page.tsx` is a server component that
+imports `movement-health.json` at build time; `app/MovementCanvas.tsx` is the
+only client component and `fetch`es the two GeoJSON files at runtime, projecting
+them onto a hand-rolled 2D canvas (no map library, no basemap).
+
+### Status vocabulary
+
+`normal` · `candidate` · `insufficient_baseline` · `data_gap`. A missing row is
+a gap, never a zero — that distinction is the point of the prototype, and
+`insufficient_baseline` forces `signal_confidence.level` to `low`.
+
+### Demo numbers are hardcoded in three places
+
+12 signals, 207 data gaps, 414 countlines, data through 6 Aug 2026. They appear
+in the artifacts, as literal `<span>` copy in `site/app/page.tsx`, and as
+assertions in `site/tests/rendered-html.test.mjs`. Rebuilding artifacts for a
+different `--target-at` means updating all three or the site test fails.
+
+## Constraints that matter here
+
+- **Signals mean "investigate".** They do not diagnose disruption, evacuation or
+  loss of access, and the interface must not imply otherwise. Hazard-planning
+  and batch-published data, not an operational emergency source — in an
+  emergency, 111. Keep the "Batch replay" labelling and the `limitations` array
+  attached to every feature.
+- **Show reliability, don't hide it.** Sample size, data age, publisher cadence
+  and confidence ship with each signal on purpose. Never present an unverified
+  public post as confirmed fact.
+- **Prefer composable output.** Each team's module feeds one shared common
+  operating picture — GeoJSON, a feed, an endpoint over a closed UI. The map is
+  a view; the feed is the product.
+- **This repo is public and must stay free of personal information** — no
+  participant names, contact details, or application material.
+- **Attribution.** Data belongs to Wellington City Council and other publishers;
+  licences vary per dataset. Check before publishing anything derived.
+- Keep the README's problem statement in sync if scope shifts. Commit early and
+  often — the repo is the submission.
+
+## Wider WCC data (not currently used by this pipeline)
+
+74 catalogued emergency GIS datasets, should the prototype grow to cross-reference
+hazards, closures or telemetry:
+
+- Catalogue + SDK — https://github.com/claudecommunity-nz/wcc-emergency-gis-data
+- Browse — https://claudecommunity-nz.github.io/wcc-emergency-gis-data/
+
+`wcc_gis.py` is a single dependency-free file to copy in alongside
+`catalogue.json`. Three traps: everything is published in **NZTM2000** (always
+request `outSR=4326` or pins land off Africa); a quarter of the layers are
+**rasters** that advertise query support then refuse — ask for a PNG; and queries
+are **silently capped** at 2,000 features — page, or check `exceededTransferLimit`.

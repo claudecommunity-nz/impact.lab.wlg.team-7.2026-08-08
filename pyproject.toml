@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "murmur"
+version = "0.1.0"
+description = "Measuring the city's heartbeat and detecting irregularities in WCC Transport Sensor movement counts"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2,<4",
+  "pyarrow>=17,<26",
+]
+
+[project.optional-dependencies]
+benchmark = [
+  "scikit-learn>=1.6,<2",
+  "xgboost>=3,<4",
+]
+test = ["pytest>=8,<10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+

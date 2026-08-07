@@ -1,0 +1,20 @@
+{
+  "target_at": "2026-08-06T12:00:00+12:00",
+  "publisher_mode": "batch replay",
+  "observed_groups": 2728,
+  "expected_groups": 2505,
+  "data_gap_groups": 207,
+  "candidate_count": 12,
+  "insufficient_baseline_count": 430,
+  "data_as_of": "2026-08-06T23:00:00+12:00",
+  "publisher_cadence": "at least monthly",
+  "source": "Wellington City Council Transport Sensors",
+  "method": "12-week matched-weekday/hour median and MAD",
+  "limitations": [
+    "Fixed sensors do not represent every city journey.",
+    "A counted vehicle is not a passenger count.",
+    "Nearby countlines may count the same traveller more than once.",
+    "Missing records are data gaps, not zero movement.",
+    "Publisher data is batch refreshed, not a live emergency feed."
+  ]
+}
