@@ -12,6 +12,10 @@ raw/
 __pycache__/
 *.pyc
 
+# Streamlit app runtime data (captured camera frames, manifest, catalogue)
+streamlit/*/data/
+*.jpg
+
 # Local / editor cruft
 .DS_Store
 Thumbs.db
