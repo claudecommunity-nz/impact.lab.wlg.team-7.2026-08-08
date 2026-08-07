@@ -56,7 +56,7 @@ Timings are cumulative. Total runtime ~2:00 at a natural speaking pace.
 
 > "From there, tiered alerts. Duty controllers get the unexplained anomalies early — so they can verify, dispatch, or stand down before the calls start coming in.
 >
-> And where confidence is high, a public advisory — but only ever with a human pressing send."
+> And where confidence is high, a public advisory can be drafted ready for a human to dispatch."
 
 **Visual:** phone mockup receiving the internal alert (location, magnitude, *no matching closure or warning*, confidence). Beside it, a greyed second tier labelled *public advisory — human approval required*.
 
