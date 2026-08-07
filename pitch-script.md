@@ -46,7 +46,7 @@ Timings are cumulative. Total runtime ~2:00 at a natural speaking pace.
 
 > "Here's the map. Green is breathing normally. Amber is diverging. Red is unexplained.
 >
-> *[click]* This is **[date / incident]** — watch the change propagate outward from the incident, ahead of the first report coming in."
+> *[click]* This is **April 19 (?)** — watch the change propagate outward from the incident, ahead of the first report coming in."
 
 **Visual:** screen recording of the prototype. Green nodes pulsing → one goes amber → neighbours follow as movement reroutes → origin flips red with a confidence callout. Timestamp ribbon showing *first public report: +[N] min*.
 
