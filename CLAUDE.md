@@ -113,17 +113,28 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
   every render; tile `load` events and the `ResizeObserver` call it directly
   rather than re-running an effect.
 
-### Data source tabs
+### Source layers (no tabs)
 
-`MovementCanvas` renders a tablist over **one** canvas and **one** view:
+`MovementCanvas` renders **one** canvas and **one** view; every source is a
+toggleable layer (`layers` state, all on by default), drawn tiles → coverage →
+signals → cameras:
 
-- `movement` — countline coverage plus movement-change signals.
-- `cameras` — the same coverage plus NZTA camera points.
+- `signals` — movement-change signals, with the people/vehicles filter.
+- `coverage` — every measured countline.
+- `cameras` — NZTA cameras as tiny camera glyphs (`drawCameras`). Hovering one
+  opens a `map-popup` with the live frame, re-requested every 15 s
+  (`HOVER_REFRESH_MS`) while open; hovering a signal shows a text popup.
+  Cameras sit on top, so they win both the hover and the click hit test.
+
+Hover state stores the popup's screen position at pick time, and every view
+change (pan, zoom, fit, reveal, layer toggle) clears it — stored coordinates
+never go stale. The evidence sidebar shows whichever kind was selected last
+(`focus`), with both feature lists grouped underneath.
 
 `within_countline_frame` is metadata, not a drawing rule: it records whether a
-camera sits inside the WCC countline bounding box, the caption reports the split
-(9 of 38), and the site test asserts the flag against the coverage bounds — so
-rebuilding coverage for a different `--target-at` means rebuilding the camera
+camera sits inside the WCC countline bounding box, the list orders on-frame
+cameras first, and the site test asserts the flag against the coverage bounds —
+so rebuilding coverage for a different `--target-at` means rebuilding the camera
 layer too. The map itself pans and zooms freely and draws every listed camera.
 
 Camera frames are `<img>` tags pointing straight at `trafficnz.info`; nothing is

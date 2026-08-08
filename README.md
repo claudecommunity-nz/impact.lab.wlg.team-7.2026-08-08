@@ -127,18 +127,23 @@ The included 6 August 2026 12:00 replay produces **12 signals** and exposes
 
 The map is a hand-rolled slippy map on one canvas: CARTO Positron raster tiles
 (OpenStreetMap data) under the layers, whole-level zoom 9–18, drag to pan, scroll
-or the +/− buttons to zoom, **Fit** to frame the active layer, and click a line
-or pin to select it. No map library.
+or the +/− buttons to zoom, **Fit** to frame the active layers, and click a line
+or camera to select it. No map library.
 
-The site carries a **data source tab** over one shared map frame:
+Every source is a **toggleable layer** on that one map — no tabs:
 
-- **WCC countlines** — the movement-change signals above (batch replay).
-- **NZTA traffic cameras** — the 38 Wellington-region cameras from the NZTA
-  Traffic and Travel API; 9 sit inside the countline bounding box. Positions
-  come from the committed layer; the frame itself loads live from NZTA in the
-  browser and is never stored or re-published here. Cameras corroborate a
-  countline signal, they do not measure one. Capture for change detection is the
-  Streamlit app's job — [`streamlit/traffic_camera/`](streamlit/traffic_camera/).
+- **Movement signals** — the movement-change signals above (batch replay), with
+  a people/vehicles filter.
+- **Sensor coverage** — all 414 measured WCC countlines.
+- **Traffic cameras** — the 38 Wellington-region cameras from the NZTA Traffic
+  and Travel API, drawn as tiny camera icons; 9 sit inside the countline
+  bounding box and the rest appear as you pan or zoom out. Hovering an icon
+  pops up the camera's live frame, re-requested every 15 s while open.
+  Positions come from the committed layer; the frame itself loads live from
+  NZTA in the browser and is never stored or re-published here. Cameras
+  corroborate a countline signal, they do not measure one. Capture for change
+  detection is the Streamlit app's job —
+  [`streamlit/traffic_camera/`](streamlit/traffic_camera/).
 
 ### Run it
 

@@ -70,15 +70,18 @@ test("ships internally consistent COP artifacts with WGS84 line geometry", async
   );
 });
 
-test("offers both data sources as tabs over the one map frame", async () => {
+test("merges every source into one map with switchable layers", async () => {
   const response = await render();
   const html = await response.text();
 
-  assert.match(html, /role="tablist"/);
-  assert.match(html, /WCC countlines/);
-  assert.match(html, /NZTA traffic cameras/);
-  assert.match(html, /Batch replay/);
-  assert.match(html, /Live frames/);
+  // No tabs: sources are layers toggled over the single shared projection.
+  assert.doesNotMatch(html, /role="tablist"/);
+  assert.match(html, /aria-label="Map layers"/);
+  assert.match(html, /Movement signals/);
+  assert.match(html, /Sensor coverage/);
+  assert.match(html, /Traffic cameras/);
+  // All three layers start switched on.
+  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 3);
   // One canvas, one projection: the camera layer must not ship a second map.
   assert.equal(html.match(/<canvas/g)?.length, 1);
 });

@@ -164,6 +164,18 @@ export function boundsOfPoints(features: CameraFeature[]) {
   return boundsOf(features.map((feature) => feature.geometry.coordinates));
 }
 
+/** Combined extent of several layers, ignoring the ones that are empty or off. */
+export function unionBounds(...list: (Bounds | null)[]): Bounds | null {
+  const bounds = list.filter((entry): entry is Bounds => entry !== null);
+  if (bounds.length === 0) return null;
+  return {
+    west: Math.min(...bounds.map((entry) => entry.west)),
+    east: Math.max(...bounds.map((entry) => entry.east)),
+    south: Math.min(...bounds.map((entry) => entry.south)),
+    north: Math.max(...bounds.map((entry) => entry.north)),
+  };
+}
+
 /** Largest whole zoom level at which the bounds still fit inside the canvas. */
 export function fitView(bounds: Bounds, width: number, height: number): MapView {
   const usableWidth = Math.max(32, width - FIT_PADDING * 2);
@@ -268,6 +280,7 @@ export function drawSignals(
   project: Projector,
   signals: LineFeature[],
   selectedId: string | null,
+  hoveredId: string | null = null,
 ) {
   for (const feature of signals) {
     const [start, rawEnd] = feature.geometry.coordinates.map(project);
@@ -278,9 +291,10 @@ export function drawSignals(
       ? [start[0] + (dx / length) * 9, start[1] + (dy / length) * 9]
       : rawEnd;
     const isSelected = feature.id === selectedId;
+    const isHovered = feature.id === hoveredId;
     const decreasing = feature.properties.change_direction === "decrease";
     context.strokeStyle = decreasing ? "#B3261E" : "#8A5A00";
-    context.lineWidth = isSelected ? 6 : 3.5;
+    context.lineWidth = isSelected ? 6 : isHovered ? 5 : 3.5;
     context.lineCap = "round";
     context.beginPath();
     context.moveTo(...start);
@@ -288,7 +302,7 @@ export function drawSignals(
     context.stroke();
     context.fillStyle = isSelected ? "#000000" : context.strokeStyle;
     context.beginPath();
-    context.arc(start[0], start[1], isSelected ? 6 : 4, 0, Math.PI * 2);
+    context.arc(start[0], start[1], isSelected ? 6 : isHovered ? 5 : 4, 0, Math.PI * 2);
     context.fill();
     context.strokeStyle = "#FFFFFF";
     context.lineWidth = 1.5;
@@ -296,33 +310,73 @@ export function drawSignals(
   }
 }
 
+function traceRoundedRect(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
+  context.beginPath();
+  context.moveTo(x + radius, y);
+  context.lineTo(x + width - radius, y);
+  context.arcTo(x + width, y, x + width, y + radius, radius);
+  context.lineTo(x + width, y + height - radius);
+  context.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+  context.lineTo(x + radius, y + height);
+  context.arcTo(x, y + height, x, y + height - radius, radius);
+  context.lineTo(x, y + radius);
+  context.arcTo(x, y, x + radius, y, radius);
+  context.closePath();
+}
+
+/** Tiny camera glyph: rounded body, lens, and a status-light dot. */
 export function drawCameras(
   context: CanvasRenderingContext2D,
   project: Projector,
   cameras: CameraFeature[],
   selectedId: string | null,
+  hoveredId: string | null = null,
 ) {
   for (const feature of cameras) {
     const [x, y] = project(feature.geometry.coordinates);
     const isSelected = feature.id === selectedId;
-    const radius = isSelected ? 8 : 5;
-
-    context.fillStyle = feature.properties.offline ? "#6F6F69" : "#0B6B3A";
-    context.beginPath();
-    context.arc(x, y, radius, 0, Math.PI * 2);
-    context.fill();
-
-    context.strokeStyle = "#FFFFFF";
-    context.lineWidth = 2;
-    context.stroke();
+    const isHovered = feature.id === hoveredId;
+    const scale = isSelected ? 1.35 : isHovered ? 1.2 : 1;
+    const width = 16 * scale;
+    const height = 11 * scale;
+    const left = x - width / 2;
+    const top = y - height / 2;
+    const body = feature.properties.offline ? "#6F6F69" : "#0B6B3A";
 
     if (isSelected) {
+      traceRoundedRect(context, left - 3, top - 3, width + 6, height + 6, 4 * scale);
       context.strokeStyle = "#000000";
       context.lineWidth = 2;
-      context.beginPath();
-      context.arc(x, y, radius + 5, 0, Math.PI * 2);
       context.stroke();
     }
+
+    traceRoundedRect(context, left, top, width, height, 2.5 * scale);
+    context.fillStyle = body;
+    context.fill();
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 1.5;
+    context.stroke();
+
+    context.fillStyle = "#FFFFFF";
+    context.beginPath();
+    context.arc(x, y, 3.2 * scale, 0, Math.PI * 2);
+    context.fill();
+    context.fillStyle = body;
+    context.beginPath();
+    context.arc(x, y, 1.7 * scale, 0, Math.PI * 2);
+    context.fill();
+
+    context.fillStyle = "#FFFFFF";
+    context.beginPath();
+    context.arc(left + width - 3 * scale, top + 2.6 * scale, 0.9 * scale, 0, Math.PI * 2);
+    context.fill();
   }
 }
 

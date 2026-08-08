@@ -37,8 +37,9 @@ export default function Home() {
           <p className="intro-copy">
             Hourly pedestrian and vehicle counts compared with the same weekday and
             hour over the prior 12 weeks. Signals invite investigation; they do not
-            diagnose an incident, evacuation, or loss of access. Two data sources
-            share one frame: WCC countlines and NZTA traffic cameras.
+            diagnose an incident, evacuation, or loss of access. Every source lands
+            on one map: WCC countlines and NZTA traffic cameras are layers you
+            switch on and off over the same frame.
           </p>
         </div>
         <dl className="snapshot-facts" aria-label="Snapshot summary">
