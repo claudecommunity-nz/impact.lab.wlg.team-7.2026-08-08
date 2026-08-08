@@ -44,12 +44,79 @@ export type Integration = {
   enabled: boolean;
 };
 
+export type AgentProvider = "none" | "anthropic" | "openai" | "google" | "deepseek" | "custom";
+
 export type AgentConfig = {
-  /** Empty means the chat answers locally from the loaded artifacts. */
+  /** "none" means the chat answers locally from the loaded artifacts. */
+  provider: AgentProvider;
+  /** Custom provider only: where questions are POSTed. */
   endpoint: string;
   model: string;
   apiKey: string;
 };
+
+/**
+ * Hosted model providers the chat can link to. The key is typed in /settings,
+ * stored in this browser's localStorage only, and sent only to the matching
+ * provider host — this public repo and the site itself never receive it.
+ */
+export const AGENT_PROVIDERS: Record<
+  Exclude<AgentProvider, "none" | "custom">,
+  {
+    label: string;
+    host: string;
+    keyUrl: string;
+    keyHint: string;
+    defaultModel: string;
+    models: string[];
+    note: string;
+  }
+> = {
+  anthropic: {
+    label: "Anthropic Claude",
+    host: "api.anthropic.com",
+    keyUrl: "https://platform.claude.com/settings/keys",
+    keyHint: "sk-ant-…",
+    defaultModel: "claude-opus-5",
+    models: ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5"],
+    note: "Answers come straight from Anthropic; a safety decline is reported as such.",
+  },
+  openai: {
+    label: "OpenAI",
+    host: "api.openai.com",
+    keyUrl: "https://platform.openai.com/api-keys",
+    keyHint: "sk-…",
+    defaultModel: "gpt-5.1",
+    models: ["gpt-5.1", "gpt-5.1-mini", "gpt-4.1"],
+    note: "Model names change often — type any current one; the list is only a suggestion.",
+  },
+  google: {
+    label: "Google Gemini",
+    host: "generativelanguage.googleapis.com",
+    keyUrl: "https://aistudio.google.com/apikey",
+    keyHint: "AIza…",
+    defaultModel: "gemini-3-pro-preview",
+    models: ["gemini-3-pro-preview", "gemini-2.5-pro", "gemini-2.5-flash"],
+    note: "Uses the Gemini API key from AI Studio, not a Cloud service account.",
+  },
+  deepseek: {
+    label: "DeepSeek",
+    host: "api.deepseek.com",
+    keyUrl: "https://platform.deepseek.com/api_keys",
+    keyHint: "sk-…",
+    defaultModel: "deepseek-chat",
+    models: ["deepseek-chat", "deepseek-reasoner"],
+    note: "If the provider blocks browser calls (CORS), the chat falls back to local answers.",
+  },
+};
+
+export function isAgentProvider(value: unknown): value is AgentProvider {
+  return (
+    value === "none" ||
+    value === "custom" ||
+    (typeof value === "string" && value in AGENT_PROVIDERS)
+  );
+}
 
 export type Settings = {
   version: 1;
@@ -135,7 +202,7 @@ export const DEFAULT_SETTINGS: Settings = {
   version: 1,
   sources: [],
   integrations: [],
-  agent: { endpoint: "", model: "", apiKey: "" },
+  agent: { provider: "none", endpoint: "", model: "", apiKey: "" },
 };
 
 export function loadSettings(): Settings {
@@ -271,6 +338,12 @@ export function normaliseSettings(input: unknown): Settings {
         enabled: entry.enabled !== false,
       })),
     agent: {
+      // Settings saved before providers existed carry only an endpoint.
+      provider: isAgentProvider(agent.provider)
+        ? agent.provider
+        : agent.endpoint
+          ? "custom"
+          : "none",
       endpoint: String(agent.endpoint ?? ""),
       model: String(agent.model ?? ""),
       apiKey: String(agent.apiKey ?? ""),

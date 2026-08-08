@@ -160,6 +160,46 @@ detection is the separate Streamlit app (`streamlit/traffic_camera/`), which is
 also the only place the NZTA endpoints and catalogue parsing are defined —
 `build_camera_layer.py` imports `nzta_client` rather than restating them.
 
+### Shell, agent and settings
+
+`app/layout.tsx` wraps every route in one shell: `SideNav` (hideable rail, state
+in `localStorage`, `next/link` + `usePathname`) beside the page, with `AgentChat`
+mounted outside it so the chat is reachable from anywhere. `SiteChrome.tsx` holds
+the header and footer both routes share — the batch-replay chip and the
+attribution block are contractual copy and are server-rendered.
+
+`app/agent-brief.ts` is the agent's whole world: it loads the five COP files and
+`answer()` routes a question to those numbers with keyword matching. Deliberately
+not generative — a wrong route says "I do not hold that", which is safer than a
+fluent guess. `briefContext()` is the grounding context sent along when a model
+is linked; the local answer is always the fallback when that call fails.
+
+`app/agent-providers.ts` is the browser-side client for **Agent setup**
+(`/settings#agent`): Anthropic, OpenAI, Gemini and DeepSeek by API key, plus the
+custom-endpoint POST. The key comes from `localStorage` settings and is sent
+only to the chosen provider's host — never to any server of ours; the registry
+of providers (hosts, default models, key URLs) is `AGENT_PROVIDERS` in
+`data-sources.ts`. The Anthropic branch follows the current Messages API: no
+sampling params, `stop_reason: "refusal"` handled, and the
+`anthropic-dangerous-direct-browser-access` header, which is the point here —
+the visitor's key stays in the visitor's browser.
+
+`app/data-sources.ts` is the registry behind `/settings`: built-in sources,
+`localStorage` settings, `probeSource` (status is *measured* — reachable,
+reachable with an unexpected body, or failed — plus latency, record count and
+last successful sync), format conversion to GeoJSON/JSON/CSV/NDJSON, and the
+generated MCP config and A2A agent card. The card is generated rather than
+committed: a card in `public/` would advertise a URL that answers nothing.
+
+Two rules the lint config enforces hard, so follow them in new components:
+`useSyncExternalStore` over `localStorage` rather than setState in an effect
+(`subscribeSettings`/`settingsSnapshot`/`writeSettings` exist for this), and no
+`Date.now()` or other impure calls in component bodies — `probeIntegration`,
+`missingUploadProbe` and `uniqueId` live in the module for that reason.
+
+Settings stay off the dashboard on purpose, and `rendered-html.test.mjs` asserts
+it: the operating picture must not grow a configuration surface.
+
 ### Status vocabulary
 
 `normal` · `candidate` · `insufficient_baseline` · `data_gap`. A missing row is

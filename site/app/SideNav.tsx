@@ -47,6 +47,13 @@ const AgentGlyph = (
   </svg>
 );
 
+const SparkGlyph = (
+  <svg viewBox="0 0 20 20" aria-hidden="true">
+    <path d="M10 2l1.8 5.2L17 9l-5.2 1.8L10 16l-1.8-5.2L3 9l5.2-1.8z" />
+    <path d="M16 13l.9 2.1L19 16l-2.1.9L16 19l-.9-2.1L13 16l2.1-.9z" />
+  </svg>
+);
+
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Operating picture", detail: "One map, every source", glyph: MapGlyph },
   {
@@ -60,6 +67,12 @@ const NAV_ITEMS: NavItem[] = [
     label: "Integrations",
     detail: "APIs, MCP and A2A",
     glyph: PlugGlyph,
+  },
+  {
+    href: "/settings#agent",
+    label: "Agent setup",
+    detail: "Link a model with your API key",
+    glyph: SparkGlyph,
   },
 ];
 

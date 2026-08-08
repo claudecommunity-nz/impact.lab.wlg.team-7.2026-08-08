@@ -10,7 +10,8 @@ import {
   briefContext,
   loadBrief,
 } from "./agent-brief";
-import { type AgentConfig, loadSettings } from "./data-sources";
+import { agentIsConfigured, agentTarget, askModel } from "./agent-providers";
+import { type AgentConfig, DEFAULT_SETTINGS, loadSettings } from "./data-sources";
 
 type Message = {
   id: number;
@@ -29,47 +30,14 @@ const GREETING: Message = {
   sources: [],
 };
 
-/**
- * Ask a configured endpoint, sending the same brief the local answerer uses.
- * Response shape is deliberately forgiving: any of `reply`, `text`, `content`
- * or a plain-text body works, so an operator can point this at their own agent
- * without writing an adapter.
- */
-async function askEndpoint(
-  question: string,
-  brief: Brief,
-  agent: AgentConfig,
-): Promise<string> {
-  const response = await fetch(agent.endpoint, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      ...(agent.apiKey ? { authorization: `Bearer ${agent.apiKey}` } : {}),
-    },
-    body: JSON.stringify({
-      question,
-      model: agent.model || undefined,
-      context: briefContext(brief),
-    }),
-  });
-  if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`.trim());
-  const body = await response.text();
-  try {
-    const parsed = JSON.parse(body) as Record<string, unknown>;
-    const reply = parsed.reply ?? parsed.text ?? parsed.content ?? parsed.answer;
-    return typeof reply === "string" ? reply : body;
-  } catch {
-    return body;
-  }
-}
-
 export default function AgentChat() {
   const [open, setOpen] = useState(false);
+  const [maximised, setMaximised] = useState(false);
   const [brief, setBrief] = useState<Brief>(EMPTY_BRIEF);
   const [messages, setMessages] = useState<Message[]>([GREETING]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
-  const [agent, setAgent] = useState<AgentConfig>({ endpoint: "", model: "", apiKey: "" });
+  const [agent, setAgent] = useState<AgentConfig>(DEFAULT_SETTINGS.agent);
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const nextId = useRef(1);
@@ -99,14 +67,22 @@ export default function AgentChat() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  // Escape backs out one step: full screen first, then the panel itself.
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      if (maximised) setMaximised(false);
+      else setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [open, maximised]);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setMaximised(false);
+  }, []);
 
   useEffect(() => {
     const log = logRef.current;
@@ -128,15 +104,20 @@ export default function AgentChat() {
       ]);
 
       let reply: Message;
-      if (agent.endpoint) {
+      if (agentIsConfigured(agent)) {
         try {
-          reply = { id: replyId, role: "agent", text: await askEndpoint(trimmed, brief, agent), sources: ["configured agent endpoint"] };
+          reply = {
+            id: replyId,
+            role: "agent",
+            text: await askModel(trimmed, briefContext(brief), agent),
+            sources: [agentTarget(agent)],
+          };
         } catch (error) {
           const local = answer(trimmed, brief);
           reply = {
             id: replyId,
             role: "agent",
-            text: `The configured agent endpoint failed (${
+            text: `${agentTarget(agent)} failed (${
               error instanceof Error ? error.message : "unreachable"
             }). Answering locally instead.\n\n${local.text}`,
             sources: local.sources,
@@ -162,7 +143,7 @@ export default function AgentChat() {
         className={`agent-fab ${open ? "open" : ""}`}
         aria-expanded={open}
         aria-controls="agent-panel"
-        onClick={() => (open ? setOpen(false) : openPanel())}
+        onClick={() => (open ? close() : openPanel())}
       >
         <span className="agent-fab-glyph" aria-hidden="true">
           {open ? "×" : "✦"}
@@ -173,20 +154,35 @@ export default function AgentChat() {
       </button>
 
       {open ? (
-        <section className="agent-panel" id="agent-panel" aria-label="Ask the data agent">
+        <section
+          className={`agent-panel ${maximised ? "max" : ""}`}
+          id="agent-panel"
+          aria-label="Ask the data agent"
+        >
           <header className="agent-panel-head">
             <div>
               <p className="eyebrow">Data agent</p>
               <h2>Ask about this operating picture</h2>
             </div>
-            <button type="button" onClick={() => setOpen(false)} aria-label="Close the agent">
-              ×
-            </button>
+            <div className="agent-panel-actions">
+              <button
+                type="button"
+                onClick={() => setMaximised((current) => !current)}
+                aria-pressed={maximised}
+                aria-label={maximised ? "Exit full screen" : "Expand to full screen"}
+                title={maximised ? "Exit full screen" : "Expand to full screen"}
+              >
+                <span aria-hidden="true">{maximised ? "⤡" : "⤢"}</span>
+              </button>
+              <button type="button" onClick={close} aria-label="Close the agent">
+                ×
+              </button>
+            </div>
           </header>
 
           <p className="agent-provenance">
-            {agent.endpoint
-              ? `Routed to your configured endpoint, with the published artifacts sent as context.`
+            {agentIsConfigured(agent)
+              ? `Routed to ${agentTarget(agent)} — your key stays in this browser, and the published artifacts go along as context. Change it under Settings → Agent setup.`
               : `Grounded answers assembled from the committed artifacts — ${brief.signals.length} signals, ${brief.coverageCount} countlines, ${brief.cameras.length} cameras, ${brief.transit.length} PT hotspots. No cause inferred.`}
           </p>
 

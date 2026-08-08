@@ -2,12 +2,15 @@
 
 import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
+import { agentIsConfigured, agentTarget, pingModel } from "./agent-providers";
 import {
+  type AgentProvider,
   type DataSource,
   type Integration,
   type IntegrationKind,
   type Settings,
   type SourceFormat,
+  AGENT_PROVIDERS,
   BUILTIN_SOURCES,
   FORMAT_LABELS,
   STATUS_LABELS,
@@ -624,60 +627,168 @@ export default function SettingsPanel() {
         </div>
       </section>
 
-      <section className="settings-block" aria-labelledby="agent-heading">
+      <section className="settings-block" id="agent" aria-labelledby="agent-heading">
         <p className="eyebrow">Chat</p>
-        <h2 id="agent-heading">Agent endpoint</h2>
+        <h2 id="agent-heading">Agent setup</h2>
         <p className="settings-lede">
-          Leave this empty and the chat answers locally from the published artifacts, which
-          is the honest default: it cannot invent a signal that is not in the feed. Set an
-          endpoint and each question is POSTed there with the same artifacts as context.
+          The default answers locally from the published artifacts — it cannot invent a
+          signal that is not in the feed. Link a model provider and each question goes
+          straight from this browser to that provider, with the artifacts sent as context.
+          The key is stored in this browser&rsquo;s <code>localStorage</code> only: this
+          public repo and the Murmur site never receive it.
         </p>
         <form className="settings-form" onSubmit={(event) => event.preventDefault()}>
-          <label className="wide">
-            <span>Endpoint</span>
-            <input
-              value={settings.agent.endpoint}
-              onChange={(event) =>
-                update({ ...settings, agent: { ...settings.agent, endpoint: event.target.value } })
-              }
-              placeholder="https://your-worker.example/agent"
-            />
-          </label>
           <label>
-            <span>Model</span>
-            <input
-              value={settings.agent.model}
-              onChange={(event) =>
-                update({ ...settings, agent: { ...settings.agent, model: event.target.value } })
-              }
-              placeholder="claude-opus-5"
-            />
+            <span>Provider</span>
+            <select
+              value={settings.agent.provider}
+              onChange={(event) => {
+                const provider = event.target.value as AgentProvider;
+                const registry =
+                  provider !== "none" && provider !== "custom"
+                    ? AGENT_PROVIDERS[provider]
+                    : null;
+                update({
+                  ...settings,
+                  agent: {
+                    ...settings.agent,
+                    provider,
+                    model: registry ? registry.defaultModel : settings.agent.model,
+                  },
+                });
+              }}
+            >
+              <option value="none">Local answers (no API)</option>
+              {(Object.keys(AGENT_PROVIDERS) as (keyof typeof AGENT_PROVIDERS)[]).map(
+                (id) => (
+                  <option key={id} value={id}>
+                    {AGENT_PROVIDERS[id].label}
+                  </option>
+                ),
+              )}
+              <option value="custom">Custom endpoint</option>
+            </select>
           </label>
-          <label>
-            <span>API key</span>
-            <input
-              type="password"
-              value={settings.agent.apiKey}
-              onChange={(event) =>
-                update({ ...settings, agent: { ...settings.agent, apiKey: event.target.value } })
-              }
-              placeholder="stored in this browser only"
-            />
-          </label>
+          {settings.agent.provider === "custom" ? (
+            <label className="wide">
+              <span>Endpoint</span>
+              <input
+                value={settings.agent.endpoint}
+                onChange={(event) =>
+                  update({
+                    ...settings,
+                    agent: { ...settings.agent, endpoint: event.target.value },
+                  })
+                }
+                placeholder="https://your-worker.example/agent"
+              />
+            </label>
+          ) : null}
+          {settings.agent.provider !== "none" ? (
+            <>
+              <label>
+                <span>Model</span>
+                <input
+                  list="agent-model-options"
+                  value={settings.agent.model}
+                  onChange={(event) =>
+                    update({
+                      ...settings,
+                      agent: { ...settings.agent, model: event.target.value },
+                    })
+                  }
+                  placeholder={
+                    settings.agent.provider !== "custom"
+                      ? AGENT_PROVIDERS[settings.agent.provider].defaultModel
+                      : "model name (optional)"
+                  }
+                />
+                <datalist id="agent-model-options">
+                  {settings.agent.provider !== "custom"
+                    ? AGENT_PROVIDERS[settings.agent.provider].models.map((model) => (
+                        <option key={model} value={model} />
+                      ))
+                    : null}
+                </datalist>
+              </label>
+              <label>
+                <span>
+                  API key{settings.agent.provider === "custom" ? " (optional)" : ""}
+                </span>
+                <input
+                  type="password"
+                  autoComplete="off"
+                  value={settings.agent.apiKey}
+                  onChange={(event) =>
+                    update({
+                      ...settings,
+                      agent: { ...settings.agent, apiKey: event.target.value },
+                    })
+                  }
+                  placeholder={
+                    settings.agent.provider !== "custom"
+                      ? `${AGENT_PROVIDERS[settings.agent.provider].keyHint} · stored in this browser only`
+                      : "stored in this browser only"
+                  }
+                />
+              </label>
+            </>
+          ) : null}
           <div className="form-actions">
             <button
               type="button"
+              className="button-primary"
+              disabled={!agentIsConfigured(settings.agent)}
+              onClick={async () => {
+                setNotice(`Testing ${agentTarget(settings.agent)}…`);
+                try {
+                  setNotice(await pingModel(settings.agent));
+                } catch (error) {
+                  setNotice(
+                    `${agentTarget(settings.agent)}: ${
+                      error instanceof Error ? error.message : "no response"
+                    } — the chat answers locally until this works.`,
+                  );
+                }
+              }}
+            >
+              Test the link
+            </button>
+            <button
+              type="button"
               onClick={() =>
-                update({ ...settings, agent: { endpoint: "", model: "", apiKey: "" } })
+                update({
+                  ...settings,
+                  agent: { provider: "none", endpoint: "", model: "", apiKey: "" },
+                })
               }
             >
-              Clear
+              Clear key &amp; provider
             </button>
-            <span className="field-hint">
-              Keys typed here are held in <code>localStorage</code> and sent only to the
-              endpoint above. Do not use a production key on a shared machine.
-            </span>
+            {settings.agent.provider !== "none" && settings.agent.provider !== "custom" ? (
+              <a
+                href={AGENT_PROVIDERS[settings.agent.provider].keyUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Create a key <span aria-hidden="true">→</span>
+                <span className="visually-hidden">(opens in new window)</span>
+              </a>
+            ) : null}
           </div>
+          <p className="field-hint">
+            Safety: use a key with a spending limit, never a shared production key, and
+            clear it on shared machines. The key is sent only to{" "}
+            {settings.agent.provider !== "none" && settings.agent.provider !== "custom" ? (
+              <code>{AGENT_PROVIDERS[settings.agent.provider].host}</code>
+            ) : (
+              "the endpoint you configure"
+            )}
+            .{" "}
+            {settings.agent.provider !== "none" && settings.agent.provider !== "custom"
+              ? AGENT_PROVIDERS[settings.agent.provider].note
+              : "If the endpoint fails, the chat falls back to local answers."}
+          </p>
         </form>
       </section>
 

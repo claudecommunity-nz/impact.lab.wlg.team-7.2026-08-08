@@ -131,13 +131,17 @@ const STOP_WORDS = new Set([
   "signal", "signals", "camera", "cameras", "data", "from", "does", "did", "has",
 ]);
 
-/** Name matching: the longest word in the question that hits a feature name. */
+/** Crude singular: "quays" has to find "Thorndon Quay road". */
+const stem = (word: string) => (word.length > 4 && word.endsWith("s") ? word.slice(0, -1) : word);
+
+/** Name matching: any substantial word in the question that hits a feature name. */
 function nameMatches(question: string, brief: Brief) {
   const words = question
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, " ")
     .split(/\s+/)
-    .filter((word) => word.length > 3 && !STOP_WORDS.has(word));
+    .filter((word) => word.length > 3 && !STOP_WORDS.has(word))
+    .map(stem);
   if (words.length === 0) return null;
 
   const hits = (name: string) => words.some((word) => name.toLowerCase().includes(word));
@@ -171,7 +175,7 @@ export function answer(question: string, brief: Brief): AgentReply {
     };
   }
 
-  if (has("hello", "hi ", "hey", "kia ora") && query.length < 16) {
+  if (/^(hello|hi|hey|kia ora|morena)\b/.test(query) && query.length < 20) {
     return {
       text: `Kia ora. I read the published Murmur artifacts: ${brief.signals.length} movement signals, ${brief.coverageCount} countlines, ${brief.cameras.length} NZTA cameras and ${brief.transit.length} PT anomaly hotspots. Ask what changed, how reliable it is, or about a specific street.`,
       sources: [],

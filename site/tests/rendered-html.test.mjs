@@ -191,7 +191,7 @@ test("keeps source settings off the dashboard and on their own route", async () 
 
   // The operating picture stays an operating picture.
   assert.doesNotMatch(dashboard, /Add a source/);
-  assert.doesNotMatch(dashboard, /Agent endpoint/);
+  assert.doesNotMatch(dashboard, /Agent setup<\/h2>/);
   assert.doesNotMatch(dashboard, /A2A agent card/);
 
   assert.match(settings, /Data sources and integrations/);
@@ -201,7 +201,12 @@ test("keeps source settings off the dashboard and on their own route", async () 
   assert.match(settings, /id="integrations"/);
   assert.match(settings, /MCP server config/);
   assert.match(settings, /A2A agent card/);
-  assert.match(settings, /Agent endpoint/);
+  // Agent setup: hosted providers linked by a browser-held key, local by default.
+  assert.match(settings, /Agent setup/);
+  assert.match(settings, /id="agent"/);
+  assert.match(settings, /Local answers \(no API\)/);
+  assert.match(settings, /Anthropic Claude/);
+  assert.match(settings, /stored in this browser/);
   // Every built-in source is listed with a retry control.
   for (const url of [
     "/cop/v1/movement-signals.geojson",

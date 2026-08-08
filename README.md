@@ -153,6 +153,41 @@ Every source is a **toggleable layer** on that one map — no tabs:
   injected, labelled anomalies — no figure describes an actual April 2026
   event, and the layer says so wherever it appears.
 
+### Navigator, agent and settings
+
+A hideable rail runs down the left of every route — **Operating picture**,
+**Data sources**, **Integrations**, **Agent setup** and **Ask the agent** —
+collapsing to an icon strip (and to a scrollable row on small screens). The
+choice is remembered.
+
+The **agent** is a floating button on every page, and expands to full screen
+with the ⤢ button (Escape backs out one step). By default it answers from the
+committed COP artifacts only: it assembles its replies out of those numbers, so
+it cannot invent a signal that is not in the feed, and it says "I do not hold
+that" rather than guessing. It carries the same truth boundary as the map —
+signals mean investigate, PT running is synthetic, and in an emergency it
+points at 111.
+
+**Agent setup** (`/settings#agent`) links the chat to a hosted model instead:
+Anthropic Claude, OpenAI, Google Gemini or DeepSeek by API key, or any custom
+endpoint. Questions then go straight from the visitor's browser to that
+provider with the artifacts as context — the key lives in that browser's
+`localStorage` only, is sent only to the chosen provider's host, and never
+touches this repo or the site. A **Test the link** button verifies the key
+with one tiny timed request, and any provider failure falls back to the
+local, artifact-grounded answer.
+
+**Data sources** (`/settings`, deliberately not on the dashboard) lists the five
+committed feeds plus anything you add, and for each one shows measured status —
+reachable, reachable with an unexpected body, or failed — last successful sync,
+latency and record count, with a retry icon per row and **Test all**. Sources can
+be added by URL or imported from a file, and exported as GeoJSON, JSON, CSV or
+NDJSON. **Integrations** registers REST, MCP, A2A and webhook endpoints, tests
+them, and generates the MCP client config and the A2A agent card for your own
+endpoint. Everything configured there lives in that browser's `localStorage`:
+this repo is public and holds nobody's endpoints or keys, and exported config
+drops tokens on the way out.
+
 ### Run it
 
 ```powershell
