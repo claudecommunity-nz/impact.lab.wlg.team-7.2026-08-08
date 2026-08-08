@@ -16,9 +16,12 @@ import {
   type LineCollection,
   type LineFeature,
   type MapView,
+  type TransitCollection,
+  type TransitFeature,
   DEFAULT_VIEW,
   MAX_ZOOM,
   MIN_ZOOM,
+  PEOPLE_CLASSES,
   boundsOfLines,
   boundsOfPoints,
   createProjector,
@@ -26,6 +29,7 @@ import {
   drawCoverage,
   drawSignals,
   drawTiles,
+  drawTransit,
   fitView,
   panView,
   pickNearest,
@@ -35,34 +39,43 @@ import {
 } from "./map-draw";
 
 type Filter = "all" | "people" | "vehicles";
-type LayerId = "signals" | "coverage" | "cameras";
+type LayerId = "signals" | "coverage" | "cameras" | "transit";
 type Layers = Record<LayerId, boolean>;
-type Focus = "signal" | "camera";
+type Focus = "signal" | "camera" | "transit";
 type Hover = { kind: Focus; id: string; left: number; top: number; above: boolean };
 
-const PEOPLE = new Set(["Pedestrian", "Cyclist", "E-scooter"]);
 const POPUP_WIDTH = 248;
 const HOVER_REFRESH_MS = 15_000;
+const TRANSIT_LIST_LIMIT = 30;
 
 const LAYERS: { id: LayerId; label: string; detail: string }[] = [
   { id: "signals", label: "Movement signals", detail: "WCC countlines · batch replay" },
   { id: "coverage", label: "Sensor coverage", detail: "Every measured countline" },
   { id: "cameras", label: "Traffic cameras", detail: "NZTA · live frames" },
+  { id: "transit", label: "Public transport", detail: "Metlink · synthetic replay" },
 ];
 
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
-  const [layers, setLayers] = useState<Layers>({ signals: true, coverage: true, cameras: true });
+  const [layers, setLayers] = useState<Layers>({
+    signals: true,
+    coverage: true,
+    cameras: true,
+    transit: true,
+  });
   const [coverage, setCoverage] = useState<LineFeature[]>([]);
   const [signals, setSignals] = useState<LineFeature[]>([]);
   const [cameras, setCameras] = useState<CameraCollection | null>(null);
+  const [transit, setTransit] = useState<TransitCollection | null>(null);
   const [selectedSignalId, setSelectedSignalId] = useState<string | null>(null);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
+  const [selectedTransitId, setSelectedTransitId] = useState<string | null>(null);
   const [focus, setFocus] = useState<Focus>("signal");
   const [filter, setFilter] = useState<Filter>("all");
   const [error, setError] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [transitError, setTransitError] = useState<string | null>(null);
   const [frameNonce, setFrameNonce] = useState(0);
   // Remember which frame URL failed, so selecting another camera or refreshing
   // clears the failure without an effect.
@@ -108,10 +121,20 @@ export default function MovementCanvas() {
       .catch(() => setCameraError("The camera catalogue could not be loaded."));
   }, []);
 
+  useEffect(() => {
+    fetch("/cop/v1/transit-anomalies.geojson")
+      .then((response) => response.json())
+      .then((collection: TransitCollection) => {
+        setTransit(collection);
+        setSelectedTransitId(collection.features[0]?.id ?? null);
+      })
+      .catch(() => setTransitError("The PT anomaly layer could not be loaded."));
+  }, []);
+
   const filteredSignals = useMemo(() => signals.filter((feature) => {
     const mode = String(feature.properties.transport_class);
-    if (filter === "people") return PEOPLE.has(mode);
-    if (filter === "vehicles") return !PEOPLE.has(mode);
+    if (filter === "people") return PEOPLE_CLASSES.has(mode);
+    if (filter === "vehicles") return !PEOPLE_CLASSES.has(mode);
     return true;
   }), [signals, filter]);
 
@@ -125,10 +148,19 @@ export default function MovementCanvas() {
     [cameraFeatures],
   );
 
+  // The artifact is sorted by anomaly count, so the top slice is the worst stops.
+  const transitFeatures = useMemo(() => transit?.features ?? [], [transit]);
+  const listedTransit = useMemo(
+    () => transitFeatures.slice(0, TRANSIT_LIST_LIMIT),
+    [transitFeatures],
+  );
+
   const selectedSignal =
     signals.find((feature) => feature.id === selectedSignalId) ?? filteredSignals[0];
   const selectedCamera: CameraFeature | undefined =
     cameraFeatures.find((feature) => feature.id === selectedCameraId) ?? sortedCameras[0];
+  const selectedTransit: TransitFeature | undefined =
+    transitFeatures.find((feature) => feature.id === selectedTransitId) ?? transitFeatures[0];
 
   const hoveredCamera =
     hover?.kind === "camera"
@@ -136,6 +168,10 @@ export default function MovementCanvas() {
       : undefined;
   const hoveredSignal =
     hover?.kind === "signal" ? signals.find((feature) => feature.id === hover.id) : undefined;
+  const hoveredTransit =
+    hover?.kind === "transit"
+      ? transitFeatures.find((feature) => feature.id === hover.id)
+      : undefined;
 
   // Redraw after every render, and hand the same closure to tile loads and resizes.
   useEffect(() => {
@@ -147,6 +183,15 @@ export default function MovementCanvas() {
       drawTiles(surface.context, view, surface.width, surface.height, () => drawRef.current());
       const project = createProjector(view, surface.width, surface.height);
       if (layers.coverage) drawCoverage(surface.context, project, coverage);
+      if (layers.transit) {
+        drawTransit(
+          surface.context,
+          project,
+          transitFeatures,
+          selectedTransit?.id ?? null,
+          hover?.kind === "transit" ? hover.id : null,
+        );
+      }
       if (layers.signals) {
         drawSignals(
           surface.context,
@@ -221,11 +266,12 @@ export default function MovementCanvas() {
     const bounds = unionBounds(
       layers.signals || layers.coverage ? boundsOfLines(coverage) : null,
       layers.cameras ? boundsOfPoints(cameraFeatures) : null,
+      layers.transit ? boundsOfPoints(transitFeatures) : null,
     );
     if (!bounds) return;
     setHover(null);
     setView(fitView(bounds, size.width, size.height));
-  }, [stageSize, layers, coverage, cameraFeatures]);
+  }, [stageSize, layers, coverage, cameraFeatures, transitFeatures]);
 
   const toggleLayer = (id: LayerId) => {
     setHover(null);
@@ -254,7 +300,7 @@ export default function MovementCanvas() {
       id,
       left: Math.min(Math.max(x - POPUP_WIDTH / 2, 8), Math.max(8, size.width - POPUP_WIDTH - 8)),
       top: y,
-      above: y > (kind === "camera" ? 264 : 96),
+      above: y > (kind === "camera" ? 264 : 120),
     });
     if (layers.cameras) {
       const hit = pickNearest(cameraFeatures, (feature) => feature.geometry.coordinates, project, point);
@@ -263,6 +309,10 @@ export default function MovementCanvas() {
     if (layers.signals) {
       const hit = pickNearest(filteredSignals, (feature) => feature.geometry.coordinates[0], project, point);
       if (hit) return place("signal", hit.id, project(hit.geometry.coordinates[0]));
+    }
+    if (layers.transit) {
+      const hit = pickNearest(transitFeatures, (feature) => feature.geometry.coordinates, project, point);
+      if (hit) return place("transit", hit.id, project(hit.geometry.coordinates));
     }
     return null;
   };
@@ -306,6 +356,9 @@ export default function MovementCanvas() {
     if (hit.kind === "camera") {
       setSelectedCameraId(hit.id);
       setFocus("camera");
+    } else if (hit.kind === "transit") {
+      setSelectedTransitId(hit.id);
+      setFocus("transit");
     } else {
       setSelectedSignalId(hit.id);
       setFocus("signal");
@@ -322,6 +375,7 @@ export default function MovementCanvas() {
       layers.signals ? `${filteredSignals.length} movement signals` : null,
       layers.coverage ? "414 countlines of sensor coverage" : null,
       layers.cameras ? `${cameraFeatures.length} NZTA traffic cameras` : null,
+      layers.transit ? `${transitFeatures.length} Metlink anomaly hotspots` : null,
     ]
       .filter(Boolean)
       .join(", ") || "no layers switched on";
@@ -431,8 +485,14 @@ export default function MovementCanvas() {
                   <span><i className="camera-offline" />Offline</span>
                 </>
               ) : null}
+              {layers.transit ? (
+                <>
+                  <span><i className="transit" />PT hotspot</span>
+                  <span><i className="transit-high" />Dense high severity</span>
+                </>
+              ) : null}
             </div>
-            {hover && (hoveredCamera || hoveredSignal) ? (
+            {hover && (hoveredCamera || hoveredSignal || hoveredTransit) ? (
               <div
                 className={`map-popup ${hover.above ? "above" : "below"}`}
                 style={{ left: hover.left, top: hover.top }}
@@ -467,6 +527,15 @@ export default function MovementCanvas() {
                       {Number(hoveredSignal.properties.robust_z).toFixed(1)} z · click for evidence
                     </span>
                   </p>
+                ) : hoveredTransit ? (
+                  <p>
+                    <strong>{hoveredTransit.properties.stop_name}</strong>
+                    <span>
+                      {hoveredTransit.properties.anomaly_count} PT anomalies ·{" "}
+                      {hoveredTransit.properties.high_count} high · top:{" "}
+                      {hoveredTransit.properties.top_detector} · synthetic April replay
+                    </span>
+                  </p>
                 ) : null}
               </div>
             ) : null}
@@ -475,14 +544,22 @@ export default function MovementCanvas() {
           </div>
           <p className="map-caption">
             Countline geometry is the WCC sensor line itself — it does not imply the whole
-            street or suburb changed. Camera icons are NZTA state-highway cameras: hover one
-            for its live frame. Drag to pan, scroll or use + and − to zoom.
+            street or suburb changed. Person and car icons split the signals by mode. Camera
+            icons are NZTA state-highway cameras: hover one for its live frame. Bus icons are
+            Metlink anomaly hotspots from a labelled synthetic April 2026 replay. Drag to
+            pan, scroll or use + and − to zoom.
           </p>
         </div>
 
         <aside
           className="evidence-column"
-          aria-label={focus === "camera" ? "Camera evidence" : "Signal evidence"}
+          aria-label={
+            focus === "camera"
+              ? "Camera evidence"
+              : focus === "transit"
+                ? "Public transport evidence"
+                : "Signal evidence"
+          }
         >
           {focus === "camera" ? (
             selectedCamera ? (
@@ -564,6 +641,74 @@ export default function MovementCanvas() {
                 {cameraError ?? "Loading the Wellington camera catalogue…"}
               </p>
             )
+          ) : focus === "transit" ? (
+            selectedTransit ? (
+              <div className="selected-evidence">
+                <div className="evidence-heading">
+                  <span
+                    className={`direction-chip ${
+                      selectedTransit.properties.severity_tier === "high"
+                        ? "transit-high"
+                        : "transit"
+                    }`}
+                  >
+                    {selectedTransit.properties.severity_tier === "high"
+                      ? "dense high severity"
+                      : "elevated"}
+                  </span>
+                  <span>Stop {selectedTransit.properties.stop_id}</span>
+                </div>
+                <h3>{selectedTransit.properties.stop_name}</h3>
+                <p>
+                  {selectedTransit.properties.modes
+                    .map((mode) => mode.replace("_", " ").toLowerCase())
+                    .join(" · ")}{" "}
+                  · synthetic April 2026 replay
+                </p>
+                <div className="count-comparison">
+                  <div>
+                    <span>Anomalies</span>
+                    <strong>{selectedTransit.properties.anomaly_count.toLocaleString("en-NZ")}</strong>
+                  </div>
+                  <div>
+                    <span>High severity</span>
+                    <strong>{selectedTransit.properties.high_count.toLocaleString("en-NZ")}</strong>
+                  </div>
+                </div>
+                <dl className="evidence-metrics">
+                  <div>
+                    <dt>Top detector</dt>
+                    <dd>
+                      {selectedTransit.properties.top_detector} (
+                      {selectedTransit.properties.top_detector_count})
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Worst example</dt>
+                    <dd>
+                      {selectedTransit.properties.worst_example.date} ·{" "}
+                      {selectedTransit.properties.worst_example.severity.toLowerCase()}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Position</dt>
+                    <dd>
+                      {selectedTransit.geometry.coordinates[1].toFixed(4)},{" "}
+                      {selectedTransit.geometry.coordinates[0].toFixed(4)}
+                    </dd>
+                  </div>
+                </dl>
+                <p className="worst-detail">{selectedTransit.properties.worst_example.detail}</p>
+                <p className="evidence-note">
+                  Synthetic data: the real Metlink timetable with simulated running and
+                  injected anomalies. Nothing here describes an actual April 2026 event.
+                </p>
+              </div>
+            ) : (
+              <p className="empty-evidence">
+                {transitError ?? "Loading the Metlink anomaly layer…"}
+              </p>
+            )
           ) : selectedSignal ? (
             <div className="selected-evidence">
               <div className="evidence-heading">
@@ -632,6 +777,34 @@ export default function MovementCanvas() {
                 </span>
                 <em className={feature.properties.offline ? "offline" : "online"}>
                   {feature.properties.camera_id}
+                </em>
+              </button>
+            ))}
+            <p className="list-group">
+              PT anomaly hotspots (top {listedTransit.length} of {transitFeatures.length})
+            </p>
+            {listedTransit.map((feature) => (
+              <button
+                type="button"
+                key={feature.id}
+                className={focus === "transit" && feature.id === selectedTransit?.id ? "selected" : ""}
+                onClick={() => {
+                  setSelectedTransitId(feature.id);
+                  setFocus("transit");
+                  revealOnMap(feature.geometry.coordinates);
+                }}
+              >
+                <span>
+                  <strong>{feature.properties.stop_name}</strong>
+                  <small>
+                    {feature.properties.modes
+                      .map((mode) => mode.replace("_", " ").toLowerCase())
+                      .join(" · ")}{" "}
+                    · {feature.properties.high_count} high
+                  </small>
+                </span>
+                <em className={feature.properties.severity_tier === "high" ? "transit-high" : "transit"}>
+                  {feature.properties.anomaly_count}
                 </em>
               </button>
             ))}

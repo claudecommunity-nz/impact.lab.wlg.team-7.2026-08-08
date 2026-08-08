@@ -133,7 +133,8 @@ or camera to select it. No map library.
 Every source is a **toggleable layer** on that one map — no tabs:
 
 - **Movement signals** — the movement-change signals above (batch replay), with
-  a people/vehicles filter.
+  a people/vehicles filter. Person icons mark pedestrian, cyclist and e-scooter
+  signals; car icons mark the vehicle classes.
 - **Sensor coverage** — all 414 measured WCC countlines.
 - **Traffic cameras** — the 38 Wellington-region cameras from the NZTA Traffic
   and Travel API, drawn as tiny camera icons; 9 sit inside the countline
@@ -144,6 +145,13 @@ Every source is a **toggleable layer** on that one map — no tabs:
   corroborate a countline signal, they do not measure one. Capture for change
   detection is the Streamlit app's job —
   [`streamlit/traffic_camera/`](streamlit/traffic_camera/).
+- **Public transport** — Metlink anomaly hotspots as tiny bus icons (blue,
+  or red where high-severity anomalies concentrate), built from the
+  [`data/buses_trains/anomaly/`](data/buses_trains/anomaly/) extracts by
+  `scripts/build_transit_layer.py` into `/cop/v1/transit-anomalies.geojson`.
+  **Synthetic**: the real Metlink timetable replayed with simulated running and
+  injected, labelled anomalies — no figure describes an actual April 2026
+  event, and the layer says so wherever it appears.
 
 ### Run it
 

@@ -40,6 +40,42 @@ export type CameraCollection = {
   features: CameraFeature[];
 };
 
+export type TransitProperties = {
+  stop_id: string;
+  stop_name: string;
+  modes: string[];
+  anomaly_count: number;
+  high_count: number;
+  medium_count: number;
+  low_count: number;
+  severity_tier: "high" | "elevated";
+  top_detector: string;
+  top_detector_count: number;
+  worst_example: { date: string; hour: number; severity: string; score: number; detail: string };
+  synthetic: boolean;
+  attribution: string;
+  limitations: string[];
+};
+
+export type TransitFeature = {
+  id: string;
+  geometry: { type: "Point"; coordinates: Coordinate };
+  properties: TransitProperties;
+};
+
+export type TransitCollection = {
+  type: "FeatureCollection";
+  stop_count: number;
+  hotspot_count: number;
+  synthetic: boolean;
+  attribution: string;
+  limitations: string[];
+  features: TransitFeature[];
+};
+
+/** Transport classes drawn with the person glyph; everything else gets the car. */
+export const PEOPLE_CLASSES = new Set(["Pedestrian", "Cyclist", "E-scooter"]);
+
 export type Projector = (coordinate: Coordinate) => Coordinate;
 export type Bounds = { west: number; east: number; south: number; north: number };
 export type MapView = { centerLon: number; centerLat: number; zoom: number };
@@ -160,7 +196,7 @@ export function boundsOfLines(features: LineFeature[]) {
   return boundsOf(features.flatMap((feature) => feature.geometry.coordinates));
 }
 
-export function boundsOfPoints(features: CameraFeature[]) {
+export function boundsOfPoints(features: { geometry: { coordinates: Coordinate } }[]) {
   return boundsOf(features.map((feature) => feature.geometry.coordinates));
 }
 
@@ -275,6 +311,51 @@ export function drawCoverage(
   }
 }
 
+/** Mini person: head over a rounded torso, anchored at (x, y). */
+function drawPersonGlyph(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  scale: number,
+  fill: string,
+) {
+  context.fillStyle = fill;
+  context.strokeStyle = "#FFFFFF";
+  context.lineWidth = 1.4;
+  context.beginPath();
+  context.arc(x, y - 3.4 * scale, 2 * scale, 0, Math.PI * 2);
+  context.fill();
+  context.stroke();
+  traceRoundedRect(context, x - 2.7 * scale, y - 0.9 * scale, 5.4 * scale, 5.8 * scale, 2.6 * scale);
+  context.fill();
+  context.stroke();
+}
+
+/** Mini car: cabin over body with two wheels, anchored at (x, y). */
+function drawCarGlyph(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  scale: number,
+  fill: string,
+) {
+  context.fillStyle = fill;
+  context.strokeStyle = "#FFFFFF";
+  context.lineWidth = 1.4;
+  traceRoundedRect(context, x - 3.8 * scale, y - 4.4 * scale, 7.6 * scale, 4 * scale, 1.8 * scale);
+  context.fill();
+  context.stroke();
+  traceRoundedRect(context, x - 6.4 * scale, y - 1.6 * scale, 12.8 * scale, 5 * scale, 2 * scale);
+  context.fill();
+  context.stroke();
+  context.fillStyle = "#FFFFFF";
+  for (const side of [-1, 1]) {
+    context.beginPath();
+    context.arc(x + side * 3.6 * scale, y + 3.2 * scale, 1.3 * scale, 0, Math.PI * 2);
+    context.fill();
+  }
+}
+
 export function drawSignals(
   context: CanvasRenderingContext2D,
   project: Projector,
@@ -293,20 +374,66 @@ export function drawSignals(
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
     const decreasing = feature.properties.change_direction === "decrease";
-    context.strokeStyle = decreasing ? "#B3261E" : "#8A5A00";
+    const colour = decreasing ? "#B3261E" : "#8A5A00";
+    context.strokeStyle = colour;
     context.lineWidth = isSelected ? 6 : isHovered ? 5 : 3.5;
     context.lineCap = "round";
     context.beginPath();
     context.moveTo(...start);
     context.lineTo(...end);
     context.stroke();
-    context.fillStyle = isSelected ? "#000000" : context.strokeStyle;
-    context.beginPath();
-    context.arc(start[0], start[1], isSelected ? 6 : isHovered ? 5 : 4, 0, Math.PI * 2);
+
+    const scale = isSelected ? 1.4 : isHovered ? 1.2 : 1;
+    const fill = isSelected ? "#000000" : colour;
+    if (PEOPLE_CLASSES.has(String(feature.properties.transport_class))) {
+      drawPersonGlyph(context, start[0], start[1], scale, fill);
+    } else {
+      drawCarGlyph(context, start[0], start[1], scale, fill);
+    }
+  }
+}
+
+/** Mini bus at each Metlink anomaly hotspot; red tier means dense high severity. */
+export function drawTransit(
+  context: CanvasRenderingContext2D,
+  project: Projector,
+  hotspots: TransitFeature[],
+  selectedId: string | null,
+  hoveredId: string | null = null,
+) {
+  for (const feature of hotspots) {
+    const [x, y] = project(feature.geometry.coordinates);
+    const isSelected = feature.id === selectedId;
+    const isHovered = feature.id === hoveredId;
+    const scale = isSelected ? 1.35 : isHovered ? 1.2 : 1;
+    const width = 13 * scale;
+    const height = 9 * scale;
+    const left = x - width / 2;
+    const top = y - height / 2;
+    const body = feature.properties.severity_tier === "high" ? "#B3261E" : "#2B5CAD";
+
+    if (isSelected) {
+      traceRoundedRect(context, left - 3, top - 3, width + 6, height + 6, 4 * scale);
+      context.strokeStyle = "#000000";
+      context.lineWidth = 2;
+      context.stroke();
+    }
+
+    traceRoundedRect(context, left, top, width, height, 2 * scale);
+    context.fillStyle = body;
     context.fill();
     context.strokeStyle = "#FFFFFF";
-    context.lineWidth = 1.5;
+    context.lineWidth = 1.4;
     context.stroke();
+
+    context.fillStyle = "#FFFFFF";
+    traceRoundedRect(context, left + 1.8 * scale, top + 1.6 * scale, width - 3.6 * scale, 2.4 * scale, scale);
+    context.fill();
+    for (const side of [-1, 1]) {
+      context.beginPath();
+      context.arc(x + side * 3 * scale, top + height, 1.2 * scale, 0, Math.PI * 2);
+      context.fill();
+    }
   }
 }
 

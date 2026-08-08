@@ -38,8 +38,8 @@ export default function Home() {
             Hourly pedestrian and vehicle counts compared with the same weekday and
             hour over the prior 12 weeks. Signals invite investigation; they do not
             diagnose an incident, evacuation, or loss of access. Every source lands
-            on one map: WCC countlines and NZTA traffic cameras are layers you
-            switch on and off over the same frame.
+            on one map: WCC countlines, NZTA traffic cameras and Metlink public
+            transport are layers you switch on and off over the same frame.
           </p>
         </div>
         <dl className="snapshot-facts" aria-label="Snapshot summary">
@@ -84,6 +84,10 @@ export default function Home() {
             <span>Traffic camera layer</span>
             <code>/cop/v1/traffic-cameras.geojson</code>
           </a>
+          <a href="/cop/v1/transit-anomalies.geojson">
+            <span>PT anomaly layer (synthetic)</span>
+            <code>/cop/v1/transit-anomalies.geojson</code>
+          </a>
           <a href="/cop/v1/movement-health.json">
             <span>Coverage and health</span>
             <code>/cop/v1/movement-health.json</code>
@@ -105,8 +109,9 @@ export default function Home() {
       <footer>
         <strong>Not live emergency information.</strong> In an emergency, call 111.
         Data: Wellington City Council Transport Sensors; camera positions and frames
-        from the NZTA Traffic and Travel API, images © NZTA. Prototype for
-        investigation only.
+        from the NZTA Traffic and Travel API, images © NZTA; Metlink GTFS timetable
+        © Greater Wellington Regional Council, with public-transport running a
+        labelled synthetic replay. Prototype for investigation only.
       </footer>
     </div>
   );

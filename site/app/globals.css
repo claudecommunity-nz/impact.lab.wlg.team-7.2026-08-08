@@ -238,6 +238,7 @@ h3 { font-size: var(--text-h3); }
 .layer-toggles .swatch.signals { background: var(--wcc-warning); }
 .layer-toggles .swatch.coverage { background: var(--wcc-grey-500); height: 3px; border-radius: 0; }
 .layer-toggles .swatch.cameras { background: var(--wcc-success); }
+.layer-toggles .swatch.transit { background: #2B5CAD; }
 .layer-toggles button:not(.active) .swatch { opacity: 0.45; }
 .filter-group { display: flex; border: 1px solid var(--border-hairline); border-radius: var(--radius-md); overflow: hidden; }
 .filter-group button {
@@ -294,6 +295,9 @@ h3 { font-size: var(--text-h3); }
 .map-key .camera, .map-key .camera-offline { width: 12px; height: 9px; border-radius: 2px; }
 .map-key .camera { background: var(--wcc-success); }
 .map-key .camera-offline { background: var(--wcc-grey-500); }
+.map-key .transit, .map-key .transit-high { width: 12px; height: 9px; border-radius: 2px; }
+.map-key .transit { background: #2B5CAD; }
+.map-key .transit-high { background: var(--wcc-error); }
 .map-popup {
   position: absolute; z-index: 4; width: 248px; pointer-events: none;
   background: var(--surface-page); border: 1px solid var(--wcc-black); box-shadow: var(--shadow-2);
@@ -323,6 +327,8 @@ h3 { font-size: var(--text-h3); }
 .direction-chip.decrease { background: var(--wcc-error); }
 .direction-chip.on-frame { background: var(--wcc-success); }
 .direction-chip.off-frame { background: var(--wcc-grey-700); }
+.direction-chip.transit { background: #2B5CAD; }
+.direction-chip.transit-high { background: var(--wcc-error); }
 .selected-evidence h3 { margin-top: var(--space-4); }
 .selected-evidence > p { color: var(--wcc-grey-700); }
 .count-comparison { display: grid; grid-template-columns: 1fr 1fr; margin: var(--space-5) 0; border-block: 1px solid var(--border-hairline); }
@@ -381,6 +387,13 @@ h3 { font-size: var(--text-h3); }
 .signal-list em.decrease { color: var(--wcc-error); }
 .signal-list em.online { color: var(--wcc-success); }
 .signal-list em.offline { color: var(--wcc-grey-700); }
+.signal-list em.transit { color: #2B5CAD; }
+.signal-list em.transit-high { color: var(--wcc-error); }
+.worst-detail {
+  margin: var(--space-4) 0; padding: var(--space-3);
+  border-left: 4px solid var(--wcc-grey-300); background: var(--wcc-grey-100);
+  color: var(--wcc-grey-700); font-size: var(--text-small); line-height: 1.5; font-style: italic;
+}
 
 .handoff-section, .limits-section {
   max-width: calc(var(--container-max) + 2 * var(--container-pad));

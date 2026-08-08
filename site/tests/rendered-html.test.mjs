@@ -35,6 +35,7 @@ test("server-renders the movement investigation surface with truthful batch stat
   assert.ok(html.includes("/cop/v1/movement-signals.geojson"));
   assert.ok(html.includes("/cop/v1/movement-health.json"));
   assert.ok(html.includes("/cop/v1/traffic-cameras.geojson"));
+  assert.ok(html.includes("/cop/v1/transit-anomalies.geojson"));
   assert.match(html, /Not live emergency information/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|taking shape/i);
 });
@@ -80,10 +81,40 @@ test("merges every source into one map with switchable layers", async () => {
   assert.match(html, /Movement signals/);
   assert.match(html, /Sensor coverage/);
   assert.match(html, /Traffic cameras/);
-  // All three layers start switched on.
-  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 3);
-  // One canvas, one projection: the camera layer must not ship a second map.
+  assert.match(html, /Public transport/);
+  // All four layers start switched on.
+  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 4);
+  // One canvas, one projection: no source ships a second map.
   assert.equal(html.match(/<canvas/g)?.length, 1);
+});
+
+test("ships the PT anomaly layer as an honestly labelled synthetic artifact", async () => {
+  const transitText = await readFile(
+    new URL("../public/cop/v1/transit-anomalies.geojson", import.meta.url),
+    "utf8",
+  );
+  const transit = JSON.parse(transitText);
+
+  assert.equal(transit.type, "FeatureCollection");
+  assert.equal(transit.schema, "transit-anomaly-collection/v1");
+  assert.equal(transit.synthetic, true);
+  assert.equal(transit.features.length, transit.hotspot_count);
+  assert.ok(transit.hotspot_count > 0 && transit.hotspot_count < transit.stop_count);
+  assert.match(transit.attribution, /Metlink/);
+  assert.ok(transit.limitations.some((entry) => /[Ss]ynthetic/.test(entry)));
+
+  // Sorted worst-first so the site's top-N list slice is honest.
+  const counts = transit.features.map((feature) => feature.properties.anomaly_count);
+  assert.deepEqual(counts, [...counts].sort((a, b) => b - a));
+
+  for (const feature of transit.features) {
+    assert.equal(feature.geometry.type, "Point");
+    const [longitude, latitude] = feature.geometry.coordinates;
+    assert.ok(longitude > 170 && latitude < -40);
+    assert.equal(feature.properties.synthetic, true);
+    assert.ok(feature.properties.limitations.length > 0);
+    assert.ok(["high", "elevated"].includes(feature.properties.severity_tier));
+  }
 });
 
 test("ships a camera layer on the same frame with its own attribution and limits", async () => {
