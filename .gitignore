@@ -8,6 +8,10 @@
 raw/
 data/transport_sensors/
 
+# Exception: committed derived AGGREGATE data (not raw WCC data) for the anomaly layer
+!data/sensors/anomaly/csv/
+!data/sensors/anomaly/csv/*.csv
+
 # Python
 .venv/
 __pycache__/
