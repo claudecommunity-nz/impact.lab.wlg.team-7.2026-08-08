@@ -110,103 +110,118 @@ Code here is MIT unless stated otherwise. The data is not covered by it.
 
 ---
 
-## Working prototype
+## Working prototype: Murmur
 
 **Murmur** — measuring the city's heartbeat and detecting irregularities. It maps
 unusual hourly pedestrian and vehicle counts at WCC Transport Sensor countlines,
 and publishes the same evidence as WGS84 GeoJSON for the shared common operating
-picture.
+picture. The map is a view; **the feed is the product**.
 
-- Detection: matched weekday/hour median + MAD over the prior 12 weeks.
+### Detection
+
+- Matched weekday/hour **median + MAD** over the prior 12 weeks, per
+  countline × transport class × direction.
 - Precision gates: robust score ≥ 4.5, absolute change ≥ 10 and relative change
   ≥ 35%.
 - Truth boundary: signals mean **investigate**; they do not diagnose disruption,
   evacuation or loss of access.
 - Cadence: the WCC source is updated at least monthly, so the current build is a
-  labelled batch replay rather than a live feed.
+  labelled **batch replay**, not a live feed. A missing row is a data gap, never
+  a zero.
 
 The included 6 August 2026 12:00 replay produces **12 signals** and exposes
 **207 expected-but-missing groups** as data gaps rather than zero counts.
 
-The map is a hand-rolled slippy map on one canvas: CARTO Positron raster tiles
-(OpenStreetMap data) under the layers, whole-level zoom 9–18, drag to pan, scroll
-or the +/− buttons to zoom, **Fit** to frame the active layers, and click a line
-or camera to select it. No map library.
+### One map, every source
 
-Every source is a **toggleable layer** on that one map — no tabs:
+A hand-rolled slippy map on one canvas — CARTO Positron raster tiles
+(OpenStreetMap data), whole-level zoom 9–18, drag to pan, scroll or +/− to zoom,
+**Fit** to frame the active layers, no map library. Every source is a
+**toggleable layer**, each drawn with its own mini icon:
 
-- **Movement signals** — the movement-change signals above (batch replay), with
-  a people/vehicles filter. Person icons mark pedestrian, cyclist and e-scooter
-  signals; car icons mark the vehicle classes.
+- **Movement signals** — the detection output above, with a people/vehicles
+  filter. **Person icons** mark pedestrian, cyclist and e-scooter signals;
+  **car icons** mark the vehicle classes; amber = increase, red = decrease.
 - **Sensor coverage** — all 414 measured WCC countlines.
-- **Traffic cameras** — the 38 Wellington-region cameras from the NZTA Traffic
-  and Travel API, drawn as tiny camera icons; 9 sit inside the countline
-  bounding box and the rest appear as you pan or zoom out. Hovering an icon
-  pops up the camera's live frame, re-requested every 15 s while open.
-  Positions come from the committed layer; the frame itself loads live from
-  NZTA in the browser and is never stored or re-published here. Cameras
-  corroborate a countline signal, they do not measure one. Capture for change
-  detection is the Streamlit app's job —
+- **Traffic cameras** — 38 Wellington-region NZTA cameras as tiny **camera
+  icons**. Hovering one pops up its **live frame**, re-requested every 15 s
+  while open; frames load straight from NZTA in the browser and are never
+  stored or re-published here. Cameras corroborate a countline signal, they do
+  not measure one. Frame capture for change detection is
   [`streamlit/traffic_camera/`](streamlit/traffic_camera/).
-- **Public transport** — Metlink anomaly hotspots as tiny bus icons (blue,
-  or red where high-severity anomalies concentrate), built from the
-  [`data/buses_trains/anomaly/`](data/buses_trains/anomaly/) extracts by
-  `scripts/build_transit_layer.py` into `/cop/v1/transit-anomalies.geojson`.
+- **Public transport** — Metlink anomaly hotspots as tiny **bus icons** (blue,
+  red where high-severity anomalies concentrate), built from the
+  [`data/buses_trains/anomaly/`](data/buses_trains/anomaly/) extracts.
   **Synthetic**: the real Metlink timetable replayed with simulated running and
-  injected, labelled anomalies — no figure describes an actual April 2026
-  event, and the layer says so wherever it appears.
+  injected, labelled anomalies — the layer says so wherever it appears.
+
+Hovering a signal or a PT hotspot shows its numbers in place; clicking anything
+fills the **investigate panel** — observed vs expected counts, robust score,
+sample size, confidence, worst example, and the reliability caveats that ship
+with every feature.
 
 ### One screen you can put away
 
 Three parts of the interface fold down to an icon, and each remembers the
 choice, so the demo shows the full brief and day-to-day work shows the map:
 
-- **The rail** on the left of every route — **Operating picture**, **Data
-  sources**, **Integrations**, **Agent setup** and **Ask the agent** — collapses
-  to an icon strip, and to a scrollable row on small screens.
+- **The rail** on the left of every route collapses to an icon strip (a
+  scrollable row on small screens).
 - **The brief** at the top of the dashboard folds to a single line: how many
-  data sources are wired in and when one last answered. Before anything has been
-  tested in that browser it says so and falls back to the publisher's data age,
-  rather than inventing a sync time.
-- **The investigate panel** sits left of the map at 420px and slides away from
-  the toggle in the map's top-left corner, with the canvas growing into the
-  space as it goes. It is put away, not merely hidden: the controls inside it
-  leave the tab order.
+  data sources are wired in and when one last answered — and says "not tested
+  in this browser" rather than inventing a sync time.
+- **The investigate panel** sits left of the map and slides away from the «
+  toggle in the map's top-left corner, the canvas growing into the space. It is
+  put away, not merely hidden: its controls leave the tab order.
 
-### Navigator, agent and settings
+### The Murmur agent
 
-A hideable rail runs down the left of every route — **Operating picture**,
-**Data sources**, **Integrations**, **Agent setup** and **Ask the agent** —
-collapsing to an icon strip (and to a scrollable row on small screens). The
-choice is remembered.
+A floating ✦ button on every page opens the chat; ⤢ expands it to full screen
+(Escape backs out one step). By default it answers **locally from the committed
+artifacts only** — it assembles replies out of those numbers, so it cannot
+invent a signal that is not in the feed, and says "I do not hold that" rather
+than guessing. It carries the same truth boundary as the map: signals mean
+investigate, PT running is synthetic, and in an emergency it points at 111.
 
-The **Murmur agent** is a floating button on every page, and expands to full screen
-with the ⤢ button (Escape backs out one step). By default it answers from the
-committed COP artifacts only: it assembles its replies out of those numbers, so
-it cannot invent a signal that is not in the feed, and it says "I do not hold
-that" rather than guessing. It carries the same truth boundary as the map —
-signals mean investigate, PT running is synthetic, and in an emergency it
-points at 111.
+**Agent setup** (`/settings#agent`, in the rail) links the chat to a hosted
+model instead: **Anthropic Claude, OpenAI, Google Gemini or DeepSeek** from a
+model dropdown (with a custom-model escape hatch), or any custom endpoint.
+Questions then go straight from the visitor's browser to that provider with
+the artifacts as grounding context. **Test the link** fires one tiny timed
+request and reports the result inline; any provider failure names its cause
+and falls back to the local answer.
 
-**Agent setup** (`/settings#agent`) links the chat to a hosted model instead:
-Anthropic Claude, OpenAI, Google Gemini or DeepSeek by API key, or any custom
-endpoint. Questions then go straight from the visitor's browser to that
-provider with the artifacts as context — the key lives in that browser's
-`localStorage` only, is sent only to the chosen provider's host, and never
-touches this repo or the site. A **Test the link** button verifies the key
-with one tiny timed request, and any provider failure falls back to the
-local, artifact-grounded answer.
+### Settings: sources and integrations
 
 **Data sources** (`/settings`, deliberately not on the dashboard) lists the five
-committed feeds plus anything you add, and for each one shows measured status —
-reachable, reachable with an unexpected body, or failed — last successful sync,
-latency and record count, with a retry icon per row and **Test all**. Sources can
-be added by URL or imported from a file, and exported as GeoJSON, JSON, CSV or
-NDJSON. **Integrations** registers REST, MCP, A2A and webhook endpoints, tests
-them, and generates the MCP client config and the A2A agent card for your own
-endpoint. Everything configured there lives in that browser's `localStorage`:
-this repo is public and holds nobody's endpoints or keys, and exported config
-drops tokens on the way out.
+committed feeds plus anything you add, with **measured** status per source —
+reachable, reachable-with-odd-payload, or failed — last successful sync, latency
+and record count, a retry per row and **Test all**. Sources can be added by URL
+or imported from a file, and exported as **GeoJSON, JSON, CSV or NDJSON**.
+**Integrations** registers REST, MCP, A2A and webhook endpoints, tests them, and
+generates the MCP client config and the A2A agent card for your own endpoint.
+
+### The feeds
+
+Everything the site shows is served as five committed files — point any COP,
+GIS client or teammate's prototype at them:
+
+| Feed | Path |
+|---|---|
+| Movement signals | `/cop/v1/movement-signals.geojson` |
+| Sensor coverage | `/cop/v1/countline-coverage.geojson` |
+| Traffic cameras | `/cop/v1/traffic-cameras.geojson` |
+| PT anomalies (synthetic) | `/cop/v1/transit-anomalies.geojson` |
+| Coverage and health | `/cop/v1/movement-health.json` |
+
+### Keys and secrets stay out of this repo
+
+API keys and tokens live in the visitor's browser `localStorage` only and are
+sent only to the chosen provider's host — never to this repo or the site.
+Config export strips keys and tokens on the way out, `.gitignore` refuses
+env/key files, and the test suite **scans the source for key-shaped strings**
+(Anthropic, OpenAI, Google, GitHub, webhook secrets, private-key blocks) and
+fails the build naming the offending file.
 
 ### Run it
 
@@ -221,7 +236,7 @@ npm test
 npm run dev
 ```
 
-To rebuild the COP artifacts from the official WCC Transport Sensors Parquet
+Rebuild the COP artifacts from the official WCC Transport Sensors Parquet
 shards and countline metadata:
 
 ```powershell
@@ -232,26 +247,24 @@ shards and countline metadata:
   --output-dir site\public\cop\v1
 ```
 
-Outputs:
-
-- `movement-signals.geojson` — investigation candidates and evidence;
-- `movement-health.json` — coverage, gaps, cadence and limitations;
-- `countline-coverage.geojson` — the 414 sensor line geometries.
-
-To rebuild the camera layer from the live NZTA catalogue (needs network, not the
-WCC Parquet):
+Rebuild the camera layer from the live NZTA catalogue (network, no Parquet):
 
 ```powershell
 .\.venv\Scripts\pip install -e ".[cameras]"
 .\.venv\Scripts\python scripts\build_camera_layer.py
 ```
 
-- `traffic-cameras.geojson` — Wellington camera positions, image and view URLs,
-  `within_countline_frame`, attribution and limitations.
+Rebuild the Metlink PT-anomaly layer from the committed extracts (stdlib only):
 
-See [`docs/model-card.md`](docs/model-card.md) for the model comparison and
-[`artifacts/model-benchmark.json`](artifacts/model-benchmark.json) for its
-machine-readable result. The four-minute walkthrough is in
-[`docs/demo-script.md`](docs/demo-script.md), and the slides shown at 16:30 are
+```powershell
+python scripts\build_transit_layer.py
+```
+
+### Docs
+
+[`docs/model-card.md`](docs/model-card.md) has the model comparison
+([`artifacts/model-benchmark.json`](artifacts/model-benchmark.json) is its
+machine-readable result), [`docs/demo-script.md`](docs/demo-script.md) is the
+four-minute walkthrough, and the slides shown at 16:30 are
 [here](https://docs.google.com/presentation/d/1tNyOVbC6gqecDB2m7Es2TQ7Am-KTfwbQ/edit?slide=id.p1#slide=id.p1).
 

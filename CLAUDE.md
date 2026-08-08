@@ -176,7 +176,9 @@ also the only place the NZTA endpoints and catalogue parsing are defined —
 in `localStorage`, `next/link` + `usePathname`) beside the page, with `AgentChat`
 mounted outside it so the chat is reachable from anywhere. `SiteChrome.tsx` holds
 the header and footer both routes share — the batch-replay chip and the
-attribution block are contractual copy and are server-rendered.
+attribution block are contractual copy and are server-rendered. The header brand
+is the real logo (`public/murmur-logo.svg`, `currentColor` strokes; favicon is
+`public/murmur-favicon.svg`) and the render test rejects the old M05 placeholder.
 
 Three things fold away — the rail, the dashboard brief (`IntroBand.tsx`) and the
 investigate panel — and every one of them is an **icon** control, never a word,
@@ -191,6 +193,13 @@ age when nothing has been tested in that browser. Server snapshots keep every
 flag open for SSR, so the brief, the panel and the rail are all present in the
 rendered HTML and the tests can assert them.
 
+`AgentChat` (the **Murmur agent**) is a fab on every route; ⤢ maximises the
+panel to the viewport and Escape backs out one step (full screen, then the
+panel). It reads the agent config **through the settings store**
+(`useSyncExternalStore`), never cached in component state — that bug shipped
+once: a key linked in Agent setup while the panel was open was silently
+ignored until reopen.
+
 `app/agent-brief.ts` is the agent's whole world: it loads the five COP files and
 `answer()` routes a question to those numbers with keyword matching. Deliberately
 not generative — a wrong route says "I do not hold that", which is safer than a
@@ -201,11 +210,21 @@ is linked; the local answer is always the fallback when that call fails.
 (`/settings#agent`): Anthropic, OpenAI, Gemini and DeepSeek by API key, plus the
 custom-endpoint POST. The key comes from `localStorage` settings and is sent
 only to the chosen provider's host — never to any server of ours; the registry
-of providers (hosts, default models, key URLs) is `AGENT_PROVIDERS` in
-`data-sources.ts`. The Anthropic branch follows the current Messages API: no
-sampling params, `stop_reason: "refusal"` handled, and the
+of providers (hosts, default models, model lists, key URLs) is `AGENT_PROVIDERS`
+in `data-sources.ts`. The Anthropic branch follows the current Messages API: no
+sampling params, `stop_reason: "refusal"` handled, `output_config.effort` sent
+only to models matching `EFFORT_MODELS` (Haiku 4.5 400s on it), and the
 `anthropic-dangerous-direct-browser-access` header, which is the point here —
-the visitor's key stays in the visitor's browser.
+the visitor's key stays in the visitor's browser. A blocked cross-origin call is
+renamed from `Failed to fetch` to a message naming CORS or offline.
+
+The setup form makes state self-evident, because "nothing happened" was the bug
+report that shaped it: the model field is a `<select>` of the provider's list
+plus a custom-model escape hatch (a datalist filtered itself down to one entry),
+a hint under the key field echoes the **masked key read back from storage**
+(`storedAgentKey`/`maskSecret` — saving is as-you-type, there is no save
+button), and **Test the link** (`pingModel`, timed) reports ✓/✗ in a status box
+beside the button, not the page-top notice.
 
 `app/data-sources.ts` is the registry behind `/settings`: built-in sources,
 `localStorage` settings, `probeSource` (status is *measured* — reachable,
@@ -225,7 +244,11 @@ it: the operating picture must not grow a configuration surface. The same file
 asserts that the rail and the agent reach every route, that the brief and the
 investigate panel both start open with a control that owns them
 (`aria-controls`), that there is still exactly one `<canvas>`, and that no
-provider key has been committed.
+provider key has been committed — the secret scan walks `site/app`, `worker`,
+`tests`, `public`, `scripts` and `src` for key-shaped strings and fails naming
+the file. The root `.gitignore` refuses `.env`/key/pem files, `secrets/` and
+`murmur-settings.json` (the config-export name; the export itself strips keys
+and tokens).
 
 ### Status vocabulary
 
