@@ -247,13 +247,16 @@ def render_tab_playback(f: dict) -> None:
                "each hour. (Interaction modelled on the Melbourne traffic demo; the data here is "
                "Wellington, April 2026.)")
     meta = get_meta()
+    clamp = lambda d: min(max(d, meta["MIN"]), meta["MAX"])
+    def_start = clamp(pd.Timestamp("2026-04-19").date())
+    def_end = clamp(pd.Timestamp("2026-04-23").date())
     c1, c2, c3, c4 = st.columns(4)
-    sd = c1.date_input("Start day", value=meta["MIN"], min_value=meta["MIN"],
+    sd = c1.date_input("Start day", value=def_start, min_value=meta["MIN"],
                        max_value=meta["MAX"], key="pb_sd")
-    sh = c2.selectbox("Start hour", list(range(24)), index=0, key="pb_sh")
-    ed = c3.date_input("End day", value=meta["MIN"], min_value=meta["MIN"],
+    sh = c2.selectbox("Start hour", list(range(24)), index=13, key="pb_sh")
+    ed = c3.date_input("End day", value=def_end, min_value=meta["MIN"],
                        max_value=meta["MAX"], key="pb_ed")
-    eh = c4.selectbox("End hour", list(range(24)), index=23, key="pb_eh")
+    eh = c4.selectbox("End hour", list(range(24)), index=13, key="pb_eh")
 
     start = pd.Timestamp(sd) + pd.Timedelta(hours=int(sh))
     end = pd.Timestamp(ed) + pd.Timedelta(hours=int(eh))
