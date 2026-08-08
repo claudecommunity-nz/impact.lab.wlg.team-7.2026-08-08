@@ -290,7 +290,9 @@ export default function MovementCanvas() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Open this camera on NZTA Journeys
+                  Open this camera on NZTA Journeys{" "}
+                  <span aria-hidden="true">→</span>
+                  <span className="visually-hidden">(opens in new window)</span>
                 </a>
                 <p className="evidence-note">
                   A frame is a snapshot, not a count. Cameras watch state highways, so they

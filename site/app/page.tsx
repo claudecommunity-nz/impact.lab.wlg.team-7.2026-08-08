@@ -10,7 +10,10 @@ const formattedDate = new Intl.DateTimeFormat("en-NZ", {
 
 export default function Home() {
   return (
-    <main className="watch-shell">
+    <div className="watch-shell">
+      <a className="skip-link" href="#content">
+        Skip to main content
+      </a>
       <header className="watch-header">
         <a className="watch-brand" href="#top" aria-label="Murmur home">
           <span className="brand-mark" aria-hidden="true">M05</span>
@@ -25,6 +28,7 @@ export default function Home() {
         </div>
       </header>
 
+      <main id="content">
       <section className="watch-intro" id="top">
         <div>
           <p className="eyebrow">Problem 05 · anonymous fixed sensors</p>
@@ -93,6 +97,7 @@ export default function Home() {
           ))}
         </div>
       </section>
+      </main>
 
       <footer>
         <strong>Not live emergency information.</strong> In an emergency, call 111.
@@ -100,6 +105,6 @@ export default function Home() {
         from the NZTA Traffic and Travel API, images © NZTA. Prototype for
         investigation only.
       </footer>
-    </main>
+    </div>
   );
 }

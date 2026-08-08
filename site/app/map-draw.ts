@@ -89,7 +89,7 @@ export function drawCoverage(
   project: Projector,
   coverage: LineFeature[],
 ) {
-  context.strokeStyle = "rgba(70, 111, 124, 0.22)";
+  context.strokeStyle = "rgba(28, 28, 26, 0.2)";
   context.lineWidth = 1;
   for (const feature of coverage) {
     const [start, end] = feature.geometry.coordinates.map(project);
@@ -116,14 +116,14 @@ export function drawSignals(
       : rawEnd;
     const isSelected = feature.id === selectedId;
     const decreasing = feature.properties.change_direction === "decrease";
-    context.strokeStyle = decreasing ? "#C75845" : "#D78916";
+    context.strokeStyle = decreasing ? "#B3261E" : "#8A5A00";
     context.lineWidth = isSelected ? 6 : 3.5;
     context.lineCap = "round";
     context.beginPath();
     context.moveTo(...start);
     context.lineTo(...end);
     context.stroke();
-    context.fillStyle = isSelected ? "#102A33" : context.strokeStyle;
+    context.fillStyle = isSelected ? "#000000" : context.strokeStyle;
     context.beginPath();
     context.arc(start[0], start[1], isSelected ? 5 : 3.5, 0, Math.PI * 2);
     context.fill();
@@ -142,17 +142,17 @@ export function drawCameras(
     const isSelected = feature.id === selectedId;
     const radius = isSelected ? 8 : 5;
 
-    context.fillStyle = feature.properties.offline ? "#8AA0A6" : "#2D7A68";
+    context.fillStyle = feature.properties.offline ? "#6F6F69" : "#0B6B3A";
     context.beginPath();
     context.arc(x, y, radius, 0, Math.PI * 2);
     context.fill();
 
-    context.strokeStyle = "#F8FBFB";
+    context.strokeStyle = "#FFFFFF";
     context.lineWidth = 2;
     context.stroke();
 
     if (isSelected) {
-      context.strokeStyle = "#102A33";
+      context.strokeStyle = "#000000";
       context.lineWidth = 2;
       context.beginPath();
       context.arc(x, y, radius + 5, 0, Math.PI * 2);
