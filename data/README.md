@@ -12,6 +12,7 @@ republishing anything derived.
 | [`planes/`](planes/) | **Ingester ready** | Wellington Airport arrivals/departures — cancellations, diversions, delays as an air-access disruption signal |
 | [`google_traffic/`](google_traffic/) | **Stub** | Road congestion / travel-time signal (Google Routes API) |
 | [`buses_trains/`](buses_trains/) | **Built** (replay + anomalies) | Metlink PT — 9 detectors over an April-2026 timetable replay; live GTFS-RT poller stubbed |
+| [`combined/`](combined/) | **Built** (conformed) | Cross-source conformed anomaly layer — per ~1 km cell × hour hit counts + corroboration; feeds the combined app |
 
 The shared idea: build a per-source baseline of "usual" movement, compare recent
 activity against it, and flag significant deviations onto the common operating
