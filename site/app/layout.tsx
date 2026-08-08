@@ -11,7 +11,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Murmur",
   description,
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+  icons: {
+    icon: "/murmur-favicon.svg",
+    shortcut: "/murmur-favicon.svg",
+    apple: "/murmur-favicon-512.png",
+  },
   openGraph: {
     title: "Murmur",
     description,

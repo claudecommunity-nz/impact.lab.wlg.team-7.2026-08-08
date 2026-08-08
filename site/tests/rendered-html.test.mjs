@@ -23,6 +23,10 @@ test("server-renders the movement investigation surface with truthful batch stat
 
   assert.ok(html.includes("<title>Murmur</title>"));
   assert.match(html, /heartbeat and detecting irregularities/);
+  // The real brand assets, not the starter placeholders.
+  assert.ok(html.includes("/murmur-logo.svg"));
+  assert.ok(html.includes("/murmur-favicon.svg"));
+  assert.doesNotMatch(html, /brand-mark|>M05</);
   assert.ok(
     html.includes(
       '<meta property="og:image" content="http://localhost:3000/og-card.png"',

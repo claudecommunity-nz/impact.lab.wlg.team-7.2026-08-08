@@ -10,11 +10,9 @@ export function SiteHeader() {
   return (
     <header className="watch-header">
       <Link className="watch-brand" href="/" aria-label="Murmur home">
-        <span className="brand-mark" aria-hidden="true">M05</span>
-        <span>
-          <strong>Murmur</strong>
-          <small>Measuring the city’s heartbeat and detecting irregularities</small>
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="brand-logo" src="/murmur-logo.svg" alt="Murmur" />
+        <small>Measuring the city’s heartbeat and detecting irregularities</small>
       </Link>
       <div className="batch-status" aria-label="Publisher mode: batch replay">
         <span className="status-beacon" aria-hidden="true" />
