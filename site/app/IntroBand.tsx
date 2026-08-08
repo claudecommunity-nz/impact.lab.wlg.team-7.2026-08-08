@@ -95,15 +95,29 @@ export default function IntroBand({
               </>
             )}
           </p>
-          <button type="button" className="intro-toggle" onClick={toggle} aria-expanded={false}>
-            Show the brief
+          <button
+            type="button"
+            className="intro-toggle"
+            onClick={toggle}
+            aria-expanded={false}
+            aria-label="Show the brief"
+            title="Show the brief"
+          >
+            <span aria-hidden="true">▾</span>
           </button>
         </div>
       ) : (
         <>
           <div className="intro-bar">
-            <button type="button" className="intro-toggle" onClick={toggle} aria-expanded>
-              Hide the brief
+            <button
+              type="button"
+              className="intro-toggle"
+              onClick={toggle}
+              aria-expanded
+              aria-label="Hide the brief"
+              title="Hide the brief"
+            >
+              <span aria-hidden="true">▴</span>
             </button>
           </div>
           {children}

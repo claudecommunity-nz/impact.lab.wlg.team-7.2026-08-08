@@ -149,7 +149,7 @@ export default function AgentChat() {
           {open ? "×" : "✦"}
         </span>
         <span className="visually-hidden">
-          {open ? "Close the data agent" : "Ask the data agent"}
+          {open ? "Close the Murmur agent" : "Ask the Murmur agent"}
         </span>
       </button>
 
@@ -157,11 +157,11 @@ export default function AgentChat() {
         <section
           className={`agent-panel ${maximised ? "max" : ""}`}
           id="agent-panel"
-          aria-label="Ask the data agent"
+          aria-label="Ask the Murmur agent"
         >
           <header className="agent-panel-head">
             <div>
-              <p className="eyebrow">Data agent</p>
+              <p className="eyebrow">Murmur agent</p>
               <h2>Ask about this operating picture</h2>
             </div>
             <div className="agent-panel-actions">
@@ -224,7 +224,7 @@ export default function AgentChat() {
             }}
           >
             <label className="visually-hidden" htmlFor="agent-input">
-              Ask the data agent a question
+              Ask the Murmur agent a question
             </label>
             <input
               id="agent-input"

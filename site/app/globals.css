@@ -185,10 +185,11 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .intro-strip strong { font-weight: 700; font-variant-numeric: tabular-nums; }
 .intro-strip .intro-toggle { margin-left: auto; }
 .intro-toggle {
-  min-height: var(--touch-min); padding: 0 var(--space-4);
+  display: grid; place-items: center;
+  width: var(--touch-min); min-height: var(--touch-min); padding: 0;
   border: 1px solid var(--wcc-black); border-radius: var(--radius-md);
   background: transparent; color: var(--wcc-black);
-  font-size: 12px; font-weight: 700; cursor: pointer;
+  font-size: var(--text-body-size); font-weight: 700; line-height: 1; cursor: pointer;
   transition: background-color var(--dur-base) var(--ease-standard), color var(--dur-base) var(--ease-standard);
 }
 .intro-toggle:hover { background: var(--wcc-black); color: var(--wcc-yellow); }
@@ -237,12 +238,28 @@ h3 { font-size: var(--text-h3); }
   margin-inline: auto;
   padding-inline: var(--container-pad);
 }
+/* Investigate on the left, map on the right. The evidence track animates from
+ * its full width to zero, so hiding it slides rather than snaps and the canvas
+ * grows with it — the ResizeObserver redraws on every frame of the transition. */
 .investigation-frame {
+  --evidence-width: 420px;
   margin: var(--space-6) 0 var(--space-9);
-  min-height: 690px; display: grid; grid-template-columns: minmax(0, 1fr) 360px;
+  min-height: 690px; display: grid;
+  grid-template-columns: var(--evidence-width) minmax(0, 1fr);
   background: var(--surface-page); border: 1px solid var(--border-hairline);
+  transition: grid-template-columns var(--dur-base) var(--ease-standard);
 }
-.map-column { min-width: 0; padding: var(--space-5); border-right: 1px solid var(--border-hairline); display: flex; flex-direction: column; }
+.investigation-frame.evidence-closed { grid-template-columns: 0 minmax(0, 1fr); }
+.map-column { min-width: 0; padding: var(--space-5); display: flex; flex-direction: column; }
+.evidence-toggle {
+  align-self: flex-end; display: grid; place-items: center;
+  width: var(--touch-min); min-height: var(--touch-min);
+  border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
+  background: var(--surface-page); color: var(--wcc-grey-700);
+  font-size: var(--text-h4); font-weight: 700; line-height: 1; cursor: pointer;
+  transition: color var(--dur-base) var(--ease-standard), border-color var(--dur-base) var(--ease-standard);
+}
+.evidence-toggle:hover { color: var(--wcc-black); border-color: var(--wcc-black); }
 .map-toolbar { display: flex; justify-content: space-between; align-items: end; gap: var(--space-5); margin-bottom: var(--space-4); }
 .toolbar-controls { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2); }
 .layer-toggles { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-1); }
@@ -344,7 +361,23 @@ h3 { font-size: var(--text-h3); }
 .map-message.error { color: var(--wcc-error); }
 .map-caption { margin: var(--space-3) 0 0; color: var(--wcc-grey-700); font-size: var(--text-small); }
 
-.evidence-column { min-height: 0; display: flex; flex-direction: column; background: var(--surface-alt); }
+.evidence-column {
+  order: -1; /* left of the map, while the DOM keeps the map first */
+  min-width: 0; min-height: 0; overflow: hidden;
+  border-right: 1px solid var(--border-hairline); background: var(--surface-alt);
+}
+/* The inner column keeps its width so the panel slides out instead of the text
+ * reflowing on every frame. */
+.evidence-inner {
+  width: var(--evidence-width); height: 100%; min-height: 0;
+  display: flex; flex-direction: column;
+}
+/* Visibility flips only once the slide has finished, which also takes the
+ * hidden controls out of the tab order and the accessibility tree. */
+.investigation-frame.evidence-closed .evidence-column {
+  visibility: hidden; border-right-color: transparent;
+  transition: visibility 0s linear var(--dur-base);
+}
 /* The system's one yellow top rule on this page. */
 .selected-evidence { padding: var(--space-5); border-top: 4px solid var(--wcc-yellow); border-bottom: 1px solid var(--border-hairline); }
 .evidence-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); color: var(--wcc-grey-700); font-size: var(--text-small); font-weight: 700; }
@@ -391,7 +424,7 @@ h3 { font-size: var(--text-h3); }
 }
 .frame-refresh:hover { background: var(--wcc-grey-900); }
 .camera-link { display: inline-block; margin: var(--space-4) 0; }
-.signal-list { padding: var(--space-2); overflow-y: auto; max-height: 380px; }
+.signal-list { flex: 1; padding: var(--space-2); overflow-y: auto; max-height: 460px; }
 .list-group {
   margin: 0; padding: var(--space-3) var(--space-3) var(--space-1);
   color: var(--wcc-grey-700); font-size: 12px; font-weight: 700;
@@ -462,17 +495,16 @@ footer strong { color: var(--surface-page); }
   transition: width var(--dur-base) var(--ease-standard);
 }
 .app-sidebar.collapsed { width: 64px; }
+/* Icon-only, like every collapse control on this surface; the words live in
+ * the title tooltip and the visually-hidden text. */
 .nav-toggle {
-  display: flex; align-items: center; gap: var(--space-2);
-  min-height: var(--touch-min); padding: 0 var(--space-3);
+  display: grid; place-items: center;
+  width: var(--touch-min); min-height: var(--touch-min);
   border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
   background: var(--surface-page); color: var(--wcc-grey-700); cursor: pointer;
-  font-size: var(--text-small); font-weight: 700;
 }
 .nav-toggle:hover { color: var(--wcc-black); border-color: var(--wcc-black); }
 .nav-toggle-glyph { font-size: var(--text-h4); line-height: 1; }
-.app-sidebar.collapsed .nav-toggle { justify-content: center; padding: 0; }
-.app-sidebar.collapsed .nav-toggle-label { display: none; }
 .nav-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
 .nav-items a, .nav-agent {
   width: 100%; display: flex; align-items: center; gap: var(--space-3);
@@ -700,8 +732,14 @@ footer strong { color: var(--surface-page); }
 @media (max-width: 1024px) {
   .config-grid, .settings-form { grid-template-columns: 1fr; }
   .watch-intro, .handoff-section { grid-template-columns: 1fr; }
-  .investigation-frame { grid-template-columns: 1fr; }
+  /* Stacked, there is no track to animate: the map leads and the panel simply
+     goes away when it is closed. */
+  .investigation-frame,
+  .investigation-frame.evidence-closed { grid-template-columns: 1fr; }
+  .investigation-frame.evidence-closed .evidence-column { display: none; }
   .map-column { border-right: 0; border-bottom: 1px solid var(--border-hairline); }
+  .evidence-column { order: 0; border-right: 0; }
+  .evidence-inner { width: auto; }
   .signal-list { max-height: 280px; }
   .limit-grid { grid-template-columns: repeat(2, 1fr); }
   .limit-grid p:nth-child(odd) { border-left: 0; padding-left: 0; }

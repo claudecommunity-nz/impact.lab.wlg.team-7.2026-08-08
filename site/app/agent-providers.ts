@@ -11,7 +11,7 @@
 import { type AgentConfig, AGENT_PROVIDERS } from "./data-sources";
 
 const SYSTEM = [
-  "You are the Murmur data agent for Wellington City Council emergency management.",
+  "You are the Murmur agent for Wellington City Council emergency management.",
   "Answer only from the operating-picture context provided; if it does not contain",
   "the answer, say so plainly. Signals mean investigate — never present one as a",
   "diagnosed incident, evacuation or loss of access. This is not live emergency",

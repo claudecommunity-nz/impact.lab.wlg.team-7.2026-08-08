@@ -7,7 +7,10 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
+
+import { createFlagStore } from "./flag-store";
 
 import {
   type CameraCollection,
@@ -47,6 +50,10 @@ type Hover = { kind: Focus; id: string; left: number; top: number; above: boolea
 const POPUP_WIDTH = 248;
 const HOVER_REFRESH_MS = 15_000;
 const TRANSIT_LIST_LIMIT = 30;
+
+/* The evidence column slides away rather than disappearing, so the map can grow
+ * to the full frame when someone is scanning rather than investigating. */
+const evidenceStore = createFlagStore("murmur.evidence.open", true);
 
 const LAYERS: { id: LayerId; label: string; detail: string }[] = [
   { id: "signals", label: "Movement signals", detail: "WCC countlines · batch replay" },
@@ -89,6 +96,12 @@ export default function MovementCanvas() {
   // latest draw closure without re-running an effect.
   const drawRef = useRef<() => void>(() => {});
   const dragRef = useRef<{ x: number; y: number; moved: boolean } | null>(null);
+  const evidenceOpen =
+    useSyncExternalStore(
+      evidenceStore.subscribe,
+      evidenceStore.snapshot,
+      evidenceStore.serverSnapshot,
+    ) === "1";
 
   const stageSize = useCallback(() => {
     const rect = canvasRef.current?.getBoundingClientRect();
@@ -382,7 +395,10 @@ export default function MovementCanvas() {
 
   return (
     <div className="investigation-shell">
-      <section className="investigation-frame" aria-labelledby="map-heading">
+      <section
+        className={`investigation-frame ${evidenceOpen ? "" : "evidence-closed"}`}
+        aria-labelledby="map-heading"
+      >
         <div className="map-column">
           <div className="map-toolbar">
             <div>
@@ -390,6 +406,17 @@ export default function MovementCanvas() {
               <h2 id="map-heading">One map, every source</h2>
             </div>
             <div className="toolbar-controls">
+              <button
+                type="button"
+                className="evidence-toggle"
+                onClick={() => evidenceStore.toggle(evidenceOpen)}
+                aria-expanded={evidenceOpen}
+                aria-controls="evidence-panel"
+                aria-label={evidenceOpen ? "Hide investigate panel" : "Show investigate panel"}
+                title={evidenceOpen ? "Hide investigate panel" : "Show investigate panel"}
+              >
+                <span aria-hidden="true">{evidenceOpen ? "«" : "»"}</span>
+              </button>
               <div className="layer-toggles" role="group" aria-label="Map layers">
                 {LAYERS.map((entry) => (
                   <button
@@ -551,8 +578,11 @@ export default function MovementCanvas() {
           </p>
         </div>
 
+        {/* Sits left of the map via CSS `order`; the DOM keeps the map first so
+            the primary content is still what a screen reader reaches first. */}
         <aside
           className="evidence-column"
+          id="evidence-panel"
           aria-label={
             focus === "camera"
               ? "Camera evidence"
@@ -561,6 +591,7 @@ export default function MovementCanvas() {
                 : "Signal evidence"
           }
         >
+          <div className="evidence-inner">
           {focus === "camera" ? (
             selectedCamera ? (
               <div className="selected-evidence">
@@ -808,6 +839,7 @@ export default function MovementCanvas() {
                 </em>
               </button>
             ))}
+          </div>
           </div>
         </aside>
       </section>

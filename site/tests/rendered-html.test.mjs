@@ -177,7 +177,7 @@ test("carries a hideable sidebar and the agent on every route", async () => {
     // The rail can be put away, and says which state it is in.
     assert.match(html, /Hide the navigator|Show the navigator/);
     // The agent is reachable from anywhere, not just the dashboard.
-    assert.match(html, /Ask the data agent/);
+    assert.match(html, /Ask the Murmur agent/);
     assert.match(html, /aria-controls="agent-panel"/);
     // Chrome that must never drop off a route.
     assert.match(html, /Batch replay/);
@@ -194,6 +194,18 @@ test("lets the dashboard brief be folded away", async () => {
   assert.match(html, /aria-expanded="true"/);
   // Folded, the strip is what remains: it must not need the hero to make sense.
   assert.doesNotMatch(html, /Show the brief/);
+});
+
+test("puts the investigate panel beside the map and lets it slide away", async () => {
+  const html = await render("/").then((response) => response.text());
+
+  // The toggle owns the panel, and the panel starts open.
+  assert.match(html, /aria-controls="evidence-panel"/);
+  assert.match(html, /id="evidence-panel"/);
+  assert.match(html, /Hide investigate panel/);
+  assert.doesNotMatch(html, /Show investigate panel/);
+  // Still one canvas and one projection after the layout swap.
+  assert.equal(html.match(/<canvas/g)?.length, 1);
 });
 
 test("keeps source settings off the dashboard and on their own route", async () => {

@@ -132,7 +132,6 @@ export default function SideNav() {
         <span className="nav-toggle-glyph" aria-hidden="true">
           {collapsed ? "»" : "«"}
         </span>
-        <span className="nav-toggle-label">Hide</span>
         <span className="visually-hidden">
           {collapsed ? "Show the navigator" : "Hide the navigator"}
         </span>
@@ -160,7 +159,7 @@ export default function SideNav() {
             type="button"
             className="nav-agent"
             onClick={() => window.dispatchEvent(new CustomEvent(OPEN_AGENT_EVENT))}
-            title={collapsed ? "Ask the data agent" : undefined}
+            title={collapsed ? "Ask the Murmur agent" : undefined}
           >
             <span className="nav-glyph">{AgentGlyph}</span>
             <span className="nav-copy">
