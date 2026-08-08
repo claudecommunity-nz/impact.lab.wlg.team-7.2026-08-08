@@ -406,17 +406,6 @@ export default function MovementCanvas() {
               <h2 id="map-heading">One map, every source</h2>
             </div>
             <div className="toolbar-controls">
-              <button
-                type="button"
-                className="evidence-toggle"
-                onClick={() => evidenceStore.toggle(evidenceOpen)}
-                aria-expanded={evidenceOpen}
-                aria-controls="evidence-panel"
-                aria-label={evidenceOpen ? "Hide investigate panel" : "Show investigate panel"}
-                title={evidenceOpen ? "Hide investigate panel" : "Show investigate panel"}
-              >
-                <span aria-hidden="true">{evidenceOpen ? "«" : "»"}</span>
-              </button>
               <div className="layer-toggles" role="group" aria-label="Map layers">
                 {LAYERS.map((entry) => (
                   <button
@@ -464,6 +453,17 @@ export default function MovementCanvas() {
               onPointerCancel={() => { dragRef.current = null; }}
               onPointerLeave={() => setHover(null)}
             />
+            <button
+              type="button"
+              className="evidence-toggle"
+              onClick={() => evidenceStore.toggle(evidenceOpen)}
+              aria-expanded={evidenceOpen}
+              aria-controls="evidence-panel"
+              aria-label={evidenceOpen ? "Hide investigate panel" : "Show investigate panel"}
+              title={evidenceOpen ? "Hide investigate panel" : "Show investigate panel"}
+            >
+              <span aria-hidden="true">{evidenceOpen ? "«" : "»"}</span>
+            </button>
             <div className="map-controls">
               <button
                 type="button"
