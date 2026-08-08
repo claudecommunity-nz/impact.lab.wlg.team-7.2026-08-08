@@ -25,11 +25,9 @@ export default function Home() {
           <p className="eyebrow">Problem 05 · anonymous fixed sensors</p>
           <h1>Movement changes worth investigating</h1>
           <p className="intro-copy">
-            Hourly pedestrian and vehicle counts compared with the same weekday and
-            hour over the prior 12 weeks. Signals invite investigation; they do not
-            diagnose an incident, evacuation, or loss of access. Every source lands
-            on one map: WCC countlines, NZTA traffic cameras and Metlink public
-            transport are layers you switch on and off over the same frame.
+            Hourly counts compared with the same weekday and hour over the prior
+            12 weeks. Signals mean investigate — not a diagnosed incident. WCC
+            countlines, NZTA cameras and Metlink are layers on one map.
           </p>
         </div>
         <dl className="snapshot-facts" aria-label="Snapshot summary">
@@ -59,10 +57,9 @@ export default function Home() {
           <p className="eyebrow">Shared operating picture</p>
           <h2 id="handoff-heading">The map is a view. The feed is the product.</h2>
           <p>
-            Each signal is WGS84 GeoJSON with observed and expected counts, robust
-            score, sample size, data age, confidence, attribution, and limitations.
-            Every added source ships the same way: the NZTA camera layer is another
-            GeoJSON file on the same projection, with its own attribution and limits.
+            Every source ships as WGS84 GeoJSON — counts, robust score, confidence,
+            attribution and limitations included — ready for the shared common
+            operating picture.
           </p>
         </div>
         <div className="endpoint-list">

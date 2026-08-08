@@ -402,7 +402,6 @@ export default function MovementCanvas() {
         <div className="map-column">
           <div className="map-toolbar">
             <div>
-              <p className="eyebrow">12:00 · Thursday 6 August 2026 · batch replay + live frames</p>
               <h2 id="map-heading">One map, every source</h2>
             </div>
             <div className="toolbar-controls">
@@ -570,11 +569,9 @@ export default function MovementCanvas() {
             {error ? <p className="map-message error" role="alert">{error}</p> : null}
           </div>
           <p className="map-caption">
-            Countline geometry is the WCC sensor line itself — it does not imply the whole
-            street or suburb changed. Person and car icons split the signals by mode. Camera
-            icons are NZTA state-highway cameras: hover one for its live frame. Bus icons are
-            Metlink anomaly hotspots from a labelled synthetic April 2026 replay. Drag to
-            pan, scroll or use + and − to zoom.
+            A signal marks the sensor line itself, not the whole street. Hover a camera for
+            its live frame; bus icons are a labelled synthetic Metlink replay. Drag to pan,
+            scroll or use + and − to zoom.
           </p>
         </div>
 
