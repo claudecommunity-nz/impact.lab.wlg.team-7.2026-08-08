@@ -1,3 +1,4 @@
+import IntroBand from "./IntroBand";
 import MovementCanvas from "./MovementCanvas";
 import { SiteFooter, SiteHeader } from "./SiteChrome";
 import health from "../public/cop/v1/movement-health.json";
@@ -18,7 +19,7 @@ export default function Home() {
       <SiteHeader />
 
       <main id="content">
-      <section className="brand-band" id="top">
+      <IntroBand dataAsOf={formattedDate}>
       <div className="watch-intro">
         <div>
           <p className="eyebrow">Problem 05 · anonymous fixed sensors</p>
@@ -49,7 +50,7 @@ export default function Home() {
           </div>
         </dl>
       </div>
-      </section>
+      </IntroBand>
 
       <MovementCanvas />
 

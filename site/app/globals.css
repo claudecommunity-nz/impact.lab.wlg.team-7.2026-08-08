@@ -168,6 +168,32 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 
 /* Full-bleed brand band, wellington.govt.nz-style: black text on yellow. */
 .brand-band { background: var(--surface-brand); color: var(--wcc-black); }
+/* Folded away, the band keeps only what decides whether to trust the picture:
+ * how many sources are wired in, and when one last answered. */
+.intro-bar,
+.intro-strip {
+  max-width: calc(var(--container-max) + 2 * var(--container-pad));
+  margin-inline: auto;
+  padding: var(--space-2) var(--container-pad);
+}
+.intro-bar { display: flex; justify-content: flex-end; padding-bottom: 0; }
+.intro-strip {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5);
+  font-size: var(--text-small);
+}
+.intro-strip p { margin: 0; }
+.intro-strip strong { font-weight: 700; font-variant-numeric: tabular-nums; }
+.intro-strip .intro-toggle { margin-left: auto; }
+.intro-toggle {
+  min-height: var(--touch-min); padding: 0 var(--space-4);
+  border: 1px solid var(--wcc-black); border-radius: var(--radius-md);
+  background: transparent; color: var(--wcc-black);
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: background-color var(--dur-base) var(--ease-standard), color var(--dur-base) var(--ease-standard);
+}
+.intro-toggle:hover { background: var(--wcc-black); color: var(--wcc-yellow); }
+/* The toggle row takes the space the hero would have used, not extra space. */
+.intro-bar + .watch-intro { padding-top: var(--space-5); }
 .watch-intro {
   max-width: calc(var(--container-max) + 2 * var(--container-pad));
   margin-inline: auto;

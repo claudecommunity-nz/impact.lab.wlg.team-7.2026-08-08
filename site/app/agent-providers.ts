@@ -157,7 +157,7 @@ async function askGoogle(question: string, context: string, agent: AgentConfig) 
  * a plain-text body all work, so an operator can point this at their own
  * agent without writing an adapter.
  */
-async function askCustom(question: string, context: string, agent: AgentConfig) {
+async function askCustom(question: string, context: unknown, agent: AgentConfig) {
   const response = await fetch(agent.endpoint.trim(), {
     method: "POST",
     headers: {
@@ -184,28 +184,32 @@ async function askCustom(question: string, context: string, agent: AgentConfig) 
 /** Route one question to the configured provider. Throws on any failure. */
 export async function askModel(
   question: string,
-  context: string,
+  context: unknown,
   agent: AgentConfig,
 ): Promise<string> {
+  // Hosted providers take the brief as prompt text; a custom endpoint keeps the
+  // structured object, so an operator's own agent can read fields rather than
+  // re-parse a string.
+  const text = typeof context === "string" ? context : JSON.stringify(context);
   switch (agent.provider) {
     case "anthropic":
-      return askAnthropic(question, context, agent);
+      return askAnthropic(question, text, agent);
     case "openai":
       return askChatCompletions(
         "https://api.openai.com/v1/chat/completions",
         question,
-        context,
+        text,
         agent,
       );
     case "deepseek":
       return askChatCompletions(
         "https://api.deepseek.com/chat/completions",
         question,
-        context,
+        text,
         agent,
       );
     case "google":
-      return askGoogle(question, context, agent);
+      return askGoogle(question, text, agent);
     case "custom":
       return askCustom(question, context, agent);
     default:
