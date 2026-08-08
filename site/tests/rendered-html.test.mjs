@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render() {
+async function render(path = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
+    new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -160,6 +160,65 @@ test("ships a camera layer on the same frame with its own attribution and limits
     assert.match(feature.properties.image_url, /^https:\/\/www\.trafficnz\.info\/camera\//);
     assert.ok(feature.properties.limitations.length > 0);
   }
+});
+
+test("carries a hideable sidebar and the agent on every route", async () => {
+  for (const path of ["/", "/settings"]) {
+    const response = await render(path);
+    assert.equal(response.status, 200, `${path} should render`);
+    const html = await response.text();
+
+    assert.match(html, /aria-label="Murmur sections"/, `${path} should ship the navigator`);
+    assert.match(html, /Operating picture/);
+    assert.match(html, /Data sources/);
+    assert.match(html, /Integrations/);
+    // The rail can be put away, and says which state it is in.
+    assert.match(html, /Hide the navigator|Show the navigator/);
+    // The agent is reachable from anywhere, not just the dashboard.
+    assert.match(html, /Ask the data agent/);
+    assert.match(html, /aria-controls="agent-panel"/);
+    // Chrome that must never drop off a route.
+    assert.match(html, /Batch replay/);
+    assert.match(html, /Not live emergency information/);
+  }
+});
+
+test("keeps source settings off the dashboard and on their own route", async () => {
+  const [dashboard, settings] = await Promise.all([
+    render("/").then((response) => response.text()),
+    render("/settings").then((response) => response.text()),
+  ]);
+
+  // The operating picture stays an operating picture.
+  assert.doesNotMatch(dashboard, /Add a source/);
+  assert.doesNotMatch(dashboard, /Agent endpoint/);
+  assert.doesNotMatch(dashboard, /A2A agent card/);
+
+  assert.match(settings, /Data sources and integrations/);
+  assert.match(settings, /Last sync/);
+  assert.match(settings, /Test all/);
+  assert.match(settings, /Add a source/);
+  assert.match(settings, /id="integrations"/);
+  assert.match(settings, /MCP server config/);
+  assert.match(settings, /A2A agent card/);
+  assert.match(settings, /Agent endpoint/);
+  // Every built-in source is listed with a retry control.
+  for (const url of [
+    "/cop/v1/movement-signals.geojson",
+    "/cop/v1/countline-coverage.geojson",
+    "/cop/v1/traffic-cameras.geojson",
+    "/cop/v1/transit-anomalies.geojson",
+    "/cop/v1/movement-health.json",
+  ]) {
+    assert.ok(settings.includes(url), `${url} should be listed as a source`);
+  }
+  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 5);
+  // Four export formats are offered per source.
+  for (const format of ["GeoJSON", "JSON", "CSV", "NDJSON"]) {
+    assert.ok(settings.includes(format), `${format} should be an export option`);
+  }
+  // Settings never adds a second map.
+  assert.equal(settings.match(/<canvas/g), null);
 });
 
 test("removes the disposable starter preview and its dependency", async () => {

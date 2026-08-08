@@ -1,4 +1,5 @@
 import MovementCanvas from "./MovementCanvas";
+import { SiteFooter, SiteHeader } from "./SiteChrome";
 import health from "../public/cop/v1/movement-health.json";
 
 const formattedDate = new Intl.DateTimeFormat("en-NZ", {
@@ -14,19 +15,7 @@ export default function Home() {
       <a className="skip-link" href="#content">
         Skip to main content
       </a>
-      <header className="watch-header">
-        <a className="watch-brand" href="#top" aria-label="Murmur home">
-          <span className="brand-mark" aria-hidden="true">M05</span>
-          <span>
-            <strong>Murmur</strong>
-            <small>Measuring the city’s heartbeat and detecting irregularities</small>
-          </span>
-        </a>
-        <div className="batch-status" aria-label="Publisher mode: batch replay">
-          <span className="status-beacon" aria-hidden="true" />
-          Batch replay
-        </div>
-      </header>
+      <SiteHeader />
 
       <main id="content">
       <section className="brand-band" id="top">
@@ -106,13 +95,7 @@ export default function Home() {
       </section>
       </main>
 
-      <footer>
-        <strong>Not live emergency information.</strong> In an emergency, call 111.
-        Data: Wellington City Council Transport Sensors; camera positions and frames
-        from the NZTA Traffic and Travel API, images © NZTA; Metlink GTFS timetable
-        © Greater Wellington Regional Council, with public-transport running a
-        labelled synthetic replay. Prototype for investigation only.
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

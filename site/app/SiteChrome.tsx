@@ -1,0 +1,37 @@
+/**
+ * The header and footer shared by every route. Both are server components: the
+ * batch-replay chip and the attribution block are contractual copy, so they
+ * render in the HTML rather than waiting on the client.
+ */
+
+import Link from "next/link";
+
+export function SiteHeader() {
+  return (
+    <header className="watch-header">
+      <Link className="watch-brand" href="/" aria-label="Murmur home">
+        <span className="brand-mark" aria-hidden="true">M05</span>
+        <span>
+          <strong>Murmur</strong>
+          <small>Measuring the city’s heartbeat and detecting irregularities</small>
+        </span>
+      </Link>
+      <div className="batch-status" aria-label="Publisher mode: batch replay">
+        <span className="status-beacon" aria-hidden="true" />
+        Batch replay
+      </div>
+    </header>
+  );
+}
+
+export function SiteFooter() {
+  return (
+    <footer>
+      <strong>Not live emergency information.</strong> In an emergency, call 111.
+      Data: Wellington City Council Transport Sensors; camera positions and frames
+      from the NZTA Traffic and Travel API, images © NZTA; Metlink GTFS timetable
+      © Greater Wellington Regional Council, with public-transport running a
+      labelled synthetic replay. Prototype for investigation only.
+    </footer>
+  );
+}

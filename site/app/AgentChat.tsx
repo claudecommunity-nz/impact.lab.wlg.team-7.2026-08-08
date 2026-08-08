@@ -1,0 +1,254 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import {
+  type Brief,
+  EMPTY_BRIEF,
+  SUGGESTED_QUESTIONS,
+  answer,
+  briefContext,
+  loadBrief,
+} from "./agent-brief";
+import { type AgentConfig, loadSettings } from "./data-sources";
+
+type Message = {
+  id: number;
+  role: "you" | "agent";
+  text: string;
+  sources: string[];
+  pending?: boolean;
+};
+
+export const OPEN_AGENT_EVENT = "murmur:open-agent";
+
+const GREETING: Message = {
+  id: 0,
+  role: "agent",
+  text: "I read the published Murmur artifacts and answer from those numbers only. Ask what changed, how reliable it is, or about a street.",
+  sources: [],
+};
+
+/**
+ * Ask a configured endpoint, sending the same brief the local answerer uses.
+ * Response shape is deliberately forgiving: any of `reply`, `text`, `content`
+ * or a plain-text body works, so an operator can point this at their own agent
+ * without writing an adapter.
+ */
+async function askEndpoint(
+  question: string,
+  brief: Brief,
+  agent: AgentConfig,
+): Promise<string> {
+  const response = await fetch(agent.endpoint, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      ...(agent.apiKey ? { authorization: `Bearer ${agent.apiKey}` } : {}),
+    },
+    body: JSON.stringify({
+      question,
+      model: agent.model || undefined,
+      context: briefContext(brief),
+    }),
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`.trim());
+  const body = await response.text();
+  try {
+    const parsed = JSON.parse(body) as Record<string, unknown>;
+    const reply = parsed.reply ?? parsed.text ?? parsed.content ?? parsed.answer;
+    return typeof reply === "string" ? reply : body;
+  } catch {
+    return body;
+  }
+}
+
+export default function AgentChat() {
+  const [open, setOpen] = useState(false);
+  const [brief, setBrief] = useState<Brief>(EMPTY_BRIEF);
+  const [messages, setMessages] = useState<Message[]>([GREETING]);
+  const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [agent, setAgent] = useState<AgentConfig>({ endpoint: "", model: "", apiKey: "" });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const logRef = useRef<HTMLDivElement>(null);
+  const nextId = useRef(1);
+  const loadedRef = useRef(false);
+
+  /**
+   * Opening is the moment the agent needs the world: it re-reads the endpoint
+   * config (settings may have changed on the other route) and loads the
+   * artifacts once, so the map keeps the initial network budget to itself.
+   */
+  const openPanel = useCallback(() => {
+    setOpen(true);
+    setAgent(loadSettings().agent);
+    if (!loadedRef.current) {
+      loadedRef.current = true;
+      loadBrief().then(setBrief);
+    }
+  }, []);
+
+  // The sidebar and anything else can open the chat without prop drilling.
+  useEffect(() => {
+    window.addEventListener(OPEN_AGENT_EVENT, openPanel);
+    return () => window.removeEventListener(OPEN_AGENT_EVENT, openPanel);
+  }, [openPanel]);
+
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  useEffect(() => {
+    const log = logRef.current;
+    if (log) log.scrollTop = log.scrollHeight;
+  }, [messages]);
+
+  const ask = useCallback(
+    async (question: string) => {
+      const trimmed = question.trim();
+      if (!trimmed || busy) return;
+      setDraft("");
+      setBusy(true);
+      const askedId = nextId.current++;
+      const replyId = nextId.current++;
+      setMessages((current) => [
+        ...current,
+        { id: askedId, role: "you", text: trimmed, sources: [] },
+        { id: replyId, role: "agent", text: "Reading the artifacts…", sources: [], pending: true },
+      ]);
+
+      let reply: Message;
+      if (agent.endpoint) {
+        try {
+          reply = { id: replyId, role: "agent", text: await askEndpoint(trimmed, brief, agent), sources: ["configured agent endpoint"] };
+        } catch (error) {
+          const local = answer(trimmed, brief);
+          reply = {
+            id: replyId,
+            role: "agent",
+            text: `The configured agent endpoint failed (${
+              error instanceof Error ? error.message : "unreachable"
+            }). Answering locally instead.\n\n${local.text}`,
+            sources: local.sources,
+          };
+        }
+      } else {
+        reply = { id: replyId, role: "agent", ...answer(trimmed, brief) };
+      }
+
+      setMessages((current) =>
+        current.map((message) => (message.id === replyId ? reply : message)),
+      );
+      setBusy(false);
+      inputRef.current?.focus();
+    },
+    [agent, brief, busy],
+  );
+
+  return (
+    <>
+      <button
+        type="button"
+        className={`agent-fab ${open ? "open" : ""}`}
+        aria-expanded={open}
+        aria-controls="agent-panel"
+        onClick={() => (open ? setOpen(false) : openPanel())}
+      >
+        <span className="agent-fab-glyph" aria-hidden="true">
+          {open ? "×" : "✦"}
+        </span>
+        <span className="visually-hidden">
+          {open ? "Close the data agent" : "Ask the data agent"}
+        </span>
+      </button>
+
+      {open ? (
+        <section className="agent-panel" id="agent-panel" aria-label="Ask the data agent">
+          <header className="agent-panel-head">
+            <div>
+              <p className="eyebrow">Data agent</p>
+              <h2>Ask about this operating picture</h2>
+            </div>
+            <button type="button" onClick={() => setOpen(false)} aria-label="Close the agent">
+              ×
+            </button>
+          </header>
+
+          <p className="agent-provenance">
+            {agent.endpoint
+              ? `Routed to your configured endpoint, with the published artifacts sent as context.`
+              : `Grounded answers assembled from the committed artifacts — ${brief.signals.length} signals, ${brief.coverageCount} countlines, ${brief.cameras.length} cameras, ${brief.transit.length} PT hotspots. No cause inferred.`}
+          </p>
+
+          <div className="agent-log" ref={logRef} role="log" aria-live="polite">
+            {messages.map((message) => (
+              <article key={message.id} className={`agent-message ${message.role}`}>
+                <p className="agent-role">{message.role === "you" ? "You" : "Agent"}</p>
+                <div className={message.pending ? "agent-text pending" : "agent-text"}>
+                  {message.text.split("\n").map((line, index) => (
+                    <p key={index}>{line}</p>
+                  ))}
+                </div>
+                {message.sources.length > 0 ? (
+                  <p className="agent-sources">
+                    {message.sources.map((source) => (
+                      <span key={source}>{source}</span>
+                    ))}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </div>
+
+          {messages.length === 1 ? (
+            <div className="agent-suggestions">
+              {SUGGESTED_QUESTIONS.map((question) => (
+                <button type="button" key={question} onClick={() => ask(question)}>
+                  {question}
+                </button>
+              ))}
+            </div>
+          ) : null}
+
+          <form
+            className="agent-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              ask(draft);
+            }}
+          >
+            <label className="visually-hidden" htmlFor="agent-input">
+              Ask the data agent a question
+            </label>
+            <input
+              id="agent-input"
+              ref={inputRef}
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              placeholder="Which signal dropped the most?"
+              autoComplete="off"
+            />
+            <button type="submit" disabled={busy || draft.trim().length === 0}>
+              {busy ? "…" : "Ask"}
+            </button>
+          </form>
+
+          <p className="agent-footnote">
+            Not live emergency information. In an emergency, call 111. Answers describe
+            published batch data, never an incident.
+          </p>
+        </section>
+      ) : null}
+    </>
+  );
+}
