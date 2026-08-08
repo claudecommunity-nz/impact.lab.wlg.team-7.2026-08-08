@@ -7,6 +7,7 @@
 *.parquet
 raw/
 data/transport_sensors/
+data/wlg_flights/
 
 # Exception: committed derived AGGREGATE data (not raw WCC data) for the anomaly layers
 !data/sensors/anomaly/csv/

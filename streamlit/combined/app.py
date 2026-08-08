@@ -15,6 +15,7 @@ diurnal profile learned from the real sensor counts — flagged as synthetic.
 """
 
 import os
+import time
 from pathlib import Path
 
 import duckdb
@@ -38,7 +39,8 @@ SOURCE_LABEL = {"sensors": "WCC sensors (real)", "metlink": "Metlink PT (synthet
 @st.cache_resource(show_spinner="Loading combined anomaly layer into DuckDB…")
 def get_connection() -> duckdb.DuckDBPyConnection:
     con = duckdb.connect(":memory:")
-    for name in ("anomaly_points", "conformed_hourly", "corroboration_summary", "source_totals"):
+    for name in ("anomaly_points", "conformed_hourly", "corroboration_summary",
+                 "source_totals", "camera_catalogue"):
         path = (CSV_DIR / f"{name}.csv").as_posix()
         con.execute(f"CREATE OR REPLACE VIEW {name} AS SELECT * FROM read_csv_auto('{path}')")
     return con
@@ -99,6 +101,21 @@ def get_corroboration() -> pd.DataFrame:
     return q("SELECT * FROM corroboration_summary ORDER BY sources_hit")
 
 
+@st.cache_data(show_spinner=False)
+def get_cameras() -> pd.DataFrame:
+    return q("SELECT * FROM camera_catalogue ORDER BY CAMERA_ID")
+
+
+@st.cache_data(show_spinner=False)
+def get_points_range(d0, d1, sev_min: int) -> pd.DataFrame:
+    return q("""SELECT source, location, lat, lon,
+                       strftime(event_date, '%Y-%m-%d') AS DAY, event_hour AS HOUR,
+                       any_value(metric) AS metric, sum(hits) AS hits
+                FROM anomaly_points
+                WHERE event_date BETWEEN ? AND ? AND sev_rank >= ? AND lat IS NOT NULL
+                GROUP BY ALL""", [d0, d1, sev_min])
+
+
 # ====================SIDEBAR====================
 def render_sidebar() -> dict:
     st.sidebar.title("🧭 Combined movement anomalies")
@@ -120,12 +137,16 @@ def render_sidebar() -> dict:
 
 # ====================TABS====================
 def render_main_tabs(f: dict) -> None:
-    t_map, t_conf, t_data = st.tabs(
-        ["🗺️ Multi-layer map", "🔀 Conformed report", "📋 Data"])
+    t_map, t_conf, t_live, t_play, t_data = st.tabs(
+        ["🗺️ Multi-layer map", "🔀 Conformed report", "📷 Live Photos", "▶️ Playback", "📋 Data"])
     with t_map:
         render_tab_map(f)
     with t_conf:
         render_tab_conformed(f)
+    with t_live:
+        render_tab_live_photos(f)
+    with t_play:
+        render_tab_playback(f)
     with t_data:
         render_tab_data(f)
 
@@ -185,6 +206,86 @@ def render_tab_conformed(f: dict) -> None:
                  width="stretch", hide_index=True)
 
 
+def render_tab_live_photos(f: dict) -> None:
+    st.header("Live traffic camera photos")
+    st.caption("Current stills from NZTA Wellington traffic cameras (trafficnz.info), fetched "
+               "live by your browser each refresh. © NZ Transport Agency Waka Kotahi.")
+    cams = get_cameras()
+    top = st.columns([3, 1, 1])
+    search = top[0].text_input("Search camera", placeholder="name or id", key="live_search")
+    ncols = top[1].selectbox("Columns", [2, 3, 4], index=1, key="live_cols")
+    if top[2].button("🔄 Refresh", use_container_width=True):
+        st.session_state["photo_nonce"] = st.session_state.get("photo_nonce", 0) + 1
+        st.rerun()
+    nonce = st.session_state.get("photo_nonce", 0)
+
+    df = cams
+    if search:
+        s = search.strip().lower()
+        df = df[df["CAMERA_NAME"].str.lower().str.contains(s, na=False)
+                | df["CAMERA_ID"].astype(str).str.contains(s, na=False)]
+    if df.empty:
+        st.info("No cameras match.")
+        return
+    st.caption(f"{len(df)} cameras · refresh #{nonce}")
+
+    records = df.to_dict("records")
+    for start in range(0, len(records), ncols):
+        row = records[start:start + ncols]
+        cols = st.columns(ncols)
+        for col, rec in zip(cols, row):
+            with col:
+                st.image(f"{rec['IMAGE_URL']}?nonce={nonce}", use_container_width=True)
+                st.caption(f"#{rec['CAMERA_ID']} · {rec['CAMERA_NAME']}")
+
+
+def render_tab_playback(f: dict) -> None:
+    st.header("Playback — anomalies over a 24-hour period")
+    st.caption("Pick a start and end (day + hour) and play through the window; the map animates "
+               "each hour. (Interaction modelled on the Melbourne traffic demo; the data here is "
+               "Wellington, April 2026.)")
+    meta = get_meta()
+    c1, c2, c3, c4 = st.columns(4)
+    sd = c1.date_input("Start day", value=meta["MIN"], min_value=meta["MIN"],
+                       max_value=meta["MAX"], key="pb_sd")
+    sh = c2.selectbox("Start hour", list(range(24)), index=0, key="pb_sh")
+    ed = c3.date_input("End day", value=meta["MIN"], min_value=meta["MIN"],
+                       max_value=meta["MAX"], key="pb_ed")
+    eh = c4.selectbox("End hour", list(range(24)), index=23, key="pb_eh")
+
+    start = pd.Timestamp(sd) + pd.Timedelta(hours=int(sh))
+    end = pd.Timestamp(ed) + pd.Timedelta(hours=int(eh))
+    if end < start:
+        st.warning("End is before start — adjust the range.")
+        return
+    frames = pd.date_range(start, end, freq="h")
+    if len(frames) > 240:
+        st.warning(f"{len(frames)} hours is a lot — showing the first 240.")
+        frames = frames[:240]
+
+    pts = get_points_range(sd, ed, f["sev_min"])
+    speed = st.slider("Seconds per hour", 0.1, 2.0, 0.5, 0.1, key="pb_speed")
+    idx = st.slider("Frame (hour)", 0, len(frames) - 1, 0, key="pb_frame")
+    play = st.button("▶️ Play", type="primary")
+
+    area = st.empty()
+
+    def show(i: int) -> None:
+        ts = frames[i]
+        fr = pts[(pts["DAY"] == ts.strftime("%Y-%m-%d")) & (pts["HOUR"] == ts.hour)]
+        with area.container():
+            st.markdown(f"### {ts:%a %d %b} · {ts.hour:02d}:00 — {len(fr)} points, "
+                        f"{int(fr['hits'].sum()) if not fr.empty else 0} hits")
+            st.pydeck_chart(_points_deck(fr))
+
+    if play:
+        for i in range(idx, len(frames)):
+            show(i)
+            time.sleep(speed)
+    else:
+        show(idx)
+
+
 def render_tab_data(f: dict) -> None:
     st.header("Data")
     st.subheader("Anomaly records per source")
@@ -241,6 +342,27 @@ def render_conformed_map(conf: pd.DataFrame) -> None:
     st.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view, tooltip=tooltip,
                              map_style="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"))
     st.caption("🔴 all 3 sources · 🟠 2 sources · ⚪ 1 source (in this window).")
+
+
+def _points_deck(df: pd.DataFrame) -> pdk.Deck:
+    """Multi-source anomaly map with a FIXED Wellington view (stable across frames)."""
+    layers = []
+    for s, rgb in SOURCE_COLOR.items():
+        sub = df[df["source"] == s]
+        if sub.empty:
+            continue
+        sub = sub.copy()
+        sub["RADIUS"] = 140 + sub["hits"] * 40
+        layers.append(pdk.Layer(
+            "ScatterplotLayer", sub, get_position=["lon", "lat"],
+            get_fill_color=[rgb[0], rgb[1], rgb[2], 210], get_line_color=[255, 255, 255, 160],
+            get_radius="RADIUS", radius_min_pixels=3, radius_max_pixels=30,
+            line_width_min_pixels=1, stroked=True, filled=True, pickable=True))
+    view = pdk.ViewState(latitude=-41.2200, longitude=174.9000, zoom=8.6, pitch=0)
+    tooltip = {"html": "<b>{location}</b><br/>{source} · hits {hits}<br/>{metric}",
+               "style": {"backgroundColor": "#1b2631", "color": "white", "fontSize": "12px"}}
+    return pdk.Deck(layers=layers, initial_view_state=view, tooltip=tooltip,
+                    map_style="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json")
 
 
 # ====================STATIC_METHODS====================
