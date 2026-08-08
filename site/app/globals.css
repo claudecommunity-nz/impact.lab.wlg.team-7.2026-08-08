@@ -155,7 +155,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .watch-brand small { color: var(--wcc-grey-700); font-size: var(--text-small); margin-top: 2px; }
 .brand-mark {
   display: grid; place-items: center; width: 44px; height: 44px;
-  background: var(--wcc-black); color: var(--surface-page);
+  background: var(--wcc-yellow); color: var(--wcc-black);
   font-size: var(--text-small); font-weight: 700;
 }
 .batch-status {
@@ -166,13 +166,20 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 }
 .status-beacon { width: 8px; height: 8px; border-radius: 50%; background: var(--wcc-black); }
 
+/* Full-bleed brand band, wellington.govt.nz-style: black text on yellow. */
+.brand-band { background: var(--surface-brand); color: var(--wcc-black); }
 .watch-intro {
   max-width: calc(var(--container-max) + 2 * var(--container-pad));
   margin-inline: auto;
-  padding: var(--space-8) var(--container-pad) var(--space-6);
+  padding: var(--space-8) var(--container-pad) var(--space-7);
   display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(420px, 0.8fr);
   gap: clamp(var(--space-6), 5vw, var(--space-9)); align-items: end;
 }
+.brand-band .eyebrow { color: var(--wcc-black); }
+.brand-band .intro-copy { color: var(--wcc-grey-900); }
+.brand-band .snapshot-facts dt,
+.brand-band .snapshot-facts span { color: var(--wcc-grey-900); }
+.brand-band .snapshot-facts div + div { border-left-color: rgba(0, 0, 0, 0.28); }
 .eyebrow {
   margin: 0 0 var(--space-2);
   color: var(--wcc-yellow-ink);
@@ -336,6 +343,14 @@ h3 { font-size: var(--text-h3); }
 }
 .handoff-section { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr); gap: clamp(var(--space-6), 7vw, 120px); align-items: end; }
 .handoff-section p:not(.eyebrow) { max-width: 68ch; color: var(--wcc-grey-700); }
+.handoff-section h2::after, .limits-section h2::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 4px;
+  margin-top: var(--space-3);
+  background: var(--wcc-yellow);
+}
 .endpoint-list { border-top: 1px solid var(--wcc-black); }
 .endpoint-list a { display: flex; justify-content: space-between; gap: var(--space-5); padding: var(--space-4) 0; color: var(--wcc-black); text-decoration: none; border-bottom: 1px solid var(--border-hairline); }
 .endpoint-list a:visited { color: var(--wcc-black); }
@@ -346,7 +361,7 @@ h3 { font-size: var(--text-h3); }
 .limit-grid { margin-top: var(--space-6); display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--wcc-black); }
 .limit-grid p { margin: 0; padding: var(--space-4) var(--space-4) 0 0; color: var(--wcc-grey-700); line-height: 1.5; font-size: var(--text-small); }
 .limit-grid p + p { border-left: 1px solid var(--border-hairline); padding-left: var(--space-4); }
-footer { padding: var(--space-5) var(--container-pad); background: var(--surface-inverse); color: var(--wcc-grey-300); font-size: var(--text-small); line-height: 1.5; }
+footer { padding: var(--space-5) var(--container-pad); background: var(--surface-inverse); color: var(--wcc-grey-300); font-size: var(--text-small); line-height: 1.5; border-top: 4px solid var(--wcc-yellow); }
 footer strong { color: var(--surface-page); }
 
 @media (max-width: 1024px) {

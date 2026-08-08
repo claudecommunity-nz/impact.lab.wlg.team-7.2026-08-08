@@ -29,7 +29,8 @@ export default function Home() {
       </header>
 
       <main id="content">
-      <section className="watch-intro" id="top">
+      <section className="brand-band" id="top">
+      <div className="watch-intro">
         <div>
           <p className="eyebrow">Problem 05 · anonymous fixed sensors</p>
           <h1>Movement changes worth investigating</h1>
@@ -57,6 +58,7 @@ export default function Home() {
             <span>Data through {formattedDate}</span>
           </div>
         </dl>
+      </div>
       </section>
 
       <MovementCanvas />
