@@ -4,7 +4,7 @@
 Saturday 8 August 2026 · Waimanga Room, Wellington City Council
 
 **16:30 demo deck** —
-https://docs.google.com/presentation/d/1tNyOVbC6gqecDB2m7Es2TQ7Am-KTfwbQ/edit?slide=id.p1#slide=id.p1
+
 
 ---
 
