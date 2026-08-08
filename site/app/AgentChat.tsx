@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import {
   type Brief,
@@ -11,7 +11,7 @@ import {
   loadBrief,
 } from "./agent-brief";
 import { agentIsConfigured, agentTarget, askModel } from "./agent-providers";
-import { type AgentConfig, DEFAULT_SETTINGS, loadSettings } from "./data-sources";
+import { serverSettingsSnapshot, settingsSnapshot, subscribeSettings } from "./data-sources";
 
 type Message = {
   id: number;
@@ -37,20 +37,24 @@ export default function AgentChat() {
   const [messages, setMessages] = useState<Message[]>([GREETING]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
-  const [agent, setAgent] = useState<AgentConfig>(DEFAULT_SETTINGS.agent);
+  // Live view of the settings store: linking a provider in Agent setup takes
+  // effect immediately, even while this panel is already open.
+  const agent = useSyncExternalStore(
+    subscribeSettings,
+    settingsSnapshot,
+    serverSettingsSnapshot,
+  ).agent;
   const inputRef = useRef<HTMLInputElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const nextId = useRef(1);
   const loadedRef = useRef(false);
 
   /**
-   * Opening is the moment the agent needs the world: it re-reads the endpoint
-   * config (settings may have changed on the other route) and loads the
-   * artifacts once, so the map keeps the initial network budget to itself.
+   * Opening is the moment the agent needs the world: the artifacts load once,
+   * so the map keeps the initial network budget to itself.
    */
   const openPanel = useCallback(() => {
     setOpen(true);
-    setAgent(loadSettings().agent);
     if (!loadedRef.current) {
       loadedRef.current = true;
       loadBrief().then(setBrief);
