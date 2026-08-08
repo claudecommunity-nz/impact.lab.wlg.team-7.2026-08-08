@@ -13,6 +13,8 @@ data/transport_sensors/
 !data/sensors/anomaly/csv/*.csv
 !data/buses_trains/anomaly/csv/
 !data/buses_trains/anomaly/csv/*.csv
+!NZTA/anomaly/csv/
+!NZTA/anomaly/csv/*.csv
 
 # Python
 .venv/
