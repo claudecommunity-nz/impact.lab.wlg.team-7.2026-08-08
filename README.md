@@ -117,6 +117,81 @@ unusual hourly pedestrian and vehicle counts at WCC Transport Sensor countlines,
 and publishes the same evidence as WGS84 GeoJSON for the shared common operating
 picture. The map is a view; **the feed is the product**.
 
+### Why Murmur is different
+
+- **We benchmarked the fancy models and picked the transparent one.** On a
+  chronological train/validation/test split over 864,424 observations (no
+  future leakage, no cherry-picked random split), the matched weekday/hour
+  seasonal median beat every trained regressor on held-out July 2026 data —
+  **MAE 7.37 vs 23.81 for XGBoost**, 32.86 for a linear SVR and 42.02 for
+  ridge regression. The source has no verified incident labels, so a
+  classifier could only learn our own labelling rule back; the model that won
+  is one an EOC operator can check by hand. Full reasoning in
+  [`docs/model-card.md`](docs/model-card.md), machine-readable result in
+  [`artifacts/model-benchmark.json`](artifacts/model-benchmark.json).
+- **Absence is a signal.** Most dashboards silently zero-fill missing data —
+  which reads as "the city went quiet" exactly when a sensor (or the city)
+  broke. Murmur models expected-but-missing groups as first-class
+  **data gaps**, never zeros, and puts the count on the front page.
+- **The truth boundary is in the interface, not a footnote.** Every feature
+  ships with sample size, confidence, publisher cadence, data age and a
+  `limitations` array; the batch is labelled *batch replay*, the synthetic
+  layer says *synthetic* at every appearance, and signals say *investigate* —
+  never *incident*.
+- **Corroboration over aggregation.** Four independent sources share one map
+  and one projection, each with its own icon: a countline drop can be checked
+  against a live NZTA camera frame two clicks away, instead of being averaged
+  into a single opaque score.
+- **Privacy-first AI.** The built-in agent answers only from the published
+  artifacts — it cannot invent a signal. Linking a frontier model
+  (Anthropic, OpenAI, Gemini, DeepSeek) is bring-your-own-key: the key lives
+  in the visitor's browser and goes only to the provider. A test suite scans
+  the repo for key-shaped strings on every build.
+- **No backend to fall over.** The site is static files plus the visitor's
+  browser — five committed GeoJSON/JSON contracts any COP, GIS client or
+  teammate's prototype can consume directly.
+
+### What we found
+
+From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source rows):
+
+- **12 signals worth investigating** out of 2,728 observed
+  countline × class × direction groups — the gates hold precision, so an
+  operator sees a shortlist, not a wall of amber.
+- The two loudest: **Cuba St road (Car S) — 20 observed vs 0 expected
+  (+20.0 z)** and **Vivian St road (Car SE) — 640 observed vs 1,259.5
+  expected (−17.4 z)**, the shape you'd expect from a closure pushing traffic
+  onto a parallel street.
+- **207 data gaps** and 430 groups without enough baseline — a fifth of the
+  picture is "we don't know", and saying so is the feature.
+- From the labelled-synthetic Metlink replay: 75,087 injected anomalies
+  condense to **350 stop-level hotspots** (Kilbirnie Stop A worst at 270
+  anomalies, 65 high-severity, delay-outlier dominated) — evidence the same
+  hotspot pattern works for public transport when real GTFS-RT is captured.
+
+### Key takeaways
+
+- **When there are no ground-truth labels, train nothing.** A robust seasonal
+  baseline is more accurate here, and every flag it raises can be explained in
+  one sentence: observed, expected, and how unusual.
+- **A missing row and a zero are different facts.** Zero-filling would have
+  buried 207 gaps inside fake calm.
+- **Reliability metadata must travel with the data**, or it is stripped at the
+  first copy-paste. That is why it lives in the GeoJSON, not the UI.
+- **Composable feeds beat closed dashboards** — ten prototypes can only form
+  one operating picture if each publishes something the others can point at.
+- **Honest labels are free.** "Batch replay" and "synthetic" cost one word
+  each and remove the worst failure mode: unverified data presented as fact.
+
+### How we know it works
+
+The benchmark above is held-out, chronological and committed. Eleven automated
+checks run on every build — the server-rendered contract, internal consistency
+of all five artifacts (signal count = candidate count, WGS84 bounds, camera
+frame flags vs coverage bounds, synthetic labelling), and the secret scan.
+Every interactive feature was verified in a real browser before merging, and
+the artifacts are reproducible from source with the three build scripts below.
+
 ### Detection
 
 - Matched weekday/hour **median + MAD** over the prior 12 weeks, per
