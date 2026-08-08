@@ -125,11 +125,16 @@ picture.
 The included 6 August 2026 12:00 replay produces **12 signals** and exposes
 **207 expected-but-missing groups** as data gaps rather than zero counts.
 
+The map is a hand-rolled slippy map on one canvas: CARTO Positron raster tiles
+(OpenStreetMap data) under the layers, whole-level zoom 9–18, drag to pan, scroll
+or the +/− buttons to zoom, **Fit** to frame the active layer, and click a line
+or pin to select it. No map library.
+
 The site carries a **data source tab** over one shared map frame:
 
 - **WCC countlines** — the movement-change signals above (batch replay).
 - **NZTA traffic cameras** — the 38 Wellington-region cameras from the NZTA
-  Traffic and Travel API, 9 of which fall inside the countline frame. Positions
+  Traffic and Travel API; 9 sit inside the countline bounding box. Positions
   come from the committed layer; the frame itself loads live from NZTA in the
   browser and is never stored or re-published here. Cameras corroborate a
   countline signal, they do not measure one. Capture for change detection is the

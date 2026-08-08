@@ -1,17 +1,36 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   type CameraCollection,
   type CameraFeature,
+  type Coordinate,
   type LineCollection,
   type LineFeature,
+  type MapView,
+  DEFAULT_VIEW,
+  MAX_ZOOM,
+  MIN_ZOOM,
+  boundsOfLines,
+  boundsOfPoints,
   createProjector,
   drawCameras,
   drawCoverage,
   drawSignals,
+  drawTiles,
+  fitView,
+  panView,
+  pickNearest,
   prepareCanvas,
+  zoomAround,
 } from "./map-draw";
 
 type Filter = "all" | "people" | "vehicles";
@@ -42,6 +61,16 @@ export default function MovementCanvas() {
   // Remember which frame URL failed, so selecting another camera or refreshing
   // clears the failure without an effect.
   const [failedFrame, setFailedFrame] = useState<string | null>(null);
+  const [view, setView] = useState<MapView>(DEFAULT_VIEW);
+  // The canvas is redrawn imperatively, so tile loads and resizes can call the
+  // latest draw closure without re-running an effect.
+  const drawRef = useRef<() => void>(() => {});
+  const dragRef = useRef<{ x: number; y: number; moved: boolean } | null>(null);
+
+  const stageSize = useCallback(() => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    return rect && rect.width > 0 ? { width: rect.width, height: rect.height } : null;
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -81,43 +110,127 @@ export default function MovementCanvas() {
     () => cameraFeatures.filter((feature) => feature.properties.within_countline_frame),
     [cameraFeatures],
   );
-  const listedCameras = cameraScope === "frame" ? onFrameCameras : cameraFeatures;
+  const listedCameras = useMemo(
+    () => (cameraScope === "frame" ? onFrameCameras : cameraFeatures),
+    [cameraScope, onFrameCameras, cameraFeatures],
+  );
 
   const selectedSignal =
     signals.find((feature) => feature.id === selectedSignalId) ?? filteredSignals[0];
   const selectedCamera: CameraFeature | undefined =
     cameraFeatures.find((feature) => feature.id === selectedCameraId) ?? listedCameras[0];
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const frame = frameRef.current;
-    if (!canvas || !frame) return;
+  const showingCameras = source === "cameras";
 
-    const render = () => {
+  // Redraw after every render, and hand the same closure to tile loads and resizes.
+  useEffect(() => {
+    drawRef.current = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
       const surface = prepareCanvas(canvas);
       if (!surface) return;
-      const project = createProjector(coverage, surface.width, surface.height);
-      if (!project) return;
+      drawTiles(surface.context, view, surface.width, surface.height, () => drawRef.current());
+      const project = createProjector(view, surface.width, surface.height);
       drawCoverage(surface.context, project, coverage);
-      if (source === "cameras") {
-        drawCameras(surface.context, project, cameraFeatures, selectedCamera?.id ?? null);
+      if (showingCameras) {
+        drawCameras(surface.context, project, listedCameras, selectedCamera?.id ?? null);
       } else {
         drawSignals(surface.context, project, filteredSignals, selectedSignal?.id ?? null);
       }
     };
+    drawRef.current();
+  });
 
-    const observer = new ResizeObserver(render);
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+    const observer = new ResizeObserver(() => drawRef.current());
     observer.observe(frame);
-    render();
     return () => observer.disconnect();
-  }, [coverage, source, filteredSignals, selectedSignal, cameraFeatures, selectedCamera]);
+  }, []);
 
-  const showingCameras = source === "cameras";
+  // Wheel zoom needs a non-passive listener so the page does not scroll instead.
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const anchor: Coordinate = [event.clientX - rect.left, event.clientY - rect.top];
+      setView((current) =>
+        zoomAround(current, event.deltaY < 0 ? 1 : -1, anchor, rect.width, rect.height),
+      );
+    };
+    canvas.addEventListener("wheel", onWheel, { passive: false });
+    return () => canvas.removeEventListener("wheel", onWheel);
+  }, []);
+
+  const zoomBy = (step: number) => {
+    const size = stageSize();
+    if (!size) return;
+    setView((current) =>
+      zoomAround(current, step, [size.width / 2, size.height / 2], size.width, size.height),
+    );
+  };
+
+  const fitLayer = useCallback(() => {
+    const size = stageSize();
+    if (!size) return;
+    const bounds = showingCameras ? boundsOfPoints(listedCameras) : boundsOfLines(coverage);
+    if (bounds) setView(fitView(bounds, size.width, size.height));
+  }, [stageSize, showingCameras, listedCameras, coverage]);
+
+  /** Selecting from the list recentres the map only when the feature is off screen. */
+  const revealOnMap = (coordinate: Coordinate) => {
+    const size = stageSize();
+    if (!size) return;
+    setView((current) => {
+      const [x, y] = createProjector(current, size.width, size.height)(coordinate);
+      const margin = 40;
+      const visible =
+        x >= margin && x <= size.width - margin && y >= margin && y <= size.height - margin;
+      return visible ? current : { ...current, centerLon: coordinate[0], centerLat: coordinate[1] };
+    });
+  };
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = { x: event.clientX, y: event.clientY, moved: false };
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const dx = event.clientX - drag.x;
+    const dy = event.clientY - drag.y;
+    if (!drag.moved && Math.hypot(dx, dy) < 3) return;
+    drag.moved = true;
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+    setView((current) => panView(current, -dx, -dy));
+  };
+
+  // A press that never moved is a click: select the nearest feature under it.
+  const handlePointerUp = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+    const drag = dragRef.current;
+    dragRef.current = null;
+    const size = stageSize();
+    if (!drag || drag.moved || !size) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const point: Coordinate = [event.clientX - rect.left, event.clientY - rect.top];
+    const project = createProjector(view, size.width, size.height);
+    if (showingCameras) {
+      const hit = pickNearest(listedCameras, (feature) => feature.geometry.coordinates, project, point);
+      if (hit) setSelectedCameraId(hit.id);
+    } else {
+      const hit = pickNearest(filteredSignals, (feature) => feature.geometry.coordinates[0], project, point);
+      if (hit) setSelectedSignalId(hit.id);
+    }
+  };
   const frameSrc = selectedCamera
     ? `${selectedCamera.properties.image_url}?frame=${frameNonce}`
     : null;
   const frameFailed = frameSrc !== null && frameSrc === failedFrame;
-  const offFrameCount = cameraFeatures.length - onFrameCameras.length;
 
   return (
     <div className="investigation-shell">
@@ -192,13 +305,52 @@ export default function MovementCanvas() {
           <div className="map-stage" ref={frameRef}>
             <canvas
               ref={canvasRef}
+              className="map-canvas"
               role="img"
               aria-label={
                 showingCameras
-                  ? `${onFrameCameras.length} NZTA traffic cameras inside the WCC countline frame`
-                  : `${filteredSignals.length} unusual movement changes across 414 WCC countlines`
+                  ? `Map of ${listedCameras.length} NZTA traffic cameras over Wellington. Drag to pan, use the zoom buttons to change scale.`
+                  : `Map of ${filteredSignals.length} unusual movement changes across 414 WCC countlines. Drag to pan, use the zoom buttons to change scale.`
               }
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={() => { dragRef.current = null; }}
             />
+            <div className="map-controls">
+              <button
+                type="button"
+                onClick={() => zoomBy(1)}
+                disabled={view.zoom >= MAX_ZOOM}
+                aria-label="Zoom in"
+                title="Zoom in"
+              >
+                +
+              </button>
+              <button
+                type="button"
+                onClick={() => zoomBy(-1)}
+                disabled={view.zoom <= MIN_ZOOM}
+                aria-label="Zoom out"
+                title="Zoom out"
+              >
+                −
+              </button>
+              <button type="button" className="fit" onClick={fitLayer} title="Fit this layer">
+                Fit
+              </button>
+              <span className="zoom-level" aria-hidden="true">z{view.zoom}</span>
+            </div>
+            <p className="map-attribution">
+              ©{" "}
+              <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
+                OpenStreetMap
+              </a>{" "}
+              ·{" "}
+              <a href="https://carto.com/attributions" target="_blank" rel="noreferrer">
+                CARTO
+              </a>
+            </p>
             <div className="map-key" aria-hidden="true">
               {showingCameras ? (
                 <>
@@ -218,8 +370,8 @@ export default function MovementCanvas() {
           </div>
           <p className="map-caption">
             {showingCameras
-              ? `Same projection as the countline layer. ${offFrameCount} Wellington-region cameras sit outside it and are published in the feed but not drawn.`
-              : "Geometry is the WCC sensor countline itself. It does not imply the whole surrounding street or suburb changed."}
+              ? `${onFrameCameras.length} of ${cameraFeatures.length} Wellington cameras sit inside the WCC countline frame; the rest watch state highways further out. Drag to pan, scroll or use + and − to zoom.`
+              : "Geometry is the WCC sensor countline itself. It does not imply the whole surrounding street or suburb changed. Drag to pan, scroll or use + and − to zoom."}
           </p>
         </div>
 
@@ -311,7 +463,10 @@ export default function MovementCanvas() {
                   type="button"
                   key={feature.id}
                   className={feature.id === selectedCamera?.id ? "selected" : ""}
-                  onClick={() => setSelectedCameraId(feature.id)}
+                  onClick={() => {
+                    setSelectedCameraId(feature.id);
+                    revealOnMap(feature.geometry.coordinates);
+                  }}
                 >
                   <span>
                     <strong>{feature.properties.name}</strong>
@@ -358,7 +513,10 @@ export default function MovementCanvas() {
                   type="button"
                   key={feature.id}
                   className={feature.id === selectedSignal?.id ? "selected" : ""}
-                  onClick={() => setSelectedSignalId(feature.id)}
+                  onClick={() => {
+                    setSelectedSignalId(feature.id);
+                    revealOnMap(feature.geometry.coordinates[0]);
+                  }}
                 >
                   <span>
                     <strong>{String(feature.properties.name)}</strong>

@@ -90,22 +90,41 @@ and `xgboost` live in the optional `benchmark` extra and nothing else imports th
 (`worker/index.ts`), not `next dev`. `app/page.tsx` is a server component that
 imports `movement-health.json` at build time; `app/MovementCanvas.tsx` is the
 only `"use client"` boundary and `fetch`es the three GeoJSON files at runtime,
-projecting them onto a hand-rolled 2D canvas (no map library, no basemap).
-Drawing lives in `app/map-draw.ts` — a plain module, not a component.
+drawing them onto a hand-rolled 2D canvas. Everything map-shaped lives in
+`app/map-draw.ts` — a plain module, not a component, and still **no map
+library**: Web Mercator by hand, raster tiles via `drawImage`.
+
+### The map
+
+`app/map-draw.ts` is a small slippy map:
+
+- **Projection** — Web Mercator (`lonToWorldX` / `latToWorldY`) at whole zoom
+  levels only, `MIN_ZOOM` 9 to `MAX_ZOOM` 18. Whole levels keep tiles pixel-exact.
+- **Basemap** — CARTO Positron raster tiles (OpenStreetMap data), cached in a
+  module-level `Map` capped at 512 images and drawn under the layers. No API key.
+  **Attribution to OpenStreetMap and CARTO is required** and is rendered over the
+  map by `MovementCanvas`; do not remove it.
+- **View state** — `MapView { centerLon, centerLat, zoom }` in React state, seeded
+  from `DEFAULT_VIEW` (Wellington CBD, z12). `panView`, `zoomAround` (cursor-
+  anchored) and `fitView` (largest whole zoom that fits given bounds) are pure
+  functions over it, so drag, wheel, the +/−/Fit buttons and `revealOnMap` all
+  go through the same three helpers.
+- **Rendering** — `MovementCanvas` keeps a `drawRef` closure that is refreshed on
+  every render; tile `load` events and the `ResizeObserver` call it directly
+  rather than re-running an effect.
 
 ### Data source tabs
 
-`MovementCanvas` renders a tablist over **one** canvas and **one** projection:
+`MovementCanvas` renders a tablist over **one** canvas and **one** view:
 
 - `movement` — countline coverage plus movement-change signals.
 - `cameras` — the same coverage plus NZTA camera points.
 
-`createProjector` derives the frame from countline coverage alone, so both tabs
-share it. A camera outside that frame is **never drawn at a clamped position**:
-`build_camera_layer.py` stamps `within_countline_frame`, `drawCameras` skips the
-false ones, and the caption counts them. The site test asserts that flag against
-the coverage bounds, so rebuilding coverage for a different `--target-at` means
-rebuilding the camera layer too.
+`within_countline_frame` is metadata, not a drawing rule: it records whether a
+camera sits inside the WCC countline bounding box, the caption reports the split
+(9 of 38), and the site test asserts the flag against the coverage bounds — so
+rebuilding coverage for a different `--target-at` means rebuilding the camera
+layer too. The map itself pans and zooms freely and draws every listed camera.
 
 Camera frames are `<img>` tags pointing straight at `trafficnz.info`; nothing is
 proxied, cached or re-published by this repo. Frame *capture* for change
