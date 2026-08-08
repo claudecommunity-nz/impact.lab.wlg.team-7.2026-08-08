@@ -145,8 +145,18 @@ transit → signals → cameras:
 
 Hover state stores the popup's screen position at pick time, and every view
 change (pan, zoom, fit, reveal, layer toggle) clears it — stored coordinates
-never go stale. The evidence sidebar shows whichever kind was selected last
+never go stale. The evidence panel shows whichever kind was selected last
 (`focus`), with both feature lists grouped underneath.
+
+That panel sits **left of the map** through CSS `order: -1`, while the DOM keeps
+the map first so a screen reader still reaches the primary content first. Its
+grid track animates between `--evidence-width` and `0`, so hiding it slides and
+the canvas grows with it — the existing `ResizeObserver` redraws on every frame
+of the transition. `visibility` flips only after the slide finishes
+(`transition: visibility 0s linear var(--dur-base)`), which is what takes the
+hidden controls out of the tab order rather than leaving them focusable behind a
+zero-width clip. Below 1024px there is no track to animate: the layout stacks,
+the map leads, and a closed panel is simply `display: none`.
 
 `within_countline_frame` is metadata, not a drawing rule: it records whether a
 camera sits inside the WCC countline bounding box, the list orders on-frame
@@ -167,6 +177,19 @@ in `localStorage`, `next/link` + `usePathname`) beside the page, with `AgentChat
 mounted outside it so the chat is reachable from anywhere. `SiteChrome.tsx` holds
 the header and footer both routes share — the batch-replay chip and the
 attribution block are contractual copy and are server-rendered.
+
+Three things fold away — the rail, the dashboard brief (`IntroBand.tsx`) and the
+investigate panel — and every one of them is an **icon** control, never a word,
+so the chrome costs nothing when it is closed. `app/flag-store.ts`
+(`createFlagStore(key, defaultOn)`) is the shared pattern behind them: a
+remembered boolean exposed as `subscribe`/`snapshot`/`serverSnapshot`/`toggle`
+for `useSyncExternalStore`. Use it for the next collapsible thing rather than
+another bespoke effect. Folded, `IntroBand` shows only the two facts that decide
+whether the picture is worth trusting: how many sources are wired in, and the
+newest `lastSyncAt` across the probe store, falling back to the publisher's data
+age when nothing has been tested in that browser. Server snapshots keep every
+flag open for SSR, so the brief, the panel and the rail are all present in the
+rendered HTML and the tests can assert them.
 
 `app/agent-brief.ts` is the agent's whole world: it loads the five COP files and
 `answer()` routes a question to those numbers with keyword matching. Deliberately
@@ -198,7 +221,11 @@ Two rules the lint config enforces hard, so follow them in new components:
 `missingUploadProbe` and `uniqueId` live in the module for that reason.
 
 Settings stay off the dashboard on purpose, and `rendered-html.test.mjs` asserts
-it: the operating picture must not grow a configuration surface.
+it: the operating picture must not grow a configuration surface. The same file
+asserts that the rail and the agent reach every route, that the brief and the
+investigate panel both start open with a control that owns them
+(`aria-controls`), that there is still exactly one `<canvas>`, and that no
+provider key has been committed.
 
 ### Status vocabulary
 

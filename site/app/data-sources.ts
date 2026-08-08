@@ -78,7 +78,13 @@ export const AGENT_PROVIDERS: Record<
     keyUrl: "https://platform.claude.com/settings/keys",
     keyHint: "sk-ant-…",
     defaultModel: "claude-opus-5",
-    models: ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5"],
+    models: [
+      "claude-opus-5",
+      "claude-sonnet-5",
+      "claude-fable-5",
+      "claude-opus-4-8",
+      "claude-haiku-4-5",
+    ],
     note: "Answers come straight from Anthropic; a safety decline is reported as such.",
   },
   openai: {
@@ -87,7 +93,7 @@ export const AGENT_PROVIDERS: Record<
     keyUrl: "https://platform.openai.com/api-keys",
     keyHint: "sk-…",
     defaultModel: "gpt-5.1",
-    models: ["gpt-5.1", "gpt-5.1-mini", "gpt-4.1"],
+    models: ["gpt-5.1", "gpt-5.1-mini", "gpt-5", "gpt-4.1", "gpt-4o"],
     note: "Model names change often — type any current one; the list is only a suggestion.",
   },
   google: {
@@ -96,7 +102,12 @@ export const AGENT_PROVIDERS: Record<
     keyUrl: "https://aistudio.google.com/apikey",
     keyHint: "AIza…",
     defaultModel: "gemini-3-pro-preview",
-    models: ["gemini-3-pro-preview", "gemini-2.5-pro", "gemini-2.5-flash"],
+    models: [
+      "gemini-3-pro-preview",
+      "gemini-2.5-pro",
+      "gemini-2.5-flash",
+      "gemini-2.5-flash-lite",
+    ],
     note: "Uses the Gemini API key from AI Studio, not a Cloud service account.",
   },
   deepseek: {
@@ -279,6 +290,28 @@ export function writeProbe(id: string, probe: SourceProbe) {
   probeCache = { ...probesSnapshot(), [id]: probe };
   saveProbes(probeCache);
   probeListeners.forEach((listener) => listener());
+}
+
+/**
+ * The key as it exists in `localStorage` right now, masked. Read straight from
+ * storage rather than from React state, so the panel can prove the save landed
+ * instead of echoing back what was typed.
+ */
+export function storedAgentKey(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return null;
+    const stored = (JSON.parse(raw) as Partial<Settings>).agent?.apiKey ?? "";
+    return stored ? String(stored) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function maskSecret(secret: string): string {
+  if (secret.length <= 10) return "•".repeat(Math.max(secret.length, 4));
+  return `${secret.slice(0, 6)}…${secret.slice(-4)}`;
 }
 
 /** For values that never change after load, such as the page origin. */

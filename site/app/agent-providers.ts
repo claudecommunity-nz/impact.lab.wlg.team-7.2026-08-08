@@ -42,6 +42,30 @@ function modelFor(agent: AgentConfig): string {
   return "";
 }
 
+/**
+ * A blocked cross-origin request rejects with a bare `TypeError: Failed to
+ * fetch` and no status, which tells an operator nothing. Name the two causes
+ * they can actually act on.
+ */
+async function send(host: string, url: string, init: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init);
+  } catch {
+    throw new Error(
+      `the browser could not reach ${host} — the provider may block direct browser calls (CORS), or you are offline`,
+    );
+  }
+}
+
+/** A typo'd endpoint should still name itself in the error, not throw again. */
+function safeHost(url: string): string {
+  try {
+    return new URL(url).host;
+  } catch {
+    return url || "the configured endpoint";
+  }
+}
+
 async function readError(response: Response): Promise<string> {
   const body = await response.text();
   try {
@@ -57,8 +81,16 @@ async function readError(response: Response): Promise<string> {
   }
 }
 
+/**
+ * `output_config.effort` is rejected by the older tiers — Haiku 4.5 is in the
+ * model list and 400s on it — so only send it where it is supported, and omit
+ * it for a model name we do not recognise.
+ */
+const EFFORT_MODELS = /^claude-(fable-5|mythos-5|opus-5|opus-4-[678]|sonnet-5|sonnet-4-6)/;
+
 async function askAnthropic(question: string, context: string, agent: AgentConfig) {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const model = modelFor(agent);
+  const response = await send("api.anthropic.com", "https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -69,8 +101,13 @@ async function askAnthropic(question: string, context: string, agent: AgentConfi
       "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
-      model: modelFor(agent),
-      max_tokens: 4096,
+      model,
+      // Thinking is on by default on current models and `max_tokens` caps
+      // thinking *and* answer together, so a tight budget spends the whole
+      // response on reasoning and returns no text at all. Low effort keeps a
+      // grounded lookup snappy; the headroom keeps it from truncating.
+      max_tokens: 16_000,
+      ...(EFFORT_MODELS.test(model) ? { output_config: { effort: "low" } } : {}),
       system: `${SYSTEM}\n\n${context}`,
       messages: [{ role: "user", content: question }],
     }),
@@ -88,7 +125,13 @@ async function askAnthropic(question: string, context: string, agent: AgentConfi
     .map((block) => block.text)
     .join("\n")
     .trim();
-  if (!text) throw new Error("The provider returned no text.");
+  if (!text) {
+    throw new Error(
+      body.stop_reason === "max_tokens"
+        ? "the answer hit the token ceiling before any text was written"
+        : "the provider returned no text",
+    );
+  }
   return text;
 }
 
@@ -99,7 +142,7 @@ async function askChatCompletions(
   context: string,
   agent: AgentConfig,
 ) {
-  const response = await fetch(url, {
+  const response = await send(new URL(url).host, url, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -124,7 +167,8 @@ async function askChatCompletions(
 
 async function askGoogle(question: string, context: string, agent: AgentConfig) {
   const model = encodeURIComponent(modelFor(agent));
-  const response = await fetch(
+  const response = await send(
+    "generativelanguage.googleapis.com",
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
       method: "POST",
@@ -158,7 +202,8 @@ async function askGoogle(question: string, context: string, agent: AgentConfig) 
  * agent without writing an adapter.
  */
 async function askCustom(question: string, context: unknown, agent: AgentConfig) {
-  const response = await fetch(agent.endpoint.trim(), {
+  const endpoint = agent.endpoint.trim();
+  const response = await send(safeHost(endpoint), endpoint, {
     method: "POST",
     headers: {
       "content-type": "application/json",

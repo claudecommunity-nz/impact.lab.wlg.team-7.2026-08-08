@@ -20,6 +20,7 @@ import {
   exportSource,
   formatTimestamp,
   isLocal,
+  maskSecret,
   mcpTemplate,
   missingUploadProbe,
   noopSubscribe,
@@ -33,6 +34,7 @@ import {
   serverProbesSnapshot,
   serverSettingsSnapshot,
   settingsSnapshot,
+  storedAgentKey,
   subscribeProbes,
   subscribeSettings,
   uniqueId,
@@ -81,6 +83,9 @@ export default function SettingsPanel() {
   const [draftSource, setDraftSource] = useState(EMPTY_SOURCE);
   const [draftIntegration, setDraftIntegration] = useState(EMPTY_INTEGRATION);
   const [notice, setNotice] = useState<string | null>(null);
+  // The agent test result renders beside its button, not in the page-top
+  // notice — a result the operator cannot see is the same as no result.
+  const [agentTest, setAgentTest] = useState<string | null>(null);
   const configInput = useRef<HTMLInputElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -246,6 +251,11 @@ export default function SettingsPanel() {
       setNotice("The browser refused clipboard access. Use the download button instead.");
     }
   };
+
+  // Read on every render rather than memoised, so this reports what storage
+  // actually holds rather than what the input is showing.
+  const storedKey = storedAgentKey();
+  const savedKey = storedKey ? maskSecret(storedKey) : null;
 
   const card = useMemo(
     () => JSON.stringify(agentCard(origin || "https://murmur.example", settings.agent.endpoint), null, 2),
@@ -686,31 +696,68 @@ export default function SettingsPanel() {
           ) : null}
           {settings.agent.provider !== "none" ? (
             <>
-              <label>
-                <span>Model</span>
-                <input
-                  list="agent-model-options"
-                  value={settings.agent.model}
-                  onChange={(event) =>
-                    update({
-                      ...settings,
-                      agent: { ...settings.agent, model: event.target.value },
-                    })
-                  }
-                  placeholder={
-                    settings.agent.provider !== "custom"
-                      ? AGENT_PROVIDERS[settings.agent.provider].defaultModel
-                      : "model name (optional)"
-                  }
-                />
-                <datalist id="agent-model-options">
-                  {settings.agent.provider !== "custom"
-                    ? AGENT_PROVIDERS[settings.agent.provider].models.map((model) => (
-                        <option key={model} value={model} />
-                      ))
-                    : null}
-                </datalist>
-              </label>
+              {settings.agent.provider !== "custom" ? (
+                <label>
+                  <span>Model</span>
+                  <select
+                    value={
+                      AGENT_PROVIDERS[settings.agent.provider].models.includes(
+                        settings.agent.model,
+                      )
+                        ? settings.agent.model
+                        : "__custom"
+                    }
+                    onChange={(event) =>
+                      update({
+                        ...settings,
+                        agent: {
+                          ...settings.agent,
+                          model: event.target.value === "__custom" ? "" : event.target.value,
+                        },
+                      })
+                    }
+                  >
+                    {AGENT_PROVIDERS[settings.agent.provider].models.map((model) => (
+                      <option key={model} value={model}>
+                        {model}
+                      </option>
+                    ))}
+                    <option value="__custom">Custom model…</option>
+                  </select>
+                </label>
+              ) : (
+                <label>
+                  <span>Model</span>
+                  <input
+                    value={settings.agent.model}
+                    onChange={(event) =>
+                      update({
+                        ...settings,
+                        agent: { ...settings.agent, model: event.target.value },
+                      })
+                    }
+                    placeholder="model name (optional)"
+                  />
+                </label>
+              )}
+              {settings.agent.provider !== "custom" &&
+              !AGENT_PROVIDERS[settings.agent.provider].models.includes(
+                settings.agent.model,
+              ) ? (
+                <label>
+                  <span>Custom model name</span>
+                  <input
+                    value={settings.agent.model}
+                    onChange={(event) =>
+                      update({
+                        ...settings,
+                        agent: { ...settings.agent, model: event.target.value },
+                      })
+                    }
+                    placeholder={`exact model id · blank uses ${AGENT_PROVIDERS[settings.agent.provider].defaultModel}`}
+                  />
+                </label>
+              ) : null}
               <label>
                 <span>
                   API key{settings.agent.provider === "custom" ? " (optional)" : ""}
@@ -731,6 +778,11 @@ export default function SettingsPanel() {
                       : "stored in this browser only"
                   }
                 />
+                <span className="field-hint">
+                  {savedKey
+                    ? `Saved in this browser: ${savedKey}`
+                    : "Nothing saved yet — the key is written as you type."}
+                </span>
               </label>
             </>
           ) : null}
@@ -739,13 +791,18 @@ export default function SettingsPanel() {
               type="button"
               className="button-primary"
               disabled={!agentIsConfigured(settings.agent)}
+              title={
+                agentIsConfigured(settings.agent)
+                  ? undefined
+                  : "Pick a provider and enter a key first"
+              }
               onClick={async () => {
-                setNotice(`Testing ${agentTarget(settings.agent)}…`);
+                setAgentTest(`Testing ${agentTarget(settings.agent)}…`);
                 try {
-                  setNotice(await pingModel(settings.agent));
+                  setAgentTest(`✓ ${await pingModel(settings.agent)}`);
                 } catch (error) {
-                  setNotice(
-                    `${agentTarget(settings.agent)}: ${
+                  setAgentTest(
+                    `✗ ${agentTarget(settings.agent)}: ${
                       error instanceof Error ? error.message : "no response"
                     } — the chat answers locally until this works.`,
                   );
@@ -776,6 +833,11 @@ export default function SettingsPanel() {
               </a>
             ) : null}
           </div>
+          {agentTest ? (
+            <p className="agent-test-result" role="status">
+              {agentTest}
+            </p>
+          ) : null}
           <p className="field-hint">
             Safety: use a key with a spending limit, never a shared production key, and
             clear it on shared machines. The key is sent only to{" "}

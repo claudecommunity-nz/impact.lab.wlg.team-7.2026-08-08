@@ -702,6 +702,12 @@ footer strong { color: var(--surface-page); }
 .form-actions button:not(.button-primary):hover { background: var(--wcc-yellow); }
 .field-hint { max-width: 52ch; color: var(--wcc-grey-500); font-size: 12px; font-weight: 400; line-height: 1.5; }
 .settings-form > .field-hint { grid-column: 1 / -1; margin: 0; max-width: 78ch; }
+.agent-test-result {
+  grid-column: 1 / -1; margin: 0; padding: var(--space-3);
+  background: var(--wcc-info-surface); border-left: 4px solid var(--wcc-info);
+  color: var(--wcc-black); font-size: var(--text-small); line-height: 1.5;
+  overflow-wrap: anywhere;
+}
 .button-primary:disabled { background: var(--wcc-grey-300); color: var(--wcc-grey-700); cursor: not-allowed; }
 
 .integration-list { list-style: none; margin: var(--space-5) 0 0; padding: 0; border-top: 1px solid var(--wcc-black); }

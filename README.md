@@ -3,6 +3,9 @@
 **Wellington City Council Emergency Management × Claude Code Community NZ**
 Saturday 8 August 2026 · Waimanga Room, Wellington City Council
 
+**16:30 demo deck** —
+https://docs.google.com/presentation/d/1tNyOVbC6gqecDB2m7Es2TQ7Am-KTfwbQ/edit?slide=id.p1#slide=id.p1
+
 ---
 
 ## Problem 05 — Detect unusual changes in movement around the city
@@ -153,6 +156,23 @@ Every source is a **toggleable layer** on that one map — no tabs:
   injected, labelled anomalies — no figure describes an actual April 2026
   event, and the layer says so wherever it appears.
 
+### One screen you can put away
+
+Three parts of the interface fold down to an icon, and each remembers the
+choice, so the demo shows the full brief and day-to-day work shows the map:
+
+- **The rail** on the left of every route — **Operating picture**, **Data
+  sources**, **Integrations**, **Agent setup** and **Ask the agent** — collapses
+  to an icon strip, and to a scrollable row on small screens.
+- **The brief** at the top of the dashboard folds to a single line: how many
+  data sources are wired in and when one last answered. Before anything has been
+  tested in that browser it says so and falls back to the publisher's data age,
+  rather than inventing a sync time.
+- **The investigate panel** sits left of the map at 420px and slides away from
+  the toggle in the map's top-left corner, with the canvas growing into the
+  space as it goes. It is put away, not merely hidden: the controls inside it
+  leave the tab order.
+
 ### Navigator, agent and settings
 
 A hideable rail runs down the left of every route — **Operating picture**,
@@ -160,7 +180,7 @@ A hideable rail runs down the left of every route — **Operating picture**,
 collapsing to an icon strip (and to a scrollable row on small screens). The
 choice is remembered.
 
-The **agent** is a floating button on every page, and expands to full screen
+The **Murmur agent** is a floating button on every page, and expands to full screen
 with the ⤢ button (Escape backs out one step). By default it answers from the
 committed COP artifacts only: it assembles its replies out of those numbers, so
 it cannot invent a signal that is not in the feed, and it says "I do not hold
@@ -232,5 +252,6 @@ WCC Parquet):
 See [`docs/model-card.md`](docs/model-card.md) for the model comparison and
 [`artifacts/model-benchmark.json`](artifacts/model-benchmark.json) for its
 machine-readable result. The four-minute walkthrough is in
-[`docs/demo-script.md`](docs/demo-script.md).
+[`docs/demo-script.md`](docs/demo-script.md), and the slides shown at 16:30 are
+[here](https://docs.google.com/presentation/d/1tNyOVbC6gqecDB2m7Es2TQ7Am-KTfwbQ/edit?slide=id.p1#slide=id.p1).
 
