@@ -36,3 +36,14 @@ streamlit/*/data/
 .DS_Store
 Thumbs.db
 *.log
+
+# Secrets never belong in this public repo. Agent/provider API keys live in the
+# visitor's browser localStorage only; anything key-shaped on disk stays local.
+# (site/tests also scan the source for key-shaped strings and fail the build.)
+.env
+.env.*
+*.env
+*.key
+*.pem
+secrets/
+murmur-settings.json

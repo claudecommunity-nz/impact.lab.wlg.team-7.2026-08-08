@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 import test from "node:test";
 
 async function render(path = "/") {
@@ -183,6 +185,17 @@ test("carries a hideable sidebar and the agent on every route", async () => {
   }
 });
 
+test("lets the dashboard brief be folded away", async () => {
+  const html = await render("/").then((response) => response.text());
+
+  // First visit shows the brief, so the demo and a new operator both get it.
+  assert.match(html, /Movement changes worth investigating/);
+  assert.match(html, /Hide the brief/);
+  assert.match(html, /aria-expanded="true"/);
+  // Folded, the strip is what remains: it must not need the hero to make sense.
+  assert.doesNotMatch(html, /Show the brief/);
+});
+
 test("keeps source settings off the dashboard and on their own route", async () => {
   const [dashboard, settings] = await Promise.all([
     render("/").then((response) => response.text()),
@@ -237,4 +250,56 @@ test("removes the disposable starter preview and its dependency", async () => {
   assert.doesNotMatch(layout, /Starter Project|Geist/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
+});
+
+test("keeps provider API keys and other secrets out of the repo", async () => {
+  // Agent keys live in the visitor's browser localStorage only. This scan is
+  // the backstop: if a live-looking key ever lands in the source or artifacts,
+  // the suite fails before it can ship. Placeholders like "sk-ant-…" don't
+  // match — the patterns require real key-length bodies.
+  const KEY_SHAPES = [
+    ["Anthropic key", /sk-ant-[A-Za-z0-9_-]{16,}/],
+    ["OpenAI/DeepSeek key", /\bsk-[A-Za-z0-9]{32,}/],
+    ["Google API key", /\bAIza[0-9A-Za-z_-]{30,}/],
+    ["GitHub token", /\bgh[pousr]_[A-Za-z0-9]{30,}/],
+    ["Webhook signing secret", /\bwhsec_[A-Za-z0-9]{20,}/],
+    ["Private key block", /-----BEGIN [A-Z ]*PRIVATE KEY-----/],
+  ];
+  const TEXT_EXTENSIONS = new Set([
+    ".ts", ".tsx", ".mjs", ".js", ".json", ".geojson", ".css", ".md", ".html",
+    ".py", ".toml", ".yml", ".yaml", ".txt", ".sql",
+  ]);
+  const SKIP_DIRS = new Set(["node_modules", "dist", ".venv", ".wrangler", ".vinext", ".next", "data"]);
+
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const roots = [
+    path.join(here, "..", "app"),
+    path.join(here, "..", "worker"),
+    path.join(here, "..", "tests"),
+    path.join(here, "..", "public"),
+    path.join(here, "..", "..", "scripts"),
+    path.join(here, "..", "..", "src"),
+  ];
+
+  const offences = [];
+  for (const root of roots) {
+    let entries;
+    try {
+      entries = await readdir(root, { recursive: true, withFileTypes: true });
+    } catch {
+      continue; // a root may not exist in a partial checkout
+    }
+    for (const entry of entries) {
+      if (!entry.isFile()) continue;
+      const full = path.join(entry.parentPath ?? entry.path, entry.name);
+      const relative = path.relative(path.join(here, "..", ".."), full);
+      if (relative.split(path.sep).some((part) => SKIP_DIRS.has(part))) continue;
+      if (!TEXT_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) continue;
+      const text = await readFile(full, "utf8");
+      for (const [label, pattern] of KEY_SHAPES) {
+        if (pattern.test(text)) offences.push(`${relative}: looks like a ${label}`);
+      }
+    }
+  }
+  assert.deepEqual(offences, [], `Secret-shaped strings found:\n${offences.join("\n")}`);
 });
