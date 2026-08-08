@@ -48,6 +48,12 @@ streamlit run app.py
   2+ to keep only cell-hours where more than one source flags the same place and hour.
   Metrics, a corroboration-cell map (🔴 3 · 🟠 2 · ⚪ 1), breakdown chart, and the
   most-corroborated cell-hours.
+- **📷 Live Photos** — current stills from every NZTA Wellington traffic camera
+  (trafficnz.info), fetched live by the browser; search + a Refresh button. Uses a
+  committed `camera_catalogue.csv`; the images themselves are live.
+- **▶️ Playback** — pick a start and end (day + hour) and **play** through the window;
+  the map animates each hour (multi-source layers, fixed Wellington view). Interaction
+  modelled on the Melbourne traffic demo; the data is Wellington April 2026.
 - **📋 Data** — records per source, the conformed table, and CSV download.
 
 ## Caveats
