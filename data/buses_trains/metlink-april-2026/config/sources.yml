@@ -1,0 +1,92 @@
+# ====================METLINK_SOURCES====================
+# Every Metlink / GWRC endpoint this package touches, with what it actually gives you.
+# Auth: header  x-api-key: <METLINK_API_KEY>   and  accept: application/json
+# Register + SUBSCRIBE at https://opendata.metlink.org.nz/
+
+gtfs_static:
+  # No API key required. Full timetable: agency, routes, trips, stops, stop_times,
+  # calendar, calendar_dates, shapes, feed_info, transfers.
+  # This is the CURRENT timetable - it is not versioned by Metlink.
+  full_zip: https://static.opendata.metlink.org.nz/v1/gtfs/full.zip
+
+  # Same content served as JSON endpoints, key required. Useful for spot checks,
+  # far too slow for a bulk pull - use the zip.
+  api_base: https://api.opendata.metlink.org.nz/v1/gtfs
+  endpoints:
+    - agency
+    - routes
+    - trips
+    - stops
+    - stop_times      # accepts ?trip_id=
+    - calendar
+    - calendar_dates
+    - shapes          # accepts ?shape_id=
+    - feed_info
+    - transfers
+
+# ====================REALTIME====================
+gtfs_rt:
+  # THESE ARE EPHEMERAL. Each poll replaces the previous state. There is no history.
+  # Everything you want for April 2026 had to be captured in April 2026.
+  base: https://api.opendata.metlink.org.nz/v1/gtfs-rt
+  poll_seconds: 25
+  feeds:
+    vehiclepositions:
+      path: /vehiclepositions
+      grain: one row per active vehicle per poll
+      fields: [vehicle_id, trip_id, route_id, lat, lon, bearing, speed, occupancy, timestamp]
+      value: the richest signal for anomaly work - speed, teleports, stale devices, coverage gaps
+    tripupdates:
+      path: /tripupdates
+      grain: one row per active trip per poll, nested stop_time_updates
+      fields: [trip_id, route_id, vehicle_id, stop_id, stop_sequence, arrival_delay, departure_delay, schedule_relationship]
+      value: delays and cancellations - the primary input to stop-event actuals
+    servicealerts:
+      path: /servicealerts
+      grain: one row per active alert
+      fields: [alert_id, cause, effect, header, description, informed_entity, active_period]
+      value: ground truth for known disruptions - use to separate explained from unexplained anomalies
+
+  stop_predictions:
+    path: https://api.opendata.metlink.org.nz/v1/stop-predictions
+    params: { stop_id: required }
+    note: >
+      Per-stop departure board. Handy for a demo UI, but polling it across ~3000 stops to build a
+      dataset is abusive and slow. Use the RT feeds instead.
+
+# ====================HISTORICAL_APRIL_2026====================
+historical:
+  transitland:
+    # Archives GTFS *static* feed versions by fetch date. Best available proxy for
+    # "what was the timetable in April 2026". Does NOT contain realtime history.
+    base: https://transit.land/api/v2/rest
+    feed_search: /feeds?search=metlink
+    feed_versions: /feed_versions?feed_onestop_id={onestop_id}&fetched_after=2026-03-25T00:00:00Z&fetched_before=2026-05-05T00:00:00Z
+    auth: apikey query param or Authorization header (free tier available)
+
+  gtfsdata_mirror:
+    url: https://github.com/gtfsdata/wellington-gtfs
+    status: ARCHIVED April 2025 - nightly commits stopped, will not contain April 2026
+    note: kept here so nobody wastes an hour rediscovering this
+
+  gtfsrt_io:
+    url: https://gtfsrt.io/
+    status: US agencies only - no Wellington coverage
+    note: the model to copy if you ever want a real NZ RT archive
+
+  metlink_performance_reports:
+    url: https://www.metlink.org.nz/about-us/performance-of-our-network
+    grain: monthly, by mode and line - punctuality, reliability, patronage (Snapper taps only)
+    value: aggregate sanity check for April 2026, not granular
+
+  gwrc_open_data:
+    url: https://opendata.gw.govt.nz/
+    contents: spatial layers - stops, routes, GTFS-derived geometry. Current state only.
+
+  official_request:
+    route: Metlink RTI / AVL extract for April 2026 via GWRC
+    contact: OIA to Greater Wellington Regional Council, or internal data-sharing request
+    ask_for: >
+      Per-service stop-level actual arrival and departure times against schedule, with vehicle
+      and trip identifiers, for 1-30 April 2026. State that aggregate reports are insufficient.
+    reality: 20 working days statutory maximum - start this before anything else

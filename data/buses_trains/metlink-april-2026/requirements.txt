@@ -1,0 +1,10 @@
+# Python 3.12
+duckdb>=1.1.0
+requests>=2.32.0
+gtfs-realtime-bindings>=1.0.0
+protobuf>=5.27.0
+pandas>=2.2.0
+pyarrow>=17.0.0
+python-dotenv>=1.0.1
+numpy>=1.26.0
+PyYAML>=6.0.2

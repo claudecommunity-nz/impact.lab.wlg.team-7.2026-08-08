@@ -1,9 +1,23 @@
-# buses_trains — Metlink vehicle positions (stub)
+# buses_trains — Metlink
 
-Public transport movement signal for Problem 05: poll Metlink's live vehicle
-positions and track service level. Far fewer vehicles running on a route/area than
-usual — or vehicles bunched and stationary — versus the schedule points at
-disruption or loss of access.
+Public transport movement signal for Problem 05. Two complementary approaches:
+
+- **A. Batch replay + anomaly layer — BUILT.** [`metlink-april-2026/`](metlink-april-2026)
+  replays the real Metlink timetable across April 2026, simulates running, injects
+  labelled anomalies, and runs 9 robust detectors in DuckDB. Anomaly CSV extracts
+  live in [`anomaly/`](anomaly); the Streamlit app is at
+  [`../../streamlit/metlink_anomaly/`](../../streamlit/metlink_anomaly). Synthetic
+  but scoreable (ground-truth labels). See [`anomaly/README.md`](anomaly/README.md).
+- **B. Live GTFS-RT poller — stub** (below). For real-time service level once a key
+  and archiving window are available.
+
+---
+
+## B. Live vehicle-position poller (stub)
+
+Poll Metlink's live vehicle positions and track service level. Far fewer vehicles
+running on a route/area than usual — or vehicles bunched and stationary — versus the
+schedule points at disruption or loss of access.
 
 > **Status: stub.** Structurally complete and runnable, but not yet validated
 > against a live API key. Confirm the GTFS-RT JSON paths (`entity[].vehicle.*`)
