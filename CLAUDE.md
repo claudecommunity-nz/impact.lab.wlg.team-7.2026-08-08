@@ -38,14 +38,24 @@ Rebuild the COP artifacts from the official WCC Parquet shards and countline CSV
 `data/` is gitignored. Without the source Parquet you cannot re-run
 `build_demo.py` — work from the committed artifacts in `site/public/cop/v1/`.
 
+Rebuild the NZTA camera layer (network, no Parquet needed):
+
+```powershell
+.\.venv\Scripts\pip install -e ".[cameras]"
+.\.venv\Scripts\python scripts\build_camera_layer.py
+```
+
 ## Architecture
 
-Two halves joined by three committed JSON files. **Those files are the contract**,
+Two halves joined by four committed JSON files. **Those files are the contract**,
 not an intermediate: the site never runs Python, and the pipeline never renders.
 
 ```
 data/*.parquet ──▶ movement_anomaly ──▶ site/public/cop/v1/*.json{,geojson} ──▶ site (RSC + canvas)
    (gitignored)      (scripts/build_demo.py)          (committed)
+
+NZTA catalogue ──▶ nzta_client ──▶ site/public/cop/v1/traffic-cameras.geojson ──┘
+   (live API)     (scripts/build_camera_layer.py)
 ```
 
 `src/movement_anomaly/`, in call order:
@@ -79,8 +89,29 @@ and `xgboost` live in the optional `benchmark` extra and nothing else imports th
 `site/` is vinext (Next-style App Router on Vite) deployed to a Cloudflare Worker
 (`worker/index.ts`), not `next dev`. `app/page.tsx` is a server component that
 imports `movement-health.json` at build time; `app/MovementCanvas.tsx` is the
-only client component and `fetch`es the two GeoJSON files at runtime, projecting
-them onto a hand-rolled 2D canvas (no map library, no basemap).
+only `"use client"` boundary and `fetch`es the three GeoJSON files at runtime,
+projecting them onto a hand-rolled 2D canvas (no map library, no basemap).
+Drawing lives in `app/map-draw.ts` — a plain module, not a component.
+
+### Data source tabs
+
+`MovementCanvas` renders a tablist over **one** canvas and **one** projection:
+
+- `movement` — countline coverage plus movement-change signals.
+- `cameras` — the same coverage plus NZTA camera points.
+
+`createProjector` derives the frame from countline coverage alone, so both tabs
+share it. A camera outside that frame is **never drawn at a clamped position**:
+`build_camera_layer.py` stamps `within_countline_frame`, `drawCameras` skips the
+false ones, and the caption counts them. The site test asserts that flag against
+the coverage bounds, so rebuilding coverage for a different `--target-at` means
+rebuilding the camera layer too.
+
+Camera frames are `<img>` tags pointing straight at `trafficnz.info`; nothing is
+proxied, cached or re-published by this repo. Frame *capture* for change
+detection is the separate Streamlit app (`streamlit/traffic_camera/`), which is
+also the only place the NZTA endpoints and catalogue parsing are defined —
+`build_camera_layer.py` imports `nzta_client` rather than restating them.
 
 ### Status vocabulary
 

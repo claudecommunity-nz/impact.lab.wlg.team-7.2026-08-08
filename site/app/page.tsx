@@ -32,7 +32,8 @@ export default function Home() {
           <p className="intro-copy">
             Hourly pedestrian and vehicle counts compared with the same weekday and
             hour over the prior 12 weeks. Signals invite investigation; they do not
-            diagnose an incident, evacuation, or loss of access.
+            diagnose an incident, evacuation, or loss of access. Two data sources
+            share one frame: WCC countlines and NZTA traffic cameras.
           </p>
         </div>
         <dl className="snapshot-facts" aria-label="Snapshot summary">
@@ -63,12 +64,18 @@ export default function Home() {
           <p>
             Each signal is WGS84 GeoJSON with observed and expected counts, robust
             score, sample size, data age, confidence, attribution, and limitations.
+            Every added source ships the same way: the NZTA camera layer is another
+            GeoJSON file on the same projection, with its own attribution and limits.
           </p>
         </div>
         <div className="endpoint-list">
           <a href="/cop/v1/movement-signals.geojson">
             <span>Signal feed</span>
             <code>/cop/v1/movement-signals.geojson</code>
+          </a>
+          <a href="/cop/v1/traffic-cameras.geojson">
+            <span>Traffic camera layer</span>
+            <code>/cop/v1/traffic-cameras.geojson</code>
           </a>
           <a href="/cop/v1/movement-health.json">
             <span>Coverage and health</span>
@@ -89,8 +96,9 @@ export default function Home() {
 
       <footer>
         <strong>Not live emergency information.</strong> In an emergency, call 111.
-        Data: Wellington City Council Transport Sensors. Prototype for investigation
-        only.
+        Data: Wellington City Council Transport Sensors; camera positions and frames
+        from the NZTA Traffic and Travel API, images © NZTA. Prototype for
+        investigation only.
       </footer>
     </main>
   );

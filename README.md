@@ -125,6 +125,16 @@ picture.
 The included 6 August 2026 12:00 replay produces **12 signals** and exposes
 **207 expected-but-missing groups** as data gaps rather than zero counts.
 
+The site carries a **data source tab** over one shared map frame:
+
+- **WCC countlines** — the movement-change signals above (batch replay).
+- **NZTA traffic cameras** — the 38 Wellington-region cameras from the NZTA
+  Traffic and Travel API, 9 of which fall inside the countline frame. Positions
+  come from the committed layer; the frame itself loads live from NZTA in the
+  browser and is never stored or re-published here. Cameras corroborate a
+  countline signal, they do not measure one. Capture for change detection is the
+  Streamlit app's job — [`streamlit/traffic_camera/`](streamlit/traffic_camera/).
+
 ### Run it
 
 ```powershell
@@ -154,6 +164,17 @@ Outputs:
 - `movement-signals.geojson` — investigation candidates and evidence;
 - `movement-health.json` — coverage, gaps, cadence and limitations;
 - `countline-coverage.geojson` — the 414 sensor line geometries.
+
+To rebuild the camera layer from the live NZTA catalogue (needs network, not the
+WCC Parquet):
+
+```powershell
+.\.venv\Scripts\pip install -e ".[cameras]"
+.\.venv\Scripts\python scripts\build_camera_layer.py
+```
+
+- `traffic-cameras.geojson` — Wellington camera positions, image and view URLs,
+  `within_countline_frame`, attribution and limitations.
 
 See [`docs/model-card.md`](docs/model-card.md) for the model comparison and
 [`artifacts/model-benchmark.json`](artifacts/model-benchmark.json) for its

@@ -1,0 +1,1318 @@
+{
+  "type": "FeatureCollection",
+  "schema": "camera-source-collection/v1",
+  "source": "NZTA Traffic and Travel API",
+  "source_url": "https://trafficnz.info/service/traffic/rest/4/cameras/all",
+  "retrieved_at": "2026-08-07T23:58:34+00:00",
+  "region_filter": "greater Wellington bounding box",
+  "camera_count": 38,
+  "within_frame_count": 9,
+  "countline_frame": {
+    "west": 174.723114,
+    "east": 174.832825,
+    "south": -41.335411,
+    "north": -41.153431
+  },
+  "attribution": "NZTA Traffic and Travel API (camera images © NZTA)",
+  "limitations": [
+    "A camera frame is a snapshot, not a count.",
+    "NZTA cameras watch state highways, not every city street.",
+    "An offline camera returns a placeholder image, not an empty road.",
+    "Frames load live from NZTA in the browser; none are stored or re-published here.",
+    "Frames may show public road users and are not for identifying anyone."
+  ],
+  "features": [
+    {
+      "type": "Feature",
+      "id": "camera:226",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.808116,
+          -41.227951
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "226",
+        "name": "South along SH1 from Johnsonville Off-ramp",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/226.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/226",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:227",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.809546,
+          -41.231877
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "227",
+        "name": "South along SH1 from Newlands Rd",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/227.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/227",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:228",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.809,
+          -41.241
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "228",
+        "name": "South along SH1 in the Ngauranga Gorge",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/228.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/228",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:230",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.773064,
+          -41.276291
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "230",
+        "name": "North along Urban Mwy from Tinakori Rd On-ramp",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/230.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/230",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:232",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.86,
+          -41.224
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "232",
+        "name": "South along SH2 from Petone Off-ramp",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/232.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/232",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:233",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.155501,
+          -40.762458
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "233",
+        "name": "North along SH1 at Otaki",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/233.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/233",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:277",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.829953,
+          -41.177675
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "277",
+        "name": "North along SH1 north of Tawa Interchange",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/277.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/277",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:278",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.907,
+          -41.203
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "278",
+        "name": "South along SH2 at Melling Interchange",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/278.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/278",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:279",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.939671,
+          -40.999745
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "279",
+        "name": "South along SH59 at Paekakariki",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/279.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/279",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:280",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.869,
+          -41.083
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "280",
+        "name": "North along SH59 from Plimmerton Roundabout",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/280.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/280",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:282",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.813576,
+          -41.248069
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "282",
+        "name": "South along Urban Mwy from SH1/SH2 Interchange",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": true,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/282.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/282",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:637",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.868586,
+          -41.105628
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "637",
+        "name": "South along SH59 from Paremata Roundabout",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/637.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/637",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:719",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.8993504,
+          -41.0287516
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "719",
+        "name": "Looking north along SH59 toward Paekakariki",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/719.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/719",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:720",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.87605,
+          -41.057605
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "720",
+        "name": "Looking north along SH59 toward Pukerua Bay",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/720.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/720",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:722",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.929934,
+          -41.189939
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "722",
+        "name": "Looking south along SH2 toward Belmont",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/722.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/722",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:787",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.983048,
+          -40.971228
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "787",
+        "name": "South along Transmission Gully Mwy from Mackays Crossing Interchange",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/787.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/787",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:789",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.970742,
+          -40.982679
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "789",
+        "name": "South along Transmission Gully Mwy from Paekakariki Interchange",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/789.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/789",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:790",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.918456,
+          -41.11331
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "790",
+        "name": "South along Transmission Gully Mwy from SH58  Pauatahanui Interchange",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/790.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/790",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:791",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.917842,
+          -41.112172
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "791",
+        "name": "North along Transmission Gully Mwy from SH58  Pauatahanui Interchange",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/791.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/791",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:792",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.901206,
+          -41.132137
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "792",
+        "name": "South along Transmission Gully Mwy from Waitangirua Interchange",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/792.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/792",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:793",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.90002,
+          -41.131795
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "793",
+        "name": "North along Transmission Gully Mwy from Waitangirua Interchange",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/793.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/793",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:794",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.844891,
+          -41.151869
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "794",
+        "name": "South along Transmission Gully Mwy from Kenepuru Interchange",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/794.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/794",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:795",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.818448,
+          -41.205749
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "795",
+        "name": "South along SH1 from Churton Park Interchange",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/795.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/795",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:796",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.821357,
+          -41.204499
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "796",
+        "name": "North along SH1 from Churton Park Interchange",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/796.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/796",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:801",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.981161,
+          -41.160856
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "801",
+        "name": "South along Eastern Hutt Rd",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/801.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/801",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:802",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.981314,
+          -41.160891
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "802",
+        "name": "East along Stokes Valley Rd",
+        "direction": "Eastbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/802.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/802",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:804",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.10235,
+          -40.82047
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "804",
+        "name": "North from south of the railway overpass bridge.",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/804.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/804",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:805",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.11629,
+          -40.80976
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "805",
+        "name": "South adjacent to the bend of Gear Road.",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/805.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/805",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:806",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.13189,
+          -40.78968
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "806",
+        "name": "South towards the School Road Overbirdge.",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/806.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/806",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:807",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.13856,
+          -40.78129
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "807",
+        "name": "North towards Otaki Offramp.",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/807.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/807",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:808",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.14481,
+          -40.77493
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "808",
+        "name": "South from the Otaki Gorge Road overpass bridge.",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/808.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/808",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:809",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.15459,
+          -40.76431
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "809",
+        "name": "North from Otaki Rail station.",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/809.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/809",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:810",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.15986,
+          -40.76149
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "810",
+        "name": "South from Rahui Road overpass bridge .",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/810.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/810",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:811",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.16166,
+          -40.75829
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "811",
+        "name": "North from County Road.",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/811.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/811",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:812",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.15858,
+          -40.75959
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "812",
+        "name": "Looking south, north of the Mill Road/Main Highway roundabout.",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/812.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/812",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:813",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.16644,
+          -40.74893
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "813",
+        "name": "Looking north, north Waitohu Stream bridge.",
+        "direction": "Northbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/813.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/813",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:814",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          175.171708,
+          -40.743007
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "814",
+        "name": "Looking south, south of Lawlors Road.",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": false,
+        "image_url": "https://www.trafficnz.info/camera/814.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/814",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "camera:828",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.773778,
+          -41.283374
+        ]
+      },
+      "properties": {
+        "schema": "camera-source/v1",
+        "source_type": "traffic_camera",
+        "camera_id": "828",
+        "name": "South view from north of Terrace Tunnel SH1",
+        "direction": "Southbound",
+        "region": "Wellington",
+        "offline": false,
+        "within_countline_frame": true,
+        "image_url": "https://www.trafficnz.info/camera/828.jpg",
+        "view_url": "https://www.journeys.nzta.govt.nz/traffic-cameras/wellington/828",
+        "catalogue_retrieved_at": "2026-08-07T23:58:34+00:00",
+        "publisher_cadence": "frame republished every few minutes",
+        "location_confidence": "publisher coordinates",
+        "limitations": [
+          "A camera frame is a snapshot, not a count.",
+          "NZTA cameras watch state highways, not every city street.",
+          "An offline camera returns a placeholder image, not an empty road.",
+          "Frames load live from NZTA in the browser; none are stored or re-published here.",
+          "Frames may show public road users and are not for identifying anyone."
+        ],
+        "attribution": "NZTA Traffic and Travel API (camera images © NZTA)"
+      }
+    }
+  ]
+}

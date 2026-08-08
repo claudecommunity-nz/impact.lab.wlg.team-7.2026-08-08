@@ -17,6 +17,7 @@ benchmark = [
   "scikit-learn>=1.6,<2",
   "xgboost>=3,<4",
 ]
+cameras = ["requests>=2.32"]
 test = ["pytest>=8,<10"]
 
 [tool.setuptools.packages.find]

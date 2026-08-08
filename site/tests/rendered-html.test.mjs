@@ -34,6 +34,7 @@ test("server-renders the movement investigation surface with truthful batch stat
   assert.match(html, /6 Aug 2026/);
   assert.ok(html.includes("/cop/v1/movement-signals.geojson"));
   assert.ok(html.includes("/cop/v1/movement-health.json"));
+  assert.ok(html.includes("/cop/v1/traffic-cameras.geojson"));
   assert.match(html, /Not live emergency information/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|taking shape/i);
 });
@@ -67,6 +68,64 @@ test("ships internally consistent COP artifacts with WGS84 line geometry", async
     [...new Set(signals.features.map((feature) => feature.properties.attribution))],
     ["Wellington City Council Transport Sensors"],
   );
+});
+
+test("offers both data sources as tabs over the one map frame", async () => {
+  const response = await render();
+  const html = await response.text();
+
+  assert.match(html, /role="tablist"/);
+  assert.match(html, /WCC countlines/);
+  assert.match(html, /NZTA traffic cameras/);
+  assert.match(html, /Batch replay/);
+  assert.match(html, /Live frames/);
+  // One canvas, one projection: the camera layer must not ship a second map.
+  assert.equal(html.match(/<canvas/g)?.length, 1);
+});
+
+test("ships a camera layer on the same frame with its own attribution and limits", async () => {
+  const [cameraText, coverageText] = await Promise.all([
+    readFile(new URL("../public/cop/v1/traffic-cameras.geojson", import.meta.url), "utf8"),
+    readFile(new URL("../public/cop/v1/countline-coverage.geojson", import.meta.url), "utf8"),
+  ]);
+  const cameras = JSON.parse(cameraText);
+  const coverage = JSON.parse(coverageText);
+
+  assert.equal(cameras.type, "FeatureCollection");
+  assert.equal(cameras.schema, "camera-source-collection/v1");
+  assert.equal(cameras.features.length, cameras.camera_count);
+  assert.ok(cameras.camera_count > 0);
+  assert.ok(cameras.within_frame_count > 0);
+  assert.match(cameras.attribution, /NZTA/);
+  assert.ok(cameras.limitations.length > 0);
+
+  const points = coverage.features.flatMap((feature) => feature.geometry.coordinates);
+  const frame = {
+    west: Math.min(...points.map(([longitude]) => longitude)),
+    east: Math.max(...points.map(([longitude]) => longitude)),
+    south: Math.min(...points.map(([, latitude]) => latitude)),
+    north: Math.max(...points.map(([, latitude]) => latitude)),
+  };
+
+  assert.equal(
+    cameras.features.filter((feature) => feature.properties.within_countline_frame).length,
+    cameras.within_frame_count,
+  );
+  for (const feature of cameras.features) {
+    assert.equal(feature.geometry.type, "Point");
+    const [longitude, latitude] = feature.geometry.coordinates;
+    assert.ok(longitude > 170 && latitude < -40);
+    // within_countline_frame must agree with the coverage bounds the canvas projects onto.
+    assert.equal(
+      feature.properties.within_countline_frame,
+      longitude >= frame.west &&
+        longitude <= frame.east &&
+        latitude >= frame.south &&
+        latitude <= frame.north,
+    );
+    assert.match(feature.properties.image_url, /^https:\/\/www\.trafficnz\.info\/camera\//);
+    assert.ok(feature.properties.limitations.length > 0);
+  }
 });
 
 test("removes the disposable starter preview and its dependency", async () => {
