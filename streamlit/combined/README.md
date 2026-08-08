@@ -1,7 +1,8 @@
 # Combined movement anomalies — Streamlit (local / DuckDB)
 
-One app over all three Team 7 movement sources for Problem 05: a **multi-layer
-pydeck map** (one togglable layer per source) plus a **conformed reporting tab**
+One app over all four Team 7 movement sources for Problem 05 (WCC sensors, Metlink
+PT, NZTA highways, WLG flights): a **multi-layer pydeck map** (one togglable layer
+per source) plus a **conformed reporting tab**
 that counts how many sources agree in each ~1 km cell × hour, with a slider to
 require corroboration.
 
@@ -43,7 +44,8 @@ streamlit run app.py
 ## Tabs
 
 - **🗺️ Multi-layer map** — per-source anomaly layers (toggle each), sized by hits,
-  filtered by date / hour / severity. Sensors = green, Metlink = blue, NZTA = orange.
+  filtered by date / hour / severity. Sensors = green, Metlink = blue, NZTA = orange,
+  flights = purple (Wellington Airport total movements = arrivals + departures).
 - **🔀 Conformed report** — **slider: minimum sources agreeing (default 1)**. Raise to
   2+ to keep only cell-hours where more than one source flags the same place and hour.
   Metrics, a corroboration-cell map (🔴 3 · 🟠 2 · ⚪ 1), breakdown chart, and the

@@ -31,9 +31,10 @@ APP_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = APP_ROOT.parents[1]
 CSV_DIR = Path(os.environ.get("COMBINED_CSV_DIR", REPO_ROOT / "data" / "combined" / "csv"))
 
-SOURCE_COLOR = {"sensors": [39, 174, 96], "metlink": [41, 128, 185], "nzta": [230, 126, 34]}
+SOURCE_COLOR = {"sensors": [39, 174, 96], "metlink": [41, 128, 185], "nzta": [230, 126, 34],
+                "flights": [142, 68, 173]}
 SOURCE_LABEL = {"sensors": "WCC sensors (real)", "metlink": "Metlink PT (synthetic)",
-                "nzta": "NZTA highways (synthetic hourly)"}
+                "nzta": "NZTA highways (synthetic hourly)", "flights": "WLG flights (real)"}
 
 
 @st.cache_resource(show_spinner="Loading combined anomaly layer into DuckDB…")
@@ -84,8 +85,8 @@ def get_points(f: dict, sources: tuple, sev_min: int) -> pd.DataFrame:
 def get_conformed(f: dict, min_sources: int) -> pd.DataFrame:
     where, params = _time_clause(f)
     return q(f"""SELECT cell_id, cell_lat, cell_lon, event_date, event_hour,
-                        sensor_hits, metlink_hits, nzta_hits, total_hits, sources_hit,
-                        max_sev_rank, sources
+                        sensor_hits, metlink_hits, nzta_hits, flight_hits, total_hits,
+                        sources_hit, max_sev_rank, sources
                  FROM conformed_hourly
                  WHERE {where} AND sources_hit >= ?
                  ORDER BY sources_hit DESC, total_hits DESC""", params + [min_sources])
@@ -154,9 +155,9 @@ def render_main_tabs(f: dict) -> None:
 def render_tab_map(f: dict) -> None:
     st.header("Anomalies by source")
     st.caption("Toggle each source's layer. Bubble size = anomaly hits at that place/hour.")
-    cols = st.columns(3)
+    cols = st.columns(4)
     chosen = []
-    for i, s in enumerate(("sensors", "metlink", "nzta")):
+    for i, s in enumerate(("sensors", "metlink", "nzta", "flights")):
         rgb = SOURCE_COLOR[s]
         dot = f"<span style='color:rgb({rgb[0]},{rgb[1]},{rgb[2]})'>●</span>"
         with cols[i]:
@@ -174,15 +175,16 @@ def render_tab_conformed(f: dict) -> None:
     st.header("Conformed anomalies — where sources agree")
     st.caption("Each ~1 km cell × hour, counting anomaly hits per source. Raise the slider "
                "to require corroboration across sources.")
-    min_sources = st.slider("Minimum sources agreeing", 1, 3, 1,
+    min_sources = st.slider("Minimum sources agreeing", 1, 4, 1,
                             help="1 = any anomaly · 2+ = more than one source flags the same "
-                                 "cell and hour (stronger signal).")
+                                 "cell and hour (stronger signal). 4 sources = sensors + "
+                                 "Metlink + NZTA + flights.")
     conf = get_conformed(f, min_sources)
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Cell-hours", f"{len(conf):,}")
     c2.metric("≥2 sources", int((conf["sources_hit"] >= 2).sum()) if not conf.empty else 0)
-    c3.metric("All 3 sources", int((conf["sources_hit"] >= 3).sum()) if not conf.empty else 0)
+    c3.metric("≥3 sources", int((conf["sources_hit"] >= 3).sum()) if not conf.empty else 0)
     c4.metric("Distinct cells", conf["cell_id"].nunique() if not conf.empty else 0)
 
     if conf.empty:
@@ -202,7 +204,7 @@ def render_tab_conformed(f: dict) -> None:
     show = conf.head(60).rename(columns={"event_date": "DATE", "event_hour": "HOUR",
                                          "sources_hit": "SOURCES", "total_hits": "HITS"})
     st.dataframe(show[["DATE", "HOUR", "cell_lat", "cell_lon", "SOURCES", "HITS",
-                       "sensor_hits", "metlink_hits", "nzta_hits", "sources"]],
+                       "sensor_hits", "metlink_hits", "nzta_hits", "flight_hits", "sources"]],
                  width="stretch", hide_index=True)
 
 
@@ -341,7 +343,7 @@ def render_conformed_map(conf: pd.DataFrame) -> None:
                "style": {"backgroundColor": "#1b2631", "color": "white", "fontSize": "12px"}}
     st.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view, tooltip=tooltip,
                              map_style="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"))
-    st.caption("🔴 all 3 sources · 🟠 2 sources · ⚪ 1 source (in this window).")
+    st.caption("🔴 3+ sources · 🟠 2 sources · ⚪ 1 source (in this window).")
 
 
 def _points_deck(df: pd.DataFrame) -> pdk.Deck:

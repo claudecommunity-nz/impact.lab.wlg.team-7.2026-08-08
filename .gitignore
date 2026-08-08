@@ -18,6 +18,8 @@ data/wlg_flights/
 !NZTA/anomaly/csv/*.csv
 !data/combined/csv/
 !data/combined/csv/*.csv
+!data/planes/anomaly/csv/
+!data/planes/anomaly/csv/*.csv
 
 # Python
 .venv/

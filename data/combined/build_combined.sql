@@ -19,6 +19,7 @@ CREATE OR REPLACE VIEW src_sensor_dim     AS SELECT * FROM read_csv_auto('data/s
 CREATE OR REPLACE VIEW src_sensor_vehtype AS SELECT * FROM read_csv_auto('data/sensors/anomaly/csv/vehicle_type_hourly.csv');
 CREATE OR REPLACE VIEW src_metlink        AS SELECT * FROM read_csv_auto('data/buses_trains/anomaly/csv/anomaly_events.csv');
 CREATE OR REPLACE VIEW src_nzta           AS SELECT * FROM read_csv_auto('NZTA/anomaly/csv/site_daily_scored.csv');
+CREATE OR REPLACE VIEW src_flights        AS SELECT * FROM read_csv_auto('data/planes/anomaly/csv/flights_anomaly.csv');
 
 -- ---------------------------------------------------------------------
 -- Sensors: robust-ish z per (street, hour-of-day, weekday/weekend), keep MEDIUM+.
@@ -85,7 +86,13 @@ UNION ALL BY NAME
 SELECT 'nzta' AS source, location, lat, lon, event_date, event_hour, is_weekend,
        severity, round(robust_z, 2) AS score, 'traffic / hr (synthetic)' AS metric,
        TRUE AS is_synthetic
-FROM combined.nzta_hourly_synth WHERE severity IN ('HIGH', 'MEDIUM');
+FROM combined.nzta_hourly_synth WHERE severity IN ('HIGH', 'MEDIUM')
+UNION ALL BY NAME
+SELECT 'flights' AS source, location, lat, lon,
+       CAST(event_date AS DATE) AS event_date, event_hour, is_weekend,
+       severity, round(robust_z, 2) AS score, 'total movements / hr' AS metric,
+       FALSE AS is_synthetic
+FROM src_flights WHERE severity IN ('HIGH', 'MEDIUM');
 
 -- ---------------------------------------------------------------------
 -- Per-source anomaly points (aggregated per location x date x hour) for the map.
@@ -113,6 +120,7 @@ SELECT cell_id, cell_lat, cell_lon, event_date, event_hour,
        count(*) FILTER (WHERE source = 'sensors') AS sensor_hits,
        count(*) FILTER (WHERE source = 'metlink') AS metlink_hits,
        count(*) FILTER (WHERE source = 'nzta')    AS nzta_hits,
+       count(*) FILTER (WHERE source = 'flights') AS flight_hits,
        count(*)                                   AS total_hits,
        count(DISTINCT source)                     AS sources_hit,
        max(CASE severity WHEN 'HIGH' THEN 3 WHEN 'MEDIUM' THEN 2 ELSE 1 END) AS max_sev_rank,
@@ -135,6 +143,6 @@ FROM combined.anomaly_unified GROUP BY 1 ORDER BY 2 DESC;
 
 CREATE OR REPLACE VIEW combined.v_top_cells AS       -- most-corroborated cell-hours
 SELECT cell_id, cell_lat, cell_lon, event_date, event_hour,
-       sources_hit, total_hits, sensor_hits, metlink_hits, nzta_hits, sources
+       sources_hit, total_hits, sensor_hits, metlink_hits, nzta_hits, flight_hits, sources
 FROM combined.conformed_hourly
 ORDER BY sources_hit DESC, total_hits DESC;
