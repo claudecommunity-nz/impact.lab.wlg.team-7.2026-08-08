@@ -406,11 +406,12 @@ export function drawTransit(
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
     const scale = isSelected ? 1.35 : isHovered ? 1.2 : 1;
-    const width = 13 * scale;
-    const height = 9 * scale;
+    const width = 11 * scale;
+    const height = 8 * scale;
     const left = x - width / 2;
     const top = y - height / 2;
-    const body = feature.properties.severity_tier === "high" ? "#B3261E" : "#2B5CAD";
+    // Softer red than the signal glyphs' #B3261E so hotspots sit behind signals visually.
+    const body = feature.properties.severity_tier === "high" ? "#C4675E" : "#2B5CAD";
 
     if (isSelected) {
       traceRoundedRect(context, left - 3, top - 3, width + 6, height + 6, 4 * scale);
