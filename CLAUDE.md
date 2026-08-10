@@ -138,7 +138,10 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
 ### Source layers (no tabs)
 
 `MovementCanvas` renders **one** canvas and **one** view; every source is a
-toggleable layer (`layers` state, all on by default), drawn tiles → coverage →
+toggleable layer, and visibility is **remembered per layer** (`LAYER_STORES`,
+one flag store each — fresh browsers get signals + coverage on and the
+corroborating cameras/transit/roads off; picking a feature from a list or
+search switches its layer back on via `ensureLayer`), drawn tiles → coverage →
 roads → transit → signals → cameras. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a

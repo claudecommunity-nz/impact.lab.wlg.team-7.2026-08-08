@@ -90,8 +90,9 @@ test("merges every source into one map with switchable layers", async () => {
   assert.match(html, /Traffic cameras/);
   assert.match(html, /Public transport/);
   assert.match(html, /State highways/);
-  // All five layers start switched on.
-  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 5);
+  // Signals and coverage start on; the corroborating layers start off.
+  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 3);
+  assert.ok((html.match(/aria-pressed="false"/g) ?? []).length >= 3);
   // The floating layer menu starts open, with local search and truth badges.
   assert.match(html, /aria-controls="layer-menu-body"/);
   assert.match(html, /Find on the map/);

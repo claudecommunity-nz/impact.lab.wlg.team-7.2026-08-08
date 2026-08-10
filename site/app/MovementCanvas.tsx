@@ -69,6 +69,19 @@ const SEARCH_LIMIT = 8;
 const evidenceStore = createFlagStore("murmur.evidence.open", true);
 /* Same remembered-flag pattern for the floating layer menu. */
 const layerMenuStore = createFlagStore("murmur.layers.open", true);
+/* Layer visibility is remembered per layer. Fresh browsers get the movement
+ * picture (signals + coverage); the corroborating layers start off. */
+const LAYER_STORES = {
+  signals: createFlagStore("murmur.layer.signals", true),
+  coverage: createFlagStore("murmur.layer.coverage", true),
+  cameras: createFlagStore("murmur.layer.cameras", false),
+  transit: createFlagStore("murmur.layer.transit", false),
+  roads: createFlagStore("murmur.layer.roads", false),
+} satisfies Record<LayerId, ReturnType<typeof createFlagStore>>;
+
+function useFlag(store: ReturnType<typeof createFlagStore>) {
+  return useSyncExternalStore(store.subscribe, store.snapshot, store.serverSnapshot) === "1";
+}
 
 /** Every layer states its temporal truth as a badge: live, replay, synthetic or real. */
 const LAYERS: {
@@ -90,13 +103,21 @@ type SearchHit = { kind: Focus; id: string; label: string; detail: string; coord
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
-  const [layers, setLayers] = useState<Layers>({
-    signals: true,
-    coverage: true,
-    cameras: true,
-    transit: true,
-    roads: true,
-  });
+  const signalsOn = useFlag(LAYER_STORES.signals);
+  const coverageOn = useFlag(LAYER_STORES.coverage);
+  const camerasOn = useFlag(LAYER_STORES.cameras);
+  const transitOn = useFlag(LAYER_STORES.transit);
+  const roadsOn = useFlag(LAYER_STORES.roads);
+  const layers: Layers = useMemo(
+    () => ({
+      signals: signalsOn,
+      coverage: coverageOn,
+      cameras: camerasOn,
+      transit: transitOn,
+      roads: roadsOn,
+    }),
+    [signalsOn, coverageOn, camerasOn, transitOn, roadsOn],
+  );
   const [coverage, setCoverage] = useState<LineFeature[]>([]);
   const [signals, setSignals] = useState<LineFeature[]>([]);
   const [cameras, setCameras] = useState<CameraCollection | null>(null);
@@ -424,7 +445,7 @@ export default function MovementCanvas() {
 
   const toggleLayer = (id: LayerId) => {
     setHover(null);
-    setLayers((current) => ({ ...current, [id]: !current[id] }));
+    LAYER_STORES[id].toggle(layers[id]);
   };
 
   /** Selecting from the list recentres the map only when the feature is off screen. */
@@ -494,12 +515,19 @@ export default function MovementCanvas() {
     return hits.slice(0, SEARCH_LIMIT);
   }, [search, signals, cameraFeatures, transitFeatures, roadFeatures]);
 
+  /** Picking a feature switches its layer on, so the pick is always visible. */
+  const ensureLayer = (kind: Focus) => {
+    const id: LayerId = kind === "signal" ? "signals" : kind === "camera" ? "cameras" : kind === "transit" ? "transit" : "roads";
+    if (!layers[id]) LAYER_STORES[id].toggle(false);
+  };
+
   const pickSearchHit = (hit: SearchHit) => {
     if (hit.kind === "camera") setSelectedCameraId(hit.id);
     else if (hit.kind === "transit") setSelectedTransitId(hit.id);
     else if (hit.kind === "road") setSelectedRoadId(hit.id);
     else setSelectedSignalId(hit.id);
     setFocus(hit.kind);
+    ensureLayer(hit.kind);
     setSearch("");
     revealOnMap(hit.coordinate);
   };
@@ -1265,6 +1293,7 @@ export default function MovementCanvas() {
                 onClick={() => {
                   setSelectedCameraId(feature.id);
                   setFocus("camera");
+                  ensureLayer("camera");
                   revealOnMap(feature.geometry.coordinates);
                 }}
               >
@@ -1291,6 +1320,7 @@ export default function MovementCanvas() {
                 onClick={() => {
                   setSelectedTransitId(feature.id);
                   setFocus("transit");
+                  ensureLayer("transit");
                   revealOnMap(feature.geometry.coordinates);
                 }}
               >
@@ -1319,6 +1349,7 @@ export default function MovementCanvas() {
                 onClick={() => {
                   setSelectedRoadId(feature.id);
                   setFocus("road");
+                  ensureLayer("road");
                   revealOnMap(feature.geometry.coordinates);
                 }}
               >
