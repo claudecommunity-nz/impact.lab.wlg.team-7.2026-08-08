@@ -428,7 +428,7 @@ h3 { font-size: var(--text-h3); }
 }
 .map-popup p { margin: 0; padding: var(--space-2) var(--space-3) var(--space-3); font-size: var(--text-small); line-height: 1.4; }
 .map-popup strong { display: block; }
-.map-popup p span { color: var(--wcc-grey-700); }
+.map-popup p span { display: block; color: var(--wcc-grey-700); }
 .map-message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--wcc-grey-700); }
 .map-message.error { color: var(--wcc-error); }
 .map-caption { margin: var(--space-3) 0 0; color: var(--wcc-grey-700); font-size: var(--text-small); }

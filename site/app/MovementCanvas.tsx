@@ -899,8 +899,27 @@ export default function MovementCanvas() {
                     <span>
                       {String(hoveredSignal.properties.transport_class)} ·{" "}
                       {String(hoveredSignal.properties.direction)} ·{" "}
+                      {String(hoveredSignal.properties.change_direction)}{" "}
+                      {hoveredSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
+                    </span>
+                    <span>
+                      {Number(hoveredSignal.properties.observed_count).toLocaleString("en-NZ")}{" "}
+                      observed vs{" "}
+                      {Number(hoveredSignal.properties.expected_count).toLocaleString("en-NZ")}{" "}
+                      expected (
+                      {(() => {
+                        const delta = Math.round(
+                          Number(hoveredSignal.properties.observed_count) -
+                            Number(hoveredSignal.properties.expected_count),
+                        );
+                        return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
+                      })()}
+                      )
+                    </span>
+                    <span>
                       {Number(hoveredSignal.properties.robust_z) > 0 ? "+" : ""}
-                      {Number(hoveredSignal.properties.robust_z).toFixed(1)} z
+                      {Number(hoveredSignal.properties.robust_z).toFixed(1)} robust deviations ·
+                      investigate
                     </span>
                   </p>
                 ) : hoveredTransit ? (
