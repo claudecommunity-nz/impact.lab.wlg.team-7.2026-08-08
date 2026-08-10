@@ -289,3 +289,17 @@ re-litigated later:
 - `--text-display` is the homepage display line **only**; every page h1 is `--text-h1`. The dashboard was the violation, not the rule.
 - Status chrome ("Batch replay", truth badges) is never grouped with actions.
 - §5's no-blur rule applies to map overlays too. Borders and `--shadow-2` are the elevation language.
+
+### Round 2 — reviewed 11 August 2026
+
+| # | Claim | Verdict | Action |
+|---|---|---|---|
+| R2-1 | Hero still ~40% of viewport | **Partially true** on short viewports even after round 1. | **Shipped:** further compaction — fact values 24–34px (was 28–40), fact cell and intro-copy spacing tightened, intro grid gap reduced. The fold-away strip remains the full answer for operators. |
+| R2-2 | Detail card should match map height | **Already true.** The evidence column and map share one CSS grid row and stretch together; below 1024px the layout intentionally stacks. | None. |
+| R2-3 | "increase" chip should use standard alert palette, plus green for normal | **Rejected as colours, adopted as icons.** `--wcc-warning` `#8A5A00` *is* the system's anomaly amber (§3 bans brand yellow as caution; brighter ambers fail AA under white text). "Normal" is never badged — the panel only ever shows investigate-state features. Per §3 "colour is never the sole carrier", the chips now also carry a direction arrow. | **Shipped:** ↑/↓ arrows on signal and highway chips. |
+| R2-4 | "Robust score 20.0 z" is cryptic | **True.** | **Shipped:** hover tooltip on the metric — "how many robust standard deviations from the matched baseline" (signal and highway wording each match their own baseline). Terse-UI rule keeps it out of the visible copy. |
+| R2-5 | "Investigate" should become action buttons ("Mark as Resolved", "View Historical Baseline") | **Rejected.** "Investigate" is the status vocabulary (§9f truth labelling): the prototype is batch-published hazard planning, not an operational triage tool. Resolve/ack workflows would imply an operational capability the data cannot honour. | None. |
+| R2-6 | Observed/Expected need a highlighted delta | **True — good catch.** | **Shipped:** third "Change" cell (+20 / −620 style, direction-coloured) in the signal and highway comparisons. |
+| R2-7 | Map controls scattered across corners incl. the yellow + button | **Repeat of R1-3b, still outdated.** Bottom-right is the required OSM/CARTO attribution; the floating button is the site-wide agent, not a map control. | None. |
+| R2-8 | Add a pulsing pin linking map mark to inspector | **Adopted without the pulse.** §6 motion discipline (no entrance/attention animation) plus an imperative canvas make a pulse the wrong tool. | **Shipped:** black selection ring around the selected signal's anchor, matching the ring cameras/transit/roads already had. |
+| R2-9 | Enclose the detail card in a rounded, shadowed container | **Rejected per §5.** Posture is square and flat; resting shadows say "floats above the page", and the inspector is a docked column, not a floating card. Its boundary is the frame hairline plus the 4px yellow top rule. | None. |

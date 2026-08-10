@@ -512,6 +512,14 @@ export function drawSignals(
     // corroborating camera and bus icons.
     const scale = (isSelected ? 1.4 : isHovered ? 1.2 : 1) * baseScale * 1.15;
     const fill = isSelected ? "#000000" : colour;
+    if (isSelected) {
+      // Selection ring ties the map mark to the open evidence panel.
+      context.beginPath();
+      context.arc(start[0], start[1], 8.5 * scale, 0, Math.PI * 2);
+      context.strokeStyle = "#000000";
+      context.lineWidth = 2;
+      context.stroke();
+    }
     if (PEOPLE_CLASSES.has(String(feature.properties.transport_class))) {
       drawPersonGlyph(context, start[0], start[1], scale, fill);
     } else {

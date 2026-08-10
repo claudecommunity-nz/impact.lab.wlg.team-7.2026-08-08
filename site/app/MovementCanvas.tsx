@@ -1095,7 +1095,10 @@ export default function MovementCanvas() {
                     }`}
                   >
                     {selectedRoad.properties.severity.toLowerCase()}{" "}
-                    {selectedRoad.properties.direction.toLowerCase()}
+                    {selectedRoad.properties.direction.toLowerCase()}{" "}
+                    <span aria-hidden="true">
+                      {selectedRoad.properties.direction === "DROP" ? "↓" : "↑"}
+                    </span>
                   </span>
                   <span>Site {selectedRoad.properties.site_ref}</span>
                 </div>
@@ -1113,13 +1116,28 @@ export default function MovementCanvas() {
                     <span>Usual</span>
                     <strong>{selectedRoad.properties.baseline_median.toLocaleString("en-NZ")}</strong>
                   </div>
+                  <div>
+                    <span>Change</span>
+                    <strong
+                      className={`delta ${
+                        selectedRoad.properties.direction === "DROP" ? "decrease" : "increase"
+                      }`}
+                    >
+                      {(() => {
+                        const delta =
+                          selectedRoad.properties.observed_count -
+                          selectedRoad.properties.baseline_median;
+                        return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
+                      })()}
+                    </strong>
+                  </div>
                 </div>
                 <dl className="evidence-metrics">
                   <div>
                     <dt>Ratio</dt>
                     <dd>{selectedRoad.properties.ratio.toFixed(2)}× usual</dd>
                   </div>
-                  <div>
+                  <div title="How many robust standard deviations the day sits from the site's own weekday or weekend baseline">
                     <dt>Robust score</dt>
                     <dd>{selectedRoad.properties.robust_z.toFixed(1)} z</dd>
                   </div>
@@ -1149,7 +1167,10 @@ export default function MovementCanvas() {
             <div className="selected-evidence">
               <div className="evidence-heading">
                 <span className={`direction-chip ${selectedSignal.properties.change_direction}`}>
-                  {String(selectedSignal.properties.change_direction)}
+                  {String(selectedSignal.properties.change_direction)}{" "}
+                  <span aria-hidden="true">
+                    {selectedSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
+                  </span>
                 </span>
                 <span>Investigate</span>
               </div>
@@ -1158,9 +1179,24 @@ export default function MovementCanvas() {
               <div className="count-comparison">
                 <div><span>Observed</span><strong>{Number(selectedSignal.properties.observed_count).toLocaleString("en-NZ")}</strong></div>
                 <div><span>Expected</span><strong>{Number(selectedSignal.properties.expected_count).toLocaleString("en-NZ")}</strong></div>
+                <div>
+                  <span>Change</span>
+                  <strong className={`delta ${selectedSignal.properties.change_direction}`}>
+                    {(() => {
+                      const delta = Math.round(
+                        Number(selectedSignal.properties.observed_count) -
+                          Number(selectedSignal.properties.expected_count),
+                      );
+                      return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
+                    })()}
+                  </strong>
+                </div>
               </div>
               <dl className="evidence-metrics">
-                <div><dt>Robust score</dt><dd>{Number(selectedSignal.properties.robust_z).toFixed(1)} z</dd></div>
+                <div title="How many robust standard deviations the hour sits from its matched weekday-and-hour baseline">
+                  <dt>Robust score</dt>
+                  <dd>{Number(selectedSignal.properties.robust_z).toFixed(1)} z</dd>
+                </div>
                 <div><dt>History</dt><dd>{Number((selectedSignal.properties.signal_confidence as Record<string, number>).history_samples)} matched hours</dd></div>
                 <div><dt>Baseline confidence</dt><dd>{String((selectedSignal.properties.signal_confidence as Record<string, string>).level)}</dd></div>
               </dl>
