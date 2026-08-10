@@ -491,15 +491,26 @@ export function drawSignals(
     const isHovered = feature.id === hoveredId;
     const decreasing = feature.properties.change_direction === "decrease";
     const colour = decreasing ? "#B3261E" : "#8A5A00";
-    context.strokeStyle = colour;
-    context.lineWidth = isSelected ? 6 : isHovered ? 5 : 3.5;
+    const lineWidth = isSelected ? 6 : isHovered ? 5 : 3.5;
     context.lineCap = "round";
+    // White casing under the coloured line lifts the primary layer off the
+    // basemap and the secondary glyphs around it.
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = lineWidth + 2.5;
+    context.beginPath();
+    context.moveTo(...start);
+    context.lineTo(...end);
+    context.stroke();
+    context.strokeStyle = colour;
+    context.lineWidth = lineWidth;
     context.beginPath();
     context.moveTo(...start);
     context.lineTo(...end);
     context.stroke();
 
-    const scale = (isSelected ? 1.4 : isHovered ? 1.2 : 1) * baseScale;
+    // Signals carry the story, so their glyphs run a step larger than the
+    // corroborating camera and bus icons.
+    const scale = (isSelected ? 1.4 : isHovered ? 1.2 : 1) * baseScale * 1.15;
     const fill = isSelected ? "#000000" : colour;
     if (PEOPLE_CLASSES.has(String(feature.properties.transport_class))) {
       drawPersonGlyph(context, start[0], start[1], scale, fill);
@@ -522,7 +533,8 @@ export function drawTransit(
     const [x, y] = project(feature.geometry.coordinates);
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
-    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale;
+    // Corroborating layer: runs smaller than the signal glyphs on purpose.
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.85;
     const width = 11 * scale;
     const height = 8 * scale;
     const left = x - width / 2;
@@ -640,7 +652,8 @@ export function drawCameras(
     const [x, y] = project(feature.geometry.coordinates);
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
-    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale;
+    // Corroborating layer: runs smaller than the signal glyphs on purpose.
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.8;
     const width = 13 * scale;
     const height = 9 * scale;
     const left = x - width / 2;
