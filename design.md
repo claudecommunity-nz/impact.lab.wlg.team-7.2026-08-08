@@ -314,3 +314,13 @@ re-litigated later:
 | R3-4 | No pointer stem — ambiguous anchor among close nodes | **True**, worsened by the popup's horizontal clamping. | **Shipped:** a beak aimed at the true anchor (`--beak-x` measured at pick time, clamped to the box), flipping with the above/below placement. |
 | R3-5 | Replace "+6.0 robust deviations" with "+6.0× Above Baseline" | **Partly — the proposed wording is numerically false.** A robust z is a deviation count, not a multiplier; "6.0×" would misstate the data. | **Shipped:** "+6.0 deviations from usual" — plain and true. Ratios appear only on highway sites, which genuinely have one. |
 | R3-6 | Expand NW / LHS abbreviations | **Partly.** Compass tokens are ours to present; "LHS" appears inside publisher-supplied countline names, which are not rewritten (data integrity). | **Shipped:** compass spelt out in the tooltip meta line ("north-west"); source names left verbatim. |
+
+### Round 4 — tooltip regression, reviewed 11 August 2026
+
+| # | Claim | Verdict | Action |
+|---|---|---|---|
+| R4-1 | Badge renders as a circle with clipped, stacked text | **True — a real CSS bug.** `.map-popup p span { display: block }` also caught the chip's nested arrow span, stacking the pill's contents vertically. | **Fixed:** row rule scoped to direct children (`p > span`); chip is `inline-flex` with nowrap. |
+| R4-2 | Badge floating inside a sentence breaks reading flow; belongs in the header row | **True.** | **Shipped:** the reviewer's row structure — header (name left, status pill right), muted subtitle, bold metrics with the signed delta, score line full-width beneath. |
+| R4-3 | "usual" orphans on its own line and collides with the badge | **True** — consequence of R4-1/R4-2. | Resolved by the restructure: the score line owns a full row. |
+| R4-4 | White-on-brown chip fails WCAG AA | **False as measured** (white on `#8A5A00` ≈ 5.6:1, passes AA), but the suggested tinted pill is better *and* matches the drawer's status badges. | **Shipped:** light amber/red wash with dark ink (≈7:1), consistent with `.status-badge`. |
+| R4-5 | Keep the pointer stem | Agreed. | Unchanged. |

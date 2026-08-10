@@ -952,7 +952,17 @@ export default function MovementCanvas() {
                   </>
                 ) : hoveredSignal ? (
                   <p>
-                    <strong>{String(hoveredSignal.properties.name)}</strong>
+                    <strong className="popup-title">
+                      <span className="popup-name">{String(hoveredSignal.properties.name)}</span>
+                      <span
+                        className={`popup-chip ${String(hoveredSignal.properties.change_direction)}`}
+                      >
+                        <span aria-hidden="true">
+                          {hoveredSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
+                        </span>
+                        {String(hoveredSignal.properties.change_direction)}
+                      </span>
+                    </strong>
                     <span className="popup-meta">
                       {String(hoveredSignal.properties.transport_class)} ·{" "}
                       {compass(String(hoveredSignal.properties.direction))}
@@ -961,16 +971,8 @@ export default function MovementCanvas() {
                       <b>{Number(hoveredSignal.properties.observed_count).toLocaleString("en-NZ")}</b>{" "}
                       observed vs{" "}
                       <b>{Number(hoveredSignal.properties.expected_count).toLocaleString("en-NZ")}</b>{" "}
-                      expected
-                    </span>
-                    <span>
-                      <span
-                        className={`popup-chip ${String(hoveredSignal.properties.change_direction)}`}
-                      >
-                        {String(hoveredSignal.properties.change_direction)}{" "}
-                        <span aria-hidden="true">
-                          {hoveredSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
-                        </span>{" "}
+                      expected (
+                      <b className={String(hoveredSignal.properties.change_direction)}>
                         {(() => {
                           const delta = Math.round(
                             Number(hoveredSignal.properties.observed_count) -
@@ -978,7 +980,10 @@ export default function MovementCanvas() {
                           );
                           return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
                         })()}
-                      </span>{" "}
+                      </b>
+                      )
+                    </span>
+                    <span>
                       {Number(hoveredSignal.properties.robust_z) > 0 ? "+" : ""}
                       {Number(hoveredSignal.properties.robust_z).toFixed(1)} deviations from usual
                     </span>

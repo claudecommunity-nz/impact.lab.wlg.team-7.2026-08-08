@@ -428,16 +428,23 @@ h3 { font-size: var(--text-h3); }
 }
 .map-popup p { margin: 0; padding: var(--space-2) var(--space-3) var(--space-3); font-size: var(--text-small); line-height: 1.5; }
 .map-popup strong { display: block; }
-.map-popup p span { display: block; color: var(--wcc-grey-700); }
+/* Direct children stack as rows; nested spans (chip contents) stay inline. */
+.map-popup p > span { display: block; color: var(--wcc-grey-700); }
 .map-popup p .popup-meta { font-size: 12px; }
 .map-popup p b { font-weight: 700; color: var(--wcc-black); }
+.map-popup p b.increase { color: var(--wcc-warning); }
+.map-popup p b.decrease { color: var(--wcc-error); }
+/* Header row: name left, status pill right. */
+.map-popup .popup-title { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+.map-popup .popup-title .popup-name { min-width: 0; }
 .popup-chip {
-  display: inline-block; padding: 0 var(--space-2); border-radius: var(--radius-pill);
-  color: var(--surface-page); font-weight: 700; font-size: 11px;
+  flex: none; display: inline-flex; align-items: center; gap: 3px;
+  padding: 1px var(--space-2); border-radius: var(--radius-pill);
+  font-weight: 700; font-size: 11px; white-space: nowrap;
 }
-.map-popup p span.popup-chip { display: inline-block; color: var(--surface-page); }
-.popup-chip.increase { background: var(--wcc-warning); }
-.popup-chip.decrease { background: var(--wcc-error); }
+/* Tinted like the drawer's status badges: dark ink on a light wash. */
+.popup-chip.increase { background: #fbf0dc; color: var(--wcc-warning); }
+.popup-chip.decrease { background: #f9e5e3; color: var(--wcc-error); }
 /* Beak: aimed at the hovered glyph so the callout owns exactly one anchor. */
 .map-popup::after {
   content: ""; position: absolute; width: 10px; height: 10px;
