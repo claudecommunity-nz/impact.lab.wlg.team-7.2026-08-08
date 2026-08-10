@@ -303,7 +303,7 @@ export function drawTiles(
   const tilesPerAxis = 2 ** view.zoom;
 
   // Mute the basemap so terrain greens never compete with the layer glyphs.
-  context.filter = "saturate(0.5) brightness(1.02)";
+  context.filter = "saturate(0.7) brightness(1.01)";
 
   for (let tileY = Math.floor(originY / TILE_SIZE); tileY <= Math.floor((originY + height) / TILE_SIZE); tileY += 1) {
     if (tileY < 0 || tileY >= tilesPerAxis) continue;
