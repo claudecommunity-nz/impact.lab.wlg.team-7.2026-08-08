@@ -196,7 +196,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .watch-intro {
   max-width: calc(var(--container-max) + 2 * var(--container-pad));
   margin-inline: auto;
-  padding: var(--space-8) var(--container-pad) var(--space-7);
+  padding: var(--space-6) var(--container-pad) var(--space-5);
   display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(420px, 0.8fr);
   gap: clamp(var(--space-6), 5vw, var(--space-9)); align-items: end;
 }
@@ -220,7 +220,9 @@ h1, h2, h3 {
   font-weight: 700;
   text-wrap: pretty;
 }
-h1 { max-width: 18ch; font-size: var(--text-display); font-weight: 800; line-height: 1.05; text-wrap: balance; }
+/* Page h1 is --text-h1 per the scale; --text-display stays reserved for the
+ * homepage display line (design.md §2). */
+h1 { max-width: 24ch; font-size: var(--text-h1); font-weight: 700; line-height: 1.1; text-wrap: balance; }
 h2 { font-size: var(--text-h2); }
 h3 { font-size: var(--text-h3); }
 .intro-copy { max-width: 68ch; margin: var(--space-5) 0 0; color: var(--wcc-grey-700); font-size: var(--text-lead); text-wrap: pretty; }
@@ -228,7 +230,7 @@ h3 { font-size: var(--text-h3); }
 .snapshot-facts div { padding: var(--space-4) var(--space-4) var(--space-4) 0; }
 .snapshot-facts div + div { border-left: 1px solid var(--border-hairline); padding-left: var(--space-4); }
 .snapshot-facts dt { color: var(--wcc-grey-700); font-size: var(--text-small); }
-.snapshot-facts dd { margin: var(--space-2) 0 var(--space-1); font-size: clamp(28px, 2.6vw, 40px); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.snapshot-facts dd { margin: var(--space-2) 0 var(--space-1); font-size: clamp(28px, 2.6vw, 40px); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .snapshot-facts span { color: var(--wcc-grey-700); font-size: var(--text-small); line-height: 1.4; }
 
 .investigation-shell {
@@ -269,8 +271,8 @@ h3 { font-size: var(--text-h3); }
   width: min(276px, calc(100% - 2 * var(--space-3)));
   max-height: calc(100% - var(--touch-min) - 4 * var(--space-3));
   display: flex; flex-direction: column; overflow: hidden;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  /* Near-solid, no blur: design.md §5 bans backdrop blur for old-device performance. */
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
   box-shadow: var(--shadow-2);
 }

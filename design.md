@@ -263,3 +263,29 @@ Test with keyboard only, then NVDA/VoiceOver, then at 400% zoom, then with CSS d
 2. `wccbrand.co.nz` — photography direction, secondary palette, te reo typographic rules.
 3. The official logo pack and the site's own icon set.
 4. Measured values from the live stylesheet, to replace the inferred type, spacing and elevation scales.
+
+---
+
+## 13. Murmur dashboard — external UX audit, verified 11 August 2026
+
+An external review of the Murmur dashboard was checked claim-by-claim against
+the shipped code (`site/app/globals.css`, `page.tsx`, `SideNav.tsx`,
+`MovementCanvas.tsx`). Verdicts and actions, so the same feedback is not
+re-litigated later:
+
+| # | Claim | Verdict | Action |
+|---|---|---|---|
+| 1a | Headline oversized | **True — by this system's own scale.** The dashboard h1 used `--text-display` (40–64px, 800), which §2 reserves for the homepage display line. | **Shipped:** global `h1` → `--text-h1` (32–44px, 700); hero paddings `--space-8/7` → `--space-6/5`. Band height drops roughly a third. |
+| 1b | Eyebrow and subtext fail contrast on yellow | **False.** In the band the eyebrow is black (≈15.7:1 on `#FFDD00`) and subtext is `--wcc-grey-900` `#1C1C1A` (≈12.7:1) — the review's recommended `#1A1A1A` is effectively what ships. | None. |
+| 1c | Metric cards misaligned, "06 Aug" wraps | **Mostly false.** All three `dd` values share one clamp size, `line-height: 1` and a common baseline. A wrap of "06 Aug" is only possible at unusual widths. | **Shipped:** `white-space: nowrap` on `.snapshot-facts dd` as hardening. |
+| 2a | Icon-only rail forces recall | **False.** The rail defaults to icons **with** label and detail text; collapsing it is a remembered user choice, and collapsed items carry `title` tooltips plus `aria-current`. | None. Expand-on-hover noted as a possible later refinement. |
+| 2b | Group the hero [+] and the "Batch replay" pill into an action bar | **Rejected.** The "[+]" is the brief's fold toggle — itself the fix for hero height — and "Batch replay" is contractual status copy (test-asserted, §9f truth labelling), not an action. Statuses and actions do not share a control bar. | None. |
+| 3a | Yellow hero takes >50% of the viewport | **Partially true** on short viewports with the display-size h1. The band already folds to a one-line strip (remembered), which the review missed. | Covered by 1a's compaction; the fold-away brief stays the primary answer. |
+| 3b | Map controls scattered | **Outdated.** Since the layer-drawer rework: layer chips + search + filter live in one drawer (top-left), zoom/fit is one stacked block (top-right), legend bottom-left, and bottom-right is the **required** OSM/CARTO attribution. The floating button bottom-right is the site-wide agent, not a map control. | None. |
+| 4a | Full-bleed yellow causes fatigue | **Partial, and governed.** §3 already caps `--surface-brand` at one or two uses per page; the band is the page's single brand surface and the basemap is desaturated so the map reads first. | Height reduction (1a) is the fatigue fix; the brand band is not recoloured. |
+| 4b | White controls on white lack elevation | **False as stated** — drawer and controls carry hairline borders plus `--shadow-2` per §5. But the check surfaced a real §5 violation: the layer drawer shipped `backdrop-filter: blur(8px)`, which §5 bans. | **Shipped:** blur removed; near-solid `rgba(255,255,255,0.95)` instead. |
+
+### Rules confirmed by this audit
+- `--text-display` is the homepage display line **only**; every page h1 is `--text-h1`. The dashboard was the violation, not the rule.
+- Status chrome ("Batch replay", truth badges) is never grouped with actions.
+- §5's no-blur rule applies to map overlays too. Borders and `--shadow-2` are the elevation language.
