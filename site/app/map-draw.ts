@@ -302,6 +302,9 @@ export function drawTiles(
   const originY = latToWorldY(view.centerLat, view.zoom) - height / 2;
   const tilesPerAxis = 2 ** view.zoom;
 
+  // Mute the basemap so terrain greens never compete with the layer glyphs.
+  context.filter = "saturate(0.5) brightness(1.02)";
+
   for (let tileY = Math.floor(originY / TILE_SIZE); tileY <= Math.floor((originY + height) / TILE_SIZE); tileY += 1) {
     if (tileY < 0 || tileY >= tilesPerAxis) continue;
     for (let tileX = Math.floor(originX / TILE_SIZE); tileX <= Math.floor((originX + width) / TILE_SIZE); tileX += 1) {
@@ -331,6 +334,79 @@ export function drawTiles(
         );
       }
     }
+  }
+
+  context.filter = "none";
+}
+
+/**
+ * Glyph size multiplier for a zoom level: icons recede at the city-wide zooms
+ * so street labels stay legible, and grow back once streets fill the frame.
+ */
+export function glyphScale(zoom: number) {
+  return Math.min(1.2, Math.max(0.7, 0.7 + (zoom - 11) * 0.125));
+}
+
+export type Cluster<T> = { x: number; y: number; members: T[] };
+
+/**
+ * Screen-space grid clustering. Points whose projected positions share a
+ * `radius`-sized cell merge into one cluster anchored at their centroid, so
+ * zooming in naturally dissolves clusters into individual glyphs.
+ */
+export function clusterPoints<T>(
+  features: T[],
+  anchorOf: (feature: T) => Coordinate,
+  project: Projector,
+  radius: number,
+): Cluster<T>[] {
+  const cells = new Map<string, Cluster<T>>();
+  for (const feature of features) {
+    const [x, y] = project(anchorOf(feature));
+    const key = `${Math.round(x / radius)}:${Math.round(y / radius)}`;
+    const cell = cells.get(key);
+    if (cell) {
+      cell.members.push(feature);
+      cell.x += x;
+      cell.y += y;
+    } else {
+      cells.set(key, { x, y, members: [feature] });
+    }
+  }
+  for (const cell of cells.values()) {
+    cell.x /= cell.members.length;
+    cell.y /= cell.members.length;
+  }
+  return [...cells.values()];
+}
+
+export function clusterRadius(count: number) {
+  return Math.min(17, 9 + Math.sqrt(count) * 1.6);
+}
+
+/** Density bubbles for clustered points: tinted disc, white ring, count. */
+export function drawClusters<T>(
+  context: CanvasRenderingContext2D,
+  clusters: Cluster<T>[],
+  colour: string,
+) {
+  for (const cluster of clusters) {
+    if (cluster.members.length < 2) continue;
+    const radius = clusterRadius(cluster.members.length);
+    context.beginPath();
+    context.arc(cluster.x, cluster.y, radius, 0, Math.PI * 2);
+    context.globalAlpha = 0.85;
+    context.fillStyle = colour;
+    context.fill();
+    context.globalAlpha = 1;
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 1.6;
+    context.stroke();
+    context.fillStyle = "#FFFFFF";
+    context.font = "700 10px system-ui, sans-serif";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(String(cluster.members.length), cluster.x, cluster.y);
   }
 }
 
@@ -401,6 +477,7 @@ export function drawSignals(
   signals: LineFeature[],
   selectedId: string | null,
   hoveredId: string | null = null,
+  baseScale = 1,
 ) {
   for (const feature of signals) {
     const [start, rawEnd] = feature.geometry.coordinates.map(project);
@@ -422,7 +499,7 @@ export function drawSignals(
     context.lineTo(...end);
     context.stroke();
 
-    const scale = isSelected ? 1.4 : isHovered ? 1.2 : 1;
+    const scale = (isSelected ? 1.4 : isHovered ? 1.2 : 1) * baseScale;
     const fill = isSelected ? "#000000" : colour;
     if (PEOPLE_CLASSES.has(String(feature.properties.transport_class))) {
       drawPersonGlyph(context, start[0], start[1], scale, fill);
@@ -439,12 +516,13 @@ export function drawTransit(
   hotspots: TransitFeature[],
   selectedId: string | null,
   hoveredId: string | null = null,
+  baseScale = 1,
 ) {
   for (const feature of hotspots) {
     const [x, y] = project(feature.geometry.coordinates);
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
-    const scale = isSelected ? 1.35 : isHovered ? 1.2 : 1;
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale;
     const width = 11 * scale;
     const height = 8 * scale;
     const left = x - width / 2;
@@ -488,13 +566,14 @@ export function drawRoads(
   sites: RoadFeature[],
   selectedId: string | null,
   hoveredId: string | null = null,
+  baseScale = 1,
 ) {
   for (const feature of sites) {
     const [x, y] = project(feature.geometry.coordinates);
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
-    const scale = isSelected ? 1.35 : isHovered ? 1.2 : 1;
-    const radius = 5.5 * scale;
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale;
+    const radius = 5 * scale;
     const body = feature.properties.severity === "HIGH" ? "#5B4A8A" : "#907FBE";
 
     if (isSelected) {
@@ -555,14 +634,15 @@ export function drawCameras(
   cameras: CameraFeature[],
   selectedId: string | null,
   hoveredId: string | null = null,
+  baseScale = 1,
 ) {
   for (const feature of cameras) {
     const [x, y] = project(feature.geometry.coordinates);
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
-    const scale = isSelected ? 1.35 : isHovered ? 1.2 : 1;
-    const width = 16 * scale;
-    const height = 11 * scale;
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale;
+    const width = 13 * scale;
+    const height = 9 * scale;
     const left = x - width / 2;
     const top = y - height / 2;
     const body = feature.properties.offline ? "#6F6F69" : "#0B6B3A";

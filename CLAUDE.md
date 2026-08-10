@@ -119,9 +119,10 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
 - **Projection** — Web Mercator (`lonToWorldX` / `latToWorldY`) at whole zoom
   levels only, `MIN_ZOOM` 9 to `MAX_ZOOM` 18. Whole levels keep tiles pixel-exact.
 - **Basemap** — CARTO Positron raster tiles (OpenStreetMap data), cached in a
-  module-level `Map` capped at 512 images and drawn under the layers. No API key.
-  **Attribution to OpenStreetMap and CARTO is required** and is rendered over the
-  map by `MovementCanvas`; do not remove it.
+  module-level `Map` capped at 512 images and drawn under the layers, muted with
+  `context.filter` saturation so terrain never competes with the glyphs. No API
+  key. **Attribution to OpenStreetMap and CARTO is required** and is rendered
+  over the map by `MovementCanvas`; do not remove it.
 - **View state** — `MapView { centerLon, centerLat, zoom }` in React state, seeded
   from `DEFAULT_VIEW` (Wellington CBD, z12). `panView`, `zoomAround` (cursor-
   anchored) and `fitView` (largest whole zoom that fits given bounds) are pure
@@ -135,7 +136,17 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
 
 `MovementCanvas` renders **one** canvas and **one** view; every source is a
 toggleable layer (`layers` state, all on by default), drawn tiles → coverage →
-roads → transit → signals → cameras:
+roads → transit → signals → cameras. The point layers (cameras, transit, roads)
+are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
+points sharing a cell merge into a density bubble with a count, clicking a
+bubble zooms into it, and zooming naturally dissolves clusters into glyphs.
+Only singles are hit-testable. Glyphs scale with zoom (`glyphScale`) so street
+labels stay legible at city-wide zooms. Layer toggles live in a floating
+semi-transparent **layer drawer** over the map's top-left (`layerMenuStore`,
+the flag-store pattern) with per-layer **truth badges** (Live / Batch replay /
+Synthetic / Real · Apr 2026), a **local search** over loaded feature names
+(never an external geocoder) and a geolocation **locate** button; the
+`All | People | Vehicles` filter sits inside the drawer under the signals chip:
 
 - `signals` — movement-change signals, with the people/vehicles filter. The
   anchor glyph is a mini **person** for `PEOPLE_CLASSES` (Pedestrian, Cyclist,
@@ -197,9 +208,9 @@ attribution block are contractual copy and are server-rendered. The header brand
 is the real logo (`public/murmur-logo.svg`, `currentColor` strokes; favicon is
 `public/murmur-favicon.svg`) and the render test rejects the old M05 placeholder.
 
-Three things fold away — the rail, the dashboard brief (`IntroBand.tsx`) and the
-investigate panel — and every one of them is an **icon** control, never a word,
-so the chrome costs nothing when it is closed. `app/flag-store.ts`
+Four things fold away — the rail, the dashboard brief (`IntroBand.tsx`), the
+investigate panel and the map's layer drawer — and every one of them is an
+**icon** control, never a word, so the chrome costs nothing when it is closed. `app/flag-store.ts`
 (`createFlagStore(key, defaultOn)`) is the shared pattern behind them: a
 remembered boolean exposed as `subscribe`/`snapshot`/`serverSnapshot`/`toggle`
 for `useSyncExternalStore`. Use it for the next collapsible thing rather than

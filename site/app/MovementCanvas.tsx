@@ -15,6 +15,7 @@ import { createFlagStore } from "./flag-store";
 import {
   type CameraCollection,
   type CameraFeature,
+  type Cluster,
   type Coordinate,
   type LineCollection,
   type LineFeature,
@@ -29,14 +30,18 @@ import {
   PEOPLE_CLASSES,
   boundsOfLines,
   boundsOfPoints,
+  clusterPoints,
+  clusterRadius,
   createProjector,
   drawCameras,
+  drawClusters,
   drawCoverage,
   drawRoads,
   drawSignals,
   drawTiles,
   drawTransit,
   fitView,
+  glyphScale,
   panView,
   pickNearest,
   prepareCanvas,
@@ -54,18 +59,33 @@ const POPUP_WIDTH = 248;
 const HOVER_REFRESH_MS = 15_000;
 const TRANSIT_LIST_LIMIT = 30;
 const ROAD_LIST_LIMIT = 30;
+/* Points whose projected positions land within one cell merge into a density
+ * bubble; zooming in grows the screen distances and dissolves the bubbles. */
+const CLUSTER_CELL = 34;
+const SEARCH_LIMIT = 8;
 
 /* The evidence column slides away rather than disappearing, so the map can grow
  * to the full frame when someone is scanning rather than investigating. */
 const evidenceStore = createFlagStore("murmur.evidence.open", true);
+/* Same remembered-flag pattern for the floating layer menu. */
+const layerMenuStore = createFlagStore("murmur.layers.open", true);
 
-const LAYERS: { id: LayerId; label: string; detail: string }[] = [
-  { id: "signals", label: "Movement signals", detail: "WCC countlines · batch replay" },
-  { id: "coverage", label: "Sensor coverage", detail: "Every measured countline" },
-  { id: "cameras", label: "Traffic cameras", detail: "NZTA · live frames" },
-  { id: "transit", label: "Public transport", detail: "Metlink · synthetic replay" },
-  { id: "roads", label: "State highways", detail: "NZTA · real April 2026 floods" },
+/** Every layer states its temporal truth as a badge: live, replay, synthetic or real. */
+const LAYERS: {
+  id: LayerId;
+  label: string;
+  publisher: string;
+  badge: string;
+  tone: "live" | "replay" | "synthetic" | "real";
+}[] = [
+  { id: "signals", label: "Movement signals", publisher: "WCC countlines", badge: "Batch replay", tone: "replay" },
+  { id: "coverage", label: "Sensor coverage", publisher: "WCC countlines", badge: "Batch replay", tone: "replay" },
+  { id: "cameras", label: "Traffic cameras", publisher: "NZTA", badge: "Live", tone: "live" },
+  { id: "transit", label: "Public transport", publisher: "Metlink", badge: "Synthetic", tone: "synthetic" },
+  { id: "roads", label: "State highways", publisher: "NZTA", badge: "Real · Apr 2026", tone: "real" },
 ];
+
+type SearchHit = { kind: Focus; id: string; label: string; detail: string; coordinate: Coordinate };
 
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -101,6 +121,9 @@ export default function MovementCanvas() {
   // so the stored screen coordinates never go stale.
   const [hover, setHover] = useState<Hover | null>(null);
   const [hoverTick, setHoverTick] = useState(0);
+  const [overCluster, setOverCluster] = useState(false);
+  const [search, setSearch] = useState("");
+  const [locateNote, setLocateNote] = useState<string | null>(null);
   // The canvas is redrawn imperatively, so tile loads and resizes can call the
   // latest draw closure without re-running an effect.
   const drawRef = useRef<() => void>(() => {});
@@ -110,6 +133,12 @@ export default function MovementCanvas() {
       evidenceStore.subscribe,
       evidenceStore.snapshot,
       evidenceStore.serverSnapshot,
+    ) === "1";
+  const menuOpen =
+    useSyncExternalStore(
+      layerMenuStore.subscribe,
+      layerMenuStore.snapshot,
+      layerMenuStore.serverSnapshot,
     ) === "1";
 
   const stageSize = useCallback(() => {
@@ -218,6 +247,24 @@ export default function MovementCanvas() {
       ? roadFeatures.find((feature) => feature.id === hover.id)
       : undefined;
 
+  /** Per-frame screen-space clustering of the three point layers. */
+  const clusterLayers = (width: number, height: number) => {
+    const project = createProjector(view, width, height);
+    const split = <T,>(features: T[], anchor: (feature: T) => Coordinate, on: boolean) => {
+      if (!on) return { singles: [] as T[], clusters: [] as Cluster<T>[] };
+      const cells = clusterPoints(features, anchor, project, CLUSTER_CELL);
+      return {
+        singles: cells.filter((cell) => cell.members.length === 1).map((cell) => cell.members[0]),
+        clusters: cells.filter((cell) => cell.members.length > 1),
+      };
+    };
+    return {
+      cameras: split(cameraFeatures, (feature) => feature.geometry.coordinates, layers.cameras),
+      transit: split(transitFeatures, (feature) => feature.geometry.coordinates, layers.transit),
+      roads: split(roadFeatures, (feature) => feature.geometry.coordinates, layers.roads),
+    };
+  };
+
   // Redraw after every render, and hand the same closure to tile loads and resizes.
   useEffect(() => {
     drawRef.current = () => {
@@ -227,24 +274,30 @@ export default function MovementCanvas() {
       if (!surface) return;
       drawTiles(surface.context, view, surface.width, surface.height, () => drawRef.current());
       const project = createProjector(view, surface.width, surface.height);
+      const scale = glyphScale(view.zoom);
+      const groups = clusterLayers(surface.width, surface.height);
       if (layers.coverage) drawCoverage(surface.context, project, coverage);
       if (layers.roads) {
         drawRoads(
           surface.context,
           project,
-          roadFeatures,
+          groups.roads.singles,
           selectedRoad?.id ?? null,
           hover?.kind === "road" ? hover.id : null,
+          scale,
         );
+        drawClusters(surface.context, groups.roads.clusters, "#5B4A8A");
       }
       if (layers.transit) {
         drawTransit(
           surface.context,
           project,
-          transitFeatures,
+          groups.transit.singles,
           selectedTransit?.id ?? null,
           hover?.kind === "transit" ? hover.id : null,
+          scale,
         );
+        drawClusters(surface.context, groups.transit.clusters, "#2B5CAD");
       }
       if (layers.signals) {
         drawSignals(
@@ -253,16 +306,19 @@ export default function MovementCanvas() {
           filteredSignals,
           selectedSignal?.id ?? null,
           hover?.kind === "signal" ? hover.id : null,
+          scale,
         );
       }
       if (layers.cameras) {
         drawCameras(
           surface.context,
           project,
-          cameraFeatures,
+          groups.cameras.singles,
           selectedCamera?.id ?? null,
           hover?.kind === "camera" ? hover.id : null,
+          scale,
         );
+        drawClusters(surface.context, groups.cameras.clusters, "#0B6B3A");
       }
     };
     drawRef.current();
@@ -347,9 +403,93 @@ export default function MovementCanvas() {
     });
   };
 
-  /** Cameras sit on top of the line layers, so they win the hit test. */
+  // Search covers what the map holds: signal, camera, stop and highway names.
+  const searchHits = useMemo<SearchHit[]>(() => {
+    const query = search.trim().toLowerCase();
+    if (query.length < 2) return [];
+    const hits: SearchHit[] = [];
+    for (const feature of signals) {
+      if (String(feature.properties.name).toLowerCase().includes(query)) {
+        hits.push({
+          kind: "signal",
+          id: feature.id,
+          label: String(feature.properties.name),
+          detail: `Signal · ${String(feature.properties.transport_class)}`,
+          coordinate: feature.geometry.coordinates[0],
+        });
+      }
+    }
+    for (const feature of cameraFeatures) {
+      if (feature.properties.name.toLowerCase().includes(query)) {
+        hits.push({
+          kind: "camera",
+          id: feature.id,
+          label: feature.properties.name,
+          detail: "NZTA camera",
+          coordinate: feature.geometry.coordinates,
+        });
+      }
+    }
+    for (const feature of transitFeatures) {
+      if (feature.properties.stop_name.toLowerCase().includes(query)) {
+        hits.push({
+          kind: "transit",
+          id: feature.id,
+          label: feature.properties.stop_name,
+          detail: "PT hotspot",
+          coordinate: feature.geometry.coordinates,
+        });
+      }
+    }
+    for (const feature of roadFeatures) {
+      if (feature.properties.site_name.toLowerCase().includes(query)) {
+        hits.push({
+          kind: "road",
+          id: feature.id,
+          label: feature.properties.site_name,
+          detail: `SH${feature.properties.state_highway}`,
+          coordinate: feature.geometry.coordinates,
+        });
+      }
+    }
+    return hits.slice(0, SEARCH_LIMIT);
+  }, [search, signals, cameraFeatures, transitFeatures, roadFeatures]);
+
+  const pickSearchHit = (hit: SearchHit) => {
+    if (hit.kind === "camera") setSelectedCameraId(hit.id);
+    else if (hit.kind === "transit") setSelectedTransitId(hit.id);
+    else if (hit.kind === "road") setSelectedRoadId(hit.id);
+    else setSelectedSignalId(hit.id);
+    setFocus(hit.kind);
+    setSearch("");
+    revealOnMap(hit.coordinate);
+  };
+
+  const locateMe = () => {
+    if (!("geolocation" in navigator)) {
+      setLocateNote("No location support in this browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocateNote(null);
+        setHover(null);
+        setView((current) => ({
+          centerLon: position.coords.longitude,
+          centerLat: position.coords.latitude,
+          zoom: Math.max(current.zoom, 14),
+        }));
+      },
+      () => setLocateNote("Location blocked or unavailable."),
+    );
+  };
+
+  /** Cameras sit on top of the line layers, so they win the hit test. Only
+   * individually drawn glyphs are pickable — clustered points are reached by
+   * zooming their bubble. */
   const featureAt = (point: Coordinate, size: { width: number; height: number }): Hover | null => {
     const project = createProjector(view, size.width, size.height);
+    const groups = clusterLayers(size.width, size.height);
     const place = (kind: Focus, id: string, [x, y]: Coordinate): Hover => ({
       kind,
       id,
@@ -358,7 +498,7 @@ export default function MovementCanvas() {
       above: y > (kind === "camera" ? 264 : 120),
     });
     if (layers.cameras) {
-      const hit = pickNearest(cameraFeatures, (feature) => feature.geometry.coordinates, project, point);
+      const hit = pickNearest(groups.cameras.singles, (feature) => feature.geometry.coordinates, project, point);
       if (hit) return place("camera", hit.id, project(hit.geometry.coordinates));
     }
     if (layers.signals) {
@@ -366,12 +506,24 @@ export default function MovementCanvas() {
       if (hit) return place("signal", hit.id, project(hit.geometry.coordinates[0]));
     }
     if (layers.transit) {
-      const hit = pickNearest(transitFeatures, (feature) => feature.geometry.coordinates, project, point);
+      const hit = pickNearest(groups.transit.singles, (feature) => feature.geometry.coordinates, project, point);
       if (hit) return place("transit", hit.id, project(hit.geometry.coordinates));
     }
     if (layers.roads) {
-      const hit = pickNearest(roadFeatures, (feature) => feature.geometry.coordinates, project, point);
+      const hit = pickNearest(groups.roads.singles, (feature) => feature.geometry.coordinates, project, point);
       if (hit) return place("road", hit.id, project(hit.geometry.coordinates));
+    }
+    return null;
+  };
+
+  /** Density bubble under the pointer, if any — clicking it zooms in a level. */
+  const clusterAt = (point: Coordinate, size: { width: number; height: number }) => {
+    const groups = clusterLayers(size.width, size.height);
+    for (const clusters of [groups.cameras.clusters, groups.transit.clusters, groups.roads.clusters]) {
+      for (const cluster of clusters) {
+        const distance = Math.hypot(cluster.x - point[0], cluster.y - point[1]);
+        if (distance <= clusterRadius(cluster.members.length) + 2) return cluster;
+      }
     }
     return null;
   };
@@ -397,21 +549,33 @@ export default function MovementCanvas() {
     const size = stageSize();
     if (!size) return;
     const rect = event.currentTarget.getBoundingClientRect();
-    const next = featureAt([event.clientX - rect.left, event.clientY - rect.top], size);
+    const point: Coordinate = [event.clientX - rect.left, event.clientY - rect.top];
+    const next = featureAt(point, size);
     setHover((current) =>
       current?.kind === next?.kind && current?.id === next?.id ? current : next,
     );
+    const cluster = next ? null : clusterAt(point, size);
+    setOverCluster((current) => (current === Boolean(cluster) ? current : Boolean(cluster)));
   };
 
-  // A press that never moved is a click: select the nearest feature under it.
+  // A press that never moved is a click: select the nearest feature under it,
+  // or zoom into the density bubble under it.
   const handlePointerUp = (event: ReactPointerEvent<HTMLCanvasElement>) => {
     const drag = dragRef.current;
     dragRef.current = null;
     const size = stageSize();
     if (!drag || drag.moved || !size) return;
     const rect = event.currentTarget.getBoundingClientRect();
-    const hit = featureAt([event.clientX - rect.left, event.clientY - rect.top], size);
-    if (!hit) return;
+    const point: Coordinate = [event.clientX - rect.left, event.clientY - rect.top];
+    const hit = featureAt(point, size);
+    if (!hit) {
+      const cluster = clusterAt(point, size);
+      if (cluster) {
+        setHover(null);
+        setView((current) => zoomAround(current, 1, [cluster.x, cluster.y], size.width, size.height));
+      }
+      return;
+    }
     if (hit.kind === "camera") {
       setSelectedCameraId(hit.id);
       setFocus("camera");
@@ -450,50 +614,14 @@ export default function MovementCanvas() {
         aria-labelledby="map-heading"
       >
         <div className="map-column">
-          <div className="map-toolbar">
-            <div>
-              <h2 id="map-heading">One map, every source</h2>
-            </div>
-            <div className="toolbar-controls">
-              <div className="layer-toggles" role="group" aria-label="Map layers">
-                {LAYERS.map((entry) => (
-                  <button
-                    type="button"
-                    key={entry.id}
-                    className={layers[entry.id] ? "active" : ""}
-                    aria-pressed={layers[entry.id]}
-                    onClick={() => toggleLayer(entry.id)}
-                  >
-                    <i className={`swatch ${entry.id}`} aria-hidden="true" />
-                    <span>
-                      <strong>{entry.label}</strong>
-                      <small>{entry.detail}</small>
-                    </span>
-                  </button>
-                ))}
-              </div>
-              {layers.signals ? (
-                <div className="filter-group" aria-label="Filter signals">
-                  {(["all", "people", "vehicles"] as Filter[]).map((value) => (
-                    <button
-                      type="button"
-                      key={value}
-                      className={filter === value ? "active" : ""}
-                      aria-pressed={filter === value}
-                      onClick={() => setFilter(value)}
-                    >
-                      {value === "all" ? "All" : value === "people" ? "People" : "Vehicles"}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          </div>
+          <h2 id="map-heading" className="visually-hidden">
+            One map, every source
+          </h2>
           <div className="map-stage" ref={frameRef}>
             <canvas
               ref={canvasRef}
               className="map-canvas"
-              style={hover ? { cursor: "pointer" } : undefined}
+              style={hover || overCluster ? { cursor: "pointer" } : undefined}
               role="img"
               aria-label={`Map of Wellington showing ${layerSummary}. Drag to pan, use the zoom buttons to change scale.`}
               onPointerDown={handlePointerDown}
@@ -511,8 +639,123 @@ export default function MovementCanvas() {
               aria-label={evidenceOpen ? "Hide investigate panel" : "Show investigate panel"}
               title={evidenceOpen ? "Hide investigate panel" : "Show investigate panel"}
             >
-              <span aria-hidden="true">{evidenceOpen ? "«" : "»"}</span>
+              <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                <rect x="1.2" y="2.2" width="13.6" height="11.6" rx="1.6" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                <line x1="6.2" y1="2.2" x2="6.2" y2="13.8" stroke="currentColor" strokeWidth="1.5" />
+                {evidenceOpen ? <rect x="1.2" y="2.2" width="5" height="11.6" rx="1.4" fill="currentColor" /> : null}
+              </svg>
             </button>
+            <section className={`layer-drawer ${menuOpen ? "" : "closed"}`} aria-label="Layers and filters">
+              {menuOpen ? (
+                <>
+                  <div className="drawer-head">
+                    <p className="drawer-title">Layers</p>
+                    <button
+                      type="button"
+                      className="drawer-toggle"
+                      onClick={() => layerMenuStore.toggle(menuOpen)}
+                      aria-expanded
+                      aria-controls="layer-menu-body"
+                      aria-label="Hide the layer menu"
+                      title="Hide the layer menu"
+                    >
+                      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                        <path d="M3 10l5-5 5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div id="layer-menu-body" className="drawer-body">
+                    <form className="map-search" role="search" onSubmit={(event) => event.preventDefault()}>
+                      <label className="visually-hidden" htmlFor="map-search-input">
+                        Find on the map
+                      </label>
+                      <input
+                        id="map-search-input"
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        placeholder="Find a street, stop or site"
+                        autoComplete="off"
+                      />
+                      <button
+                        type="button"
+                        className="locate"
+                        onClick={locateMe}
+                        aria-label="Centre on my location"
+                        title="Centre on my location"
+                      >
+                        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                          <circle cx="8" cy="8" r="2.4" fill="currentColor" />
+                          <circle cx="8" cy="8" r="5.2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                          <path d="M8 0.4v2.2M8 13.4v2.2M0.4 8h2.2M13.4 8h2.2" stroke="currentColor" strokeWidth="1.4" />
+                        </svg>
+                      </button>
+                    </form>
+                    {searchHits.length > 0 ? (
+                      <ul className="search-results">
+                        {searchHits.map((hit) => (
+                          <li key={`${hit.kind}:${hit.id}`}>
+                            <button type="button" onClick={() => pickSearchHit(hit)}>
+                              <strong>{hit.label}</strong>
+                              <small>{hit.detail}</small>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : search.trim().length >= 2 ? (
+                      <p className="search-note">No match in the loaded layers.</p>
+                    ) : null}
+                    {locateNote ? <p className="search-note">{locateNote}</p> : null}
+                    <div className="layer-toggles" role="group" aria-label="Map layers">
+                      {LAYERS.map((entry) => (
+                        <button
+                          type="button"
+                          key={entry.id}
+                          className={`layer-chip ${layers[entry.id] ? "on" : "off"}`}
+                          aria-pressed={layers[entry.id]}
+                          onClick={() => toggleLayer(entry.id)}
+                        >
+                          <i className={`swatch ${entry.id}`} aria-hidden="true" />
+                          <span className="chip-text">
+                            <strong>{entry.label}</strong>
+                            <small>{entry.publisher}</small>
+                          </span>
+                          <em className={`status-badge ${entry.tone}`}>{entry.badge}</em>
+                        </button>
+                      ))}
+                    </div>
+                    {layers.signals ? (
+                      <div className="filter-group" aria-label="Filter signals">
+                        {(["all", "people", "vehicles"] as Filter[]).map((value) => (
+                          <button
+                            type="button"
+                            key={value}
+                            className={filter === value ? "active" : ""}
+                            aria-pressed={filter === value}
+                            onClick={() => setFilter(value)}
+                          >
+                            {value === "all" ? "All" : value === "people" ? "People" : "Vehicles"}
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className="drawer-toggle closed"
+                  onClick={() => layerMenuStore.toggle(menuOpen)}
+                  aria-expanded={false}
+                  aria-label="Show the layer menu"
+                  title="Show the layer menu"
+                >
+                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                    <path d="M8 1.6 14.4 5 8 8.4 1.6 5Z" fill="currentColor" />
+                    <path d="M2.2 8 8 11l5.8-3M2.2 11 8 14l5.8-3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              )}
+            </section>
             <div className="map-controls">
               <button
                 type="button"
@@ -532,8 +775,17 @@ export default function MovementCanvas() {
               >
                 −
               </button>
-              <button type="button" className="fit" onClick={fitLayers} title="Fit the active layers">
-                Fit
+              <button
+                type="button"
+                className="fit"
+                onClick={fitLayers}
+                aria-label="Fit the active layers"
+                title="Fit the active layers"
+              >
+                <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                  <circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M8 0.6v2.6M8 12.8v2.6M0.6 8h2.6M12.8 8h2.6" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
               </button>
               <span className="zoom-level" aria-hidden="true">z{view.zoom}</span>
             </div>

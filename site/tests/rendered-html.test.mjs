@@ -92,6 +92,12 @@ test("merges every source into one map with switchable layers", async () => {
   assert.match(html, /State highways/);
   // All five layers start switched on.
   assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 5);
+  // The floating layer menu starts open, with local search and truth badges.
+  assert.match(html, /aria-controls="layer-menu-body"/);
+  assert.match(html, /Find on the map/);
+  assert.match(html, /status-badge live/);
+  assert.match(html, /status-badge synthetic/);
+  assert.match(html, /status-badge real/);
   // One canvas, one projection: no source ships a second map.
   assert.equal(html.match(/<canvas/g)?.length, 1);
 });
