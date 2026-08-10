@@ -128,6 +128,10 @@ export default function MovementCanvas() {
   // latest draw closure without re-running an effect.
   const drawRef = useRef<() => void>(() => {});
   const dragRef = useRef<{ x: number; y: number; moved: boolean } | null>(null);
+  // The view auto-fits the coverage frame to the canvas until the user takes
+  // over (pan, zoom, locate, reveal) — then their framing wins, resize included.
+  const autoFitRef = useRef(true);
+  const autoFitFnRef = useRef<() => void>(() => {});
   const evidenceOpen =
     useSyncExternalStore(
       evidenceStore.subscribe,
@@ -146,6 +150,20 @@ export default function MovementCanvas() {
     return rect && rect.width > 0 ? { width: rect.width, height: rect.height } : null;
   }, []);
 
+  // Auto-fit: the largest whole zoom that frames the countline coverage in
+  // this canvas. Runs when the coverage arrives and again on every resize.
+  const autoFit = useCallback(
+    (features: LineFeature[]) => {
+      if (!autoFitRef.current) return;
+      const size = stageSize();
+      if (!size) return;
+      const bounds = boundsOfLines(features);
+      if (!bounds) return;
+      setView(fitView(bounds, size.width, size.height));
+    },
+    [stageSize],
+  );
+
   useEffect(() => {
     Promise.all([
       fetch("/cop/v1/countline-coverage.geojson").then((response) => response.json()),
@@ -155,9 +173,10 @@ export default function MovementCanvas() {
         setCoverage(coverageData.features);
         setSignals(signalData.features);
         setSelectedSignalId(signalData.features[0]?.id ?? null);
+        autoFit(coverageData.features);
       })
       .catch(() => setError("The replay files could not be loaded. Check the COP feed."));
-  }, []);
+  }, [autoFit]);
 
   useEffect(() => {
     fetch("/cop/v1/traffic-cameras.geojson")
@@ -325,9 +344,16 @@ export default function MovementCanvas() {
   });
 
   useEffect(() => {
+    autoFitFnRef.current = () => autoFit(coverage);
+  });
+
+  useEffect(() => {
     const frame = frameRef.current;
     if (!frame) return;
-    const observer = new ResizeObserver(() => drawRef.current());
+    const observer = new ResizeObserver(() => {
+      autoFitFnRef.current();
+      drawRef.current();
+    });
     observer.observe(frame);
     return () => observer.disconnect();
   }, []);
@@ -352,6 +378,7 @@ export default function MovementCanvas() {
       event.preventDefault();
       const rect = canvas.getBoundingClientRect();
       const anchor: Coordinate = [event.clientX - rect.left, event.clientY - rect.top];
+      autoFitRef.current = false;
       setHover(null);
       setView((current) =>
         zoomAround(current, event.deltaY < 0 ? 1 : -1, anchor, rect.width, rect.height),
@@ -364,6 +391,7 @@ export default function MovementCanvas() {
   const zoomBy = (step: number) => {
     const size = stageSize();
     if (!size) return;
+    autoFitRef.current = false;
     setHover(null);
     setView((current) =>
       zoomAround(current, step, [size.width / 2, size.height / 2], size.width, size.height),
@@ -380,6 +408,7 @@ export default function MovementCanvas() {
       layers.roads ? boundsOfPoints(roadFeatures) : null,
     );
     if (!bounds) return;
+    autoFitRef.current = false;
     setHover(null);
     setView(fitView(bounds, size.width, size.height));
   }, [stageSize, layers, coverage, cameraFeatures, transitFeatures, roadFeatures]);
@@ -393,6 +422,7 @@ export default function MovementCanvas() {
   const revealOnMap = (coordinate: Coordinate) => {
     const size = stageSize();
     if (!size) return;
+    autoFitRef.current = false;
     setHover(null);
     setView((current) => {
       const [x, y] = createProjector(current, size.width, size.height)(coordinate);
@@ -473,6 +503,7 @@ export default function MovementCanvas() {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocateNote(null);
+        autoFitRef.current = false;
         setHover(null);
         setView((current) => ({
           centerLon: position.coords.longitude,
@@ -541,6 +572,7 @@ export default function MovementCanvas() {
       if (!drag.moved && Math.hypot(dx, dy) < 3) return;
       if (!drag.moved) setHover(null);
       drag.moved = true;
+      autoFitRef.current = false;
       drag.x = event.clientX;
       drag.y = event.clientY;
       setView((current) => panView(current, -dx, -dy));
@@ -571,6 +603,7 @@ export default function MovementCanvas() {
     if (!hit) {
       const cluster = clusterAt(point, size);
       if (cluster) {
+        autoFitRef.current = false;
         setHover(null);
         setView((current) => zoomAround(current, 1, [cluster.x, cluster.y], size.width, size.height));
       }

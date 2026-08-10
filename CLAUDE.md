@@ -127,7 +127,10 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
   from `DEFAULT_VIEW` (Wellington CBD, z12). `panView`, `zoomAround` (cursor-
   anchored) and `fitView` (largest whole zoom that fits given bounds) are pure
   functions over it, so drag, wheel, the +/−/Fit buttons and `revealOnMap` all
-  go through the same three helpers.
+  go through the same three helpers. On load the view **auto-fits** the coverage
+  bounds to the actual canvas (`autoFitRef`), and keeps refitting on resize
+  until the first user view action — pan, zoom, Fit, locate, reveal or cluster
+  click — after which the user's framing wins.
 - **Rendering** — `MovementCanvas` keeps a `drawRef` closure that is refreshed on
   every render; tile `load` events and the `ResizeObserver` call it directly
   rather than re-running an effect.
