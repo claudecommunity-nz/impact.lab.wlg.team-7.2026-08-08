@@ -303,3 +303,14 @@ re-litigated later:
 | R2-7 | Map controls scattered across corners incl. the yellow + button | **Repeat of R1-3b, still outdated.** Bottom-right is the required OSM/CARTO attribution; the floating button is the site-wide agent, not a map control. | None. |
 | R2-8 | Add a pulsing pin linking map mark to inspector | **Adopted without the pulse.** §6 motion discipline (no entrance/attention animation) plus an imperative canvas make a pulse the wrong tool. | **Shipped:** black selection ring around the selected signal's anchor, matching the ring cameras/transit/roads already had. |
 | R2-9 | Enclose the detail card in a rounded, shadowed container | **Rejected per §5.** Posture is square and flat; resting shadows say "floats above the page", and the inspector is a docked column, not a floating card. Its boundary is the frame hairline plus the 4px yellow top rule. | None. |
+
+### Round 3 — map tooltip, reviewed 11 August 2026
+
+| # | Claim | Verdict | Action |
+|---|---|---|---|
+| R3-1 | All tooltip lines share one weight and tone | **True.** | **Shipped:** key figures (observed, expected, ratio, anomaly counts) bold in black; the class/direction meta line drops to 12px muted. |
+| R3-2 | "increase ↑ +12" should be a status badge | **True.** | **Shipped:** the change reads as an amber/red pill (`.popup-chip`) carrying direction, arrow and signed delta — §3's status palette, colour never the sole carrier. |
+| R3-3 | "investigate" should be an interactive control | **Rejected.** The popup is `pointer-events: none` by design so it never steals map interaction; the interactive target is the glyph itself (cursor turns pointer) and hovering already previews the full panel. The trailing "investigate" word is dropped in favour of the status chip. | Word removed. |
+| R3-4 | No pointer stem — ambiguous anchor among close nodes | **True**, worsened by the popup's horizontal clamping. | **Shipped:** a beak aimed at the true anchor (`--beak-x` measured at pick time, clamped to the box), flipping with the above/below placement. |
+| R3-5 | Replace "+6.0 robust deviations" with "+6.0× Above Baseline" | **Partly — the proposed wording is numerically false.** A robust z is a deviation count, not a multiplier; "6.0×" would misstate the data. | **Shipped:** "+6.0 deviations from usual" — plain and true. Ratios appear only on highway sites, which genuinely have one. |
+| R3-6 | Expand NW / LHS abbreviations | **Partly.** Compass tokens are ours to present; "LHS" appears inside publisher-supplied countline names, which are not rewritten (data integrity). | **Shipped:** compass spelt out in the tooltip meta line ("north-west"); source names left verbatim. |

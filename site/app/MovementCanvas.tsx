@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
   useCallback,
   useEffect,
@@ -53,7 +54,15 @@ type Filter = "all" | "people" | "vehicles";
 type LayerId = "signals" | "coverage" | "cameras" | "transit" | "roads";
 type Layers = Record<LayerId, boolean>;
 type Focus = "signal" | "camera" | "transit" | "road";
-type Hover = { kind: Focus; id: string; left: number; top: number; above: boolean };
+type Hover = {
+  kind: Focus;
+  id: string;
+  left: number;
+  top: number;
+  above: boolean;
+  /** Beak position in px from the popup's left edge, aimed at the anchor. */
+  beakX: number;
+};
 
 const POPUP_WIDTH = 248;
 const HOVER_REFRESH_MS = 15_000;
@@ -99,6 +108,13 @@ const LAYERS: {
 ];
 
 type SearchHit = { kind: Focus; id: string; label: string; detail: string; coordinate: Coordinate };
+
+/** Compass tokens from the source data, spelt out for the popup meta line. */
+const COMPASS: Record<string, string> = {
+  N: "north", NE: "north-east", E: "east", SE: "south-east",
+  S: "south", SW: "south-west", W: "west", NW: "north-west",
+};
+const compass = (direction: string) => COMPASS[direction] ?? direction;
 
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -558,13 +574,20 @@ export default function MovementCanvas() {
   const featureAt = (point: Coordinate, size: { width: number; height: number }): Hover | null => {
     const project = createProjector(view, size.width, size.height);
     const groups = clusterLayers(size.width, size.height);
-    const place = (kind: Focus, id: string, [x, y]: Coordinate): Hover => ({
-      kind,
-      id,
-      left: Math.min(Math.max(x - POPUP_WIDTH / 2, 8), Math.max(8, size.width - POPUP_WIDTH - 8)),
-      top: y,
-      above: y > (kind === "camera" ? 264 : 120),
-    });
+    const place = (kind: Focus, id: string, [x, y]: Coordinate): Hover => {
+      const left = Math.min(
+        Math.max(x - POPUP_WIDTH / 2, 8),
+        Math.max(8, size.width - POPUP_WIDTH - 8),
+      );
+      return {
+        kind,
+        id,
+        left,
+        top: y,
+        above: y > (kind === "camera" ? 264 : 120),
+        beakX: Math.min(Math.max(x - left, 14), POPUP_WIDTH - 14),
+      };
+    };
     if (layers.cameras) {
       const hit = pickNearest(groups.cameras.singles, (feature) => feature.geometry.coordinates, project, point);
       if (hit) return place("camera", hit.id, project(hit.geometry.coordinates));
@@ -899,7 +922,13 @@ export default function MovementCanvas() {
             {hover && (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad) ? (
               <div
                 className={`map-popup ${hover.above ? "above" : "below"}`}
-                style={{ left: hover.left, top: hover.top }}
+                style={
+                  {
+                    left: hover.left,
+                    top: hover.top,
+                    "--beak-x": `${hover.beakX}px`,
+                  } as CSSProperties
+                }
                 role="status"
               >
                 {hoveredCamera ? (
@@ -924,38 +953,42 @@ export default function MovementCanvas() {
                 ) : hoveredSignal ? (
                   <p>
                     <strong>{String(hoveredSignal.properties.name)}</strong>
-                    <span>
+                    <span className="popup-meta">
                       {String(hoveredSignal.properties.transport_class)} ·{" "}
-                      {String(hoveredSignal.properties.direction)} ·{" "}
-                      {String(hoveredSignal.properties.change_direction)}{" "}
-                      {hoveredSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
+                      {compass(String(hoveredSignal.properties.direction))}
                     </span>
                     <span>
-                      {Number(hoveredSignal.properties.observed_count).toLocaleString("en-NZ")}{" "}
+                      <b>{Number(hoveredSignal.properties.observed_count).toLocaleString("en-NZ")}</b>{" "}
                       observed vs{" "}
-                      {Number(hoveredSignal.properties.expected_count).toLocaleString("en-NZ")}{" "}
-                      expected (
-                      {(() => {
-                        const delta = Math.round(
-                          Number(hoveredSignal.properties.observed_count) -
-                            Number(hoveredSignal.properties.expected_count),
-                        );
-                        return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
-                      })()}
-                      )
+                      <b>{Number(hoveredSignal.properties.expected_count).toLocaleString("en-NZ")}</b>{" "}
+                      expected
                     </span>
                     <span>
+                      <span
+                        className={`popup-chip ${String(hoveredSignal.properties.change_direction)}`}
+                      >
+                        {String(hoveredSignal.properties.change_direction)}{" "}
+                        <span aria-hidden="true">
+                          {hoveredSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
+                        </span>{" "}
+                        {(() => {
+                          const delta = Math.round(
+                            Number(hoveredSignal.properties.observed_count) -
+                              Number(hoveredSignal.properties.expected_count),
+                          );
+                          return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
+                        })()}
+                      </span>{" "}
                       {Number(hoveredSignal.properties.robust_z) > 0 ? "+" : ""}
-                      {Number(hoveredSignal.properties.robust_z).toFixed(1)} robust deviations ·
-                      investigate
+                      {Number(hoveredSignal.properties.robust_z).toFixed(1)} deviations from usual
                     </span>
                   </p>
                 ) : hoveredTransit ? (
                   <p>
                     <strong>{hoveredTransit.properties.stop_name}</strong>
                     <span>
-                      {hoveredTransit.properties.anomaly_count} PT anomalies ·{" "}
-                      {hoveredTransit.properties.high_count} high · top:{" "}
+                      <b>{hoveredTransit.properties.anomaly_count}</b> PT anomalies ·{" "}
+                      <b>{hoveredTransit.properties.high_count}</b> high · top:{" "}
                       {hoveredTransit.properties.top_detector} · synthetic April replay
                     </span>
                   </p>
@@ -964,7 +997,7 @@ export default function MovementCanvas() {
                     <strong>{hoveredRoad.properties.site_name}</strong>
                     <span>
                       SH{hoveredRoad.properties.state_highway} ·{" "}
-                      {hoveredRoad.properties.ratio.toFixed(2)}× usual ·{" "}
+                      <b>{hoveredRoad.properties.ratio.toFixed(2)}×</b> usual ·{" "}
                       {hoveredRoad.properties.date} · real event
                     </span>
                   </p>
