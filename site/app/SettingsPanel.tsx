@@ -280,9 +280,8 @@ export default function SettingsPanel() {
             <p className="eyebrow">Connected data</p>
             <h2 id="sources-heading">Data sources</h2>
             <p className="settings-lede">
-              The five committed files are the contract this site reads. Anything you add
-              lives in this browser only — no endpoint or token you type here is published
-              by the repository.
+              Added sources live in this browser only. Nothing typed here is
+              published.
             </p>
           </div>
           <button type="button" className="button-primary" onClick={testAll}>
@@ -391,9 +390,8 @@ export default function SettingsPanel() {
           </tbody>
         </table>
         <p className="settings-note">
-          Status is measured, not asserted: reachable, reachable with an unexpected body,
-          or failed. A source the browser cannot reach because of CORS reads as failed
-          here and may still be healthy for a server-side client.
+          Status is measured: reachable, unexpected body, or failed. CORS-blocked
+          sources read as failed here but may be healthy server-side.
         </p>
       </section>
 
@@ -490,9 +488,7 @@ export default function SettingsPanel() {
         <p className="eyebrow">Machine to machine</p>
         <h2 id="integrations-heading">Integrations</h2>
         <p className="settings-lede">
-          Each team&rsquo;s module feeds one shared operating picture, so the feed is the
-          product and the map is only a view. Register the endpoints you want this browser
-          to talk to, then test them.
+          Register endpoints for this browser, then test them.
         </p>
 
         {settings.integrations.length > 0 ? (
@@ -641,11 +637,9 @@ export default function SettingsPanel() {
         <p className="eyebrow">Chat</p>
         <h2 id="agent-heading">Agent setup</h2>
         <p className="settings-lede">
-          The default answers locally from the published artifacts — it cannot invent a
-          signal that is not in the feed. Link a model provider and each question goes
-          straight from this browser to that provider, with the artifacts sent as context.
-          The key is stored in this browser&rsquo;s <code>localStorage</code> only: this
-          public repo and the Murmur site never receive it.
+          Default: local answers from the published artifacts. Link a provider to
+          route questions from this browser, artifacts as context. Keys are stored
+          in this browser&rsquo;s <code>localStorage</code> only.
         </p>
         <form className="settings-form" onSubmit={(event) => event.preventDefault()}>
           <label>
@@ -781,7 +775,7 @@ export default function SettingsPanel() {
                 <span className="field-hint">
                   {savedKey
                     ? `Saved in this browser: ${savedKey}`
-                    : "Nothing saved yet — the key is written as you type."}
+                    : "Nothing saved yet. Saves as you type."}
                 </span>
               </label>
             </>
@@ -839,8 +833,8 @@ export default function SettingsPanel() {
             </p>
           ) : null}
           <p className="field-hint">
-            Safety: use a key with a spending limit, never a shared production key, and
-            clear it on shared machines. The key is sent only to{" "}
+            Use a key with a spending limit; clear it on shared machines. Sent
+            only to{" "}
             {settings.agent.provider !== "none" && settings.agent.provider !== "custom" ? (
               <code>{AGENT_PROVIDERS[settings.agent.provider].host}</code>
             ) : (
@@ -849,14 +843,14 @@ export default function SettingsPanel() {
             .{" "}
             {settings.agent.provider !== "none" && settings.agent.provider !== "custom"
               ? AGENT_PROVIDERS[settings.agent.provider].note
-              : "If the endpoint fails, the chat falls back to local answers."}
+              : "Falls back to local answers on failure."}
           </p>
         </form>
       </section>
 
       <p className="settings-note">
-        {BUILTIN_SOURCES.length} built-in sources ship with this prototype. Signals mean
-        investigate; they do not diagnose disruption, evacuation or loss of access.
+        {BUILTIN_SOURCES.length} built-in sources. Signals mean investigate, not
+        diagnose.
       </p>
     </div>
   );

@@ -539,7 +539,7 @@ export default function MovementCanvas() {
                       <strong>{hoveredCamera.properties.name}</strong>
                       <span>
                         {hoveredCamera.properties.direction || "Direction not published"} ·
-                        republished every few minutes · click for detail
+                        refreshed every few minutes
                       </span>
                     </p>
                   </>
@@ -550,7 +550,7 @@ export default function MovementCanvas() {
                       {String(hoveredSignal.properties.transport_class)} ·{" "}
                       {String(hoveredSignal.properties.direction)} ·{" "}
                       {Number(hoveredSignal.properties.robust_z) > 0 ? "+" : ""}
-                      {Number(hoveredSignal.properties.robust_z).toFixed(1)} z · click for evidence
+                      {Number(hoveredSignal.properties.robust_z).toFixed(1)} z
                     </span>
                   </p>
                 ) : hoveredTransit ? (
@@ -569,9 +569,8 @@ export default function MovementCanvas() {
             {error ? <p className="map-message error" role="alert">{error}</p> : null}
           </div>
           <p className="map-caption">
-            A signal marks the sensor line itself, not the whole street. Hover a camera for
-            its live frame; bus icons are a labelled synthetic Metlink replay. Drag to pan,
-            scroll or use + and − to zoom.
+            Signals mark the sensor line, not the street. Transit: synthetic
+            Metlink replay.
           </p>
         </div>
 
@@ -622,9 +621,7 @@ export default function MovementCanvas() {
                     </p>
                   )}
                   <figcaption>
-                    Frame loads live from NZTA in your browser. Nothing is stored or re-published
-                    here — the Streamlit capture app records published frame times to build the
-                    change-detection series.
+                    Live from NZTA in your browser. Not stored or re-published here.
                   </figcaption>
                 </figure>
                 <button
@@ -660,8 +657,7 @@ export default function MovementCanvas() {
                   <span className="visually-hidden">(opens in new window)</span>
                 </a>
                 <p className="evidence-note">
-                  A frame is a snapshot, not a count. Cameras watch state highways, so they
-                  corroborate a countline signal — they do not measure one.
+                  Snapshot, not a count. Corroborates a countline signal.
                 </p>
               </div>
             ) : (
@@ -728,8 +724,8 @@ export default function MovementCanvas() {
                 </dl>
                 <p className="worst-detail">{selectedTransit.properties.worst_example.detail}</p>
                 <p className="evidence-note">
-                  Synthetic data: the real Metlink timetable with simulated running and
-                  injected anomalies. Nothing here describes an actual April 2026 event.
+                  Synthetic data: real timetable, simulated running, injected
+                  anomalies. Not an actual event.
                 </p>
               </div>
             ) : (

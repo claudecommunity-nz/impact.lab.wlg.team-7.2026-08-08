@@ -263,6 +263,28 @@ in the artifacts, as literal `<span>` copy in `site/app/page.tsx`, and as
 assertions in `site/tests/rendered-html.test.mjs`. Rebuilding artifacts for a
 different `--target-at` means updating all three or the site test fails.
 
+## UI copy: hard rule
+
+**No explanatory prose in the interface.** UI text is labels, values and the
+shortest truth-boundary tags — enterprise-terse, never teaching. Concretely:
+
+- Never ship copy that narrates, justifies, or explains what the interface
+  already shows: no "click for detail", no "this means…", no "so that you
+  can…", no describing how a feature works under the hood. Explanations belong
+  in README or this file, not on screen.
+- One sentence maximum for any lede, note, caption or hint. If a second
+  sentence is needed, the first was probably explanation — cut it.
+- The truth boundaries stay, in their shortest form: "Batch replay",
+  "synthetic" on every transit surface, "investigate" not diagnose,
+  "Not live emergency information / call 111", data attribution
+  (OSM · CARTO · NZTA · Metlink), and "stored in this browser" for keys.
+  Shorten them; never delete them.
+- Test-asserted strings in `rendered-html.test.mjs` are the floor: copy edits
+  must keep those substrings intact.
+- When adding a new surface, default its copy to zero words beyond the label.
+  Prove any extra sentence carries a truth boundary or a measured fact, or
+  leave it out.
+
 ## Constraints that matter here
 
 - **Signals mean "investigate".** They do not diagnose disruption, evacuation or

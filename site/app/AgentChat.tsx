@@ -186,8 +186,8 @@ export default function AgentChat() {
 
           <p className="agent-provenance">
             {agentIsConfigured(agent)
-              ? `Routed to ${agentTarget(agent)} — your key stays in this browser, and the published artifacts go along as context. Change it under Settings → Agent setup.`
-              : `Grounded answers assembled from the committed artifacts — ${brief.signals.length} signals, ${brief.coverageCount} countlines, ${brief.cameras.length} cameras, ${brief.transit.length} PT hotspots. No cause inferred.`}
+              ? `Routed to ${agentTarget(agent)} · key stays in this browser`
+              : `Local answers · ${brief.signals.length} signals · ${brief.coverageCount} countlines · ${brief.cameras.length} cameras · ${brief.transit.length} PT hotspots`}
           </p>
 
           <div className="agent-log" ref={logRef} role="log" aria-live="polite">
@@ -244,8 +244,7 @@ export default function AgentChat() {
           </form>
 
           <p className="agent-footnote">
-            Not live emergency information. In an emergency, call 111. Answers describe
-            published batch data, never an incident.
+            Not live emergency information. In an emergency, call 111.
           </p>
         </section>
       ) : null}
