@@ -1,0 +1,3822 @@
+{
+ "type": "FeatureCollection",
+ "schema": "road-anomaly-collection/v1",
+ "source": "NZTA TMS daily traffic counts, Wellington region, April 2026",
+ "source_csv": "NZTA/anomaly/csv/anomaly_flagged.csv",
+ "generated_at": "2026-08-10T20:21:28+00:00",
+ "event": "Wellington floods and storm, 20-21 April 2026",
+ "event_dates": [
+  "2026-04-20",
+  "2026-04-21"
+ ],
+ "selection_rule": "sites flagged on 2026-04-20 or 2026-04-21, worst day per site",
+ "flagged_site_count": 101,
+ "site_count": 97,
+ "real_event": true,
+ "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+ "limitations": [
+  "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+  "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+  "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+  "Each site is compared only to itself; totals are never summed across sites.",
+  "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+ ],
+ "sites_without_geometry": [
+  {
+   "schema": "road-anomaly/v1",
+   "source_type": "state_highway",
+   "site_ref": "00210980",
+   "site_name": "",
+   "state_highway": "",
+   "site_type": "",
+   "date": "2026-04-21",
+   "observed_count": 6980,
+   "baseline_median": 11144,
+   "baseline_days": 14,
+   "ratio": 0.626,
+   "robust_z": -3.923,
+   "severity": "HIGH",
+   "direction": "DROP",
+   "april_anomaly_days": 6,
+   "event": "Wellington floods and storm, 20-21 April 2026",
+   "real_event": true,
+   "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+   "limitations": [
+    "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+    "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+    "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+    "Each site is compared only to itself; totals are never summed across sites.",
+    "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+   ]
+  },
+  {
+   "schema": "road-anomaly/v1",
+   "source_type": "state_highway",
+   "site_ref": "00220980",
+   "site_name": "",
+   "state_highway": "",
+   "site_type": "",
+   "date": "2026-04-21",
+   "observed_count": 12224,
+   "baseline_median": 22914,
+   "baseline_days": 14,
+   "ratio": 0.533,
+   "robust_z": -9.292,
+   "severity": "HIGH",
+   "direction": "DROP",
+   "april_anomaly_days": 6,
+   "event": "Wellington floods and storm, 20-21 April 2026",
+   "real_event": true,
+   "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+   "limitations": [
+    "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+    "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+    "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+    "Each site is compared only to itself; totals are never summed across sites.",
+    "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+   ]
+  },
+  {
+   "schema": "road-anomaly/v1",
+   "source_type": "state_highway",
+   "site_ref": "01N11080",
+   "site_name": "",
+   "state_highway": "",
+   "site_type": "",
+   "date": "2026-04-21",
+   "observed_count": 6406,
+   "baseline_median": 12022,
+   "baseline_days": 14,
+   "ratio": 0.533,
+   "robust_z": -3.258,
+   "severity": "MEDIUM",
+   "direction": "DROP",
+   "april_anomaly_days": 7,
+   "event": "Wellington floods and storm, 20-21 April 2026",
+   "real_event": true,
+   "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+   "limitations": [
+    "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+    "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+    "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+    "Each site is compared only to itself; totals are never summed across sites.",
+    "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+   ]
+  },
+  {
+   "schema": "road-anomaly/v1",
+   "source_type": "state_highway",
+   "site_ref": "01N21080",
+   "site_name": "",
+   "state_highway": "",
+   "site_type": "",
+   "date": "2026-04-21",
+   "observed_count": 15158,
+   "baseline_median": 25736,
+   "baseline_days": 14,
+   "ratio": 0.589,
+   "robust_z": -7.941,
+   "severity": "HIGH",
+   "direction": "DROP",
+   "april_anomaly_days": 4,
+   "event": "Wellington floods and storm, 20-21 April 2026",
+   "real_event": true,
+   "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+   "limitations": [
+    "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+    "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+    "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+    "Each site is compared only to itself; totals are never summed across sites.",
+    "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+   ]
+  }
+ ],
+ "features": [
+  {
+   "type": "Feature",
+   "id": "road-site:00200890",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.607792,
+     -40.965597
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200890",
+    "site_name": "South of Waingawa Bridge",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-20",
+    "observed_count": 6381,
+    "baseline_median": 18408,
+    "baseline_days": 14,
+    "ratio": 0.347,
+    "robust_z": -39.379,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00210965",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.941951,
+     -41.182958
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00210965",
+    "site_name": "KELSON - Telemetry Site 99 - SB Lanes",
+    "state_highway": "2",
+    "site_type": "Telemetry",
+    "date": "2026-04-21",
+    "observed_count": 11022,
+    "baseline_median": 20685,
+    "baseline_days": 22,
+    "ratio": 0.533,
+    "robust_z": -13.578,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00210972",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.880651,
+     -41.216972
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00210972",
+    "site_name": "Dowse Interchange - SB Through Traffic",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8533,
+    "baseline_median": 15829,
+    "baseline_days": 22,
+    "ratio": 0.539,
+    "robust_z": -12.411,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05300016",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.449149,
+     -41.208059
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05300016",
+    "site_name": "West of Princess St (Martinborough)",
+    "state_highway": "53",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 259,
+    "baseline_median": 3308,
+    "baseline_days": 22,
+    "ratio": 0.078,
+    "robust_z": -10.033,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05300006",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.369669,
+     -41.151856
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05300006",
+    "site_name": "Sth of No.1 Line",
+    "state_highway": "53",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 207,
+    "baseline_median": 1832,
+    "baseline_days": 18,
+    "ratio": 0.113,
+    "robust_z": -9.099,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00220961",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.972122,
+     -41.159246
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00220961",
+    "site_name": "Haywards Interchange Decreasing",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8154,
+    "baseline_median": 15192,
+    "baseline_days": 22,
+    "ratio": 0.537,
+    "robust_z": -9.041,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00220972",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.880495,
+     -41.216939
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00220972",
+    "site_name": "Dowse Interchange - NB Through Traffic",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8440,
+    "baseline_median": 16078,
+    "baseline_days": 22,
+    "ratio": 0.525,
+    "robust_z": -8.851,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00210974",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.857719,
+     -41.224386
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00210974",
+    "site_name": "Nth of Petone Interchange - SB",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 12989,
+    "baseline_median": 23734,
+    "baseline_days": 22,
+    "ratio": 0.547,
+    "robust_z": -8.567,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05900011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.888815,
+     -41.033545
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05900011",
+    "site_name": "Nth of Wairaka Rd (Pukerua Bay)",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 5576,
+    "baseline_median": 8170,
+    "baseline_days": 11,
+    "ratio": 0.682,
+    "robust_z": -7.953,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00210961",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.976783,
+     -41.157275
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00210961",
+    "site_name": "Haywards Interchange Increasing",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8095,
+    "baseline_median": 14899,
+    "baseline_days": 19,
+    "ratio": 0.543,
+    "robust_z": -7.858,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00210979",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.811741,
+     -41.249073
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00210979",
+    "site_name": "NGAURANGA SH2 - Telemetry Site 3 - SB",
+    "state_highway": "2",
+    "site_type": "Telemetry",
+    "date": "2026-04-21",
+    "observed_count": 12179,
+    "baseline_median": 23092,
+    "baseline_days": 22,
+    "ratio": 0.527,
+    "robust_z": -7.504,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200908",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.459155,
+     -41.08155
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200908",
+    "site_name": "Nth of Wood St (Greytown)",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4385,
+    "baseline_median": 8964,
+    "baseline_days": 22,
+    "ratio": 0.489,
+    "robust_z": -7.451,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00220974",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.858185,
+     -41.224
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00220974",
+    "site_name": "Nth of Petone Interchange - NB",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 12115,
+    "baseline_median": 22146,
+    "baseline_days": 22,
+    "ratio": 0.547,
+    "robust_z": -7.406,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200906",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.481084,
+     -41.066282
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200906",
+    "site_name": "Sth of Waiohine River Bridge",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 5820,
+    "baseline_median": 11121,
+    "baseline_days": 22,
+    "ratio": 0.523,
+    "robust_z": -7.387,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 10,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200957",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.018816,
+     -41.13269
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200957",
+    "site_name": "Sth of Craigs Flat",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 14895,
+    "baseline_median": 27762,
+    "baseline_days": 22,
+    "ratio": 0.537,
+    "robust_z": -7.373,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00220978",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.824206,
+     -41.241095
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00220978",
+    "site_name": "Nth of Ngauranga Interchange - NB",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 21762,
+    "baseline_median": 37182,
+    "baseline_days": 19,
+    "ratio": 0.585,
+    "robust_z": -7.33,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N61073",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.774182,
+     -41.282664
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N61073",
+    "site_name": "Terrace - SB Off Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4531,
+    "baseline_median": 10109,
+    "baseline_days": 22,
+    "ratio": 0.448,
+    "robust_z": -7.327,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K31023",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.997891,
+     -40.910153
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K31023",
+    "site_name": "Kapiti Rd Int Southbound On Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2590,
+    "baseline_median": 3823,
+    "baseline_days": 22,
+    "ratio": 0.677,
+    "robust_z": -7.169,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200969",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.909208,
+     -41.201742
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200969",
+    "site_name": "Nth of Block Rd",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 23422,
+    "baseline_median": 40264,
+    "baseline_days": 22,
+    "ratio": 0.582,
+    "robust_z": -7.1,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200954",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.041754,
+     -41.121289
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200954",
+    "site_name": "Sth of Whakatiki St",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 15328,
+    "baseline_median": 27840,
+    "baseline_days": 22,
+    "ratio": 0.551,
+    "robust_z": -6.853,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N11066",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.808547,
+     -41.233099
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N11066",
+    "site_name": "Newlands Interchange - SB Through Traffic",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 18618,
+    "baseline_median": 30648,
+    "baseline_days": 22,
+    "ratio": 0.607,
+    "robust_z": -6.703,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05900005",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.939689,
+     -40.999717
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05900005",
+    "site_name": "PAEKAKARIKI - Telemetry Site 47 (Piezo Axle Classification)",
+    "state_highway": "59",
+    "site_type": "Telemetry",
+    "date": "2026-04-21",
+    "observed_count": 5039,
+    "baseline_median": 7572,
+    "baseline_days": 22,
+    "ratio": 0.665,
+    "robust_z": -6.688,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 12,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05800009",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.973226,
+     -41.129125
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05800009",
+    "site_name": "PAUATAHANUI EAST - Telemetry Site 73",
+    "state_highway": "58",
+    "site_type": "Telemetry",
+    "date": "2026-04-21",
+    "observed_count": 10130,
+    "baseline_median": 19572,
+    "baseline_days": 22,
+    "ratio": 0.518,
+    "robust_z": -6.468,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 11,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N11072",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.773971,
+     -41.275705
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N11072",
+    "site_name": "Hawkestone Interchange - SB Through Traffic",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 16162,
+    "baseline_median": 26099,
+    "baseline_days": 22,
+    "ratio": 0.619,
+    "robust_z": -6.395,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200917",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.37015,
+     -41.118014
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200917",
+    "site_name": "Sth of Tauherenikau River Bridge",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2721,
+    "baseline_median": 6965,
+    "baseline_days": 18,
+    "ratio": 0.391,
+    "robust_z": -6.361,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00240972",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.880372,
+     -41.216814
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00240972",
+    "site_name": "Dowse Interchange - NB OFF Ramp",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3782,
+    "baseline_median": 6243,
+    "baseline_days": 22,
+    "ratio": 0.606,
+    "robust_z": -6.336,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00240974",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.858185,
+     -41.224
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00240974",
+    "site_name": "Petone - NB OFF Ramp",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 9769,
+    "baseline_median": 15646,
+    "baseline_days": 22,
+    "ratio": 0.624,
+    "robust_z": -5.974,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K31027",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.992532,
+     -40.941314
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K31027",
+    "site_name": "Poplar Ave Int Southbound On Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3331,
+    "baseline_median": 4894,
+    "baseline_days": 22,
+    "ratio": 0.681,
+    "robust_z": -5.763,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K11027",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.992389,
+     -40.941307
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K11027",
+    "site_name": "Poplar Ave Int Mainline Southbound",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 7456,
+    "baseline_median": 11455,
+    "baseline_days": 22,
+    "ratio": 0.651,
+    "robust_z": -5.614,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K31017",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.032202,
+     -40.870794
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K31017",
+    "site_name": "Te Moana Int Southbound On Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4221,
+    "baseline_median": 5384,
+    "baseline_days": 22,
+    "ratio": 0.784,
+    "robust_z": -5.375,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N61072",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.776346,
+     -41.27348
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N61072",
+    "site_name": "Hawkestone Interchange - SB Off Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2287,
+    "baseline_median": 4294,
+    "baseline_days": 22,
+    "ratio": 0.533,
+    "robust_z": -5.238,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N41062",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.817926,
+     -41.206292
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N41062",
+    "site_name": "Grenada Interchange - NB Off Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2374,
+    "baseline_median": 3904,
+    "baseline_days": 16,
+    "ratio": 0.608,
+    "robust_z": -5.214,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N21066",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.806529,
+     -41.234365
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N21066",
+    "site_name": "Newlands Interchange - NB Through Traffic",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 21171,
+    "baseline_median": 33766,
+    "baseline_days": 22,
+    "ratio": 0.627,
+    "robust_z": -5.179,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00250972",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.884022,
+     -41.215152
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00250972",
+    "site_name": "Dowse Interchange - NB ON Ramp",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3663,
+    "baseline_median": 5889,
+    "baseline_days": 22,
+    "ratio": 0.622,
+    "robust_z": -5.16,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00220965",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.941951,
+     -41.182958
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00220965",
+    "site_name": "KELSON - Telemetry Site 99 - NB Lanes",
+    "state_highway": "2",
+    "site_type": "Telemetry",
+    "date": "2026-04-21",
+    "observed_count": 10915,
+    "baseline_median": 20625,
+    "baseline_days": 22,
+    "ratio": 0.529,
+    "robust_z": -5.133,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N01064",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.810425,
+     -41.219371
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N01064",
+    "site_name": "Nth of Helston Rd Overbridge - Both",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 33290,
+    "baseline_median": 52160,
+    "baseline_days": 22,
+    "ratio": 0.638,
+    "robust_z": -5.052,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05300001",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.332774,
+     -41.12243
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05300001",
+    "site_name": "West of Donalds Bridge",
+    "state_highway": "53",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 809,
+    "baseline_median": 2542,
+    "baseline_days": 22,
+    "ratio": 0.318,
+    "robust_z": -5.029,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00230974",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.857719,
+     -41.224368
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00230974",
+    "site_name": "Petone - SB ON Ramp",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 9345,
+    "baseline_median": 14240,
+    "baseline_days": 22,
+    "ratio": 0.656,
+    "robust_z": -5.026,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K41023",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.997387,
+     -40.909973
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K41023",
+    "site_name": "Kapiti Rd Int Northbound Off Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2503,
+    "baseline_median": 3715,
+    "baseline_days": 22,
+    "ratio": 0.674,
+    "robust_z": -5.0,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N31066",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.808547,
+     -41.233099
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N31066",
+    "site_name": "Newlands Interchange - SB On Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 7205,
+    "baseline_median": 10148,
+    "baseline_days": 22,
+    "ratio": 0.71,
+    "robust_z": -4.86,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00260972",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.885045,
+     -41.215036
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00260972",
+    "site_name": "Dowse Interchange - SB OFF Ramp",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4470,
+    "baseline_median": 6742,
+    "baseline_days": 22,
+    "ratio": 0.663,
+    "robust_z": -4.693,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N01078",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.799587,
+     -41.314497
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N01078",
+    "site_name": "Cobham Drive (Sth of Evans Bay Parade) - Both",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 23104,
+    "baseline_median": 32045,
+    "baseline_days": 21,
+    "ratio": 0.721,
+    "robust_z": -4.639,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N21060",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.831593,
+     -41.187793
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N21060",
+    "site_name": "Tawa Interchange - NB Through Traffic",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 15244,
+    "baseline_median": 23789,
+    "baseline_days": 22,
+    "ratio": 0.641,
+    "robust_z": -4.503,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N61071",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.778951,
+     -41.271368
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N61071",
+    "site_name": "Murphy St - SB Off Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2729,
+    "baseline_median": 5014,
+    "baseline_days": 22,
+    "ratio": 0.544,
+    "robust_z": -4.492,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00250978",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.819242,
+     -41.243704
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00250978",
+    "site_name": "Nth of Ngauranga Interchange - NB ON Ramp",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 9792,
+    "baseline_median": 15333,
+    "baseline_days": 22,
+    "ratio": 0.639,
+    "robust_z": -4.471,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05930025",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844728,
+     -41.140676
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05930025",
+    "site_name": "Mungavin Interchange - SB ON Ramp",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 6104,
+    "baseline_median": 9070,
+    "baseline_days": 22,
+    "ratio": 0.673,
+    "robust_z": -4.465,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N41066",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.806529,
+     -41.234365
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N41066",
+    "site_name": "Newlands Interchange - NB Off Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4490,
+    "baseline_median": 6754,
+    "baseline_days": 22,
+    "ratio": 0.665,
+    "robust_z": -4.394,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200899",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.525655,
+     -41.0268
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200899",
+    "site_name": "Nth of Victoria St (Carterton)",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 9115,
+    "baseline_median": 13502,
+    "baseline_days": 22,
+    "ratio": 0.675,
+    "robust_z": -4.371,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 10,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K11023",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.997804,
+     -40.910029
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K11023",
+    "site_name": "Kapiti Rd Int Mainline Southbound",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4865,
+    "baseline_median": 7805,
+    "baseline_days": 22,
+    "ratio": 0.623,
+    "robust_z": -4.14,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K21027",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.991964,
+     -40.942197
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K21027",
+    "site_name": "Poplar Ave Int Mainline Northbound",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 7121,
+    "baseline_median": 11410,
+    "baseline_days": 22,
+    "ratio": 0.624,
+    "robust_z": -4.069,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 10,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200895",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.556557,
+     -41.00235
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200895",
+    "site_name": "CLAREVILLE - Telemetry Site 80 - Nth of Whites Line",
+    "state_highway": "2",
+    "site_type": "Telemetry",
+    "date": "2026-04-21",
+    "observed_count": 8047,
+    "baseline_median": 12998,
+    "baseline_days": 22,
+    "ratio": 0.619,
+    "robust_z": -3.985,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N41073",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.773067,
+     -41.276718
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N41073",
+    "site_name": "Tinakori - NB Off Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4823,
+    "baseline_median": 7748,
+    "baseline_days": 22,
+    "ratio": 0.622,
+    "robust_z": -3.974,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N11060",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.832304,
+     -41.187196
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N11060",
+    "site_name": "Tawa Interchange - SB Through Traffic",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 15634,
+    "baseline_median": 23862,
+    "baseline_days": 22,
+    "ratio": 0.655,
+    "robust_z": -3.918,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N21062",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.817926,
+     -41.206292
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N21062",
+    "site_name": "Grenada Interchange - NB Through Traffic",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 19207,
+    "baseline_median": 28971,
+    "baseline_days": 16,
+    "ratio": 0.663,
+    "robust_z": -3.901,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05800011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.909054,
+     -41.104352
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05800011",
+    "site_name": "West of Joseph Banks Drive",
+    "state_highway": "58",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3744,
+    "baseline_median": 6554,
+    "baseline_days": 22,
+    "ratio": 0.571,
+    "robust_z": -3.833,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00230972",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.880372,
+     -41.216814
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00230972",
+    "site_name": "Dowse Interchange - SB ON Ramp",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4148,
+    "baseline_median": 7082,
+    "baseline_days": 22,
+    "ratio": 0.586,
+    "robust_z": -3.784,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K41027",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.991772,
+     -40.942128
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K41027",
+    "site_name": "Poplar Ave Int Northbound Off Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3559,
+    "baseline_median": 5172,
+    "baseline_days": 22,
+    "ratio": 0.688,
+    "robust_z": -3.784,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05940025",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844377,
+     -41.140916
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05940025",
+    "site_name": "Mungavin Interchange - NB OFF Ramp",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8223,
+    "baseline_median": 12053,
+    "baseline_days": 22,
+    "ratio": 0.682,
+    "robust_z": -3.777,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N41060",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.832189,
+     -41.187783
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N41060",
+    "site_name": "Tawa Interchange - NB Off Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 6129,
+    "baseline_median": 8377,
+    "baseline_days": 22,
+    "ratio": 0.732,
+    "robust_z": -3.767,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05900014",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.876095,
+     -41.058198
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05900014",
+    "site_name": "Taupo Swamp",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4022,
+    "baseline_median": 8646,
+    "baseline_days": 22,
+    "ratio": 0.465,
+    "robust_z": -3.7,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N31062",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.818941,
+     -41.205925
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N31062",
+    "site_name": "Grenada Interchange - SB On Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2451,
+    "baseline_median": 4365,
+    "baseline_days": 22,
+    "ratio": 0.562,
+    "robust_z": -3.699,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 4,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N21070",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.779742,
+     -41.270582
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N21070",
+    "site_name": "Thorndon Overbridge - NB",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 20765,
+    "baseline_median": 34022,
+    "baseline_days": 22,
+    "ratio": 0.61,
+    "robust_z": -3.621,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00260978",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.81599,
+     -41.246493
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00260978",
+    "site_name": "Nth of Ngauranga Interchange - SB OFF Ramp",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 9946,
+    "baseline_median": 14575,
+    "baseline_days": 22,
+    "ratio": 0.682,
+    "robust_z": -3.599,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N31003",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.142449,
+     -40.776575
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N31003",
+    "site_name": "PP2O â€“ OGR SB Onramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3511,
+    "baseline_median": 4261,
+    "baseline_days": 22,
+    "ratio": 0.824,
+    "robust_z": -3.575,
+    "severity": "HIGH",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K21023",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.997697,
+     -40.910031
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K21023",
+    "site_name": "Kapiti Rd Int Mainline Northbound",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4587,
+    "baseline_median": 7586,
+    "baseline_days": 22,
+    "ratio": 0.605,
+    "robust_z": -3.464,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N41003",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.142449,
+     -40.776575
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N41003",
+    "site_name": "PP2O â€“ OGR NB Offramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3401,
+    "baseline_median": 4248,
+    "baseline_days": 22,
+    "ratio": 0.801,
+    "robust_z": -3.295,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05920025",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844377,
+     -41.140916
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05920025",
+    "site_name": "Mungavin Interchange - NB Through Traffic",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 1684,
+    "baseline_median": 3106,
+    "baseline_days": 22,
+    "ratio": 0.542,
+    "robust_z": -3.289,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K11011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.08773,
+     -40.838797
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K11011",
+    "site_name": "Peka Peka Int Mainline Southbound",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 6778,
+    "baseline_median": 9490,
+    "baseline_days": 22,
+    "ratio": 0.714,
+    "robust_z": -3.255,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00250961",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.972589,
+     -41.159337
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00250961",
+    "site_name": "Haywards Interchange - SB on ramp from SH58",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2884,
+    "baseline_median": 5358,
+    "baseline_days": 9,
+    "ratio": 0.538,
+    "robust_z": -3.209,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 3,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K41017",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.03171,
+     -40.87064
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K41017",
+    "site_name": "Te Moana Int Northbound Off Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4042,
+    "baseline_median": 5255,
+    "baseline_days": 22,
+    "ratio": 0.769,
+    "robust_z": -3.208,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N31060",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.832304,
+     -41.187196
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N31060",
+    "site_name": "Tawa Interchange - SB On Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 5701,
+    "baseline_median": 7214,
+    "baseline_days": 22,
+    "ratio": 0.79,
+    "robust_z": -3.055,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K11017",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.032287,
+     -40.870495
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K11017",
+    "site_name": "Te Moana Int Mainline Southbound",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 6140,
+    "baseline_median": 8716,
+    "baseline_days": 22,
+    "ratio": 0.704,
+    "robust_z": -3.054,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05910024",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844711,
+     -41.129382
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05910024",
+    "site_name": "Porirua Nth Ramp Bridge - SB Through Traffic",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 7365,
+    "baseline_median": 10609,
+    "baseline_days": 22,
+    "ratio": 0.694,
+    "robust_z": -2.997,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N11011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.090816,
+     -40.835057
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N11011",
+    "site_name": "PP2O Marycrest- SB Lanes",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8167,
+    "baseline_median": 11112,
+    "baseline_days": 22,
+    "ratio": 0.735,
+    "robust_z": -2.954,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K21017",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.032167,
+     -40.870443
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K21017",
+    "site_name": "Te Moana Int Mainline Northbound",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 5936,
+    "baseline_median": 8509,
+    "baseline_days": 22,
+    "ratio": 0.698,
+    "robust_z": -2.939,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 7,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05910025",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844728,
+     -41.140676
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05910025",
+    "site_name": "Mungavin Interchange  - SB Through Traffic",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4290,
+    "baseline_median": 6256,
+    "baseline_days": 22,
+    "ratio": 0.686,
+    "robust_z": -2.785,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 11,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N51071",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.777874,
+     -41.2717
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N51071",
+    "site_name": "May St - NB On Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2082,
+    "baseline_median": 3632,
+    "baseline_days": 22,
+    "ratio": 0.573,
+    "robust_z": -2.743,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K61011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.08773,
+     -40.838797
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K61011",
+    "site_name": "Peka Peka Int Southbound Off Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 1385,
+    "baseline_median": 1659,
+    "baseline_days": 22,
+    "ratio": 0.835,
+    "robust_z": -2.738,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 10,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05950025",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844533,
+     -41.136239
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05950025",
+    "site_name": "Mungavin Interchange - NB ON Ramp",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3437,
+    "baseline_median": 4736,
+    "baseline_days": 22,
+    "ratio": 0.726,
+    "robust_z": -2.712,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K21011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.087692,
+     -40.838717
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K21011",
+    "site_name": "Peka Peka Int Mainline Northbound",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 6735,
+    "baseline_median": 9400,
+    "baseline_days": 22,
+    "ratio": 0.716,
+    "robust_z": -2.645,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N20999",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.161623,
+     -40.755372
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N20999",
+    "site_name": "PP2O Waitohu Stream - NB Lane",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4562,
+    "baseline_median": 6754,
+    "baseline_days": 22,
+    "ratio": 0.676,
+    "robust_z": -2.637,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N21003",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.142449,
+     -40.776575
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N21003",
+    "site_name": "PP2O Otaki Gorge Road- NB Lanes",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4601,
+    "baseline_median": 6838,
+    "baseline_days": 22,
+    "ratio": 0.673,
+    "robust_z": -2.608,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N31072",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.773971,
+     -41.275705
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N31072",
+    "site_name": "Hawkestone Interchange - SB On Ramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3523,
+    "baseline_median": 4705,
+    "baseline_days": 22,
+    "ratio": 0.749,
+    "robust_z": -2.547,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N21011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.090816,
+     -40.835057
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N21011",
+    "site_name": "PP2O Marycrest- NB Lanes",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8012,
+    "baseline_median": 11144,
+    "baseline_days": 22,
+    "ratio": 0.719,
+    "robust_z": -2.539,
+    "severity": "MEDIUM",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N11003",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.142449,
+     -40.776575
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N11003",
+    "site_name": "PP2O Otaki Gorge Road - SB Lane",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4642,
+    "baseline_median": 6854,
+    "baseline_days": 22,
+    "ratio": 0.677,
+    "robust_z": -2.369,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 4,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00260961",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.971731,
+     -41.159316
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00260961",
+    "site_name": "Haywards Interchange - NB off ramp to SH58",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2694,
+    "baseline_median": 5174,
+    "baseline_days": 9,
+    "ratio": 0.521,
+    "robust_z": -2.339,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 2,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N10999",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.161623,
+     -40.755372
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N10999",
+    "site_name": "PP2O Waitohu Stream â€“ SB Lane",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 4658,
+    "baseline_median": 6864,
+    "baseline_days": 22,
+    "ratio": 0.679,
+    "robust_z": -2.334,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 4,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05960024",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844711,
+     -41.129382
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05960024",
+    "site_name": "Porirua Nth Ramp Bridge - SB OFF Ramp",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8185,
+    "baseline_median": 10400,
+    "baseline_days": 22,
+    "ratio": 0.787,
+    "robust_z": -2.318,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200937",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.207013,
+     -41.08673
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200937",
+    "site_name": "REMUTAKA - Telemetry Site 01- Pakuratahi River Brg",
+    "state_highway": "2",
+    "site_type": "Telemetry",
+    "date": "2026-04-20",
+    "observed_count": 4666,
+    "baseline_median": 6465,
+    "baseline_days": 21,
+    "ratio": 0.722,
+    "robust_z": -2.285,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:00200864",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.617409,
+     -40.792699
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "00200864",
+    "site_name": "Sth of Readers Cutting",
+    "state_highway": "2",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2348,
+    "baseline_median": 3013,
+    "baseline_days": 17,
+    "ratio": 0.779,
+    "robust_z": -2.21,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 8,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05800015",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.873452,
+     -41.104438
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05800015",
+    "site_name": "East of Paremata RAB",
+    "state_highway": "58",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 11156,
+    "baseline_median": 15129,
+    "baseline_days": 22,
+    "ratio": 0.737,
+    "robust_z": -2.153,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N50999",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.161587,
+     -40.755364
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N50999",
+    "site_name": "PP2O â€“ Waitohu Stream NB Onramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 2446,
+    "baseline_median": 2838,
+    "baseline_days": 22,
+    "ratio": 0.862,
+    "robust_z": -2.006,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 10,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05960025",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844943,
+     -41.13598
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05960025",
+    "site_name": "Mungavin Interchange - SB OFF Ramp",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 3036,
+    "baseline_median": 4080,
+    "baseline_days": 22,
+    "ratio": 0.744,
+    "robust_z": -1.939,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 4,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K61023",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.002826,
+     -40.906474
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K61023",
+    "site_name": "Kapiti Rd Int Southbound Off Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-20",
+    "observed_count": 5294,
+    "baseline_median": 6146,
+    "baseline_days": 22,
+    "ratio": 0.861,
+    "robust_z": -1.922,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 6,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01N60999",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.161564,
+     -40.755373
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01N60999",
+    "site_name": "PP2O â€“ Waitohu Stream SB Offramp",
+    "state_highway": "1N",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-20",
+    "observed_count": 2388,
+    "baseline_median": 2752,
+    "baseline_days": 22,
+    "ratio": 0.868,
+    "robust_z": -1.908,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 9,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:05950024",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.844064,
+     -41.130095
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "05950024",
+    "site_name": "Porirua Nth Ramp Bridge - NB ON Ramp",
+    "state_highway": "59",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 8318,
+    "baseline_median": 10506,
+    "baseline_days": 22,
+    "ratio": 0.792,
+    "robust_z": -1.838,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 5,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-site:01K51011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.087692,
+     -40.838717
+    ]
+   },
+   "properties": {
+    "schema": "road-anomaly/v1",
+    "source_type": "state_highway",
+    "site_ref": "01K51011",
+    "site_name": "Peka Peka Int Northbound On Ramp",
+    "state_highway": "1K",
+    "site_type": "Regional Continuous",
+    "date": "2026-04-21",
+    "observed_count": 1302,
+    "baseline_median": 1526,
+    "baseline_days": 22,
+    "ratio": 0.853,
+    "robust_z": -1.642,
+    "severity": "LOW",
+    "direction": "DROP",
+    "april_anomaly_days": 10,
+    "event": "Wellington floods and storm, 20-21 April 2026",
+    "real_event": true,
+    "attribution": "Traffic counts and site positions © NZ Transport Agency Waka Kotahi, NZTA Open Data (Traffic and Travel API terms of use)",
+    "limitations": [
+     "Real data: NZTA TMS daily traffic counts scored against each site's own weekday/weekend median. A flag marks a statistical change, not a diagnosed closure or its cause.",
+     "Daily granularity with a roughly two-day publishing lag: a backtest and baseline source, never a live detector.",
+     "20-21 April 2026 flood window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Each site is compared only to itself; totals are never summed across sites.",
+     "Only sites flagged on 2026-04-20 or 2026-04-21 are published; the full April 2026 scoring is in NZTA/anomaly/csv/."
+    ]
+   }
+  }
+ ]
+}

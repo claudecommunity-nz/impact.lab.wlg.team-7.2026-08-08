@@ -51,9 +51,15 @@ Rebuild the Metlink PT-anomaly layer (stdlib only, reads committed CSVs):
 python scripts\build_transit_layer.py
 ```
 
+Rebuild the NZTA state-highway layer (stdlib only, reads committed CSVs):
+
+```powershell
+python scripts\build_road_layer.py
+```
+
 ## Architecture
 
-Two halves joined by five committed JSON files. **Those files are the contract**,
+Two halves joined by six committed JSON files. **Those files are the contract**,
 not an intermediate: the site never runs Python, and the pipeline never renders.
 
 ```
@@ -63,8 +69,11 @@ data/*.parquet ──▶ movement_anomaly ──▶ site/public/cop/v1/*.json{,g
 NZTA catalogue ──▶ nzta_client ──▶ site/public/cop/v1/traffic-cameras.geojson ──┤
    (live API)     (scripts/build_camera_layer.py)                               │
                                                                                 │
-data/buses_trains/anomaly/csv ──▶ site/public/cop/v1/transit-anomalies.geojson ─┘
-   (committed, SYNTHETIC)         (scripts/build_transit_layer.py)
+data/buses_trains/anomaly/csv ──▶ site/public/cop/v1/transit-anomalies.geojson ─┤
+   (committed, SYNTHETIC)         (scripts/build_transit_layer.py)              │
+                                                                                │
+NZTA/anomaly/csv ──▶ site/public/cop/v1/road-anomalies.geojson ─────────────────┘
+   (committed, REAL 20–21 Apr 2026 floods)  (scripts/build_road_layer.py)
 ```
 
 `src/movement_anomaly/`, in call order:
@@ -126,7 +135,7 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
 
 `MovementCanvas` renders **one** canvas and **one** view; every source is a
 toggleable layer (`layers` state, all on by default), drawn tiles → coverage →
-transit → signals → cameras:
+roads → transit → signals → cameras:
 
 - `signals` — movement-change signals, with the people/vehicles filter. The
   anchor glyph is a mini **person** for `PEOPLE_CLASSES` (Pedestrian, Cyclist,
@@ -135,13 +144,21 @@ transit → signals → cameras:
 - `cameras` — NZTA cameras as tiny camera glyphs (`drawCameras`). Hovering one
   opens a `map-popup` with the live frame, re-requested every 15 s
   (`HOVER_REFRESH_MS`) while open; hovering a signal shows a text popup.
-  Hit-test priority: cameras → signals → transit.
+  Hit-test priority: cameras → signals → transit → roads.
 - `transit` — Metlink PT anomaly hotspots as mini **bus** glyphs
   (`drawTransit`), blue for `elevated`, red for the `high` tier. **Synthetic
   data** (real timetable, simulated running, injected anomalies): the artifact,
   the evidence panel, the hover popup and the caption all say so — keep that
   labelling. The sidebar lists only the top `TRANSIT_LIST_LIMIT` hotspots and
   says it does; the map and the feed carry all of them.
+- `roads` — NZTA TMS state-highway sites flagged in the **real 20–21 April
+  2026 Wellington floods**, drawn as purple **diamonds** (`drawRoads`), darker
+  for HIGH severity. Built by `scripts/build_road_layer.py` from the committed
+  `NZTA/anomaly/csv/` extracts (worst flagged day per site in the event
+  window). Real data with a two-day publishing lag — a validated backtest,
+  never a live detector; the four no-geometry Ngauranga sites are surfaced in
+  `sites_without_geometry`, not dropped. Sidebar lists the worst
+  `ROAD_LIST_LIMIT`.
 
 Hover state stores the popup's screen position at pick time, and every view
 change (pan, zoom, fit, reveal, layer toggle) clears it — stored coordinates
@@ -200,7 +217,7 @@ panel). It reads the agent config **through the settings store**
 once: a key linked in Agent setup while the panel was open was silently
 ignored until reopen.
 
-`app/agent-brief.ts` is the agent's whole world: it loads the five COP files and
+`app/agent-brief.ts` is the agent's whole world: it loads the six COP files and
 `answer()` routes a question to those numbers with keyword matching. Deliberately
 not generative — a wrong route says "I do not hold that", which is safer than a
 fluent guess. `briefContext()` is the grounding context sent along when a model

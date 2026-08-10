@@ -140,7 +140,7 @@ picture. The map is a view; **the feed is the product**.
   `limitations` array; the batch is labelled *batch replay*, the synthetic
   layer says *synthetic* at every appearance, and signals say *investigate* —
   never *incident*.
-- **Corroboration over aggregation.** Four independent sources share one map
+- **Corroboration over aggregation.** Five independent sources share one map
   and one projection, each with its own icon: a countline drop can be checked
   against a live NZTA camera frame two clicks away, instead of being averaged
   into a single opaque score.
@@ -150,7 +150,7 @@ picture. The map is a view; **the feed is the product**.
   in the visitor's browser and goes only to the provider. A test suite scans
   the repo for key-shaped strings on every build.
 - **No backend to fall over.** The site is static files plus the visitor's
-  browser — five committed GeoJSON/JSON contracts any COP, GIS client or
+  browser — six committed GeoJSON/JSON contracts any COP, GIS client or
   teammate's prototype can consume directly.
 
 ### What we found
@@ -170,6 +170,11 @@ From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source rows):
   condense to **350 stop-level hotspots** (Kilbirnie Stop A worst at 270
   anomalies, 65 high-severity, delay-outlier dominated) — evidence the same
   hotspot pattern works for public transport when real GTFS-RT is captured.
+- From the **real** NZTA TMS backtest: the per-site weekday-median detector
+  flagged the **20–21 April 2026 Wellington floods blind** — the SH2/Wairarapa
+  corridor collapsed to 0.08–0.57× its own baseline (worst: South of Waingawa
+  Bridge at 0.35×, −39.4 z) while SH1 stayed normal, matching the actual
+  closures and the regional state of emergency declared 20 April.
 
 ### Key takeaways
 
@@ -231,6 +236,10 @@ A hand-rolled slippy map on one canvas — CARTO Positron raster tiles
   [`data/buses_trains/anomaly/`](data/buses_trains/anomaly/) extracts.
   **Synthetic**: the real Metlink timetable replayed with simulated running and
   injected, labelled anomalies — the layer says so wherever it appears.
+- **State highways** — NZTA TMS sites flagged in the **real 20–21 April 2026
+  Wellington floods** as purple **diamond icons** (darker where severity is
+  high), built from the [`NZTA/anomaly/`](NZTA/anomaly/) extracts. Daily counts
+  with a two-day lag: a validated backtest, not a live detector.
 
 Hovering a signal or a PT hotspot shows its numbers in place; clicking anything
 fills the **investigate panel** — observed vs expected counts, robust score,
@@ -270,7 +279,7 @@ and falls back to the local answer.
 
 ### Settings: sources and integrations
 
-**Data sources** (`/settings`, deliberately not on the dashboard) lists the five
+**Data sources** (`/settings`, deliberately not on the dashboard) lists the six
 committed feeds plus anything you add, with **measured** status per source —
 reachable, reachable-with-odd-payload, or failed — last successful sync, latency
 and record count, a retry per row and **Test all**. Sources can be added by URL
@@ -280,7 +289,7 @@ generates the MCP client config and the A2A agent card for your own endpoint.
 
 ### The feeds
 
-Everything the site shows is served as five committed files — point any COP,
+Everything the site shows is served as six committed files — point any COP,
 GIS client or teammate's prototype at them:
 
 | Feed | Path |
@@ -289,6 +298,7 @@ GIS client or teammate's prototype at them:
 | Sensor coverage | `/cop/v1/countline-coverage.geojson` |
 | Traffic cameras | `/cop/v1/traffic-cameras.geojson` |
 | PT anomalies (synthetic) | `/cop/v1/transit-anomalies.geojson` |
+| State highways (real April 2026 floods) | `/cop/v1/road-anomalies.geojson` |
 | Coverage and health | `/cop/v1/movement-health.json` |
 
 ### Keys and secrets stay out of this repo
@@ -335,6 +345,12 @@ Rebuild the Metlink PT-anomaly layer from the committed extracts (stdlib only):
 
 ```powershell
 python scripts\build_transit_layer.py
+```
+
+Rebuild the NZTA state-highway layer from the committed extracts (stdlib only):
+
+```powershell
+python scripts\build_road_layer.py
 ```
 
 ### Docs

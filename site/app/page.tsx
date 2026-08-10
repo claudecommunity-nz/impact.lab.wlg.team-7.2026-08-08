@@ -73,6 +73,10 @@ export default function Home() {
             <span>PT anomaly layer (synthetic)</span>
             <code>/cop/v1/transit-anomalies.geojson</code>
           </a>
+          <a href="/cop/v1/road-anomalies.geojson">
+            <span>State highway layer (real April 2026 floods)</span>
+            <code>/cop/v1/road-anomalies.geojson</code>
+          </a>
           <a href="/cop/v1/movement-health.json">
             <span>Coverage and health</span>
             <code>/cop/v1/movement-health.json</code>

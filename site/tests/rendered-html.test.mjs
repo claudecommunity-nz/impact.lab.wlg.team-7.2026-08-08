@@ -42,6 +42,7 @@ test("server-renders the movement investigation surface with truthful batch stat
   assert.ok(html.includes("/cop/v1/movement-health.json"));
   assert.ok(html.includes("/cop/v1/traffic-cameras.geojson"));
   assert.ok(html.includes("/cop/v1/transit-anomalies.geojson"));
+  assert.ok(html.includes("/cop/v1/road-anomalies.geojson"));
   assert.match(html, /Not live emergency information/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|taking shape/i);
 });
@@ -88,8 +89,9 @@ test("merges every source into one map with switchable layers", async () => {
   assert.match(html, /Sensor coverage/);
   assert.match(html, /Traffic cameras/);
   assert.match(html, /Public transport/);
-  // All four layers start switched on.
-  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 4);
+  assert.match(html, /State highways/);
+  // All five layers start switched on.
+  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 5);
   // One canvas, one projection: no source ships a second map.
   assert.equal(html.match(/<canvas/g)?.length, 1);
 });
@@ -120,6 +122,44 @@ test("ships the PT anomaly layer as an honestly labelled synthetic artifact", as
     assert.equal(feature.properties.synthetic, true);
     assert.ok(feature.properties.limitations.length > 0);
     assert.ok(["high", "elevated"].includes(feature.properties.severity_tier));
+  }
+});
+
+test("ships the state highway layer as a real, attributed flood backtest", async () => {
+  const roadText = await readFile(
+    new URL("../public/cop/v1/road-anomalies.geojson", import.meta.url),
+    "utf8",
+  );
+  const roads = JSON.parse(roadText);
+
+  assert.equal(roads.type, "FeatureCollection");
+  assert.equal(roads.schema, "road-anomaly-collection/v1");
+  assert.equal(roads.real_event, true);
+  assert.match(roads.event, /April 2026/);
+  assert.deepEqual(roads.event_dates, ["2026-04-20", "2026-04-21"]);
+  assert.equal(roads.features.length, roads.site_count);
+  assert.match(roads.attribution, /NZ Transport Agency|NZTA/);
+  assert.ok(roads.limitations.some((entry) => /[Rr]eal data/.test(entry)));
+
+  // The no-geometry Ngauranga sites are surfaced, never silently dropped.
+  assert.ok(roads.sites_without_geometry.length > 0);
+  assert.equal(
+    roads.flagged_site_count,
+    roads.site_count + roads.sites_without_geometry.length,
+  );
+
+  // Sorted worst-first so the site's top-N list slice is honest.
+  const scores = roads.features.map((feature) => Math.abs(feature.properties.robust_z));
+  assert.deepEqual(scores, [...scores].sort((a, b) => b - a));
+
+  for (const feature of roads.features) {
+    assert.equal(feature.geometry.type, "Point");
+    const [longitude, latitude] = feature.geometry.coordinates;
+    assert.ok(longitude > 170 && latitude < -40);
+    assert.equal(feature.properties.real_event, true);
+    assert.ok(feature.properties.limitations.length > 0);
+    assert.ok(["HIGH", "MEDIUM", "LOW"].includes(feature.properties.severity));
+    assert.ok(["2026-04-20", "2026-04-21"].includes(feature.properties.date));
   }
 });
 
@@ -242,11 +282,12 @@ test("keeps source settings off the dashboard and on their own route", async () 
     "/cop/v1/countline-coverage.geojson",
     "/cop/v1/traffic-cameras.geojson",
     "/cop/v1/transit-anomalies.geojson",
+    "/cop/v1/road-anomalies.geojson",
     "/cop/v1/movement-health.json",
   ]) {
     assert.ok(settings.includes(url), `${url} should be listed as a source`);
   }
-  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 5);
+  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 6);
   // Four export formats are offered per source.
   for (const format of ["GeoJSON", "JSON", "CSV", "NDJSON"]) {
     assert.ok(settings.includes(format), `${format} should be an export option`);

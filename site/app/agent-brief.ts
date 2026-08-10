@@ -1,7 +1,7 @@
 /**
  * What the chat agent knows.
  *
- * The brief is the four committed COP artifacts, loaded once in the browser.
+ * The brief is the committed COP artifacts, loaded once in the browser.
  * Answers are assembled from those numbers only — nothing is generated, so the
  * agent cannot invent a signal that is not in the feed. When an operator
  * configures an agent endpoint in /settings, the same brief is posted as
@@ -13,6 +13,8 @@ import type {
   CameraFeature,
   LineCollection,
   LineFeature,
+  RoadCollection,
+  RoadFeature,
   TransitCollection,
   TransitFeature,
 } from "./map-draw";
@@ -40,6 +42,8 @@ export type Brief = {
   cameras: CameraFeature[];
   transit: TransitFeature[];
   transitStopCount: number;
+  roads: RoadFeature[];
+  roadEvent: string | null;
   errors: string[];
 };
 
@@ -52,6 +56,8 @@ export const EMPTY_BRIEF: Brief = {
   cameras: [],
   transit: [],
   transitStopCount: 0,
+  roads: [],
+  roadEvent: null,
   errors: [],
 };
 
@@ -60,7 +66,7 @@ export const SUGGESTED_QUESTIONS = [
   "Which signal dropped the most?",
   "How reliable is this data?",
   "Any camera near the worst signal?",
-  "What are the PT hotspots?",
+  "What happened in the April floods?",
 ];
 
 async function readJson<T>(url: string): Promise<T> {
@@ -78,8 +84,9 @@ export async function loadBrief(): Promise<Brief> {
     readJson<LineCollection>("/cop/v1/countline-coverage.geojson"),
     readJson<CameraCollection>("/cop/v1/traffic-cameras.geojson"),
     readJson<TransitCollection>("/cop/v1/transit-anomalies.geojson"),
+    readJson<RoadCollection>("/cop/v1/road-anomalies.geojson"),
   ]);
-  const [health, signals, coverage, cameras, transit] = settled;
+  const [health, signals, coverage, cameras, transit, roads] = settled;
   const note = (label: string, result: PromiseSettledResult<unknown>) => {
     if (result.status === "rejected") errors.push(`${label} did not load`);
   };
@@ -88,6 +95,7 @@ export async function loadBrief(): Promise<Brief> {
   note("Coverage", coverage);
   note("Cameras", cameras);
   note("PT anomalies", transit);
+  note("State highways", roads);
 
   return {
     health: health.status === "fulfilled" ? health.value : null,
@@ -96,6 +104,8 @@ export async function loadBrief(): Promise<Brief> {
     cameras: cameras.status === "fulfilled" ? cameras.value.features : [],
     transit: transit.status === "fulfilled" ? transit.value.features : [],
     transitStopCount: transit.status === "fulfilled" ? transit.value.stop_count : 0,
+    roads: roads.status === "fulfilled" ? roads.value.features : [],
+    roadEvent: roads.status === "fulfilled" ? roads.value.event : null,
     errors,
   };
 }
@@ -148,8 +158,9 @@ function nameMatches(question: string, brief: Brief) {
   const signals = brief.signals.filter((feature) => hits(text(feature, "name")));
   const cameras = brief.cameras.filter((feature) => hits(feature.properties.name));
   const transit = brief.transit.filter((feature) => hits(feature.properties.stop_name));
-  if (signals.length + cameras.length + transit.length === 0) return null;
-  return { signals, cameras, transit };
+  const roads = brief.roads.filter((feature) => hits(feature.properties.site_name));
+  if (signals.length + cameras.length + transit.length + roads.length === 0) return null;
+  return { signals, cameras, transit, roads };
 }
 
 const DISCLAIMER =
@@ -229,10 +240,30 @@ export function answer(question: string, brief: Brief): AgentReply {
         "· /cop/v1/countline-coverage.geojson — every measured countline",
         "· /cop/v1/traffic-cameras.geojson — NZTA camera positions",
         "· /cop/v1/transit-anomalies.geojson — Metlink hotspots (labelled synthetic)",
+        "· /cop/v1/road-anomalies.geojson — NZTA state-highway sites, real April 2026 floods",
         "· /cop/v1/movement-health.json — counts, gaps, data age, limitations",
         "Data sources in the sidebar exports any of them as GeoJSON, JSON, CSV or NDJSON, and builds the MCP and A2A config.",
       ].join("\n"),
       sources: [],
+    };
+  }
+
+  if (has("flood", "storm", "highway", "sh1", "sh2", "sh58", "sh59", "april", "remutaka", "waka kotahi", "closure")) {
+    const top = brief.roads.slice(0, 3);
+    if (top.length === 0) return { text: "The state-highway layer did not load.", sources: [] };
+    return {
+      text: [
+        `Real event: ${brief.roadEvent}. ${brief.roads.length} state-highway sites flagged, worst first:`,
+        ...top.map(
+          (feature) =>
+            `· ${feature.properties.site_name} (SH${feature.properties.state_highway}) — ${feature.properties.observed_count.toLocaleString(
+              "en-NZ",
+            )} vs ${feature.properties.baseline_median.toLocaleString("en-NZ")} usual, ${feature.properties.ratio.toFixed(2)}× (${feature.properties.robust_z.toFixed(1)} z)`,
+        ),
+        "Real NZTA daily counts with a two-day lag: a backtest, not a live detector.",
+        DISCLAIMER,
+      ].join("\n"),
+      sources: ["/cop/v1/road-anomalies.geojson"],
     };
   }
 
@@ -371,6 +402,17 @@ export function answer(question: string, brief: Brief): AgentReply {
           ),
       );
     }
+    if (matches.roads.length) {
+      lines.push(
+        `${matches.roads.length} matching state-highway site(s):`,
+        ...matches.roads
+          .slice(0, 5)
+          .map(
+            (feature) =>
+              `· ${feature.properties.site_name} (SH${feature.properties.state_highway}) — ${feature.properties.ratio.toFixed(2)}× usual on ${feature.properties.date} (real April 2026 floods)`,
+          ),
+      );
+    }
     lines.push(DISCLAIMER);
     return { text: lines.join("\n"), sources: ["/cop/v1/movement-signals.geojson"] };
   }
@@ -392,8 +434,8 @@ export function answer(question: string, brief: Brief): AgentReply {
   return {
     text: [
       "I do not hold an answer to that in the published artifacts, so I will not guess.",
-      `What I do hold: ${brief.signals.length} signals, ${brief.coverageCount} countlines, ${brief.cameras.length} cameras, ${brief.transit.length} PT hotspots and the batch health file.`,
-      "Try a street name, \"biggest drop\", \"data gaps\", \"cameras\" or \"PT hotspots\".",
+      `What I do hold: ${brief.signals.length} signals, ${brief.coverageCount} countlines, ${brief.cameras.length} cameras, ${brief.transit.length} PT hotspots, ${brief.roads.length} state-highway flood sites and the batch health file.`,
+      "Try a street name, \"biggest drop\", \"data gaps\", \"cameras\", \"PT hotspots\" or \"April floods\".",
     ].join("\n"),
     sources: [],
   };
@@ -424,10 +466,22 @@ export function briefContext(brief: Brief) {
       top_detector: feature.properties.top_detector,
       synthetic: true,
     })),
+    road_anomalies: brief.roads.slice(0, 40).map((feature) => ({
+      id: feature.id,
+      site_name: feature.properties.site_name,
+      state_highway: feature.properties.state_highway,
+      date: feature.properties.date,
+      ratio: feature.properties.ratio,
+      robust_z: feature.properties.robust_z,
+      severity: feature.properties.severity,
+      real_event: true,
+    })),
+    road_event: brief.roadEvent,
     guardrails: [
       "Signals mean investigate. Do not diagnose disruption, evacuation or loss of access.",
       "Missing records are data gaps, never zero movement.",
       "Public transport anomalies are a labelled synthetic replay.",
+      "State-highway anomalies are a real April 2026 flood backtest: daily NZTA counts, two-day lag.",
       "Not live emergency information. In an emergency, call 111.",
     ],
   };

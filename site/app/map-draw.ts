@@ -73,6 +73,45 @@ export type TransitCollection = {
   features: TransitFeature[];
 };
 
+export type RoadProperties = {
+  site_ref: string;
+  site_name: string;
+  state_highway: string;
+  site_type: string;
+  date: string;
+  observed_count: number;
+  baseline_median: number;
+  baseline_days: number;
+  ratio: number;
+  robust_z: number;
+  severity: "HIGH" | "MEDIUM" | "LOW";
+  direction: "DROP" | "SURGE";
+  april_anomaly_days: number;
+  event: string;
+  real_event: boolean;
+  attribution: string;
+  limitations: string[];
+};
+
+export type RoadFeature = {
+  id: string;
+  geometry: { type: "Point"; coordinates: Coordinate };
+  properties: RoadProperties;
+};
+
+export type RoadCollection = {
+  type: "FeatureCollection";
+  event: string;
+  event_dates: string[];
+  flagged_site_count: number;
+  site_count: number;
+  real_event: boolean;
+  attribution: string;
+  limitations: string[];
+  sites_without_geometry: RoadProperties[];
+  features: RoadFeature[];
+};
+
 /** Transport classes drawn with the person glyph; everything else gets the car. */
 export const PEOPLE_CLASSES = new Set(["Pedestrian", "Cyclist", "E-scooter"]);
 
@@ -436,6 +475,56 @@ export function drawTransit(
       context.fill();
     }
   }
+}
+
+/**
+ * Diamond road-sign at each flagged NZTA state-highway site (real April 2026
+ * flood backtest); darker fill for HIGH severity. Purple, so the layer reads
+ * apart from the signal red/amber and the transit blue.
+ */
+export function drawRoads(
+  context: CanvasRenderingContext2D,
+  project: Projector,
+  sites: RoadFeature[],
+  selectedId: string | null,
+  hoveredId: string | null = null,
+) {
+  for (const feature of sites) {
+    const [x, y] = project(feature.geometry.coordinates);
+    const isSelected = feature.id === selectedId;
+    const isHovered = feature.id === hoveredId;
+    const scale = isSelected ? 1.35 : isHovered ? 1.2 : 1;
+    const radius = 5.5 * scale;
+    const body = feature.properties.severity === "HIGH" ? "#5B4A8A" : "#907FBE";
+
+    if (isSelected) {
+      traceDiamond(context, x, y, radius + 3);
+      context.strokeStyle = "#000000";
+      context.lineWidth = 2;
+      context.stroke();
+    }
+
+    traceDiamond(context, x, y, radius);
+    context.fillStyle = body;
+    context.fill();
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 1.4;
+    context.stroke();
+  }
+}
+
+function traceDiamond(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  radius: number,
+) {
+  context.beginPath();
+  context.moveTo(x, y - radius);
+  context.lineTo(x + radius, y);
+  context.lineTo(x, y + radius);
+  context.lineTo(x - radius, y);
+  context.closePath();
 }
 
 function traceRoundedRect(

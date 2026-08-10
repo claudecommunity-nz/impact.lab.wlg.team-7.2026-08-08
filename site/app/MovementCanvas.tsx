@@ -19,6 +19,8 @@ import {
   type LineCollection,
   type LineFeature,
   type MapView,
+  type RoadCollection,
+  type RoadFeature,
   type TransitCollection,
   type TransitFeature,
   DEFAULT_VIEW,
@@ -30,6 +32,7 @@ import {
   createProjector,
   drawCameras,
   drawCoverage,
+  drawRoads,
   drawSignals,
   drawTiles,
   drawTransit,
@@ -42,14 +45,15 @@ import {
 } from "./map-draw";
 
 type Filter = "all" | "people" | "vehicles";
-type LayerId = "signals" | "coverage" | "cameras" | "transit";
+type LayerId = "signals" | "coverage" | "cameras" | "transit" | "roads";
 type Layers = Record<LayerId, boolean>;
-type Focus = "signal" | "camera" | "transit";
+type Focus = "signal" | "camera" | "transit" | "road";
 type Hover = { kind: Focus; id: string; left: number; top: number; above: boolean };
 
 const POPUP_WIDTH = 248;
 const HOVER_REFRESH_MS = 15_000;
 const TRANSIT_LIST_LIMIT = 30;
+const ROAD_LIST_LIMIT = 30;
 
 /* The evidence column slides away rather than disappearing, so the map can grow
  * to the full frame when someone is scanning rather than investigating. */
@@ -60,6 +64,7 @@ const LAYERS: { id: LayerId; label: string; detail: string }[] = [
   { id: "coverage", label: "Sensor coverage", detail: "Every measured countline" },
   { id: "cameras", label: "Traffic cameras", detail: "NZTA · live frames" },
   { id: "transit", label: "Public transport", detail: "Metlink · synthetic replay" },
+  { id: "roads", label: "State highways", detail: "NZTA · real April 2026 floods" },
 ];
 
 export default function MovementCanvas() {
@@ -70,19 +75,23 @@ export default function MovementCanvas() {
     coverage: true,
     cameras: true,
     transit: true,
+    roads: true,
   });
   const [coverage, setCoverage] = useState<LineFeature[]>([]);
   const [signals, setSignals] = useState<LineFeature[]>([]);
   const [cameras, setCameras] = useState<CameraCollection | null>(null);
   const [transit, setTransit] = useState<TransitCollection | null>(null);
+  const [roads, setRoads] = useState<RoadCollection | null>(null);
   const [selectedSignalId, setSelectedSignalId] = useState<string | null>(null);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [selectedTransitId, setSelectedTransitId] = useState<string | null>(null);
+  const [selectedRoadId, setSelectedRoadId] = useState<string | null>(null);
   const [focus, setFocus] = useState<Focus>("signal");
   const [filter, setFilter] = useState<Filter>("all");
   const [error, setError] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [transitError, setTransitError] = useState<string | null>(null);
+  const [roadError, setRoadError] = useState<string | null>(null);
   const [frameNonce, setFrameNonce] = useState(0);
   // Remember which frame URL failed, so selecting another camera or refreshing
   // clears the failure without an effect.
@@ -144,6 +153,16 @@ export default function MovementCanvas() {
       .catch(() => setTransitError("The PT anomaly layer could not be loaded."));
   }, []);
 
+  useEffect(() => {
+    fetch("/cop/v1/road-anomalies.geojson")
+      .then((response) => response.json())
+      .then((collection: RoadCollection) => {
+        setRoads(collection);
+        setSelectedRoadId(collection.features[0]?.id ?? null);
+      })
+      .catch(() => setRoadError("The state-highway layer could not be loaded."));
+  }, []);
+
   const filteredSignals = useMemo(() => signals.filter((feature) => {
     const mode = String(feature.properties.transport_class);
     if (filter === "people") return PEOPLE_CLASSES.has(mode);
@@ -168,12 +187,21 @@ export default function MovementCanvas() {
     [transitFeatures],
   );
 
+  // Sorted by |robust_z| in the artifact, so the top slice is the worst sites.
+  const roadFeatures = useMemo(() => roads?.features ?? [], [roads]);
+  const listedRoads = useMemo(
+    () => roadFeatures.slice(0, ROAD_LIST_LIMIT),
+    [roadFeatures],
+  );
+
   const selectedSignal =
     signals.find((feature) => feature.id === selectedSignalId) ?? filteredSignals[0];
   const selectedCamera: CameraFeature | undefined =
     cameraFeatures.find((feature) => feature.id === selectedCameraId) ?? sortedCameras[0];
   const selectedTransit: TransitFeature | undefined =
     transitFeatures.find((feature) => feature.id === selectedTransitId) ?? transitFeatures[0];
+  const selectedRoad: RoadFeature | undefined =
+    roadFeatures.find((feature) => feature.id === selectedRoadId) ?? roadFeatures[0];
 
   const hoveredCamera =
     hover?.kind === "camera"
@@ -184,6 +212,10 @@ export default function MovementCanvas() {
   const hoveredTransit =
     hover?.kind === "transit"
       ? transitFeatures.find((feature) => feature.id === hover.id)
+      : undefined;
+  const hoveredRoad =
+    hover?.kind === "road"
+      ? roadFeatures.find((feature) => feature.id === hover.id)
       : undefined;
 
   // Redraw after every render, and hand the same closure to tile loads and resizes.
@@ -196,6 +228,15 @@ export default function MovementCanvas() {
       drawTiles(surface.context, view, surface.width, surface.height, () => drawRef.current());
       const project = createProjector(view, surface.width, surface.height);
       if (layers.coverage) drawCoverage(surface.context, project, coverage);
+      if (layers.roads) {
+        drawRoads(
+          surface.context,
+          project,
+          roadFeatures,
+          selectedRoad?.id ?? null,
+          hover?.kind === "road" ? hover.id : null,
+        );
+      }
       if (layers.transit) {
         drawTransit(
           surface.context,
@@ -280,11 +321,12 @@ export default function MovementCanvas() {
       layers.signals || layers.coverage ? boundsOfLines(coverage) : null,
       layers.cameras ? boundsOfPoints(cameraFeatures) : null,
       layers.transit ? boundsOfPoints(transitFeatures) : null,
+      layers.roads ? boundsOfPoints(roadFeatures) : null,
     );
     if (!bounds) return;
     setHover(null);
     setView(fitView(bounds, size.width, size.height));
-  }, [stageSize, layers, coverage, cameraFeatures, transitFeatures]);
+  }, [stageSize, layers, coverage, cameraFeatures, transitFeatures, roadFeatures]);
 
   const toggleLayer = (id: LayerId) => {
     setHover(null);
@@ -326,6 +368,10 @@ export default function MovementCanvas() {
     if (layers.transit) {
       const hit = pickNearest(transitFeatures, (feature) => feature.geometry.coordinates, project, point);
       if (hit) return place("transit", hit.id, project(hit.geometry.coordinates));
+    }
+    if (layers.roads) {
+      const hit = pickNearest(roadFeatures, (feature) => feature.geometry.coordinates, project, point);
+      if (hit) return place("road", hit.id, project(hit.geometry.coordinates));
     }
     return null;
   };
@@ -372,6 +418,9 @@ export default function MovementCanvas() {
     } else if (hit.kind === "transit") {
       setSelectedTransitId(hit.id);
       setFocus("transit");
+    } else if (hit.kind === "road") {
+      setSelectedRoadId(hit.id);
+      setFocus("road");
     } else {
       setSelectedSignalId(hit.id);
       setFocus("signal");
@@ -389,6 +438,7 @@ export default function MovementCanvas() {
       layers.coverage ? "414 countlines of sensor coverage" : null,
       layers.cameras ? `${cameraFeatures.length} NZTA traffic cameras` : null,
       layers.transit ? `${transitFeatures.length} Metlink anomaly hotspots` : null,
+      layers.roads ? `${roadFeatures.length} state highway anomaly sites` : null,
     ]
       .filter(Boolean)
       .join(", ") || "no layers switched on";
@@ -517,8 +567,14 @@ export default function MovementCanvas() {
                   <span><i className="transit-high" />Dense high severity</span>
                 </>
               ) : null}
+              {layers.roads ? (
+                <>
+                  <span><i className="road" />Highway drop</span>
+                  <span><i className="road-high" />High severity</span>
+                </>
+              ) : null}
             </div>
-            {hover && (hoveredCamera || hoveredSignal || hoveredTransit) ? (
+            {hover && (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad) ? (
               <div
                 className={`map-popup ${hover.above ? "above" : "below"}`}
                 style={{ left: hover.left, top: hover.top }}
@@ -562,6 +618,15 @@ export default function MovementCanvas() {
                       {hoveredTransit.properties.top_detector} · synthetic April replay
                     </span>
                   </p>
+                ) : hoveredRoad ? (
+                  <p>
+                    <strong>{hoveredRoad.properties.site_name}</strong>
+                    <span>
+                      SH{hoveredRoad.properties.state_highway} ·{" "}
+                      {hoveredRoad.properties.ratio.toFixed(2)}× usual ·{" "}
+                      {hoveredRoad.properties.date} · real event
+                    </span>
+                  </p>
                 ) : null}
               </div>
             ) : null}
@@ -570,7 +635,7 @@ export default function MovementCanvas() {
           </div>
           <p className="map-caption">
             Signals mark the sensor line, not the street. Transit: synthetic
-            Metlink replay.
+            Metlink replay. Highways: real April 2026 flood backtest.
           </p>
         </div>
 
@@ -584,7 +649,9 @@ export default function MovementCanvas() {
               ? "Camera evidence"
               : focus === "transit"
                 ? "Public transport evidence"
-                : "Signal evidence"
+                : focus === "road"
+                  ? "State highway evidence"
+                  : "Signal evidence"
           }
         >
           <div className="evidence-inner">
@@ -733,6 +800,66 @@ export default function MovementCanvas() {
                 {transitError ?? "Loading the Metlink anomaly layer…"}
               </p>
             )
+          ) : focus === "road" ? (
+            selectedRoad ? (
+              <div className="selected-evidence">
+                <div className="evidence-heading">
+                  <span
+                    className={`direction-chip ${
+                      selectedRoad.properties.severity === "HIGH" ? "road-high" : "road"
+                    }`}
+                  >
+                    {selectedRoad.properties.severity.toLowerCase()}{" "}
+                    {selectedRoad.properties.direction.toLowerCase()}
+                  </span>
+                  <span>Site {selectedRoad.properties.site_ref}</span>
+                </div>
+                <h3>{selectedRoad.properties.site_name}</h3>
+                <p>
+                  SH{selectedRoad.properties.state_highway} ·{" "}
+                  {selectedRoad.properties.date} · real April 2026 flood event
+                </p>
+                <div className="count-comparison">
+                  <div>
+                    <span>Observed</span>
+                    <strong>{selectedRoad.properties.observed_count.toLocaleString("en-NZ")}</strong>
+                  </div>
+                  <div>
+                    <span>Usual</span>
+                    <strong>{selectedRoad.properties.baseline_median.toLocaleString("en-NZ")}</strong>
+                  </div>
+                </div>
+                <dl className="evidence-metrics">
+                  <div>
+                    <dt>Ratio</dt>
+                    <dd>{selectedRoad.properties.ratio.toFixed(2)}× usual</dd>
+                  </div>
+                  <div>
+                    <dt>Robust score</dt>
+                    <dd>{selectedRoad.properties.robust_z.toFixed(1)} z</dd>
+                  </div>
+                  <div>
+                    <dt>Baseline</dt>
+                    <dd>{selectedRoad.properties.baseline_days} days</dd>
+                  </div>
+                  <div>
+                    <dt>Position</dt>
+                    <dd>
+                      {selectedRoad.geometry.coordinates[1].toFixed(4)},{" "}
+                      {selectedRoad.geometry.coordinates[0].toFixed(4)}
+                    </dd>
+                  </div>
+                </dl>
+                <p className="evidence-note">
+                  Real NZTA daily counts, two-day lag. A flag is a statistical
+                  change, not a diagnosed closure.
+                </p>
+              </div>
+            ) : (
+              <p className="empty-evidence">
+                {roadError ?? "Loading the state-highway layer…"}
+              </p>
+            )
           ) : selectedSignal ? (
             <div className="selected-evidence">
               <div className="evidence-heading">
@@ -829,6 +956,29 @@ export default function MovementCanvas() {
                 </span>
                 <em className={feature.properties.severity_tier === "high" ? "transit-high" : "transit"}>
                   {feature.properties.anomaly_count}
+                </em>
+              </button>
+            ))}
+            <p className="list-group">
+              State highway anomalies (worst {listedRoads.length} of {roadFeatures.length} · real)
+            </p>
+            {listedRoads.map((feature) => (
+              <button
+                type="button"
+                key={feature.id}
+                className={focus === "road" && feature.id === selectedRoad?.id ? "selected" : ""}
+                onClick={() => {
+                  setSelectedRoadId(feature.id);
+                  setFocus("road");
+                  revealOnMap(feature.geometry.coordinates);
+                }}
+              >
+                <span>
+                  <strong>{feature.properties.site_name}</strong>
+                  <small>SH{feature.properties.state_highway} · {feature.properties.date}</small>
+                </span>
+                <em className={feature.properties.severity === "HIGH" ? "road-high" : "road"}>
+                  {feature.properties.ratio.toFixed(2)}×
                 </em>
               </button>
             ))}

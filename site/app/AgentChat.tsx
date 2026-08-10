@@ -187,7 +187,7 @@ export default function AgentChat() {
           <p className="agent-provenance">
             {agentIsConfigured(agent)
               ? `Routed to ${agentTarget(agent)} · key stays in this browser`
-              : `Local answers · ${brief.signals.length} signals · ${brief.coverageCount} countlines · ${brief.cameras.length} cameras · ${brief.transit.length} PT hotspots`}
+              : `Local answers · ${brief.signals.length} signals · ${brief.coverageCount} countlines · ${brief.cameras.length} cameras · ${brief.transit.length} PT hotspots · ${brief.roads.length} highway sites`}
           </p>
 
           <div className="agent-log" ref={logRef} role="log" aria-live="polite">
