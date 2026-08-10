@@ -452,6 +452,8 @@ h3 { font-size: var(--text-h3); }
 }
 /* The system's one yellow top rule on this page. */
 .selected-evidence { padding: var(--space-5); border-top: 4px solid var(--wcc-yellow); border-bottom: 1px solid var(--border-hairline); }
+/* Hover preview: the top rule greys out until the feature is clicked (pinned). */
+.selected-evidence.preview { border-top-color: var(--wcc-grey-300); }
 .evidence-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); color: var(--wcc-grey-700); font-size: var(--text-small); font-weight: 700; }
 .direction-chip { padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); color: var(--surface-page); }
 .direction-chip.increase { background: var(--wcc-warning); }

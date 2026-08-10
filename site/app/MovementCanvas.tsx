@@ -266,6 +266,15 @@ export default function MovementCanvas() {
       ? roadFeatures.find((feature) => feature.id === hover.id)
       : undefined;
 
+  /* The investigate panel follows the pointer: hovering any glyph previews its
+   * evidence, and the pinned selection returns when the pointer leaves. */
+  const panelFocus: Focus = hover?.kind ?? focus;
+  const panelSignal = hoveredSignal ?? selectedSignal;
+  const panelCamera = hoveredCamera ?? selectedCamera;
+  const panelTransit = hoveredTransit ?? selectedTransit;
+  const panelRoad = hoveredRoad ?? selectedRoad;
+  const previewing = Boolean(hoveredSignal || hoveredCamera || hoveredTransit || hoveredRoad);
+
   /** Per-frame screen-space clustering of the three point layers. */
   const clusterLayers = (width: number, height: number) => {
     const project = createProjector(view, width, height);
@@ -624,8 +633,8 @@ export default function MovementCanvas() {
     }
   };
 
-  const frameSrc = selectedCamera
-    ? `${selectedCamera.properties.image_url}?frame=${frameNonce}`
+  const frameSrc = panelCamera
+    ? `${panelCamera.properties.image_url}?frame=${frameNonce}`
     : null;
   const frameFailed = frameSrc !== null && frameSrc === failedFrame;
 
@@ -930,40 +939,40 @@ export default function MovementCanvas() {
           className="evidence-column"
           id="evidence-panel"
           aria-label={
-            focus === "camera"
+            panelFocus === "camera"
               ? "Camera evidence"
-              : focus === "transit"
+              : panelFocus === "transit"
                 ? "Public transport evidence"
-                : focus === "road"
+                : panelFocus === "road"
                   ? "State highway evidence"
                   : "Signal evidence"
           }
         >
           <div className="evidence-inner">
-          {focus === "camera" ? (
-            selectedCamera ? (
-              <div className="selected-evidence">
+          {panelFocus === "camera" ? (
+            panelCamera ? (
+              <div className={`selected-evidence ${previewing ? "preview" : ""}`}>
                 <div className="evidence-heading">
                   <span
                     className={`direction-chip ${
-                      selectedCamera.properties.within_countline_frame ? "on-frame" : "off-frame"
+                      panelCamera.properties.within_countline_frame ? "on-frame" : "off-frame"
                     }`}
                   >
-                    {selectedCamera.properties.within_countline_frame ? "on frame" : "off frame"}
+                    {panelCamera.properties.within_countline_frame ? "on frame" : "off frame"}
                   </span>
-                  <span>Camera {selectedCamera.properties.camera_id}</span>
+                  <span>Camera {panelCamera.properties.camera_id}</span>
                 </div>
-                <h3>{selectedCamera.properties.name}</h3>
+                <h3>{panelCamera.properties.name}</h3>
                 <p>
-                  {selectedCamera.properties.direction || "Direction not published"} ·{" "}
-                  {selectedCamera.properties.region}
+                  {panelCamera.properties.direction || "Direction not published"} ·{" "}
+                  {panelCamera.properties.region}
                 </p>
                 <figure className="camera-frame">
                   {frameSrc && !frameFailed ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={frameSrc}
-                      alt={`Most recent NZTA camera frame: ${selectedCamera.properties.name}`}
+                      alt={`Most recent NZTA camera frame: ${panelCamera.properties.name}`}
                       referrerPolicy="no-referrer"
                       onError={() => setFailedFrame(frameSrc)}
                     />
@@ -989,18 +998,18 @@ export default function MovementCanvas() {
                   <div>
                     <dt>Position</dt>
                     <dd>
-                      {selectedCamera.geometry.coordinates[1].toFixed(4)},{" "}
-                      {selectedCamera.geometry.coordinates[0].toFixed(4)}
+                      {panelCamera.geometry.coordinates[1].toFixed(4)},{" "}
+                      {panelCamera.geometry.coordinates[0].toFixed(4)}
                     </dd>
                   </div>
                   <div>
                     <dt>Catalogue status</dt>
-                    <dd>{selectedCamera.properties.offline ? "offline" : "online"}</dd>
+                    <dd>{panelCamera.properties.offline ? "offline" : "online"}</dd>
                   </div>
                 </dl>
                 <a
                   className="camera-link"
-                  href={selectedCamera.properties.view_url}
+                  href={panelCamera.properties.view_url}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -1017,26 +1026,26 @@ export default function MovementCanvas() {
                 {cameraError ?? "Loading the Wellington camera catalogue…"}
               </p>
             )
-          ) : focus === "transit" ? (
-            selectedTransit ? (
-              <div className="selected-evidence">
+          ) : panelFocus === "transit" ? (
+            panelTransit ? (
+              <div className={`selected-evidence ${previewing ? "preview" : ""}`}>
                 <div className="evidence-heading">
                   <span
                     className={`direction-chip ${
-                      selectedTransit.properties.severity_tier === "high"
+                      panelTransit.properties.severity_tier === "high"
                         ? "transit-high"
                         : "transit"
                     }`}
                   >
-                    {selectedTransit.properties.severity_tier === "high"
+                    {panelTransit.properties.severity_tier === "high"
                       ? "dense high severity"
                       : "elevated"}
                   </span>
-                  <span>Stop {selectedTransit.properties.stop_id}</span>
+                  <span>Stop {panelTransit.properties.stop_id}</span>
                 </div>
-                <h3>{selectedTransit.properties.stop_name}</h3>
+                <h3>{panelTransit.properties.stop_name}</h3>
                 <p>
-                  {selectedTransit.properties.modes
+                  {panelTransit.properties.modes
                     .map((mode) => mode.replace("_", " ").toLowerCase())
                     .join(" · ")}{" "}
                   · synthetic April 2026 replay
@@ -1044,37 +1053,37 @@ export default function MovementCanvas() {
                 <div className="count-comparison">
                   <div>
                     <span>Anomalies</span>
-                    <strong>{selectedTransit.properties.anomaly_count.toLocaleString("en-NZ")}</strong>
+                    <strong>{panelTransit.properties.anomaly_count.toLocaleString("en-NZ")}</strong>
                   </div>
                   <div>
                     <span>High severity</span>
-                    <strong>{selectedTransit.properties.high_count.toLocaleString("en-NZ")}</strong>
+                    <strong>{panelTransit.properties.high_count.toLocaleString("en-NZ")}</strong>
                   </div>
                 </div>
                 <dl className="evidence-metrics">
                   <div>
                     <dt>Top detector</dt>
                     <dd>
-                      {selectedTransit.properties.top_detector} (
-                      {selectedTransit.properties.top_detector_count})
+                      {panelTransit.properties.top_detector} (
+                      {panelTransit.properties.top_detector_count})
                     </dd>
                   </div>
                   <div>
                     <dt>Worst example</dt>
                     <dd>
-                      {selectedTransit.properties.worst_example.date} ·{" "}
-                      {selectedTransit.properties.worst_example.severity.toLowerCase()}
+                      {panelTransit.properties.worst_example.date} ·{" "}
+                      {panelTransit.properties.worst_example.severity.toLowerCase()}
                     </dd>
                   </div>
                   <div>
                     <dt>Position</dt>
                     <dd>
-                      {selectedTransit.geometry.coordinates[1].toFixed(4)},{" "}
-                      {selectedTransit.geometry.coordinates[0].toFixed(4)}
+                      {panelTransit.geometry.coordinates[1].toFixed(4)},{" "}
+                      {panelTransit.geometry.coordinates[0].toFixed(4)}
                     </dd>
                   </div>
                 </dl>
-                <p className="worst-detail">{selectedTransit.properties.worst_example.detail}</p>
+                <p className="worst-detail">{panelTransit.properties.worst_example.detail}</p>
                 <p className="evidence-note">
                   Synthetic data: real timetable, simulated running, injected
                   anomalies. Not an actual event.
@@ -1085,48 +1094,48 @@ export default function MovementCanvas() {
                 {transitError ?? "Loading the Metlink anomaly layer…"}
               </p>
             )
-          ) : focus === "road" ? (
-            selectedRoad ? (
-              <div className="selected-evidence">
+          ) : panelFocus === "road" ? (
+            panelRoad ? (
+              <div className={`selected-evidence ${previewing ? "preview" : ""}`}>
                 <div className="evidence-heading">
                   <span
                     className={`direction-chip ${
-                      selectedRoad.properties.severity === "HIGH" ? "road-high" : "road"
+                      panelRoad.properties.severity === "HIGH" ? "road-high" : "road"
                     }`}
                   >
-                    {selectedRoad.properties.severity.toLowerCase()}{" "}
-                    {selectedRoad.properties.direction.toLowerCase()}{" "}
+                    {panelRoad.properties.severity.toLowerCase()}{" "}
+                    {panelRoad.properties.direction.toLowerCase()}{" "}
                     <span aria-hidden="true">
-                      {selectedRoad.properties.direction === "DROP" ? "↓" : "↑"}
+                      {panelRoad.properties.direction === "DROP" ? "↓" : "↑"}
                     </span>
                   </span>
-                  <span>Site {selectedRoad.properties.site_ref}</span>
+                  <span>Site {panelRoad.properties.site_ref}</span>
                 </div>
-                <h3>{selectedRoad.properties.site_name}</h3>
+                <h3>{panelRoad.properties.site_name}</h3>
                 <p>
-                  SH{selectedRoad.properties.state_highway} ·{" "}
-                  {selectedRoad.properties.date} · real April 2026 flood event
+                  SH{panelRoad.properties.state_highway} ·{" "}
+                  {panelRoad.properties.date} · real April 2026 flood event
                 </p>
                 <div className="count-comparison">
                   <div>
                     <span>Observed</span>
-                    <strong>{selectedRoad.properties.observed_count.toLocaleString("en-NZ")}</strong>
+                    <strong>{panelRoad.properties.observed_count.toLocaleString("en-NZ")}</strong>
                   </div>
                   <div>
                     <span>Usual</span>
-                    <strong>{selectedRoad.properties.baseline_median.toLocaleString("en-NZ")}</strong>
+                    <strong>{panelRoad.properties.baseline_median.toLocaleString("en-NZ")}</strong>
                   </div>
                   <div>
                     <span>Change</span>
                     <strong
                       className={`delta ${
-                        selectedRoad.properties.direction === "DROP" ? "decrease" : "increase"
+                        panelRoad.properties.direction === "DROP" ? "decrease" : "increase"
                       }`}
                     >
                       {(() => {
                         const delta =
-                          selectedRoad.properties.observed_count -
-                          selectedRoad.properties.baseline_median;
+                          panelRoad.properties.observed_count -
+                          panelRoad.properties.baseline_median;
                         return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
                       })()}
                     </strong>
@@ -1135,21 +1144,21 @@ export default function MovementCanvas() {
                 <dl className="evidence-metrics">
                   <div>
                     <dt>Ratio</dt>
-                    <dd>{selectedRoad.properties.ratio.toFixed(2)}× usual</dd>
+                    <dd>{panelRoad.properties.ratio.toFixed(2)}× usual</dd>
                   </div>
                   <div title="How many robust standard deviations the day sits from the site's own weekday or weekend baseline">
                     <dt>Robust score</dt>
-                    <dd>{selectedRoad.properties.robust_z.toFixed(1)} z</dd>
+                    <dd>{panelRoad.properties.robust_z.toFixed(1)} z</dd>
                   </div>
                   <div>
                     <dt>Baseline</dt>
-                    <dd>{selectedRoad.properties.baseline_days} days</dd>
+                    <dd>{panelRoad.properties.baseline_days} days</dd>
                   </div>
                   <div>
                     <dt>Position</dt>
                     <dd>
-                      {selectedRoad.geometry.coordinates[1].toFixed(4)},{" "}
-                      {selectedRoad.geometry.coordinates[0].toFixed(4)}
+                      {panelRoad.geometry.coordinates[1].toFixed(4)},{" "}
+                      {panelRoad.geometry.coordinates[0].toFixed(4)}
                     </dd>
                   </div>
                 </dl>
@@ -1163,29 +1172,29 @@ export default function MovementCanvas() {
                 {roadError ?? "Loading the state-highway layer…"}
               </p>
             )
-          ) : selectedSignal ? (
-            <div className="selected-evidence">
+          ) : panelSignal ? (
+            <div className={`selected-evidence ${previewing ? "preview" : ""}`}>
               <div className="evidence-heading">
-                <span className={`direction-chip ${selectedSignal.properties.change_direction}`}>
-                  {String(selectedSignal.properties.change_direction)}{" "}
+                <span className={`direction-chip ${panelSignal.properties.change_direction}`}>
+                  {String(panelSignal.properties.change_direction)}{" "}
                   <span aria-hidden="true">
-                    {selectedSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
+                    {panelSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
                   </span>
                 </span>
                 <span>Investigate</span>
               </div>
-              <h3>{String(selectedSignal.properties.name)}</h3>
-              <p>{String(selectedSignal.properties.transport_class)} · {String(selectedSignal.properties.direction)}</p>
+              <h3>{String(panelSignal.properties.name)}</h3>
+              <p>{String(panelSignal.properties.transport_class)} · {String(panelSignal.properties.direction)}</p>
               <div className="count-comparison">
-                <div><span>Observed</span><strong>{Number(selectedSignal.properties.observed_count).toLocaleString("en-NZ")}</strong></div>
-                <div><span>Expected</span><strong>{Number(selectedSignal.properties.expected_count).toLocaleString("en-NZ")}</strong></div>
+                <div><span>Observed</span><strong>{Number(panelSignal.properties.observed_count).toLocaleString("en-NZ")}</strong></div>
+                <div><span>Expected</span><strong>{Number(panelSignal.properties.expected_count).toLocaleString("en-NZ")}</strong></div>
                 <div>
                   <span>Change</span>
-                  <strong className={`delta ${selectedSignal.properties.change_direction}`}>
+                  <strong className={`delta ${panelSignal.properties.change_direction}`}>
                     {(() => {
                       const delta = Math.round(
-                        Number(selectedSignal.properties.observed_count) -
-                          Number(selectedSignal.properties.expected_count),
+                        Number(panelSignal.properties.observed_count) -
+                          Number(panelSignal.properties.expected_count),
                       );
                       return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
                     })()}
@@ -1195,10 +1204,10 @@ export default function MovementCanvas() {
               <dl className="evidence-metrics">
                 <div title="How many robust standard deviations the hour sits from its matched weekday-and-hour baseline">
                   <dt>Robust score</dt>
-                  <dd>{Number(selectedSignal.properties.robust_z).toFixed(1)} z</dd>
+                  <dd>{Number(panelSignal.properties.robust_z).toFixed(1)} z</dd>
                 </div>
-                <div><dt>History</dt><dd>{Number((selectedSignal.properties.signal_confidence as Record<string, number>).history_samples)} matched hours</dd></div>
-                <div><dt>Baseline confidence</dt><dd>{String((selectedSignal.properties.signal_confidence as Record<string, string>).level)}</dd></div>
+                <div><dt>History</dt><dd>{Number((panelSignal.properties.signal_confidence as Record<string, number>).history_samples)} matched hours</dd></div>
+                <div><dt>Baseline confidence</dt><dd>{String((panelSignal.properties.signal_confidence as Record<string, string>).level)}</dd></div>
               </dl>
               <p className="evidence-note">No cause inferred. Check operational context before acting.</p>
             </div>
