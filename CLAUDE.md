@@ -227,7 +227,8 @@ missing row is a gap, not zero). Once the replay loads it drives the signal
 layer (`shownSignals`: slot signals joined to coverage geometry by countline
 id); before then, and if the fetch fails, the committed snapshot renders and
 the timebar stays disabled. Scrubbing pauses playback and re-enables the
-signal layer. Signal evidence gains `TrendSparkline`: the 12 prior matched
+signal layer. Playback speed is a select (`PLAY_SPEEDS`, 0.5×–5×, default 1×)
+that divides the base tick; it changes only the interval between slots. Signal evidence gains `TrendSparkline`: the 12 prior matched
 weekday/hour counts, observed hour highlighted, expected median dashed.
 Slot labels are read off the Wellington wall-clock ISO strings, never through
 the viewer's timezone.

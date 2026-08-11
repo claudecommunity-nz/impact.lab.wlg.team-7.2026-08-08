@@ -47,6 +47,7 @@ test("server-renders the movement investigation surface with truthful batch stat
   // The replay timebar server-renders on the default published hour.
   assert.match(html, /aria-label="Batch replay timeline"/);
   assert.match(html, /aria-label="Replay hour"/);
+  assert.match(html, /aria-label="Playback speed"/);
   assert.match(html, /Play the replay/);
   assert.match(html, /Thu 6 Aug · 12:00/);
   assert.match(html, /Not live emergency information/);

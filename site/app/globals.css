@@ -433,13 +433,16 @@ h3 { font-size: var(--text-h3); }
   margin-bottom: var(--space-2); padding: var(--space-2);
   border: 1px solid var(--border-hairline); background: var(--surface-page);
 }
-.case-picker {
-  min-height: var(--touch-min); max-width: 46%; padding: 0 var(--space-2);
+.case-picker,
+.speed-picker {
+  min-height: var(--touch-min); padding: 0 var(--space-2);
   border: 1px solid var(--wcc-black); border-radius: var(--radius-md);
   background: var(--surface-page); color: var(--wcc-black);
   font-size: var(--text-small); font-weight: 700; cursor: pointer;
 }
-.case-picker:hover { background: var(--wcc-yellow); }
+.case-picker { max-width: 46%; }
+.speed-picker { font-variant-numeric: tabular-nums; }
+.case-picker:hover, .speed-picker:hover { background: var(--wcc-yellow); }
 .replay-bar > button {
   display: grid; place-items: center; min-width: var(--touch-min); min-height: var(--touch-min);
   border: 1px solid var(--wcc-black); border-radius: var(--radius-md);

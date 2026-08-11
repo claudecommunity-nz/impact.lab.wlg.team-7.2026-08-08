@@ -166,6 +166,8 @@ const COMPASS: Record<string, string> = {
 const compass = (direction: string) => COMPASS[direction] ?? direction;
 
 const PLAY_INTERVAL_MS = 900;
+/** Multipliers on the base tick: one published slot per tick, faster or slower. */
+const PLAY_SPEEDS = [0.5, 1, 2, 4, 5];
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -346,6 +348,7 @@ export default function MovementCanvas() {
   // afterwards changes the picture, never which case is open.
   const [caseId, setCaseId] = useState<string>(EVENTS[0].id);
   const [aprilIndex, setAprilIndex] = useState(-1);
+  const [speed, setSpeed] = useState(1);
   // Hover stores the popup position at pick time; every view change clears it,
   // so the stored screen coordinates never go stale.
   const [hover, setHover] = useState<Hover | null>(null);
@@ -747,9 +750,9 @@ export default function MovementCanvas() {
       }
       setHover(null);
       setSlotIndex(slotIndexRef.current + 1);
-    }, PLAY_INTERVAL_MS);
+    }, PLAY_INTERVAL_MS / speed);
     return () => clearInterval(interval);
-  }, [playing, replay, aprilCase]);
+  }, [playing, replay, aprilCase, speed]);
   useEffect(() => {
     if (!playing || !aprilCase || aprilDays.length === 0) return;
     const lastIndex = aprilDays.length - 1;
@@ -760,9 +763,9 @@ export default function MovementCanvas() {
       }
       setHover(null);
       setAprilIndex(aprilIndexRef.current + 1);
-    }, PLAY_INTERVAL_MS);
+    }, PLAY_INTERVAL_MS / speed);
     return () => clearInterval(interval);
-  }, [playing, aprilCase, aprilDays.length]);
+  }, [playing, aprilCase, aprilDays.length, speed]);
 
   // While a camera popup is open, re-request its frame so the preview stays a
   // stream of pictures rather than one stale snapshot.
@@ -1228,6 +1231,18 @@ export default function MovementCanvas() {
             >
               ›
             </button>
+            <select
+              className="speed-picker"
+              aria-label="Playback speed"
+              value={String(speed)}
+              onChange={(event) => setSpeed(Number(event.currentTarget.value))}
+            >
+              {PLAY_SPEEDS.map((value) => (
+                <option key={value} value={String(value)}>
+                  {value}×
+                </option>
+              ))}
+            </select>
             <p className="replay-readout">
               {aprilCase ? (
                 <>
