@@ -1,9 +1,58 @@
 export type Coordinate = [number, number];
 
+/** One prior matched weekday-and-hour observation backing a signal's baseline. */
+export type SignalTrendPoint = { observed_at: string; observed_count: number };
+
 export type LineFeature = {
   id: string;
   geometry: { type: "LineString"; coordinates: Coordinate[] };
-  properties: Record<string, string | number | Record<string, string | number>>;
+  properties: Record<
+    string,
+    string | number | string[] | SignalTrendPoint[] | Record<string, string | number>
+  >;
+};
+
+export type ReplaySignal = {
+  id: string;
+  countline_id: string;
+  transport_class: string;
+  direction: string;
+  change_direction: string;
+  observed_count: number;
+  expected_count: number;
+  robust_z: number;
+  history_samples: number;
+  data_quality: string;
+  observed_at: string;
+  matched_history: SignalTrendPoint[];
+  viewpoint_id: string;
+  name: string;
+  signal_confidence: { level: string; history_samples: number; basis: string };
+};
+
+export type ReplaySlot = {
+  target_at: string;
+  observed_groups: number;
+  expected_groups: number;
+  data_gap_groups: number;
+  candidate_count: number;
+  signals: ReplaySignal[];
+};
+
+export type ReplayCollection = {
+  schema: string;
+  available_from: string;
+  available_to: string;
+  default_target_at: string;
+  display_timezone: string;
+  data_as_of: string;
+  publisher_mode: string;
+  publisher_cadence: string;
+  source: string;
+  candidate_count: number;
+  trend_basis: string;
+  limitations: string[];
+  slots: ReplaySlot[];
 };
 
 export type CameraProperties = {

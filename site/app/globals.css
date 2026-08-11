@@ -463,6 +463,49 @@ h3 { font-size: var(--text-h3); }
 .map-message.error { color: var(--wcc-error); }
 .map-caption { margin: var(--space-3) 0 0; color: var(--wcc-grey-700); font-size: var(--text-small); }
 
+/* The replay timebar: one control row under the map. The histogram is the
+ * area total per published hour — gated deviations up/down, never raw sums. */
+.replay-bar {
+  display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+  margin-top: var(--space-2); padding: var(--space-2);
+  border: 1px solid var(--border-hairline); background: var(--surface-page);
+}
+.replay-bar > button {
+  display: grid; place-items: center; min-width: var(--touch-min); min-height: var(--touch-min);
+  border: 1px solid var(--wcc-black); border-radius: var(--radius-md);
+  background: var(--surface-page); color: var(--wcc-black);
+  font-size: var(--text-h4); font-weight: 700; line-height: 1; cursor: pointer;
+}
+.replay-bar > button:hover:not(:disabled) { background: var(--wcc-yellow); }
+.replay-bar > button:disabled { color: var(--wcc-grey-500); border-color: var(--border-hairline); cursor: not-allowed; }
+.replay-track { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 2px; }
+.replay-histogram { display: block; width: 100%; height: 36px; cursor: pointer; }
+.replay-histogram .up { fill: var(--wcc-warning); }
+.replay-histogram .down { fill: var(--wcc-error); }
+.replay-histogram .axis { stroke: var(--wcc-grey-500); stroke-width: 1; }
+.replay-histogram .cursor { fill: rgba(28, 28, 26, 0.18); }
+.replay-slider { width: 100%; margin: 0; accent-color: var(--wcc-black); }
+.replay-slider:disabled { cursor: not-allowed; }
+.replay-readout {
+  margin: 0; display: flex; flex-direction: column; align-items: flex-end;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.replay-readout strong { font-size: var(--text-small); }
+.replay-readout span { font-size: 12px; color: var(--wcc-grey-700); }
+
+/* Baseline sparkline in the signal evidence: 12 matched hours, then now. */
+.trend-spark { margin: var(--space-3) 0 0; }
+.trend-spark svg { display: block; width: 100%; height: 44px; }
+.trend-spark .bar { fill: rgba(28, 28, 26, 0.28); }
+.trend-spark .bar.now.increase { fill: var(--wcc-warning); }
+.trend-spark .bar.now.decrease { fill: var(--wcc-error); }
+.trend-spark .expected-line { stroke: var(--wcc-black); stroke-width: 1; stroke-dasharray: 3 3; opacity: 0.55; }
+.trend-spark figcaption {
+  display: flex; justify-content: space-between; gap: var(--space-2);
+  margin-top: 2px; font-size: 11px; color: var(--wcc-grey-700);
+  font-variant-numeric: tabular-nums;
+}
+
 .evidence-column {
   order: -1; /* left of the map, while the DOM keeps the map first */
   min-width: 0; min-height: 0; overflow: hidden;

@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { createFlagStore } from "./flag-store";
+import health from "../public/cop/v1/movement-health.json";
 
 import {
   type CameraCollection,
@@ -21,8 +22,10 @@ import {
   type LineCollection,
   type LineFeature,
   type MapView,
+  type ReplayCollection,
   type RoadCollection,
   type RoadFeature,
+  type SignalTrendPoint,
   type TransitCollection,
   type TransitFeature,
   DEFAULT_VIEW,
@@ -116,6 +119,83 @@ const COMPASS: Record<string, string> = {
 };
 const compass = (direction: string) => COMPASS[direction] ?? direction;
 
+const PLAY_INTERVAL_MS = 900;
+
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/* Slot timestamps are Wellington wall-clock ISO strings; the label is read off
+ * the string itself so a viewer in another timezone sees the published hour. */
+function slotDateParts(targetAt: string) {
+  const [datePart, timePart = "00:00"] = targetAt.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  return { year, month, day, time: timePart.slice(0, 5) };
+}
+
+function slotLabel(targetAt: string) {
+  const { year, month, day, time } = slotDateParts(targetAt);
+  const weekday = WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
+  return `${weekday} ${day} ${MONTHS[month - 1]} · ${time}`;
+}
+
+function shortDate(targetAt: string) {
+  const { month, day } = slotDateParts(targetAt);
+  return `${day} ${MONTHS[month - 1]}`;
+}
+
+/** Prior matched weekday/hour counts as bars, the observed hour highlighted,
+ * and the expected median as a dashed reference line. */
+function TrendSparkline({
+  history,
+  observed,
+  expected,
+  changeDirection,
+}: {
+  history: SignalTrendPoint[];
+  observed: number;
+  expected: number;
+  changeDirection: string;
+}) {
+  if (history.length === 0) return null;
+  const width = 232;
+  const height = 44;
+  const gap = 2;
+  const counts = [...history.map((point) => point.observed_count), observed];
+  const max = Math.max(...counts, expected, 1);
+  const barWidth = (width - gap * (counts.length - 1)) / counts.length;
+  const barHeight = (count: number) => Math.max((count / max) * (height - 2), 1);
+  const expectedY = height - (expected / max) * (height - 2);
+  return (
+    <figure className="trend-spark">
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        role="img"
+        aria-label={`Observed ${observed.toLocaleString("en-NZ")} against ${history.length} prior matched hours, expected ${expected.toLocaleString("en-NZ")}`}
+      >
+        {counts.map((count, index) => {
+          const now = index === counts.length - 1;
+          return (
+            <rect
+              key={index}
+              className={now ? `bar now ${changeDirection}` : "bar"}
+              x={index * (barWidth + gap)}
+              y={height - barHeight(count)}
+              width={barWidth}
+              height={barHeight(count)}
+            />
+          );
+        })}
+        <line className="expected-line" x1={0} y1={expectedY} x2={width} y2={expectedY} />
+      </svg>
+      <figcaption aria-hidden="true">
+        <span>{shortDate(history[0].observed_at)}</span>
+        <span>expected {expected.toLocaleString("en-NZ")}</span>
+        <span>now</span>
+      </figcaption>
+    </figure>
+  );
+}
+
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -154,6 +234,11 @@ export default function MovementCanvas() {
   // clears the failure without an effect.
   const [failedFrame, setFailedFrame] = useState<string | null>(null);
   const [view, setView] = useState<MapView>(DEFAULT_VIEW);
+  // The hourly replay drives the signal layer once it loads; until then the
+  // committed snapshot renders, so a failed fetch degrades to today's map.
+  const [replay, setReplay] = useState<ReplayCollection | null>(null);
+  const [slotIndex, setSlotIndex] = useState(-1);
+  const [playing, setPlaying] = useState(false);
   // Hover stores the popup position at pick time; every view change clears it,
   // so the stored screen coordinates never go stale.
   const [hover, setHover] = useState<Hover | null>(null);
@@ -216,6 +301,22 @@ export default function MovementCanvas() {
   }, [autoFit]);
 
   useEffect(() => {
+    fetch("/cop/v1/movement-replay.json")
+      .then((response) => response.json())
+      .then((collection: ReplayCollection) => {
+        if (!Array.isArray(collection.slots) || collection.slots.length === 0) return;
+        const index = collection.slots.findIndex(
+          (slot) => slot.target_at === collection.default_target_at,
+        );
+        setReplay(collection);
+        setSlotIndex(index >= 0 ? index : collection.slots.length - 1);
+      })
+      .catch(() => {
+        // The committed snapshot keeps rendering; the timebar stays disabled.
+      });
+  }, []);
+
+  useEffect(() => {
     fetch("/cop/v1/traffic-cameras.geojson")
       .then((response) => response.json())
       .then((collection: CameraCollection) => {
@@ -248,12 +349,50 @@ export default function MovementCanvas() {
       .catch(() => setRoadError("The state-highway layer could not be loaded."));
   }, []);
 
-  const filteredSignals = useMemo(() => signals.filter((feature) => {
+  /* Replay signals carry no geometry of their own: the countline id keys into
+   * the coverage layer's line, so one geometry file serves every hour. */
+  const countlineGeometry = useMemo(() => {
+    const index = new Map<string, Coordinate[]>();
+    for (const feature of coverage) {
+      index.set(String(feature.properties.countline_id), feature.geometry.coordinates);
+    }
+    return index;
+  }, [coverage]);
+
+  const activeSlot = replay && slotIndex >= 0 ? replay.slots[slotIndex] : null;
+
+  const shownSignals = useMemo<LineFeature[]>(() => {
+    if (!activeSlot || countlineGeometry.size === 0) return signals;
+    return activeSlot.signals.flatMap((signal) => {
+      const coordinates = countlineGeometry.get(signal.countline_id);
+      if (!coordinates) return [];
+      return [
+        {
+          id: signal.id,
+          geometry: { type: "LineString" as const, coordinates },
+          properties: { ...signal },
+        },
+      ];
+    });
+  }, [activeSlot, countlineGeometry, signals]);
+
+  /* Area total per hour: how many countline groups passed every detector gate,
+   * split by direction. Never a raw count sum — hourly coverage varies and a
+   * missing row is a gap, not zero, so summing would confuse dropout with drop. */
+  const slotBars = useMemo(() => {
+    if (!replay) return [];
+    return replay.slots.map((slot) => ({
+      up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
+      down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
+    }));
+  }, [replay]);
+
+  const filteredSignals = useMemo(() => shownSignals.filter((feature) => {
     const mode = String(feature.properties.transport_class);
     if (filter === "people") return PEOPLE_CLASSES.has(mode);
     if (filter === "vehicles") return !PEOPLE_CLASSES.has(mode);
     return true;
-  }), [signals, filter]);
+  }), [shownSignals, filter]);
 
   const cameraFeatures = useMemo(() => cameras?.features ?? [], [cameras]);
   // On-frame cameras first, so the list mirrors what the initial viewport shows.
@@ -280,7 +419,7 @@ export default function MovementCanvas() {
   );
 
   const selectedSignal =
-    signals.find((feature) => feature.id === selectedSignalId) ?? filteredSignals[0];
+    shownSignals.find((feature) => feature.id === selectedSignalId) ?? filteredSignals[0];
   const selectedCamera: CameraFeature | undefined =
     cameraFeatures.find((feature) => feature.id === selectedCameraId) ?? sortedCameras[0];
   const selectedTransit: TransitFeature | undefined =
@@ -293,7 +432,9 @@ export default function MovementCanvas() {
       ? cameraFeatures.find((feature) => feature.id === hover.id)
       : undefined;
   const hoveredSignal =
-    hover?.kind === "signal" ? signals.find((feature) => feature.id === hover.id) : undefined;
+    hover?.kind === "signal"
+      ? shownSignals.find((feature) => feature.id === hover.id)
+      : undefined;
   const hoveredTransit =
     hover?.kind === "transit"
       ? transitFeatures.find((feature) => feature.id === hover.id)
@@ -404,6 +545,26 @@ export default function MovementCanvas() {
     return () => observer.disconnect();
   }, []);
 
+  // Playback steps one published hour per tick and stops at the last slot.
+  // The interval reads the live index from a ref, so it needs no re-arming.
+  const slotIndexRef = useRef(slotIndex);
+  useEffect(() => {
+    slotIndexRef.current = slotIndex;
+  });
+  useEffect(() => {
+    if (!playing || !replay) return;
+    const lastIndex = replay.slots.length - 1;
+    const interval = setInterval(() => {
+      if (slotIndexRef.current >= lastIndex) {
+        setPlaying(false);
+        return;
+      }
+      setHover(null);
+      setSlotIndex(slotIndexRef.current + 1);
+    }, PLAY_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [playing, replay]);
+
   // While a camera popup is open, re-request its frame so the preview stays a
   // stream of pictures rather than one stale snapshot.
   const hoverKind = hover?.kind ?? null;
@@ -484,7 +645,7 @@ export default function MovementCanvas() {
     const query = search.trim().toLowerCase();
     if (query.length < 2) return [];
     const hits: SearchHit[] = [];
-    for (const feature of signals) {
+    for (const feature of shownSignals) {
       if (String(feature.properties.name).toLowerCase().includes(query)) {
         hits.push({
           kind: "signal",
@@ -529,12 +690,29 @@ export default function MovementCanvas() {
       }
     }
     return hits.slice(0, SEARCH_LIMIT);
-  }, [search, signals, cameraFeatures, transitFeatures, roadFeatures]);
+  }, [search, shownSignals, cameraFeatures, transitFeatures, roadFeatures]);
 
   /** Picking a feature switches its layer on, so the pick is always visible. */
   const ensureLayer = (kind: Focus) => {
     const id: LayerId = kind === "signal" ? "signals" : kind === "camera" ? "cameras" : kind === "transit" ? "transit" : "roads";
     if (!layers[id]) LAYER_STORES[id].toggle(false);
+  };
+
+  /** Scrubbing is a deliberate act: it pauses playback and shows the signal layer. */
+  const scrubTo = (index: number) => {
+    if (!replay) return;
+    setPlaying(false);
+    setHover(null);
+    ensureLayer("signal");
+    setSlotIndex(Math.min(Math.max(index, 0), replay.slots.length - 1));
+  };
+
+  const togglePlay = () => {
+    if (!replay) return;
+    setHover(null);
+    ensureLayer("signal");
+    if (!playing && slotIndex >= replay.slots.length - 1) setSlotIndex(0);
+    setPlaying((current) => !current);
   };
 
   const pickSearchHit = (hit: SearchHit) => {
@@ -1012,6 +1190,127 @@ export default function MovementCanvas() {
             {coverage.length === 0 && !error ? <p className="map-message">Loading countlines…</p> : null}
             {error ? <p className="map-message error" role="alert">{error}</p> : null}
           </div>
+          <div className="replay-bar" role="group" aria-label="Batch replay timeline">
+            <button
+              type="button"
+              className="replay-play"
+              onClick={togglePlay}
+              disabled={!replay}
+              aria-label={playing ? "Pause the replay" : "Play the replay"}
+              title={playing ? "Pause the replay" : "Play the replay"}
+            >
+              {playing ? (
+                <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+                  <rect x="3" y="2.5" width="3.4" height="11" fill="currentColor" />
+                  <rect x="9.6" y="2.5" width="3.4" height="11" fill="currentColor" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+                  <path d="M4 2.4v11.2L13.2 8Z" fill="currentColor" />
+                </svg>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => scrubTo(slotIndex - 1)}
+              disabled={!replay || slotIndex <= 0}
+              aria-label="Previous hour"
+              title="Previous hour"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={() => scrubTo(slotIndex + 1)}
+              disabled={!replay || slotIndex >= (replay?.slots.length ?? 1) - 1}
+              aria-label="Next hour"
+              title="Next hour"
+            >
+              ›
+            </button>
+            <div className="replay-track">
+              {replay ? (
+                <svg
+                  className="replay-histogram"
+                  viewBox={`0 0 ${replay.slots.length} 36`}
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  onPointerDown={(event) => {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    scrubTo(
+                      Math.floor(
+                        ((event.clientX - rect.left) / rect.width) * replay.slots.length,
+                      ),
+                    );
+                  }}
+                >
+                  {(() => {
+                    const maxBar = Math.max(
+                      1,
+                      ...slotBars.map((bar) => Math.max(bar.up, bar.down)),
+                    );
+                    return (
+                      <>
+                        <rect className="cursor" x={slotIndex} y={0} width={1} height={36} />
+                        {slotBars.map((bar, index) =>
+                          bar.up === 0 && bar.down === 0 ? null : (
+                            <g key={index}>
+                              {bar.up > 0 ? (
+                                <rect
+                                  className="up"
+                                  x={index + 0.08}
+                                  y={17 - (bar.up / maxBar) * 16}
+                                  width={0.84}
+                                  height={(bar.up / maxBar) * 16}
+                                />
+                              ) : null}
+                              {bar.down > 0 ? (
+                                <rect
+                                  className="down"
+                                  x={index + 0.08}
+                                  y={19}
+                                  width={0.84}
+                                  height={(bar.down / maxBar) * 16}
+                                />
+                              ) : null}
+                            </g>
+                          ),
+                        )}
+                        <line
+                          className="axis"
+                          x1={0}
+                          y1={18}
+                          x2={replay.slots.length}
+                          y2={18}
+                          vectorEffect="non-scaling-stroke"
+                        />
+                      </>
+                    );
+                  })()}
+                </svg>
+              ) : null}
+              <input
+                type="range"
+                className="replay-slider"
+                min={0}
+                max={replay ? replay.slots.length - 1 : 0}
+                step={1}
+                value={slotIndex >= 0 ? slotIndex : 0}
+                disabled={!replay}
+                onChange={(event) => scrubTo(Number(event.currentTarget.value))}
+                aria-label="Replay hour"
+                aria-valuetext={slotLabel(activeSlot?.target_at ?? health.target_at)}
+              />
+            </div>
+            <p className="replay-readout">
+              <strong>{slotLabel(activeSlot?.target_at ?? health.target_at)}</strong>
+              <span>
+                {(activeSlot?.candidate_count ?? health.candidate_count).toLocaleString("en-NZ")}{" "}
+                signals · {(activeSlot?.data_gap_groups ?? health.data_gap_groups).toLocaleString("en-NZ")}{" "}
+                data gaps
+              </span>
+            </p>
+          </div>
           <p className="map-caption">
             Signals mark the sensor line, not the street. Transit: synthetic
             Metlink replay. Highways: real April 2026 flood backtest.
@@ -1286,6 +1585,16 @@ export default function MovementCanvas() {
                   </strong>
                 </div>
               </div>
+              {Array.isArray(panelSignal.properties.matched_history) &&
+              panelSignal.properties.matched_history.length > 0 &&
+              typeof panelSignal.properties.matched_history[0] === "object" ? (
+                <TrendSparkline
+                  history={panelSignal.properties.matched_history as SignalTrendPoint[]}
+                  observed={Number(panelSignal.properties.observed_count)}
+                  expected={Number(panelSignal.properties.expected_count)}
+                  changeDirection={String(panelSignal.properties.change_direction)}
+                />
+              ) : null}
               <dl className="evidence-metrics">
                 <div title="How many robust standard deviations the hour sits from its matched weekday-and-hour baseline">
                   <dt>Robust score</dt>

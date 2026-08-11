@@ -39,10 +39,16 @@ test("server-renders the movement investigation surface with truthful batch stat
   assert.match(html, /Data through/);
   assert.match(html, /6 Aug 2026/);
   assert.ok(html.includes("/cop/v1/movement-signals.geojson"));
+  assert.ok(html.includes("/cop/v1/movement-replay.json"));
   assert.ok(html.includes("/cop/v1/movement-health.json"));
   assert.ok(html.includes("/cop/v1/traffic-cameras.geojson"));
   assert.ok(html.includes("/cop/v1/transit-anomalies.geojson"));
   assert.ok(html.includes("/cop/v1/road-anomalies.geojson"));
+  // The replay timebar server-renders on the default published hour.
+  assert.match(html, /aria-label="Batch replay timeline"/);
+  assert.match(html, /aria-label="Replay hour"/);
+  assert.match(html, /Play the replay/);
+  assert.match(html, /Thu 6 Aug · 12:00/);
   assert.match(html, /Not live emergency information/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|taking shape/i);
 });
@@ -76,6 +82,56 @@ test("ships internally consistent COP artifacts with WGS84 line geometry", async
     [...new Set(signals.features.map((feature) => feature.properties.attribution))],
     ["Wellington City Council Transport Sensors"],
   );
+});
+
+test("ships the hourly replay as a consistent, leakage-safe contract", async () => {
+  const [replayText, healthText, signalsText, coverageText] = await Promise.all([
+    readFile(new URL("../public/cop/v1/movement-replay.json", import.meta.url), "utf8"),
+    readFile(new URL("../public/cop/v1/movement-health.json", import.meta.url), "utf8"),
+    readFile(new URL("../public/cop/v1/movement-signals.geojson", import.meta.url), "utf8"),
+    readFile(new URL("../public/cop/v1/countline-coverage.geojson", import.meta.url), "utf8"),
+  ]);
+  const replay = JSON.parse(replayText);
+  const health = JSON.parse(healthText);
+  const signals = JSON.parse(signalsText);
+  const coverage = JSON.parse(coverageText);
+
+  assert.equal(replay.schema, "movement-replay/v1");
+  assert.equal(replay.publisher_mode, "batch replay");
+  assert.equal(replay.slots.length, 144);
+  assert.equal(replay.default_target_at, health.target_at);
+  assert.ok(replay.limitations.length > 0);
+  assert.equal(replay.automatic_incident, false);
+  assert.equal(replay.automatic_warning, false);
+
+  // The default slot is the committed snapshot, feature for feature.
+  const defaultSlot = replay.slots.find((slot) => slot.target_at === replay.default_target_at);
+  assert.ok(defaultSlot, "the default hour must be one of the published slots");
+  assert.equal(defaultSlot.candidate_count, health.candidate_count);
+  assert.equal(defaultSlot.data_gap_groups, health.data_gap_groups);
+  const key = (signal) => `${signal.countline_id}:${signal.transport_class}:${signal.direction}`;
+  assert.deepEqual(
+    defaultSlot.signals.map(key).sort(),
+    signals.features.map((feature) => key(feature.properties)).sort(),
+  );
+
+  // Every slot is internally consistent and every signal lands on a countline.
+  const countlines = new Set(coverage.features.map((feature) => feature.properties.countline_id));
+  let total = 0;
+  for (const slot of replay.slots) {
+    assert.equal(slot.signals.length, slot.candidate_count);
+    total += slot.candidate_count;
+    for (const signal of slot.signals) {
+      assert.ok(countlines.has(signal.countline_id), `${signal.countline_id} must have geometry`);
+      assert.ok(signal.matched_history.length <= 12);
+      // Trend history must sit strictly before the observed hour: no future leakage.
+      for (const point of signal.matched_history) {
+        assert.ok(point.observed_at < signal.observed_at);
+      }
+      assert.ok(["increase", "decrease"].includes(signal.change_direction));
+    }
+  }
+  assert.equal(replay.candidate_count, total);
 });
 
 test("merges every source into one map with switchable layers", async () => {
@@ -286,6 +342,7 @@ test("keeps source settings off the dashboard and on their own route", async () 
   // Every built-in source is listed with a retry control.
   for (const url of [
     "/cop/v1/movement-signals.geojson",
+    "/cop/v1/movement-replay.json",
     "/cop/v1/countline-coverage.geojson",
     "/cop/v1/traffic-cameras.geojson",
     "/cop/v1/transit-anomalies.geojson",
@@ -294,7 +351,7 @@ test("keeps source settings off the dashboard and on their own route", async () 
   ]) {
     assert.ok(settings.includes(url), `${url} should be listed as a source`);
   }
-  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 6);
+  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 7);
   // Four export formats are offered per source.
   for (const format of ["GeoJSON", "JSON", "CSV", "NDJSON"]) {
     assert.ok(settings.includes(format), `${format} should be an export option`);

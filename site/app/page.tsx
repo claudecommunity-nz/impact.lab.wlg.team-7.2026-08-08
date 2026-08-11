@@ -65,6 +65,10 @@ export default function Home() {
             <span>Signal feed</span>
             <code>/cop/v1/movement-signals.geojson</code>
           </a>
+          <a href="/cop/v1/movement-replay.json">
+            <span>Hourly replay · 1–6 Aug 2026</span>
+            <code>/cop/v1/movement-replay.json</code>
+          </a>
           <a href="/cop/v1/traffic-cameras.geojson">
             <span>Traffic camera layer</span>
             <code>/cop/v1/traffic-cameras.geojson</code>

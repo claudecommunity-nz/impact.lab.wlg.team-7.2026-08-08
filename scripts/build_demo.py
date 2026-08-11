@@ -11,10 +11,10 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from movement_anomaly.contract import LIMITATIONS, to_feature_collection
+from movement_anomaly.contract import LIMITATIONS, to_feature_collection, to_replay_collection
 from movement_anomaly.detector import DetectorConfig
 from movement_anomaly.io import load_metadata, load_parquet_shards
-from movement_anomaly.pipeline import analyze_snapshot
+from movement_anomaly.pipeline import analyze_replay, analyze_snapshot
 
 
 def parse_args() -> argparse.Namespace:
@@ -23,6 +23,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--metadata", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--target-at", required=True)
+    parser.add_argument("--replay-start-at")
+    parser.add_argument("--replay-end-at")
     parser.add_argument("--lookback-weeks", type=int, default=12)
     return parser.parse_args()
 
@@ -59,7 +61,11 @@ def coverage_feature_collection(metadata: pd.DataFrame) -> dict:
 def main() -> None:
     args = parse_args()
     target = pd.Timestamp(args.target_at)
-    start = (target - pd.Timedelta(weeks=args.lookback_weeks)).date().isoformat()
+    replay_start = pd.Timestamp(args.replay_start_at or args.target_at)
+    replay_end = pd.Timestamp(args.replay_end_at or args.target_at)
+    earliest_target = min(target, replay_start)
+    latest_target = max(target, replay_end)
+    start = (earliest_target - pd.Timedelta(weeks=args.lookback_weeks)).date().isoformat()
     parquet_files = sorted(args.data_dir.glob("*.parquet"))
     if not parquet_files:
         raise SystemExit(f"No Parquet files found in {args.data_dir}")
@@ -67,12 +73,19 @@ def main() -> None:
     mobility = load_parquet_shards(
         parquet_files,
         start_date=start,
-        end_date=target.date().isoformat(),
+        end_date=latest_target.date().isoformat(),
     )
     metadata = load_metadata(args.metadata)
     result = analyze_snapshot(
         mobility,
         target_at=args.target_at,
+        lookback_weeks=args.lookback_weeks,
+        config=DetectorConfig(),
+    )
+    replay_analysis = analyze_replay(
+        mobility,
+        start_at=(args.replay_start_at or args.target_at),
+        end_at=(args.replay_end_at or args.target_at),
         lookback_weeks=args.lookback_weeks,
         config=DetectorConfig(),
     )
@@ -94,12 +107,20 @@ def main() -> None:
         "limitations": LIMITATIONS,
     }
     coverage = coverage_feature_collection(metadata)
+    replay = to_replay_collection(
+        replay_analysis,
+        metadata,
+        data_as_of,
+        default_target_at=args.target_at,
+        lookback_weeks=args.lookback_weeks,
+    )
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     artifacts = {
         "movement-signals.geojson": signals,
         "movement-health.json": health,
         "countline-coverage.geojson": coverage,
+        "movement-replay.json": replay,
     }
     for name, payload in artifacts.items():
         (args.output_dir / name).write_text(
@@ -112,6 +133,7 @@ def main() -> None:
                 "target_at": args.target_at,
                 "candidates": health["candidate_count"],
                 "data_gaps": health["data_gap_groups"],
+                "replay_slots": len(replay["slots"]),
                 "output_dir": str(args.output_dir),
             }
         )

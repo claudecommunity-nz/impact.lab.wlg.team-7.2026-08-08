@@ -155,7 +155,7 @@ export const STATUS_LABELS: Record<SourceStatus, string> = {
   failed: "failed",
 };
 
-/** The committed contract. These four files are what the site actually reads. */
+/** The committed contract. These seven files are what the site actually reads. */
 export const BUILTIN_SOURCES: DataSource[] = [
   {
     id: "movement-signals",
@@ -166,6 +166,16 @@ export const BUILTIN_SOURCES: DataSource[] = [
     kind: "builtin",
     cadence: "batch replay · at least monthly",
     note: "Countline signals with observed, expected, robust score and confidence.",
+  },
+  {
+    id: "movement-replay",
+    label: "Hourly replay",
+    publisher: "Wellington City Council Transport Sensors",
+    url: "/cop/v1/movement-replay.json",
+    format: "json",
+    kind: "builtin",
+    cadence: "batch replay · 1–6 Aug 2026, hourly slots",
+    note: "144 published hours with per-signal matched history for the timebar.",
   },
   {
     id: "countline-coverage",
@@ -784,6 +794,7 @@ export function mcpTemplate(origin: string) {
         args: ["-y", "mcp-server-fetch"],
         env: {
           MURMUR_SIGNALS: `${origin}/cop/v1/movement-signals.geojson`,
+          MURMUR_REPLAY: `${origin}/cop/v1/movement-replay.json`,
           MURMUR_COVERAGE: `${origin}/cop/v1/countline-coverage.geojson`,
           MURMUR_CAMERAS: `${origin}/cop/v1/traffic-cameras.geojson`,
           MURMUR_TRANSIT: `${origin}/cop/v1/transit-anomalies.geojson`,
