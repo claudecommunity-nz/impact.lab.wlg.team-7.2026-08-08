@@ -178,18 +178,22 @@ visible even with the drawer closed): the 1–6 Aug movement snapshot and the
 real 18–22 Apr floods case. Both assert the same signals-only start; the
 April layers (roads, flights, synthetic transit) are opt-in there too. The
 chosen case is explicit state (`caseId`), never derived from layer flags —
-hand-toggling layers changes the picture, not which case is open. In the April case the
-timebar replays **by hour**, the same unit as August: 144 slots over
-18–23 Apr (`aprilHours`). The signal layer is driven by
-`movement-april.json` — street-level April signals from the same detector
-maths run as a **retrospective backtest** (baselines are April days outside
-the event window, `scripts/build_april_movement_layer.py`; a street centroid,
-not a countline). The histogram keeps the amber/red signal identity, with the
-daily road-site plateau as a purple wash behind it (daily counts — the shape
-states the resolution) and flagged airport hours as teal ticks below, counts
-never sums. Scrubbing ensures the signal layer and filters the road diamonds
-to the sites flagged on that slot's day (`shownRoads`); the roads list and
-search keep the full flagged set. The point layers (cameras, transit, roads)
+hand-toggling layers changes the picture, not which case is open. Every case loads
+through the **case adapter**: one `CaseModel` per case (hourly `CaseSlot`s
+carrying label, up/down split, an optional daily background `wash`, an
+optional corroboration `tick`, and the slot's ready-to-draw signal features),
+so the timebar, histogram, readout, slider and signal layer are one code path
+for all cases. Adding a case = one `EVENTS` entry + one builder returning a
+`CaseModel`. August's model joins `movement-replay.json` slots to coverage
+geometry; April's is built from `movement-april.json` — street-level signals
+from the same detector maths run as a **retrospective backtest** (baselines
+are April days outside the event window,
+`scripts/build_april_movement_layer.py`; a street centroid, not a countline)
+— plus the road plateau wash and flight ticks. Counts never sums; each case
+remembers its own scrub position and opens on its `defaultIndex`. Scrubbing
+ensures the signal layer, and a case with `roadDayFilter` narrows the
+diamonds to the slot's day (`shownRoads`); the roads list and search keep the
+full flagged set. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a
 bubble zooms into it, and zooming naturally dissolves clusters into glyphs.

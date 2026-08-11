@@ -118,55 +118,6 @@ const LAYERS: {
 
 type SearchHit = { kind: Focus; id: string; label: string; detail: string; coordinate: Coordinate };
 
-/** Investigation presets: each frames one published window by switching on
- * exactly the layers that hold data for it. */
-const EVENTS: {
-  id: string;
-  label: string;
-  window: string;
-  badge: string;
-  tone: "replay" | "real";
-  layers: Partial<Record<LayerId, boolean>>;
-  focus: Focus;
-}[] = [
-  {
-    id: "aug-snapshot",
-    label: "Movement snapshot",
-    window: "1–6 Aug 2026",
-    badge: "Batch replay",
-    tone: "replay",
-    /* The standard view: movement signals only; everything else is opt-in. */
-    layers: {
-      signals: true,
-      coverage: false,
-      cameras: false,
-      roads: false,
-      flights: false,
-      transit: false,
-    },
-    focus: "signal",
-  },
-  {
-    id: "april-floods",
-    label: "Floods and storm",
-    window: "18–22 Apr 2026",
-    badge: "Real",
-    tone: "real",
-    /* Same standard start as every case: signals only. The April layers
-     * (roads, flights, synthetic transit) come in when picked from the
-     * drawer or a list, or the moment the April timeline is scrubbed. */
-    layers: {
-      signals: true,
-      coverage: false,
-      cameras: false,
-      roads: false,
-      flights: false,
-      transit: false,
-    },
-    focus: "road",
-  },
-];
-
 /** Compass tokens from the source data, spelt out for the popup meta line. */
 const COMPASS: Record<string, string> = {
   N: "north", NE: "north-east", E: "east", SE: "south-east",
@@ -307,6 +258,197 @@ function TrendSparkline({
   );
 }
 
+/** Investigation cases: each frames one published window by switching on
+ * exactly the layers that hold data for it. Every case loads through the
+ * same adapter — a `CaseModel` built from its own artifacts — so the timebar,
+ * histogram, readout and signal layer are one code path per case. */
+const EVENTS: {
+  id: string;
+  label: string;
+  window: string;
+  badge: string;
+  tone: "replay" | "real";
+  layers: Partial<Record<LayerId, boolean>>;
+  focus: Focus;
+  /** Readout copy while the case's artifacts are still loading. */
+  fallbackLabel: string;
+  fallbackNote: string;
+}[] = [
+  {
+    id: "aug-snapshot",
+    label: "Movement snapshot",
+    window: "1–6 Aug 2026",
+    badge: "Batch replay",
+    tone: "replay",
+    /* The standard view: movement signals only; everything else is opt-in. */
+    layers: {
+      signals: true,
+      coverage: false,
+      cameras: false,
+      roads: false,
+      flights: false,
+      transit: false,
+    },
+    focus: "signal",
+    fallbackLabel: slotLabel(health.target_at),
+    fallbackNote: `${health.candidate_count} signals`,
+  },
+  {
+    id: "april-floods",
+    label: "Floods and storm",
+    window: "18–22 Apr 2026",
+    badge: "Real",
+    tone: "real",
+    /* Same standard start as every case: signals only. The April layers
+     * (roads, flights, synthetic transit) come in when picked from the
+     * drawer or a list, or the moment the April timeline is scrubbed. */
+    layers: {
+      signals: true,
+      coverage: false,
+      cameras: false,
+      roads: false,
+      flights: false,
+      transit: false,
+    },
+    focus: "road",
+    fallbackLabel: "18–22 Apr 2026",
+    fallbackNote: "real event",
+  },
+];
+
+/* ==================== the case-load adapter ====================
+ * One normalized shape per case: hourly slots carrying the signal features
+ * to draw, the up/down split, an optional daily background band, an optional
+ * corroboration tick, and how the case filters the road diamonds. Adding a
+ * case is one EVENTS entry plus one builder that returns this shape. */
+
+type CaseSlot = {
+  key: string;
+  date: string;
+  label: string;
+  up: number;
+  down: number;
+  /** 0..1 daily background band (e.g. flagged road sites, day resolution). */
+  wash: number;
+  /** Hourly corroboration tick (e.g. a flagged airport hour). */
+  tick: boolean;
+  signals: LineFeature[];
+};
+
+type CaseModel = {
+  slots: CaseSlot[];
+  defaultIndex: number;
+  /** Slots from the start shaded as the event window; 0 = no shading. */
+  eventHours: number;
+  /** The signal drawer's Open feed target for this case. */
+  feed: string;
+  /** Whether scrubbing filters the road diamonds to the slot's day. */
+  roadDayFilter: boolean;
+};
+
+function buildAugCaseModel(
+  replay: ReplayCollection | null,
+  countlineGeometry: Map<string, Coordinate[]>,
+): CaseModel | null {
+  if (!replay || countlineGeometry.size === 0) return null;
+  const slots = replay.slots.map((slot) => ({
+    key: slot.target_at.slice(0, 13),
+    date: slot.target_at.slice(0, 10),
+    label: slotLabel(slot.target_at),
+    up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
+    down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
+    wash: 0,
+    tick: false,
+    signals: slot.signals.flatMap((signal) => {
+      const coordinates = countlineGeometry.get(signal.countline_id);
+      if (!coordinates) return [];
+      return [
+        {
+          id: signal.id,
+          geometry: { type: "LineString" as const, coordinates },
+          properties: { ...signal },
+        },
+      ];
+    }),
+  }));
+  return {
+    slots,
+    defaultIndex: Math.max(
+      replay.slots.findIndex((slot) => slot.target_at === replay.default_target_at),
+      0,
+    ),
+    eventHours: 0,
+    feed: "/cop/v1/movement-signals.geojson",
+    roadDayFilter: false,
+  };
+}
+
+function buildAprilCaseModel(
+  aprilMovement: AprilMovementCollection | null,
+  roadFeatures: RoadFeature[],
+  flightFeatures: FlightFeature[],
+): CaseModel | null {
+  if (!aprilMovement && roadFeatures.length === 0 && flightFeatures.length === 0) return null;
+  const dates = ["2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23"];
+  const roadsByDate = new Map<string, number>();
+  for (const feature of roadFeatures) {
+    for (const day of feature.properties.daily_history ?? []) {
+      if (day.flagged) roadsByDate.set(day.date, (roadsByDate.get(day.date) ?? 0) + 1);
+    }
+  }
+  const maxRoads = Math.max(1, ...roadsByDate.values());
+  const flightByHour = new Set<string>();
+  for (const feature of flightFeatures) {
+    for (const hour of feature.properties.flagged_hours) {
+      flightByHour.add(`${hour.date}T${String(hour.hour).padStart(2, "0")}`);
+    }
+  }
+  const signalsByHour = new Map<string, LineFeature[]>();
+  for (const slot of aprilMovement?.slots ?? []) {
+    signalsByHour.set(
+      slot.target_at.slice(0, 13),
+      slot.signals.map((signal) => {
+        const { coordinates, ...properties } = signal;
+        return {
+          id: signal.id,
+          geometry: { type: "LineString" as const, coordinates: [coordinates, coordinates] },
+          properties,
+        };
+      }),
+    );
+  }
+  const slots = dates.flatMap((date) =>
+    Array.from({ length: 24 }, (_, hour) => {
+      const key = `${date}T${String(hour).padStart(2, "0")}`;
+      const signals = signalsByHour.get(key) ?? [];
+      return {
+        key,
+        date,
+        label: `${dayLabel(date)} · ${String(hour).padStart(2, "0")}:00`,
+        up: signals.filter(
+          (signal) => signal.properties.change_direction === "increase",
+        ).length,
+        down: signals.filter(
+          (signal) => signal.properties.change_direction === "decrease",
+        ).length,
+        wash: (roadsByDate.get(date) ?? 0) / maxRoads,
+        tick: flightByHour.has(key),
+        signals,
+      };
+    }),
+  );
+  return {
+    slots,
+    defaultIndex: Math.max(
+      slots.findIndex((slot) => slot.key === "2026-04-20T14"),
+      0,
+    ),
+    eventHours: slots.filter((slot) => slot.date <= "2026-04-22").length,
+    feed: "/cop/v1/movement-april.json",
+    roadDayFilter: true,
+  };
+}
+
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -338,12 +480,12 @@ export default function MovementCanvas() {
   // The hourly replay drives the signal layer once it loads; until then the
   // committed snapshot renders, so a failed fetch degrades to today's map.
   const [replay, setReplay] = useState<ReplayCollection | null>(null);
-  const [slotIndex, setSlotIndex] = useState(-1);
   const [playing, setPlaying] = useState(false);
   // The chosen investigation case is its own state: hand-toggling layers
-  // afterwards changes the picture, never which case is open.
+  // afterwards changes the picture, never which case is open. Each case
+  // remembers its own scrub position; -1 or absent means the case default.
   const [caseId, setCaseId] = useState<string>(EVENTS[0].id);
-  const [aprilIndex, setAprilIndex] = useState(-1);
+  const [slotIndices, setSlotIndices] = useState<Record<string, number>>({});
   const [speed, setSpeed] = useState(1);
   // Hover stores the popup position at pick time; every view change clears it,
   // so the stored screen coordinates never go stale.
@@ -410,12 +552,9 @@ export default function MovementCanvas() {
     fetch("/cop/v1/movement-replay.json")
       .then((response) => response.json())
       .then((collection: ReplayCollection) => {
-        if (!Array.isArray(collection.slots) || collection.slots.length === 0) return;
-        const index = collection.slots.findIndex(
-          (slot) => slot.target_at === collection.default_target_at,
-        );
-        setReplay(collection);
-        setSlotIndex(index >= 0 ? index : collection.slots.length - 1);
+        if (Array.isArray(collection.slots) && collection.slots.length > 0) {
+          setReplay(collection);
+        }
       })
       .catch(() => {
         // The committed snapshot keeps rendering; the timebar stays disabled.
@@ -509,86 +648,6 @@ export default function MovementCanvas() {
    * data, so they draw as full-day plateaus — the shape states the source's
    * resolution. Counts of flagged units, never raw sums. The sites'
    * full-month history stays in the evidence panel strips. */
-  /* April movement signals, indexed per hour and pre-shaped as line features
-   * (a centroid point drawn as a zero-length line keeps the signal glyphs). */
-  const aprilSignalsBySlot = useMemo(() => {
-    const index = new Map<string, LineFeature[]>();
-    for (const slot of aprilMovement?.slots ?? []) {
-      index.set(
-        slot.target_at.slice(0, 13),
-        slot.signals.map((signal) => {
-          const { coordinates, ...properties } = signal;
-          return {
-            id: signal.id,
-            geometry: { type: "LineString" as const, coordinates: [coordinates, coordinates] },
-            properties,
-          };
-        }),
-      );
-    }
-    return index;
-  }, [aprilMovement]);
-
-  const aprilHours = useMemo(() => {
-    if (roadFeatures.length === 0 && flightFeatures.length === 0 && !aprilMovement) return [];
-    const dates = ["2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23"];
-    const roadsByDate = new Map<string, number>();
-    for (const feature of roadFeatures) {
-      for (const day of feature.properties.daily_history ?? []) {
-        if (day.flagged) roadsByDate.set(day.date, (roadsByDate.get(day.date) ?? 0) + 1);
-      }
-    }
-    const flightByHour = new Map<string, string>();
-    for (const feature of flightFeatures) {
-      for (const hour of feature.properties.flagged_hours) {
-        flightByHour.set(`${hour.date}T${hour.hour}`, hour.direction);
-      }
-    }
-    const signalsByHour = new Map<string, { up: number; down: number }>();
-    for (const slot of aprilMovement?.slots ?? []) {
-      signalsByHour.set(slot.target_at.slice(0, 13), {
-        up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
-        down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
-      });
-    }
-    return dates.flatMap((date) =>
-      Array.from({ length: 24 }, (_, hour) => {
-        const slotKey = `${date}T${String(hour).padStart(2, "0")}`;
-        return {
-          date,
-          hour,
-          roads: roadsByDate.get(date) ?? 0,
-          flight: flightByHour.get(`${date}T${hour}`) ?? null,
-          up: signalsByHour.get(slotKey)?.up ?? 0,
-          down: signalsByHour.get(slotKey)?.down ?? 0,
-        };
-      }),
-    );
-  }, [roadFeatures, flightFeatures, aprilMovement]);
-
-  // Default the April scrubber to the worst flood hour, without an effect.
-  const effectiveAprilIndex =
-    aprilIndex >= 0
-      ? Math.min(aprilIndex, Math.max(aprilHours.length - 1, 0))
-      : Math.max(
-          aprilHours.findIndex((slot) => slot.date === "2026-04-20" && slot.hour === 14),
-          0,
-        );
-  const aprilCase = caseId === "april-floods";
-  const activeAprilSlot = aprilCase ? aprilHours[effectiveAprilIndex] ?? null : null;
-  const activeAprilDate = activeAprilSlot?.date ?? null;
-
-  /* Scrubbing the April timeline filters the diamonds to sites flagged on
-   * that day; the roads list and search keep the full flagged set. */
-  const shownRoads = useMemo(() => {
-    if (!activeAprilDate) return roadFeatures;
-    return roadFeatures.filter((feature) =>
-      (feature.properties.daily_history ?? []).some(
-        (day) => day.date === activeAprilDate && day.flagged,
-      ),
-    );
-  }, [roadFeatures, activeAprilDate]);
-
   const countlineGeometry = useMemo(() => {
     const index = new Map<string, Coordinate[]>();
     for (const feature of coverage) {
@@ -597,38 +656,43 @@ export default function MovementCanvas() {
     return index;
   }, [coverage]);
 
-  const activeSlot = replay && slotIndex >= 0 ? replay.slots[slotIndex] : null;
+  /* Every case loads through the same adapter: one CaseModel per case, built
+   * from that case's own artifacts. Null until the artifacts arrive. */
+  const caseModels = useMemo<Record<string, CaseModel | null>>(
+    () => ({
+      "aug-snapshot": buildAugCaseModel(replay, countlineGeometry),
+      "april-floods": buildAprilCaseModel(aprilMovement, roadFeatures, flightFeatures),
+    }),
+    [replay, countlineGeometry, aprilMovement, roadFeatures, flightFeatures],
+  );
+  const activeModel = caseModels[caseId] ?? null;
+  const activeEvent = EVENTS.find((entry) => entry.id === caseId) ?? EVENTS[0];
+  const storedIndex = slotIndices[caseId] ?? -1;
+  const effectiveIndex = activeModel
+    ? storedIndex >= 0
+      ? Math.min(storedIndex, activeModel.slots.length - 1)
+      : activeModel.defaultIndex
+    : -1;
+  const activeCaseSlot = activeModel?.slots[effectiveIndex] ?? null;
+  const activeRoadDate =
+    activeModel?.roadDayFilter ? activeCaseSlot?.date ?? null : null;
+
+  /* A case with day filtering narrows the diamonds to sites flagged on the
+   * slot's day; the roads list and search keep the full flagged set. */
+  const shownRoads = useMemo(() => {
+    if (!activeRoadDate) return roadFeatures;
+    return roadFeatures.filter((feature) =>
+      (feature.properties.daily_history ?? []).some(
+        (day) => day.date === activeRoadDate && day.flagged,
+      ),
+    );
+  }, [roadFeatures, activeRoadDate]);
 
   const shownSignals = useMemo<LineFeature[]>(() => {
-    if (aprilCase) {
-      if (!activeAprilSlot) return [];
-      const slotKey = `${activeAprilSlot.date}T${String(activeAprilSlot.hour).padStart(2, "0")}`;
-      return aprilSignalsBySlot.get(slotKey) ?? [];
-    }
-    if (!activeSlot || countlineGeometry.size === 0) return signals;
-    return activeSlot.signals.flatMap((signal) => {
-      const coordinates = countlineGeometry.get(signal.countline_id);
-      if (!coordinates) return [];
-      return [
-        {
-          id: signal.id,
-          geometry: { type: "LineString" as const, coordinates },
-          properties: { ...signal },
-        },
-      ];
-    });
-  }, [aprilCase, activeAprilSlot, aprilSignalsBySlot, activeSlot, countlineGeometry, signals]);
-
-  /* Area total per hour: how many countline groups passed every detector gate,
-   * split by direction. Never a raw count sum — hourly coverage varies and a
-   * missing row is a gap, not zero, so summing would confuse dropout with drop. */
-  const slotBars = useMemo(() => {
-    if (!replay) return [];
-    return replay.slots.map((slot) => ({
-      up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
-      down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
-    }));
-  }, [replay]);
+    if (activeCaseSlot) return activeCaseSlot.signals;
+    // Before the default case's artifacts arrive, the committed snapshot renders.
+    return caseId === EVENTS[0].id ? signals : [];
+  }, [activeCaseSlot, caseId, signals]);
 
   const filteredSignals = useMemo(() => shownSignals.filter((feature) => {
     const mode = String(feature.properties.transport_class);
@@ -681,15 +745,15 @@ export default function MovementCanvas() {
     hoveredSignal || hoveredCamera || hoveredTransit || hoveredRoad || hoveredFlight,
   );
 
-  /* Case-adaptive road figures: while the April timeline sits on a day, the
-   * panel shows that day's counts for the site; otherwise its worst day. */
+  /* Case-adaptive road figures: while a day-filtering case sits on a slot,
+   * the panel shows that day's counts for the site; otherwise its worst day. */
   const panelRoadDay =
-    panelRoad && activeAprilDate
+    panelRoad && activeRoadDate
       ? (panelRoad.properties.daily_history ?? []).find(
-          (day) => day.date === activeAprilDate,
+          (day) => day.date === activeRoadDate,
         )
       : undefined;
-  const panelRoadDate = panelRoadDay ? activeAprilDate! : panelRoad?.properties.date;
+  const panelRoadDate = panelRoadDay ? activeRoadDate! : panelRoad?.properties.date;
   const panelRoadObserved = panelRoadDay?.observed ?? panelRoad?.properties.observed_count ?? 0;
   const panelRoadBaseline = panelRoadDay?.baseline ?? panelRoad?.properties.baseline_median ?? 0;
 
@@ -796,39 +860,25 @@ export default function MovementCanvas() {
   }, []);
 
   // Playback steps one published slot per tick and stops at the last one.
-  // The intervals read the live index from refs, so they need no re-arming.
-  const slotIndexRef = useRef(slotIndex);
-  const aprilIndexRef = useRef(effectiveAprilIndex);
+  // The interval reads the live index from a ref, so it needs no re-arming.
+  const indexRef = useRef(effectiveIndex);
   useEffect(() => {
-    slotIndexRef.current = slotIndex;
-    aprilIndexRef.current = effectiveAprilIndex;
+    indexRef.current = effectiveIndex;
   });
   useEffect(() => {
-    if (!playing || !replay || aprilCase) return;
-    const lastIndex = replay.slots.length - 1;
+    if (!playing || !activeModel) return;
+    const lastIndex = activeModel.slots.length - 1;
     const interval = setInterval(() => {
-      if (slotIndexRef.current >= lastIndex) {
+      if (indexRef.current >= lastIndex) {
         setPlaying(false);
         return;
       }
       setHover(null);
-      setSlotIndex(slotIndexRef.current + 1);
+      const next = indexRef.current + 1;
+      setSlotIndices((current) => ({ ...current, [caseId]: next }));
     }, PLAY_INTERVAL_MS / speed);
     return () => clearInterval(interval);
-  }, [playing, replay, aprilCase, speed]);
-  useEffect(() => {
-    if (!playing || !aprilCase || aprilHours.length === 0) return;
-    const lastIndex = aprilHours.length - 1;
-    const interval = setInterval(() => {
-      if (aprilIndexRef.current >= lastIndex) {
-        setPlaying(false);
-        return;
-      }
-      setHover(null);
-      setAprilIndex(aprilIndexRef.current + 1);
-    }, PLAY_INTERVAL_MS / speed);
-    return () => clearInterval(interval);
-  }, [playing, aprilCase, aprilHours.length, speed]);
+  }, [playing, activeModel, caseId, speed]);
 
   // While a camera popup is open, re-request its frame so the preview stays a
   // stream of pictures rather than one stale snapshot.
@@ -1010,12 +1060,8 @@ export default function MovementCanvas() {
     setCaseId(event.id);
     setLayers((current) => ({ ...current, ...event.layers }));
     setFocus(event.focus);
-    if (event.id === "aug-snapshot" && replay) {
-      const index = replay.slots.findIndex(
-        (slot) => slot.target_at === replay.default_target_at,
-      );
-      if (index >= 0) setSlotIndex(index);
-    }
+    // Opening a case lands on its default slot, whatever was scrubbed before.
+    setSlotIndices((current) => ({ ...current, [event.id]: -1 }));
     // Fit to the event's own layers; the toggles land on the next render.
     const size = stageSize();
     const bounds = unionBounds(
@@ -1032,33 +1078,21 @@ export default function MovementCanvas() {
 
   /** Scrubbing is a deliberate act: it pauses playback and shows the signal layer. */
   const scrubTo = (index: number) => {
-    if (!replay) return;
+    if (!activeModel) return;
     setPlaying(false);
     setHover(null);
     ensureLayer("signal");
-    setSlotIndex(Math.min(Math.max(index, 0), replay.slots.length - 1));
-  };
-
-  const scrubAprilTo = (index: number) => {
-    if (aprilHours.length === 0) return;
-    setPlaying(false);
-    setHover(null);
-    ensureLayer("signal");
-    setAprilIndex(Math.min(Math.max(index, 0), aprilHours.length - 1));
+    const clamped = Math.min(Math.max(index, 0), activeModel.slots.length - 1);
+    setSlotIndices((current) => ({ ...current, [caseId]: clamped }));
   };
 
   const togglePlay = () => {
+    if (!activeModel) return;
     setHover(null);
-    if (aprilCase) {
-      if (aprilHours.length === 0) return;
-      ensureLayer("signal");
-      if (!playing && effectiveAprilIndex >= aprilHours.length - 1) setAprilIndex(0);
-      setPlaying((current) => !current);
-      return;
-    }
-    if (!replay) return;
     ensureLayer("signal");
-    if (!playing && slotIndex >= replay.slots.length - 1) setSlotIndex(0);
+    if (!playing && effectiveIndex >= activeModel.slots.length - 1) {
+      setSlotIndices((current) => ({ ...current, [caseId]: 0 }));
+    }
     setPlaying((current) => !current);
   };
 
@@ -1275,7 +1309,7 @@ export default function MovementCanvas() {
               type="button"
               className="replay-play"
               onClick={togglePlay}
-              disabled={aprilCase ? aprilHours.length === 0 : !replay}
+              disabled={!activeModel}
               aria-label={playing ? "Pause the replay" : "Play the replay"}
               title={playing ? "Pause the replay" : "Play the replay"}
             >
@@ -1292,14 +1326,8 @@ export default function MovementCanvas() {
             </button>
             <button
               type="button"
-              onClick={() =>
-                aprilCase ? scrubAprilTo(effectiveAprilIndex - 1) : scrubTo(slotIndex - 1)
-              }
-              disabled={
-                aprilCase
-                  ? aprilHours.length === 0 || effectiveAprilIndex <= 0
-                  : !replay || slotIndex <= 0
-              }
+              onClick={() => scrubTo(effectiveIndex - 1)}
+              disabled={!activeModel || effectiveIndex <= 0}
               aria-label="Previous hour"
               title="Previous hour"
             >
@@ -1307,14 +1335,8 @@ export default function MovementCanvas() {
             </button>
             <button
               type="button"
-              onClick={() =>
-                aprilCase ? scrubAprilTo(effectiveAprilIndex + 1) : scrubTo(slotIndex + 1)
-              }
-              disabled={
-                aprilCase
-                  ? aprilHours.length === 0 || effectiveAprilIndex >= aprilHours.length - 1
-                  : !replay || slotIndex >= (replay?.slots.length ?? 1) - 1
-              }
+              onClick={() => scrubTo(effectiveIndex + 1)}
+              disabled={!activeModel || effectiveIndex >= (activeModel?.slots.length ?? 1) - 1}
               aria-label="Next hour"
               title="Next hour"
             >
@@ -1333,213 +1355,105 @@ export default function MovementCanvas() {
               ))}
             </select>
             <p className="replay-readout">
-              {aprilCase ? (
-                <>
-                  <strong>
-                    {activeAprilSlot
-                      ? `${dayLabel(activeAprilSlot.date)} · ${String(activeAprilSlot.hour).padStart(2, "0")}:00`
-                      : "18–22 Apr 2026"}
-                  </strong>
-                  <span>
-                    {activeAprilSlot ? (
-                      <>
-                        <i className="up" aria-hidden="true" />
-                        {activeAprilSlot.up.toLocaleString("en-NZ")} up ·{" "}
-                        <i className="down" aria-hidden="true" />
-                        {activeAprilSlot.down.toLocaleString("en-NZ")} down
-                      </>
-                    ) : (
-                      "real event"
-                    )}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <strong>{slotLabel(activeSlot?.target_at ?? health.target_at)}</strong>
-                  <span>
-                    {activeSlot && slotIndex >= 0 && slotBars[slotIndex] ? (
-                      <>
-                        <i className="up" aria-hidden="true" />
-                        {slotBars[slotIndex].up.toLocaleString("en-NZ")} up ·{" "}
-                        <i className="down" aria-hidden="true" />
-                        {slotBars[slotIndex].down.toLocaleString("en-NZ")} down
-                      </>
-                    ) : (
-                      <>{health.candidate_count.toLocaleString("en-NZ")} signals</>
-                    )}
-                  </span>
-                </>
-              )}
+              <strong>{activeCaseSlot?.label ?? activeEvent.fallbackLabel}</strong>
+              <span>
+                {activeCaseSlot ? (
+                  <>
+                    <i className="up" aria-hidden="true" />
+                    {activeCaseSlot.up.toLocaleString("en-NZ")} up ·{" "}
+                    <i className="down" aria-hidden="true" />
+                    {activeCaseSlot.down.toLocaleString("en-NZ")} down
+                  </>
+                ) : (
+                  activeEvent.fallbackNote
+                )}
+              </span>
             </p>
             <div className="replay-track">
-              {aprilCase ? (
-                <>
-                  {aprilHours.length > 0 ? (
-                    <svg
-                      className="replay-histogram"
-                      viewBox={`0 0 ${aprilHours.length} 36`}
-                      preserveAspectRatio="none"
-                      aria-hidden="true"
-                      onPointerDown={(event) => {
-                        const rect = event.currentTarget.getBoundingClientRect();
-                        scrubAprilTo(
-                          Math.floor(
-                            ((event.clientX - rect.left) / rect.width) * aprilHours.length,
-                          ),
-                        );
-                      }}
-                    >
-                      {(() => {
-                        const maxRoads = Math.max(1, ...aprilHours.map((slot) => slot.roads));
-                        const maxSignal = Math.max(
-                          1,
-                          ...aprilHours.map((slot) => Math.max(slot.up, slot.down)),
-                        );
-                        const eventHours = aprilHours.filter(
-                          (slot) => slot.date <= "2026-04-22",
-                        ).length;
-                        return (
-                          <>
-                            {eventHours > 0 ? (
-                              <rect
-                                className="event-window"
-                                x={0}
-                                y={0}
-                                width={eventHours}
-                                height={36}
-                              />
-                            ) : null}
-                            <rect
-                              className="cursor"
-                              x={effectiveAprilIndex}
-                              y={0}
-                              width={1}
-                              height={36}
-                            />
-                            {aprilHours.map((slot, index) => (
-                              <g key={`${slot.date}T${slot.hour}`}>
-                                {slot.roads > 0 ? (
-                                  <rect
-                                    className="roads-bar"
-                                    x={index}
-                                    y={17 - (slot.roads / maxRoads) * 16}
-                                    width={1}
-                                    height={(slot.roads / maxRoads) * 16}
-                                  />
-                                ) : null}
-                                {slot.flight ? (
-                                  <rect
-                                    className="flights-bar"
-                                    x={index + 0.06}
-                                    y={19}
-                                    width={0.88}
-                                    height={14}
-                                  />
-                                ) : null}
-                                {slot.up > 0 ? (
-                                  <rect
-                                    className="up"
-                                    x={index + 0.08}
-                                    y={17 - (slot.up / maxSignal) * 16}
-                                    width={0.84}
-                                    height={(slot.up / maxSignal) * 16}
-                                  />
-                                ) : null}
-                                {slot.down > 0 ? (
-                                  <rect
-                                    className="down"
-                                    x={index + 0.08}
-                                    y={19}
-                                    width={0.84}
-                                    height={(slot.down / maxSignal) * 16}
-                                  />
-                                ) : null}
-                              </g>
-                            ))}
-                            <line
-                              className="axis"
-                              x1={0}
-                              y1={18}
-                              x2={aprilHours.length}
-                              y2={18}
-                              vectorEffect="non-scaling-stroke"
-                            />
-                          </>
-                        );
-                      })()}
-                    </svg>
-                  ) : null}
-                  <input
-                    type="range"
-                    className="replay-slider"
-                    min={0}
-                    max={Math.max(aprilHours.length - 1, 0)}
-                    step={1}
-                    value={effectiveAprilIndex}
-                    disabled={aprilHours.length === 0}
-                    onChange={(event) => scrubAprilTo(Number(event.currentTarget.value))}
-                    aria-label="Replay hour"
-                    aria-valuetext={
-                      activeAprilSlot
-                        ? `${dayLabel(activeAprilSlot.date)} · ${String(activeAprilSlot.hour).padStart(2, "0")}:00`
-                        : "loading"
-                    }
-                  />
-                </>
-              ) : (
-                <>
-                  {replay ? (
+              {activeModel ? (
                 <svg
                   className="replay-histogram"
-                  viewBox={`0 0 ${replay.slots.length} 36`}
+                  viewBox={`0 0 ${activeModel.slots.length} 36`}
                   preserveAspectRatio="none"
                   aria-hidden="true"
                   onPointerDown={(event) => {
                     const rect = event.currentTarget.getBoundingClientRect();
                     scrubTo(
                       Math.floor(
-                        ((event.clientX - rect.left) / rect.width) * replay.slots.length,
+                        ((event.clientX - rect.left) / rect.width) *
+                          activeModel.slots.length,
                       ),
                     );
                   }}
                 >
                   {(() => {
-                    const maxBar = Math.max(
+                    const maxSignal = Math.max(
                       1,
-                      ...slotBars.map((bar) => Math.max(bar.up, bar.down)),
+                      ...activeModel.slots.map((slot) => Math.max(slot.up, slot.down)),
                     );
                     return (
                       <>
-                        <rect className="cursor" x={slotIndex} y={0} width={1} height={36} />
-                        {slotBars.map((bar, index) =>
-                          bar.up === 0 && bar.down === 0 ? null : (
-                            <g key={index}>
-                              {bar.up > 0 ? (
-                                <rect
-                                  className="up"
-                                  x={index + 0.08}
-                                  y={17 - (bar.up / maxBar) * 16}
-                                  width={0.84}
-                                  height={(bar.up / maxBar) * 16}
-                                />
-                              ) : null}
-                              {bar.down > 0 ? (
-                                <rect
-                                  className="down"
-                                  x={index + 0.08}
-                                  y={19}
-                                  width={0.84}
-                                  height={(bar.down / maxBar) * 16}
-                                />
-                              ) : null}
-                            </g>
-                          ),
-                        )}
+                        {activeModel.eventHours > 0 ? (
+                          <rect
+                            className="event-window"
+                            x={0}
+                            y={0}
+                            width={activeModel.eventHours}
+                            height={36}
+                          />
+                        ) : null}
+                        <rect
+                          className="cursor"
+                          x={effectiveIndex}
+                          y={0}
+                          width={1}
+                          height={36}
+                        />
+                        {activeModel.slots.map((slot, index) => (
+                          <g key={slot.key}>
+                            {slot.wash > 0 ? (
+                              <rect
+                                className="roads-bar"
+                                x={index}
+                                y={17 - slot.wash * 16}
+                                width={1}
+                                height={slot.wash * 16}
+                              />
+                            ) : null}
+                            {slot.tick ? (
+                              <rect
+                                className="flights-bar"
+                                x={index + 0.06}
+                                y={19}
+                                width={0.88}
+                                height={14}
+                              />
+                            ) : null}
+                            {slot.up > 0 ? (
+                              <rect
+                                className="up"
+                                x={index + 0.08}
+                                y={17 - (slot.up / maxSignal) * 16}
+                                width={0.84}
+                                height={(slot.up / maxSignal) * 16}
+                              />
+                            ) : null}
+                            {slot.down > 0 ? (
+                              <rect
+                                className="down"
+                                x={index + 0.08}
+                                y={19}
+                                width={0.84}
+                                height={(slot.down / maxSignal) * 16}
+                              />
+                            ) : null}
+                          </g>
+                        ))}
                         <line
                           className="axis"
                           x1={0}
                           y1={18}
-                          x2={replay.slots.length}
+                          x2={activeModel.slots.length}
                           y2={18}
                           vectorEffect="non-scaling-stroke"
                         />
@@ -1547,21 +1461,19 @@ export default function MovementCanvas() {
                     );
                   })()}
                 </svg>
-                  ) : null}
-                  <input
-                    type="range"
-                    className="replay-slider"
-                    min={0}
-                    max={replay ? replay.slots.length - 1 : 0}
-                    step={1}
-                    value={slotIndex >= 0 ? slotIndex : 0}
-                    disabled={!replay}
-                    onChange={(event) => scrubTo(Number(event.currentTarget.value))}
-                    aria-label="Replay hour"
-                    aria-valuetext={slotLabel(activeSlot?.target_at ?? health.target_at)}
-                  />
-                </>
-              )}
+              ) : null}
+              <input
+                type="range"
+                className="replay-slider"
+                min={0}
+                max={activeModel ? activeModel.slots.length - 1 : 0}
+                step={1}
+                value={effectiveIndex >= 0 ? effectiveIndex : 0}
+                disabled={!activeModel}
+                onChange={(event) => scrubTo(Number(event.currentTarget.value))}
+                aria-label="Replay hour"
+                aria-valuetext={activeCaseSlot?.label ?? activeEvent.fallbackLabel}
+              />
             </div>
           </div>
           <div className="map-stage" ref={frameRef}>
@@ -2298,7 +2210,7 @@ export default function MovementCanvas() {
                   {evidenceOps(
                     "signal",
                     panelSignal.geometry.coordinates[0],
-                    aprilCase ? "/cop/v1/movement-april.json" : "/cop/v1/movement-signals.geojson",
+                    activeModel?.feed ?? "/cop/v1/movement-signals.geojson",
                   )}
                 </>
               ) : null}
