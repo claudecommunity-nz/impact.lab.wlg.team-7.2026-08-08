@@ -235,17 +235,19 @@ const TILE_SIZE = 256;
 const FIT_PADDING = 36;
 
 /*
- * Basemap: CARTO Positron raster tiles (OpenStreetMap data). Neutral grey so the
- * signal amber/red and camera green stay legible, and no API key or map library
- * is involved — the tiles are drawn onto the same canvas as the layers.
- * Attribution is required and is rendered over the map by MovementCanvas.
+ * Basemap: CARTO Voyager raster tiles (OpenStreetMap data). Voyager carries
+ * real terrain and street colour where Positron was near-monochrome; the draw
+ * filter still mutes it a step so the layer glyphs keep visual priority. No
+ * API key or map library is involved — the tiles are drawn onto the same
+ * canvas as the layers. Attribution is required and is rendered over the map
+ * by MovementCanvas.
  */
 const RETINA = typeof window !== "undefined" && (window.devicePixelRatio || 1) > 1.5;
 const TILE_CACHE_LIMIT = 512;
 const tileCache = new Map<string, HTMLImageElement>();
 
 function tileUrl(zoom: number, x: number, y: number) {
-  return `https://basemaps.cartocdn.com/light_all/${zoom}/${x}/${y}${RETINA ? "@2x" : ""}.png`;
+  return `https://basemaps.cartocdn.com/rastertiles/voyager/${zoom}/${x}/${y}${RETINA ? "@2x" : ""}.png`;
 }
 
 // ==================== web mercator ====================
@@ -404,8 +406,8 @@ export function drawTiles(
   const originY = latToWorldY(view.centerLat, view.zoom) - height / 2;
   const tilesPerAxis = 2 ** view.zoom;
 
-  // Mute the basemap so terrain greens never compete with the layer glyphs.
-  context.filter = "saturate(0.7) brightness(1.01)";
+  // Mute the basemap one step so terrain greens never outcompete the glyphs.
+  context.filter = "saturate(0.85)";
 
   for (let tileY = Math.floor(originY / TILE_SIZE); tileY <= Math.floor((originY + height) / TILE_SIZE); tileY += 1) {
     if (tileY < 0 || tileY >= tilesPerAxis) continue;

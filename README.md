@@ -140,7 +140,7 @@ picture. The map is a view; **the feed is the product**.
   `limitations` array; the batch is labelled *batch replay*, the synthetic
   layer says *synthetic* at every appearance, and signals say *investigate* —
   never *incident*.
-- **Corroboration over aggregation.** Five independent sources share one map
+- **Corroboration over aggregation.** Six independent sources share one map
   and one projection, each with its own icon: a countline drop can be checked
   against a live NZTA camera frame two clicks away, instead of being averaged
   into a single opaque score.
@@ -150,7 +150,7 @@ picture. The map is a view; **the feed is the product**.
   in the visitor's browser and goes only to the provider. A test suite scans
   the repo for key-shaped strings on every build.
 - **No backend to fall over.** The site is static files plus the visitor's
-  browser — six committed GeoJSON/JSON contracts any COP, GIS client or
+  browser — eight committed GeoJSON/JSON contracts any COP, GIS client or
   teammate's prototype can consume directly.
 
 ### What we found
@@ -175,6 +175,13 @@ From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source rows):
   corridor collapsed to 0.08–0.57× its own baseline (worst: South of Waingawa
   Bridge at 0.35×, −39.4 z) while SH1 stayed normal, matching the actual
   closures and the regional state of emergency declared 20 April.
+- From the **real** OpenSky air-access backtest: WLG flight movements dropped
+  to 0.16–0.26× their hourly baselines on the **same flood afternoons**
+  (20 April 14:00: 4 movements vs 15.5 expected) — an independent witness on
+  the event no road sensor can see.
+- Across the **hourly replay** (1–6 Aug, 144 published hours): 929 gated
+  candidates in total, between 0 and 33 per hour — scrub the timebar and the
+  quiet hours are visibly quiet, which is what precision gates are for.
 
 ### Key takeaways
 
@@ -192,10 +199,11 @@ From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source rows):
 
 ### How we know it works
 
-The benchmark above is held-out, chronological and committed. Eleven automated
-checks run on every build — the server-rendered contract, internal consistency
-of all five artifacts (signal count = candidate count, WGS84 bounds, camera
-frame flags vs coverage bounds, synthetic labelling), and the secret scan.
+The benchmark above is held-out, chronological and committed. Fourteen
+automated checks run on every build — the server-rendered contract, internal
+consistency of all eight artifacts (signal count = candidate count, WGS84
+bounds, camera frame flags vs coverage bounds, synthetic labelling, and a
+leakage check on every replay slot's matched history), and the secret scan.
 Every interactive feature was verified in a real browser before merging, and
 the artifacts are reproducible from source with the three build scripts below.
 
@@ -212,14 +220,22 @@ the artifacts are reproducible from source with the three build scripts below.
   a zero.
 
 The included 6 August 2026 12:00 replay produces **12 signals** and exposes
-**207 expected-but-missing groups** as data gaps rather than zero counts.
+**207 expected-but-missing groups** as data gaps rather than zero counts. The
+full **hourly replay** keeps every published hour from 1–6 August: a timebar
+under the map plays or scrubs through all 144 slots, its histogram showing
+each hour's gated deviations (increases up, decreases down — counts, never raw
+sums), and every signal carries its 12 prior matched weekday/hour counts as a
+sparkline next to the expected median.
 
 ### One map, every source
 
-A hand-rolled slippy map on one canvas — CARTO Positron raster tiles
+A hand-rolled slippy map on one canvas — CARTO Voyager raster tiles
 (OpenStreetMap data), whole-level zoom 9–18, drag to pan, scroll or +/− to zoom,
 **Fit** to frame the active layers, no map library. Every source is a
-**toggleable layer**, each drawn with its own mini icon:
+**toggleable layer**, each drawn with its own mini icon, and two
+**investigation presets** frame the published windows in one click: the
+1–6 Aug movement snapshot, and the real 18–22 Apr floods case, which loads
+every April layer at once:
 
 - **Movement signals** — the detection output above, with a people/vehicles
   filter. **Person icons** mark pedestrian, cyclist and e-scooter signals;
@@ -239,7 +255,14 @@ A hand-rolled slippy map on one canvas — CARTO Positron raster tiles
 - **State highways** — NZTA TMS sites flagged in the **real 20–21 April 2026
   Wellington floods** as purple **diamond icons** (darker where severity is
   high), built from the [`NZTA/anomaly/`](NZTA/anomaly/) extracts. Daily counts
-  with a two-day lag: a validated backtest, not a live detector.
+  with a two-day lag: a validated backtest, not a live detector. Each site's
+  evidence now includes its full April daily strip — observed against its own
+  baseline, flagged days highlighted.
+- **Air access** — Wellington Airport as a teal **plane icon**: real OpenSky
+  flight movements, April 2026, scored per hour against weekday-matched
+  baselines. Its flagged drops land on the same flood afternoons the highway
+  layer flags — independent corroboration from the air. Data © OpenSky
+  Network.
 
 Hovering a signal or a PT hotspot shows its numbers in place; clicking anything
 fills the **investigate panel** — observed vs expected counts, robust score,
@@ -279,8 +302,8 @@ and falls back to the local answer.
 
 ### Settings: sources and integrations
 
-**Data sources** (`/settings`, deliberately not on the dashboard) lists the six
-committed feeds plus anything you add, with **measured** status per source —
+**Data sources** (`/settings`, deliberately not on the dashboard) lists the
+eight committed feeds plus anything you add, with **measured** status per source —
 reachable, reachable-with-odd-payload, or failed — last successful sync, latency
 and record count, a retry per row and **Test all**. Sources can be added by URL
 or imported from a file, and exported as **GeoJSON, JSON, CSV or NDJSON**.
@@ -289,16 +312,18 @@ generates the MCP client config and the A2A agent card for your own endpoint.
 
 ### The feeds
 
-Everything the site shows is served as six committed files — point any COP,
+Everything the site shows is served as eight committed files — point any COP,
 GIS client or teammate's prototype at them:
 
 | Feed | Path |
 |---|---|
 | Movement signals | `/cop/v1/movement-signals.geojson` |
+| Hourly replay (1–6 Aug 2026, 144 slots) | `/cop/v1/movement-replay.json` |
 | Sensor coverage | `/cop/v1/countline-coverage.geojson` |
 | Traffic cameras | `/cop/v1/traffic-cameras.geojson` |
 | PT anomalies (synthetic) | `/cop/v1/transit-anomalies.geojson` |
 | State highways (real April 2026 floods) | `/cop/v1/road-anomalies.geojson` |
+| Air access (real April 2026, OpenSky) | `/cop/v1/flight-anomalies.geojson` |
 | Coverage and health | `/cop/v1/movement-health.json` |
 
 ### Keys and secrets stay out of this repo
@@ -323,14 +348,16 @@ npm test
 npm run dev
 ```
 
-Rebuild the COP artifacts from the official WCC Transport Sensors Parquet
-shards and countline metadata:
+Rebuild the COP artifacts (snapshot + hourly replay) from the official WCC
+Transport Sensors Parquet shards and countline metadata:
 
 ```powershell
 .\.venv\Scripts\python scripts\build_demo.py `
   --data-dir data\transport_sensors `
   --metadata data\countline_meta_info.csv `
   --target-at 2026-08-06T12:00:00+12:00 `
+  --replay-start-at 2026-08-01T00:00:00+12:00 `
+  --replay-end-at 2026-08-06T23:00:00+12:00 `
   --output-dir site\public\cop\v1
 ```
 
@@ -351,6 +378,12 @@ Rebuild the NZTA state-highway layer from the committed extracts (stdlib only):
 
 ```powershell
 python scripts\build_road_layer.py
+```
+
+Rebuild the WLG air-access layer from the OpenSky extracts (stdlib only):
+
+```powershell
+python scripts\build_flights_layer.py
 ```
 
 ### Docs

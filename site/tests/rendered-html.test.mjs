@@ -147,6 +147,11 @@ test("merges every source into one map with switchable layers", async () => {
   assert.match(html, /Public transport/);
   assert.match(html, /State highways/);
   assert.match(html, /Air access/);
+  // Investigation presets: the batch snapshot and the real April case.
+  assert.match(html, /aria-label="Investigations"/);
+  assert.match(html, /Movement snapshot/);
+  assert.match(html, /Floods and storm/);
+  assert.match(html, /18–22 Apr 2026/);
   // Signals and coverage start on; the corroborating layers start off.
   assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 3);
   assert.ok((html.match(/aria-pressed="false"/g) ?? []).length >= 3);

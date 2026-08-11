@@ -117,6 +117,39 @@ const LAYERS: {
 
 type SearchHit = { kind: Focus; id: string; label: string; detail: string; coordinate: Coordinate };
 
+/** Investigation presets: each frames one published window by switching on
+ * exactly the layers that hold data for it. */
+const EVENTS: {
+  id: string;
+  label: string;
+  window: string;
+  badge: string;
+  tone: "replay" | "real";
+  layers: Partial<Record<LayerId, boolean>>;
+  focus: Focus;
+}[] = [
+  {
+    id: "aug-snapshot",
+    label: "Movement snapshot",
+    window: "1–6 Aug 2026",
+    badge: "Batch replay",
+    tone: "replay",
+    layers: { signals: true, coverage: true, roads: false, flights: false, transit: false },
+    focus: "signal",
+  },
+  {
+    id: "april-floods",
+    label: "Floods and storm",
+    window: "18–22 Apr 2026",
+    badge: "Real",
+    tone: "real",
+    /* Every April layer: real roads and flights, plus the synthetic Metlink
+     * replay — its own badge keeps carrying the synthetic label. */
+    layers: { signals: false, coverage: false, roads: true, flights: true, transit: true },
+    focus: "road",
+  },
+];
+
 /** Compass tokens from the source data, spelt out for the popup meta line. */
 const COMPASS: Record<string, string> = {
   N: "north", NE: "north-east", E: "east", SE: "south-east",
@@ -808,6 +841,39 @@ export default function MovementCanvas() {
     if (!layers[id]) LAYER_STORES[id].toggle(false);
   };
 
+  /** A preset only asserts the layers it names; other choices stay the user's. */
+  const eventActive = (event: (typeof EVENTS)[number]) =>
+    (Object.entries(event.layers) as [LayerId, boolean][]).every(
+      ([id, on]) => layers[id] === on,
+    );
+
+  const applyEvent = (event: (typeof EVENTS)[number]) => {
+    setHover(null);
+    setPlaying(false);
+    for (const [id, on] of Object.entries(event.layers) as [LayerId, boolean][]) {
+      if (layers[id] !== on) LAYER_STORES[id].toggle(layers[id]);
+    }
+    setFocus(event.focus);
+    if (event.id === "aug-snapshot" && replay) {
+      const index = replay.slots.findIndex(
+        (slot) => slot.target_at === replay.default_target_at,
+      );
+      if (index >= 0) setSlotIndex(index);
+    }
+    // Fit to the event's own layers; the toggles land on the next render.
+    const size = stageSize();
+    const bounds = unionBounds(
+      event.layers.signals || event.layers.coverage ? boundsOfLines(coverage) : null,
+      event.layers.roads ? boundsOfPoints(roadFeatures) : null,
+      event.layers.flights ? boundsOfPoints(flightFeatures) : null,
+      event.layers.transit ? boundsOfPoints(transitFeatures) : null,
+    );
+    if (size && bounds) {
+      autoFitRef.current = false;
+      setView(fitView(bounds, size.width, size.height));
+    }
+  };
+
   /** Scrubbing is a deliberate act: it pauses playback and shows the signal layer. */
   const scrubTo = (index: number) => {
     if (!replay) return;
@@ -1095,6 +1161,23 @@ export default function MovementCanvas() {
                       <p className="search-note">No match in the loaded layers.</p>
                     ) : null}
                     {locateNote ? <p className="search-note">{locateNote}</p> : null}
+                    <div className="event-presets" role="group" aria-label="Investigations">
+                      {EVENTS.map((event) => (
+                        <button
+                          type="button"
+                          key={event.id}
+                          className={`event-chip ${eventActive(event) ? "on" : "off"}`}
+                          aria-pressed={eventActive(event)}
+                          onClick={() => applyEvent(event)}
+                        >
+                          <span className="chip-text">
+                            <strong>{event.label}</strong>
+                            <small>{event.window}</small>
+                          </span>
+                          <em className={`status-badge ${event.tone}`}>{event.badge}</em>
+                        </button>
+                      ))}
+                    </div>
                     <div className="layer-toggles" role="group" aria-label="Map layers">
                       {LAYERS.map((entry) => (
                         <button

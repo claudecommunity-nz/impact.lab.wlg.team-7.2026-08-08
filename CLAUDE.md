@@ -25,13 +25,16 @@ npm run dev
 npm run lint
 ```
 
-Rebuild the COP artifacts from the official WCC Parquet shards and countline CSV:
+Rebuild the COP artifacts (snapshot + hourly replay) from the official WCC
+Parquet shards and countline CSV:
 
 ```powershell
 .\.venv\Scripts\python scripts\build_demo.py `
   --data-dir data\transport_sensors `
   --metadata data\countline_meta_info.csv `
   --target-at 2026-08-06T12:00:00+12:00 `
+  --replay-start-at 2026-08-01T00:00:00+12:00 `
+  --replay-end-at 2026-08-06T23:00:00+12:00 `
   --output-dir site\public\cop\v1
 ```
 
@@ -57,23 +60,34 @@ Rebuild the NZTA state-highway layer (stdlib only, reads committed CSVs):
 python scripts\build_road_layer.py
 ```
 
+Rebuild the WLG air-access layer (stdlib only, reads `data/planes/anomaly/csv/`):
+
+```powershell
+python scripts\build_flights_layer.py
+```
+
 ## Architecture
 
-Two halves joined by six committed JSON files. **Those files are the contract**,
-not an intermediate: the site never runs Python, and the pipeline never renders.
+Two halves joined by eight committed JSON files. **Those files are the
+contract**, not an intermediate: the site never runs Python, and the pipeline
+never renders.
 
 ```
 data/*.parquet ──▶ movement_anomaly ──▶ site/public/cop/v1/*.json{,geojson} ──▶ site (RSC + canvas)
-   (gitignored)      (scripts/build_demo.py)          (committed)
+   (gitignored)      (scripts/build_demo.py: signals, health,
+                      coverage + movement-replay.json, 144 hourly slots)
 
 NZTA catalogue ──▶ nzta_client ──▶ site/public/cop/v1/traffic-cameras.geojson ──┤
    (live API)     (scripts/build_camera_layer.py)                               │
                                                                                 │
 data/buses_trains/anomaly/csv ──▶ site/public/cop/v1/transit-anomalies.geojson ─┤
-   (committed, SYNTHETIC)         (scripts/build_transit_layer.py)              │
+   (local, SYNTHETIC)             (scripts/build_transit_layer.py)              │
                                                                                 │
-NZTA/anomaly/csv ──▶ site/public/cop/v1/road-anomalies.geojson ─────────────────┘
-   (committed, REAL 20–21 Apr 2026 floods)  (scripts/build_road_layer.py)
+NZTA/anomaly/csv ──▶ site/public/cop/v1/road-anomalies.geojson ─────────────────┤
+   (local, REAL 20–21 Apr 2026 floods)  (scripts/build_road_layer.py)           │
+                                                                                │
+data/planes/anomaly/csv ──▶ site/public/cop/v1/flight-anomalies.geojson ────────┘
+   (local, REAL Apr 2026, OpenSky)  (scripts/build_flights_layer.py)
 ```
 
 `src/movement_anomaly/`, in call order:
@@ -90,6 +104,11 @@ NZTA/anomaly/csv ──▶ site/public/cop/v1/road-anomalies.geojson ───�
   before comparison. History is `[target - lookback_weeks, target)`, strictly
   exclusive — no future leakage. Also computes `data_gaps`: baseline groups
   expected at this weekday/hour that are absent from the current batch.
+  `analyze_replay` runs the same detector over every published hour in a
+  window and attaches each candidate's `matched_history` (the prior matched
+  weekday/hour counts); `contract.to_replay_collection` joins metadata and
+  writes `movement-replay/v1`. DST's repeated 02:00 hour and future-leakage
+  guards are pinned by `tests/test_replay.py`.
 - **`detector.py`** — median + MAD per `countline × transport_class × direction ×
   dow × hour`, minimum 8 samples. The z-scale is
   `max(1.4826·MAD, sqrt(expected+1), 1)`, so quiet, low-variance series cannot
@@ -118,8 +137,9 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
 
 - **Projection** — Web Mercator (`lonToWorldX` / `latToWorldY`) at whole zoom
   levels only, `MIN_ZOOM` 9 to `MAX_ZOOM` 18. Whole levels keep tiles pixel-exact.
-- **Basemap** — CARTO Positron raster tiles (OpenStreetMap data), cached in a
-  module-level `Map` capped at 512 images and drawn under the layers, muted with
+- **Basemap** — CARTO Voyager raster tiles (OpenStreetMap data; Voyager, not
+  Positron, so streets and terrain carry real colour), cached in a module-level
+  `Map` capped at 512 images and drawn under the layers, muted a step with
   `context.filter` saturation so terrain never competes with the glyphs. No API
   key. **Attribution to OpenStreetMap and CARTO is required** and is rendered
   over the map by `MovementCanvas`; do not remove it.
@@ -140,9 +160,13 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
 `MovementCanvas` renders **one** canvas and **one** view; every source is a
 toggleable layer, and visibility is **remembered per layer** (`LAYER_STORES`,
 one flag store each — fresh browsers get signals + coverage on and the
-corroborating cameras/transit/roads off; picking a feature from a list or
-search switches its layer back on via `ensureLayer`), drawn tiles → coverage →
-roads → transit → signals → cameras. The point layers (cameras, transit, roads)
+corroborating cameras/transit/roads/flights off; picking a feature from a list
+or search switches its layer back on via `ensureLayer`), drawn tiles →
+coverage → roads → transit → flights → signals → cameras. Above the layer
+chips sit two **investigation presets** (`EVENTS`): the 1–6 Aug movement
+snapshot and the real 18–22 Apr floods case, which switches on every April
+layer (roads + flights + the synthetic transit replay) and refits the view. A
+preset only asserts the layers it names. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a
 bubble zooms into it, and zooming naturally dissolves clusters into glyphs.
@@ -175,12 +199,32 @@ Synthetic / Real · Apr 2026), a **local search** over loaded feature names
   window). Real data with a two-day publishing lag — a validated backtest,
   never a live detector; the four no-geometry Ngauranga sites are surfaced in
   `sites_without_geometry`, not dropped. Sidebar lists the worst
-  `ROAD_LIST_LIMIT`.
+  `ROAD_LIST_LIMIT`. Each site embeds `daily_history` (April daily observed vs
+  baseline, reported days only) rendered by `DailyStrip` in the evidence panel.
+- `flights` — WLG air access as one teal **plane** glyph (`drawFlights`):
+  OpenSky hourly movements, April 2026, scored per hour against a
+  weekday-matched median + MAD. **Real data**, OpenSky attribution required.
+  Its flagged 20–21 Apr drops corroborate the roads layer independently.
 
 Hover state stores the popup's screen position at pick time, and every view
 change (pan, zoom, fit, reveal, layer toggle) clears it — stored coordinates
 never go stale. The evidence panel shows whichever kind was selected last
 (`focus`), with both feature lists grouped underneath.
+
+### The replay timebar
+
+Under the map: play/pause, prev/next, a scrub slider and a diverging
+**histogram** over the 144 published hours of `movement-replay.json` —
+increases up (amber), decreases down (red), each column the **count of gated
+deviations** that hour, never a raw count sum (hourly coverage varies, and a
+missing row is a gap, not zero). Once the replay loads it drives the signal
+layer (`shownSignals`: slot signals joined to coverage geometry by countline
+id); before then, and if the fetch fails, the committed snapshot renders and
+the timebar stays disabled. Scrubbing pauses playback and re-enables the
+signal layer. Signal evidence gains `TrendSparkline`: the 12 prior matched
+weekday/hour counts, observed hour highlighted, expected median dashed.
+Slot labels are read off the Wellington wall-clock ISO strings, never through
+the viewer's timezone.
 
 That panel sits **left of the map** through CSS `order: -1`, while the DOM keeps
 the map first so a screen reader still reaches the primary content first. Its
@@ -295,7 +339,11 @@ a gap, never a zero — that distinction is the point of the prototype, and
 12 signals, 207 data gaps, 414 countlines, data through 6 Aug 2026. They appear
 in the artifacts, as literal `<span>` copy in `site/app/page.tsx`, and as
 assertions in `site/tests/rendered-html.test.mjs`. Rebuilding artifacts for a
-different `--target-at` means updating all three or the site test fails.
+different `--target-at` means updating all three or the site test fails — and
+`movement-replay.json` must be rebuilt with it: the test suite asserts the
+replay's default slot matches `movement-health.json` number for number, and
+the timebar's server-rendered label ("Thu 6 Aug · 12:00") comes from
+`health.target_at`.
 
 ## UI copy: hard rule
 
