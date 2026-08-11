@@ -73,6 +73,10 @@ type Hover = {
 
 const POPUP_WIDTH = 248;
 const HOVER_REFRESH_MS = 15_000;
+/* Once a glyph is hovered it stays hovered until the pointer leaves this
+ * radius of its anchor — without the slack, overlapping glyphs trade the
+ * popup back and forth on every pointer move and it reads as flicker. */
+const HOVER_STICKY_PX = 18;
 const TRANSIT_LIST_LIMIT = 30;
 const ROAD_LIST_LIMIT = 30;
 /* Points whose projected positions land within one cell merge into a density
@@ -1168,6 +1172,15 @@ export default function MovementCanvas() {
     if (!size) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const point: Coordinate = [event.clientX - rect.left, event.clientY - rect.top];
+    // Sticky hover: the popup anchor was stored at pick time, so while the
+    // pointer stays beside it the current pick wins over a nearer neighbour.
+    if (hover) {
+      const distance = Math.hypot(
+        hover.left + hover.beakX - point[0],
+        hover.top - point[1],
+      );
+      if (distance <= HOVER_STICKY_PX) return;
+    }
     const next = featureAt(point, size);
     setHover((current) =>
       current?.kind === next?.kind && current?.id === next?.id ? current : next,
