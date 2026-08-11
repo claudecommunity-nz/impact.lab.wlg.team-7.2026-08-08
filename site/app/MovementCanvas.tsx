@@ -530,40 +530,47 @@ export default function MovementCanvas() {
 
   const flightFeatures = useMemo(() => flights?.features ?? [], [flights]);
 
-  /* The April case gets its own timeline: per day, how many road sites and
-   * how many airport hours passed their gates. Counts of flagged units,
-   * never raw sums — the sources differ and reporting varies by day. The
-   * track covers the event plus one aftermath day; the sites' full-month
-   * history stays in the evidence panel strips. */
-  const aprilDays = useMemo(() => {
-    const days = new Map<string, { roads: number; flightHours: number }>();
-    const at = (date: string) => {
-      const entry = days.get(date) ?? { roads: 0, flightHours: 0 };
-      days.set(date, entry);
-      return entry;
-    };
+  /* The April case replays by hour, the same unit as August: 144 slots over
+   * 18–23 Apr. Flight flags are true hourly events; road counts are daily
+   * data, so they draw as full-day plateaus — the shape states the source's
+   * resolution. Counts of flagged units, never raw sums. The sites'
+   * full-month history stays in the evidence panel strips. */
+  const aprilHours = useMemo(() => {
+    if (roadFeatures.length === 0 && flightFeatures.length === 0) return [];
+    const dates = ["2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23"];
+    const roadsByDate = new Map<string, number>();
     for (const feature of roadFeatures) {
       for (const day of feature.properties.daily_history ?? []) {
-        const entry = at(day.date);
-        if (day.flagged) entry.roads += 1;
+        if (day.flagged) roadsByDate.set(day.date, (roadsByDate.get(day.date) ?? 0) + 1);
       }
     }
+    const flightByHour = new Map<string, string>();
     for (const feature of flightFeatures) {
-      for (const hour of feature.properties.flagged_hours) at(hour.date).flightHours += 1;
+      for (const hour of feature.properties.flagged_hours) {
+        flightByHour.set(`${hour.date}T${hour.hour}`, hour.direction);
+      }
     }
-    return [...days.entries()]
-      .filter(([date]) => date >= "2026-04-18" && date <= "2026-04-23")
-      .sort(([a], [b]) => (a < b ? -1 : 1))
-      .map(([date, counts]) => ({ date, ...counts }));
+    return dates.flatMap((date) =>
+      Array.from({ length: 24 }, (_, hour) => ({
+        date,
+        hour,
+        roads: roadsByDate.get(date) ?? 0,
+        flight: flightByHour.get(`${date}T${hour}`) ?? null,
+      })),
+    );
   }, [roadFeatures, flightFeatures]);
 
-  // Default the April scrubber to the worst flood day, without an effect.
+  // Default the April scrubber to the worst flood hour, without an effect.
   const effectiveAprilIndex =
     aprilIndex >= 0
-      ? Math.min(aprilIndex, Math.max(aprilDays.length - 1, 0))
-      : Math.max(aprilDays.findIndex((day) => day.date === "2026-04-20"), 0);
+      ? Math.min(aprilIndex, Math.max(aprilHours.length - 1, 0))
+      : Math.max(
+          aprilHours.findIndex((slot) => slot.date === "2026-04-20" && slot.hour === 14),
+          0,
+        );
   const aprilCase = caseId === "april-floods";
-  const activeAprilDate = aprilCase ? aprilDays[effectiveAprilIndex]?.date ?? null : null;
+  const activeAprilSlot = aprilCase ? aprilHours[effectiveAprilIndex] ?? null : null;
+  const activeAprilDate = activeAprilSlot?.date ?? null;
 
   /* Scrubbing the April timeline filters the diamonds to sites flagged on
    * that day; the roads list and search keep the full flagged set. */
@@ -756,8 +763,8 @@ export default function MovementCanvas() {
     return () => clearInterval(interval);
   }, [playing, replay, aprilCase, speed]);
   useEffect(() => {
-    if (!playing || !aprilCase || aprilDays.length === 0) return;
-    const lastIndex = aprilDays.length - 1;
+    if (!playing || !aprilCase || aprilHours.length === 0) return;
+    const lastIndex = aprilHours.length - 1;
     const interval = setInterval(() => {
       if (aprilIndexRef.current >= lastIndex) {
         setPlaying(false);
@@ -767,7 +774,7 @@ export default function MovementCanvas() {
       setAprilIndex(aprilIndexRef.current + 1);
     }, PLAY_INTERVAL_MS / speed);
     return () => clearInterval(interval);
-  }, [playing, aprilCase, aprilDays.length, speed]);
+  }, [playing, aprilCase, aprilHours.length, speed]);
 
   // While a camera popup is open, re-request its frame so the preview stays a
   // stream of pictures rather than one stale snapshot.
@@ -979,19 +986,19 @@ export default function MovementCanvas() {
   };
 
   const scrubAprilTo = (index: number) => {
-    if (aprilDays.length === 0) return;
+    if (aprilHours.length === 0) return;
     setPlaying(false);
     setHover(null);
     ensureLayer("road");
-    setAprilIndex(Math.min(Math.max(index, 0), aprilDays.length - 1));
+    setAprilIndex(Math.min(Math.max(index, 0), aprilHours.length - 1));
   };
 
   const togglePlay = () => {
     setHover(null);
     if (aprilCase) {
-      if (aprilDays.length === 0) return;
+      if (aprilHours.length === 0) return;
       ensureLayer("road");
-      if (!playing && effectiveAprilIndex >= aprilDays.length - 1) setAprilIndex(0);
+      if (!playing && effectiveAprilIndex >= aprilHours.length - 1) setAprilIndex(0);
       setPlaying((current) => !current);
       return;
     }
@@ -1205,7 +1212,7 @@ export default function MovementCanvas() {
               type="button"
               className="replay-play"
               onClick={togglePlay}
-              disabled={aprilCase ? aprilDays.length === 0 : !replay}
+              disabled={aprilCase ? aprilHours.length === 0 : !replay}
               aria-label={playing ? "Pause the replay" : "Play the replay"}
               title={playing ? "Pause the replay" : "Play the replay"}
             >
@@ -1227,11 +1234,11 @@ export default function MovementCanvas() {
               }
               disabled={
                 aprilCase
-                  ? aprilDays.length === 0 || effectiveAprilIndex <= 0
+                  ? aprilHours.length === 0 || effectiveAprilIndex <= 0
                   : !replay || slotIndex <= 0
               }
-              aria-label={aprilCase ? "Previous day" : "Previous hour"}
-              title={aprilCase ? "Previous day" : "Previous hour"}
+              aria-label="Previous hour"
+              title="Previous hour"
             >
               ‹
             </button>
@@ -1242,11 +1249,11 @@ export default function MovementCanvas() {
               }
               disabled={
                 aprilCase
-                  ? aprilDays.length === 0 || effectiveAprilIndex >= aprilDays.length - 1
+                  ? aprilHours.length === 0 || effectiveAprilIndex >= aprilHours.length - 1
                   : !replay || slotIndex >= (replay?.slots.length ?? 1) - 1
               }
-              aria-label={aprilCase ? "Next day" : "Next hour"}
-              title={aprilCase ? "Next day" : "Next hour"}
+              aria-label="Next hour"
+              title="Next hour"
             >
               ›
             </button>
@@ -1266,17 +1273,22 @@ export default function MovementCanvas() {
               {aprilCase ? (
                 <>
                   <strong>
-                    {activeAprilDate ? dayLabel(activeAprilDate) : "18–22 Apr 2026"}
+                    {activeAprilSlot
+                      ? `${dayLabel(activeAprilSlot.date)} · ${String(activeAprilSlot.hour).padStart(2, "0")}:00`
+                      : "18–22 Apr 2026"}
                   </strong>
                   <span>
-                    {aprilDays.length > 0 ? (
+                    {activeAprilSlot ? (
                       <>
                         <i className="roads-bar" aria-hidden="true" />
-                        {aprilDays[effectiveAprilIndex].roads.toLocaleString("en-NZ")} road
-                        sites ·{" "}
-                        <i className="flights-bar" aria-hidden="true" />
-                        {aprilDays[effectiveAprilIndex].flightHours.toLocaleString("en-NZ")}{" "}
-                        flight hours
+                        {activeAprilSlot.roads.toLocaleString("en-NZ")} road sites · daily
+                        {activeAprilSlot.flight ? (
+                          <>
+                            {" "}
+                            · <i className="flights-bar" aria-hidden="true" />
+                            flight {activeAprilSlot.flight.toLowerCase()}
+                          </>
+                        ) : null}
                       </>
                     ) : (
                       "real event"
@@ -1308,41 +1320,34 @@ export default function MovementCanvas() {
             <div className="replay-track">
               {aprilCase ? (
                 <>
-                  {aprilDays.length > 0 ? (
+                  {aprilHours.length > 0 ? (
                     <svg
                       className="replay-histogram"
-                      viewBox={`0 0 ${aprilDays.length} 36`}
+                      viewBox={`0 0 ${aprilHours.length} 36`}
                       preserveAspectRatio="none"
                       aria-hidden="true"
                       onPointerDown={(event) => {
                         const rect = event.currentTarget.getBoundingClientRect();
                         scrubAprilTo(
                           Math.floor(
-                            ((event.clientX - rect.left) / rect.width) * aprilDays.length,
+                            ((event.clientX - rect.left) / rect.width) * aprilHours.length,
                           ),
                         );
                       }}
                     >
                       {(() => {
-                        const maxRoads = Math.max(1, ...aprilDays.map((day) => day.roads));
-                        const maxFlights = Math.max(
-                          1,
-                          ...aprilDays.map((day) => day.flightHours),
-                        );
-                        const windowStart = aprilDays.findIndex(
-                          (day) => day.date === "2026-04-18",
-                        );
-                        const windowEnd = aprilDays.findIndex(
-                          (day) => day.date === "2026-04-22",
-                        );
+                        const maxRoads = Math.max(1, ...aprilHours.map((slot) => slot.roads));
+                        const eventHours = aprilHours.filter(
+                          (slot) => slot.date <= "2026-04-22",
+                        ).length;
                         return (
                           <>
-                            {windowStart >= 0 && windowEnd >= windowStart ? (
+                            {eventHours > 0 ? (
                               <rect
                                 className="event-window"
-                                x={windowStart}
+                                x={0}
                                 y={0}
-                                width={windowEnd - windowStart + 1}
+                                width={eventHours}
                                 height={36}
                               />
                             ) : null}
@@ -1353,24 +1358,24 @@ export default function MovementCanvas() {
                               width={1}
                               height={36}
                             />
-                            {aprilDays.map((day, index) => (
-                              <g key={day.date}>
-                                {day.roads > 0 ? (
+                            {aprilHours.map((slot, index) => (
+                              <g key={`${slot.date}T${slot.hour}`}>
+                                {slot.roads > 0 ? (
                                   <rect
                                     className="roads-bar"
-                                    x={index + 0.08}
-                                    y={17 - (day.roads / maxRoads) * 16}
-                                    width={0.84}
-                                    height={(day.roads / maxRoads) * 16}
+                                    x={index}
+                                    y={17 - (slot.roads / maxRoads) * 16}
+                                    width={1}
+                                    height={(slot.roads / maxRoads) * 16}
                                   />
                                 ) : null}
-                                {day.flightHours > 0 ? (
+                                {slot.flight ? (
                                   <rect
                                     className="flights-bar"
-                                    x={index + 0.08}
+                                    x={index + 0.06}
                                     y={19}
-                                    width={0.84}
-                                    height={(day.flightHours / maxFlights) * 16}
+                                    width={0.88}
+                                    height={14}
                                   />
                                 ) : null}
                               </g>
@@ -1379,7 +1384,7 @@ export default function MovementCanvas() {
                               className="axis"
                               x1={0}
                               y1={18}
-                              x2={aprilDays.length}
+                              x2={aprilHours.length}
                               y2={18}
                               vectorEffect="non-scaling-stroke"
                             />
@@ -1392,13 +1397,17 @@ export default function MovementCanvas() {
                     type="range"
                     className="replay-slider"
                     min={0}
-                    max={Math.max(aprilDays.length - 1, 0)}
+                    max={Math.max(aprilHours.length - 1, 0)}
                     step={1}
                     value={effectiveAprilIndex}
-                    disabled={aprilDays.length === 0}
+                    disabled={aprilHours.length === 0}
                     onChange={(event) => scrubAprilTo(Number(event.currentTarget.value))}
-                    aria-label="Replay day"
-                    aria-valuetext={activeAprilDate ? dayLabel(activeAprilDate) : "loading"}
+                    aria-label="Replay hour"
+                    aria-valuetext={
+                      activeAprilSlot
+                        ? `${dayLabel(activeAprilSlot.date)} · ${String(activeAprilSlot.hour).padStart(2, "0")}:00`
+                        : "loading"
+                    }
                   />
                 </>
               ) : (
