@@ -620,6 +620,18 @@ export default function MovementCanvas() {
     hoveredSignal || hoveredCamera || hoveredTransit || hoveredRoad || hoveredFlight,
   );
 
+  /* Case-adaptive road figures: while the April timeline sits on a day, the
+   * panel shows that day's counts for the site; otherwise its worst day. */
+  const panelRoadDay =
+    panelRoad && activeAprilDate
+      ? (panelRoad.properties.daily_history ?? []).find(
+          (day) => day.date === activeAprilDate,
+        )
+      : undefined;
+  const panelRoadDate = panelRoadDay ? activeAprilDate! : panelRoad?.properties.date;
+  const panelRoadObserved = panelRoadDay?.observed ?? panelRoad?.properties.observed_count ?? 0;
+  const panelRoadBaseline = panelRoadDay?.baseline ?? panelRoad?.properties.baseline_median ?? 0;
+
   /** Per-frame screen-space clustering of the three point layers. */
   const clusterLayers = (width: number, height: number) => {
     const project = createProjector(view, width, height);
@@ -817,6 +829,25 @@ export default function MovementCanvas() {
     setHover(null);
     setLayers((current) => ({ ...current, [id]: !current[id] }));
   };
+
+  /** The drawer's operations row: the target adapts, the verbs stay constant. */
+  const evidenceOps = (kind: Focus, coordinate: Coordinate, feed: string) => (
+    <div className="evidence-ops">
+      <button
+        type="button"
+        onClick={() => {
+          setFocus(kind);
+          ensureLayer(kind);
+          revealOnMap(coordinate);
+        }}
+      >
+        Show on map
+      </button>
+      <a href={feed} target="_blank" rel="noreferrer">
+        Open feed
+      </a>
+    </div>
+  );
 
   /** Selecting from the list recentres the map only when the feature is off screen. */
   const revealOnMap = (coordinate: Coordinate) => {
@@ -1821,41 +1852,50 @@ export default function MovementCanvas() {
                     Live from NZTA in your browser. Not stored or re-published here.
                   </figcaption>
                 </figure>
-                <button
-                  type="button"
-                  className="frame-refresh"
-                  onClick={() => setFrameNonce((nonce) => nonce + 1)}
-                >
-                  Refresh frame
-                </button>
-                <dl className="evidence-metrics">
-                  <div><dt>Publisher</dt><dd>NZTA</dd></div>
-                  <div><dt>Cadence</dt><dd>every few minutes</dd></div>
-                  <div>
-                    <dt>Position</dt>
-                    <dd>
-                      {panelCamera.geometry.coordinates[1].toFixed(4)},{" "}
-                      {panelCamera.geometry.coordinates[0].toFixed(4)}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Catalogue status</dt>
-                    <dd>{panelCamera.properties.offline ? "offline" : "online"}</dd>
-                  </div>
-                </dl>
-                <a
-                  className="camera-link"
-                  href={panelCamera.properties.view_url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Open this camera on NZTA Journeys{" "}
-                  <span aria-hidden="true">→</span>
-                  <span className="visually-hidden">(opens in new window)</span>
-                </a>
-                <p className="evidence-note">
-                  Snapshot, not a count. Corroborates a countline signal.
-                </p>
+                {!previewing ? (
+                  <>
+                    <button
+                      type="button"
+                      className="frame-refresh"
+                      onClick={() => setFrameNonce((nonce) => nonce + 1)}
+                    >
+                      Refresh frame
+                    </button>
+                    <dl className="evidence-metrics">
+                      <div><dt>Publisher</dt><dd>NZTA</dd></div>
+                      <div><dt>Cadence</dt><dd>every few minutes</dd></div>
+                      <div>
+                        <dt>Position</dt>
+                        <dd>
+                          {panelCamera.geometry.coordinates[1].toFixed(4)},{" "}
+                          {panelCamera.geometry.coordinates[0].toFixed(4)}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Catalogue status</dt>
+                        <dd>{panelCamera.properties.offline ? "offline" : "online"}</dd>
+                      </div>
+                    </dl>
+                    <a
+                      className="camera-link"
+                      href={panelCamera.properties.view_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open this camera on NZTA Journeys{" "}
+                      <span aria-hidden="true">→</span>
+                      <span className="visually-hidden">(opens in new window)</span>
+                    </a>
+                    <p className="evidence-note">
+                      Snapshot, not a count. Corroborates a countline signal.
+                    </p>
+                    {evidenceOps(
+                      "camera",
+                      panelCamera.geometry.coordinates,
+                      "/cop/v1/traffic-cameras.geojson",
+                    )}
+                  </>
+                ) : null}
               </div>
             ) : (
               <p className="empty-evidence">
@@ -1896,35 +1936,44 @@ export default function MovementCanvas() {
                     <strong>{panelTransit.properties.high_count.toLocaleString("en-NZ")}</strong>
                   </div>
                 </div>
-                <dl className="evidence-metrics">
-                  <div>
-                    <dt>Top detector</dt>
-                    <dd>
-                      {panelTransit.properties.top_detector} (
-                      {panelTransit.properties.top_detector_count})
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Worst example</dt>
-                    <dd>
-                      {dayLabel(panelTransit.properties.worst_example.date)} ·{" "}
-                      {String(panelTransit.properties.worst_example.hour).padStart(2, "0")}
-                      :00 · {panelTransit.properties.worst_example.severity.toLowerCase()}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Position</dt>
-                    <dd>
-                      {panelTransit.geometry.coordinates[1].toFixed(4)},{" "}
-                      {panelTransit.geometry.coordinates[0].toFixed(4)}
-                    </dd>
-                  </div>
-                </dl>
-                <p className="worst-detail">{panelTransit.properties.worst_example.detail}</p>
-                <p className="evidence-note">
-                  Synthetic data: real timetable, simulated running, injected
-                  anomalies. Not an actual event.
-                </p>
+                {!previewing ? (
+                  <>
+                    <dl className="evidence-metrics">
+                      <div>
+                        <dt>Top detector</dt>
+                        <dd>
+                          {panelTransit.properties.top_detector} (
+                          {panelTransit.properties.top_detector_count})
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Worst example</dt>
+                        <dd>
+                          {dayLabel(panelTransit.properties.worst_example.date)} ·{" "}
+                          {String(panelTransit.properties.worst_example.hour).padStart(2, "0")}
+                          :00 · {panelTransit.properties.worst_example.severity.toLowerCase()}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Position</dt>
+                        <dd>
+                          {panelTransit.geometry.coordinates[1].toFixed(4)},{" "}
+                          {panelTransit.geometry.coordinates[0].toFixed(4)}
+                        </dd>
+                      </div>
+                    </dl>
+                    <p className="worst-detail">{panelTransit.properties.worst_example.detail}</p>
+                    <p className="evidence-note">
+                      Synthetic data: real timetable, simulated running, injected
+                      anomalies. Not an actual event.
+                    </p>
+                    {evidenceOps(
+                      "transit",
+                      panelTransit.geometry.coordinates,
+                      "/cop/v1/transit-anomalies.geojson",
+                    )}
+                  </>
+                ) : null}
               </div>
             ) : (
               <p className="empty-evidence">
@@ -1951,69 +2000,83 @@ export default function MovementCanvas() {
                 <h3>{panelRoad.properties.site_name}</h3>
                 <p>
                   SH{panelRoad.properties.state_highway} ·{" "}
-                  {dayLabel(panelRoad.properties.date)} · real April 2026 flood event
+                  {dayLabel(panelRoadDate ?? panelRoad.properties.date)} · real April 2026
+                  flood event
                 </p>
                 <div className="count-comparison">
                   <div>
                     <span>Observed</span>
-                    <strong>{panelRoad.properties.observed_count.toLocaleString("en-NZ")}</strong>
+                    <strong>{panelRoadObserved.toLocaleString("en-NZ")}</strong>
                   </div>
                   <div>
                     <span>Usual</span>
-                    <strong>{panelRoad.properties.baseline_median.toLocaleString("en-NZ")}</strong>
+                    <strong>{panelRoadBaseline.toLocaleString("en-NZ")}</strong>
                   </div>
                   <div>
                     <span>Change</span>
                     <strong
                       className={`delta ${
-                        panelRoad.properties.direction === "DROP" ? "decrease" : "increase"
+                        panelRoadObserved < panelRoadBaseline ? "decrease" : "increase"
                       }`}
                     >
                       {(() => {
-                        const delta =
-                          panelRoad.properties.observed_count -
-                          panelRoad.properties.baseline_median;
+                        const delta = panelRoadObserved - panelRoadBaseline;
                         return `${delta > 0 ? "+" : ""}${delta.toLocaleString("en-NZ")}`;
                       })()}
                     </strong>
                   </div>
                 </div>
-                {panelRoad.properties.daily_history?.length ? (
-                  <DailyStrip
-                    points={panelRoad.properties.daily_history.map((day) => ({
-                      date: day.date,
-                      value: day.observed,
-                      flagged: day.flagged,
-                    }))}
-                    reference={panelRoad.properties.baseline_median}
-                    label={`Daily counts at ${panelRoad.properties.site_name}, April 2026, flagged days highlighted`}
-                  />
+                {!previewing ? (
+                  <>
+                    {panelRoad.properties.daily_history?.length ? (
+                      <DailyStrip
+                        points={panelRoad.properties.daily_history.map((day) => ({
+                          date: day.date,
+                          value: day.observed,
+                          flagged: day.flagged,
+                        }))}
+                        reference={panelRoad.properties.baseline_median}
+                        label={`Daily counts at ${panelRoad.properties.site_name}, April 2026, flagged days highlighted`}
+                      />
+                    ) : null}
+                    <dl className="evidence-metrics">
+                      {panelRoadDay && panelRoadDate !== panelRoad.properties.date ? (
+                        <div>
+                          <dt>Worst flagged day</dt>
+                          <dd>{dayLabel(panelRoad.properties.date)}</dd>
+                        </div>
+                      ) : null}
+                      <div>
+                        <dt>Ratio</dt>
+                        <dd>{panelRoad.properties.ratio.toFixed(2)}× usual</dd>
+                      </div>
+                      <div title="How many robust standard deviations the day sits from the site's own weekday or weekend baseline">
+                        <dt>Robust score</dt>
+                        <dd>{panelRoad.properties.robust_z.toFixed(1)} z</dd>
+                      </div>
+                      <div>
+                        <dt>Baseline</dt>
+                        <dd>{panelRoad.properties.baseline_days} days</dd>
+                      </div>
+                      <div>
+                        <dt>Position</dt>
+                        <dd>
+                          {panelRoad.geometry.coordinates[1].toFixed(4)},{" "}
+                          {panelRoad.geometry.coordinates[0].toFixed(4)}
+                        </dd>
+                      </div>
+                    </dl>
+                    <p className="evidence-note">
+                      Real NZTA daily counts, two-day lag. A flag is a statistical
+                      change, not a diagnosed closure.
+                    </p>
+                    {evidenceOps(
+                      "road",
+                      panelRoad.geometry.coordinates,
+                      "/cop/v1/road-anomalies.geojson",
+                    )}
+                  </>
                 ) : null}
-                <dl className="evidence-metrics">
-                  <div>
-                    <dt>Ratio</dt>
-                    <dd>{panelRoad.properties.ratio.toFixed(2)}× usual</dd>
-                  </div>
-                  <div title="How many robust standard deviations the day sits from the site's own weekday or weekend baseline">
-                    <dt>Robust score</dt>
-                    <dd>{panelRoad.properties.robust_z.toFixed(1)} z</dd>
-                  </div>
-                  <div>
-                    <dt>Baseline</dt>
-                    <dd>{panelRoad.properties.baseline_days} days</dd>
-                  </div>
-                  <div>
-                    <dt>Position</dt>
-                    <dd>
-                      {panelRoad.geometry.coordinates[1].toFixed(4)},{" "}
-                      {panelRoad.geometry.coordinates[0].toFixed(4)}
-                    </dd>
-                  </div>
-                </dl>
-                <p className="evidence-note">
-                  Real NZTA daily counts, two-day lag. A flag is a statistical
-                  change, not a diagnosed closure.
-                </p>
               </div>
             ) : (
               <p className="empty-evidence">
@@ -2046,6 +2109,8 @@ export default function MovementCanvas() {
                     <strong>{panelFlight.properties.scored_hours.toLocaleString("en-NZ")}</strong>
                   </div>
                 </div>
+                {!previewing ? (
+                  <>
                 <DailyStrip
                   points={panelFlight.properties.daily_movements.map((day) => ({
                     date: day.date,
@@ -2082,6 +2147,13 @@ export default function MovementCanvas() {
                   Derived third-party tracking, not an airport feed. A flag is a
                   statistical change, not a diagnosed disruption.
                 </p>
+                {evidenceOps(
+                  "flight",
+                  panelFlight.geometry.coordinates,
+                  "/cop/v1/flight-anomalies.geojson",
+                )}
+                  </>
+                ) : null}
               </div>
             ) : (
               <p className="empty-evidence">
@@ -2117,25 +2189,34 @@ export default function MovementCanvas() {
                   </strong>
                 </div>
               </div>
-              {Array.isArray(panelSignal.properties.matched_history) &&
-              panelSignal.properties.matched_history.length > 0 &&
-              typeof panelSignal.properties.matched_history[0] === "object" ? (
-                <TrendSparkline
-                  history={panelSignal.properties.matched_history as SignalTrendPoint[]}
-                  observed={Number(panelSignal.properties.observed_count)}
-                  expected={Number(panelSignal.properties.expected_count)}
-                  changeDirection={String(panelSignal.properties.change_direction)}
-                />
+              {!previewing ? (
+                <>
+                  {Array.isArray(panelSignal.properties.matched_history) &&
+                  panelSignal.properties.matched_history.length > 0 &&
+                  typeof panelSignal.properties.matched_history[0] === "object" ? (
+                    <TrendSparkline
+                      history={panelSignal.properties.matched_history as SignalTrendPoint[]}
+                      observed={Number(panelSignal.properties.observed_count)}
+                      expected={Number(panelSignal.properties.expected_count)}
+                      changeDirection={String(panelSignal.properties.change_direction)}
+                    />
+                  ) : null}
+                  <dl className="evidence-metrics">
+                    <div title="How many robust standard deviations the hour sits from its matched weekday-and-hour baseline">
+                      <dt>Robust score</dt>
+                      <dd>{Number(panelSignal.properties.robust_z).toFixed(1)} z</dd>
+                    </div>
+                    <div><dt>History</dt><dd>{Number((panelSignal.properties.signal_confidence as Record<string, number>).history_samples)} matched hours</dd></div>
+                    <div><dt>Baseline confidence</dt><dd>{String((panelSignal.properties.signal_confidence as Record<string, string>).level)}</dd></div>
+                  </dl>
+                  <p className="evidence-note">No cause inferred. Check operational context before acting.</p>
+                  {evidenceOps(
+                    "signal",
+                    panelSignal.geometry.coordinates[0],
+                    "/cop/v1/movement-signals.geojson",
+                  )}
+                </>
               ) : null}
-              <dl className="evidence-metrics">
-                <div title="How many robust standard deviations the hour sits from its matched weekday-and-hour baseline">
-                  <dt>Robust score</dt>
-                  <dd>{Number(panelSignal.properties.robust_z).toFixed(1)} z</dd>
-                </div>
-                <div><dt>History</dt><dd>{Number((panelSignal.properties.signal_confidence as Record<string, number>).history_samples)} matched hours</dd></div>
-                <div><dt>Baseline confidence</dt><dd>{String((panelSignal.properties.signal_confidence as Record<string, string>).level)}</dd></div>
-              </dl>
-              <p className="evidence-note">No cause inferred. Check operational context before acting.</p>
             </div>
           ) : (
             <p className="empty-evidence">Select a signal to inspect its evidence.</p>

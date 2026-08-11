@@ -216,7 +216,12 @@ Synthetic / Real · Apr 2026), a **local search** over loaded feature names
 Hover state stores the popup's screen position at pick time, and every view
 change (pan, zoom, fit, reveal, layer toggle) clears it — stored coordinates
 never go stale. The evidence panel shows whichever kind was selected last
-(`focus`), with both feature lists grouped underneath.
+(`focus`), with both feature lists grouped underneath, at **two densities**:
+hovering previews only the headline items (chip, name, context line, key
+counts — day-scoped for roads while the April timeline sits on a day,
+`panelRoadDay`); clicking pins the full drawer, which adds the trend/history
+strips, the source metrics, the truth-boundary note and an operations row
+(`evidenceOps`: Show on map + Open feed, adapted per kind).
 
 ### The replay timebar
 

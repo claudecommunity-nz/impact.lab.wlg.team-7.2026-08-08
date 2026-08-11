@@ -561,6 +561,16 @@ h3 { font-size: var(--text-h3); }
   transition: background-color var(--dur-base) var(--ease-standard);
 }
 .frame-refresh:hover { background: var(--wcc-grey-900); }
+/* The pinned drawer's operations row; hover previews never render it. */
+.evidence-ops { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-4); }
+.evidence-ops button {
+  min-height: 36px; padding: 0 var(--space-4);
+  border: 1px solid var(--wcc-black); border-radius: var(--radius-md);
+  background: var(--surface-page); color: var(--wcc-black);
+  font-size: var(--text-small); font-weight: 700; cursor: pointer;
+}
+.evidence-ops button:hover { background: var(--wcc-yellow); }
+.evidence-ops a { font-size: var(--text-small); font-weight: 700; }
 .camera-link { display: inline-block; margin: var(--space-4) 0; }
 .signal-list { flex: 1; padding: var(--space-2); overflow-y: auto; max-height: 460px; }
 .list-group {
