@@ -1743,7 +1743,7 @@ export default function MovementCanvas() {
                     <span>
                       SH{hoveredRoad.properties.state_highway} ·{" "}
                       <b>{hoveredRoad.properties.ratio.toFixed(2)}×</b> usual ·{" "}
-                      {hoveredRoad.properties.date} · real event
+                      {dayLabel(hoveredRoad.properties.date)} · real event
                     </span>
                   </p>
                 ) : hoveredFlight ? (
@@ -1907,8 +1907,9 @@ export default function MovementCanvas() {
                   <div>
                     <dt>Worst example</dt>
                     <dd>
-                      {panelTransit.properties.worst_example.date} ·{" "}
-                      {panelTransit.properties.worst_example.severity.toLowerCase()}
+                      {dayLabel(panelTransit.properties.worst_example.date)} ·{" "}
+                      {String(panelTransit.properties.worst_example.hour).padStart(2, "0")}
+                      :00 · {panelTransit.properties.worst_example.severity.toLowerCase()}
                     </dd>
                   </div>
                   <div>
@@ -1950,7 +1951,7 @@ export default function MovementCanvas() {
                 <h3>{panelRoad.properties.site_name}</h3>
                 <p>
                   SH{panelRoad.properties.state_highway} ·{" "}
-                  {panelRoad.properties.date} · real April 2026 flood event
+                  {dayLabel(panelRoad.properties.date)} · real April 2026 flood event
                 </p>
                 <div className="count-comparison">
                   <div>
@@ -2057,10 +2058,11 @@ export default function MovementCanvas() {
                   <div>
                     <dt>Worst hour</dt>
                     <dd>
-                      {panelFlight.properties.worst_example.date} ·{" "}
+                      {dayLabel(panelFlight.properties.worst_example.date)} ·{" "}
                       {String(panelFlight.properties.worst_example.hour).padStart(2, "0")}:00 ·{" "}
                       {panelFlight.properties.worst_example.observed} vs{" "}
-                      {panelFlight.properties.worst_example.expected.toLocaleString("en-NZ")}
+                      {panelFlight.properties.worst_example.expected.toLocaleString("en-NZ")}{" "}
+                      expected
                     </dd>
                   </div>
                   <div title="How many robust standard deviations the worst hour sits from its weekday-matched hourly baseline">
@@ -2232,7 +2234,9 @@ export default function MovementCanvas() {
               >
                 <span>
                   <strong>{feature.properties.site_name}</strong>
-                  <small>SH{feature.properties.state_highway} · {feature.properties.date}</small>
+                  <small>
+                    SH{feature.properties.state_highway} · {dayLabel(feature.properties.date)}
+                  </small>
                 </span>
                 <em className={feature.properties.severity === "HIGH" ? "road-high" : "road"}>
                   {feature.properties.ratio.toFixed(2)}×
