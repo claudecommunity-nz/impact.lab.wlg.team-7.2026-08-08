@@ -159,17 +159,17 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
 
 `MovementCanvas` renders **one** canvas and **one** view; every source is a
 toggleable layer, and visibility is **session state, never persisted**
-(`DEFAULT_LAYERS`): every load starts with movement signals only, and every
-other layer is opt-in for that visit — picking a feature from a list or
-search switches its layer on via `ensureLayer`, and the April case loads its
-own set. Drawn tiles → coverage → roads → transit → flights → signals →
-cameras. **Above the map** sits the timebar, which leads
+(`DEFAULT_LAYERS`): every load and every case starts with movement signals
+only, and every other layer is opt-in for that visit — picking a feature from
+a list or search switches its layer on via `ensureLayer`, and scrubbing the
+April timeline pulls the roads layer in the same way. Drawn tiles → coverage
+→ roads → transit → flights → signals → cameras. **Above the map** sits the timebar, which leads
 with an **investigation-case dropdown** (`EVENTS`, `.case-picker` — always
 visible even with the drawer closed): the 1–6 Aug movement snapshot and the
-real 18–22 Apr floods case, which switches on every April layer (roads +
-flights + the synthetic transit replay) and refits the view. The chosen case
-is explicit state (`caseId`), never derived from layer flags — hand-toggling
-layers changes the picture, not which case is open. In the April case the
+real 18–22 Apr floods case. Both assert the same signals-only start; the
+April layers (roads, flights, synthetic transit) are opt-in there too. The
+chosen case is explicit state (`caseId`), never derived from layer flags —
+hand-toggling layers changes the picture, not which case is open. In the April case the
 timebar becomes a **daily timeline** over `aprilDays` (flagged road sites up
 in purple, flagged airport hours down in teal, counts never sums) and
 scrubbing filters the road diamonds to the sites flagged on that day

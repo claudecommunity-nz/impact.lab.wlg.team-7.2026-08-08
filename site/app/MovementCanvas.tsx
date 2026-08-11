@@ -147,9 +147,17 @@ const EVENTS: {
     window: "18–22 Apr 2026",
     badge: "Real",
     tone: "real",
-    /* Every April layer: real roads and flights, plus the synthetic Metlink
-     * replay — its own badge keeps carrying the synthetic label. */
-    layers: { signals: false, coverage: false, roads: true, flights: true, transit: true },
+    /* Same standard start as every case: signals only. The April layers
+     * (roads, flights, synthetic transit) come in when picked from the
+     * drawer or a list, or the moment the April timeline is scrubbed. */
+    layers: {
+      signals: true,
+      coverage: false,
+      cameras: false,
+      roads: false,
+      flights: false,
+      transit: false,
+    },
     focus: "road",
   },
 ];
