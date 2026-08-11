@@ -147,6 +147,7 @@ export default function AgentChat() {
         className={`agent-fab ${open ? "open" : ""}`}
         aria-expanded={open}
         aria-controls="agent-panel"
+        title={open ? "Close the Murmur agent" : "Ask the Murmur agent"}
         onClick={() => (open ? close() : openPanel())}
       >
         <span className="agent-fab-glyph" aria-hidden="true">

@@ -264,18 +264,18 @@ attribution block are contractual copy and are server-rendered. The header brand
 is the real logo (`public/murmur-logo.svg`, `currentColor` strokes; favicon is
 `public/murmur-favicon.svg`) and the render test rejects the old M05 placeholder.
 
-Four things fold away — the rail, the dashboard brief (`IntroBand.tsx`), the
-investigate panel and the map's layer drawer — and every one of them is an
-**icon** control, never a word, so the chrome costs nothing when it is closed. `app/flag-store.ts`
+Three things fold away — the rail, the investigate panel and the map's layer
+drawer — and every one of them is an **icon** control, never a word, so the
+chrome costs nothing when it is closed. `app/flag-store.ts`
 (`createFlagStore(key, defaultOn)`) is the shared pattern behind them: a
 remembered boolean exposed as `subscribe`/`snapshot`/`serverSnapshot`/`toggle`
 for `useSyncExternalStore`. Use it for the next collapsible thing rather than
-another bespoke effect. Folded, `IntroBand` shows only the two facts that decide
-whether the picture is worth trusting: how many sources are wired in, and the
-newest `lastSyncAt` across the probe store, falling back to the publisher's data
-age when nothing has been tested in that browser. Server snapshots keep every
-flag open for SSR, so the brief, the panel and the rail are all present in the
-rendered HTML and the tests can assert them.
+another bespoke effect. There is no hero band: the snapshot facts (signals,
+data gaps, data age) live in the title bar (`SiteHeader`, `.watch-facts`,
+single text nodes so the test-asserted literals survive RSC markup) and the
+map takes the viewport directly under the timebar. Server snapshots keep every
+flag open for SSR, so the panel and the rail are present in the rendered HTML
+and the tests can assert them.
 
 `AgentChat` (the **Murmur agent**) is a fab on every route; ⤢ maximises the
 panel to the viewport and Escape backs out one step (full screen, then the
@@ -343,7 +343,7 @@ a gap, never a zero — that distinction is the point of the prototype, and
 ### Demo numbers are hardcoded in three places
 
 12 signals, 207 data gaps, 414 countlines, data through 6 Aug 2026. They appear
-in the artifacts, as literal `<span>` copy in `site/app/page.tsx`, and as
+in the artifacts, in the title-bar facts (`site/app/SiteChrome.tsx`), and as
 assertions in `site/tests/rendered-html.test.mjs`. Rebuilding artifacts for a
 different `--target-at` means updating all three or the site test fails — and
 `movement-replay.json` must be rebuilt with it: the test suite asserts the

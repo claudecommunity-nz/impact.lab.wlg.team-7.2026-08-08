@@ -1225,6 +1225,49 @@ export default function MovementCanvas() {
             >
               ›
             </button>
+            <p className="replay-readout">
+              {aprilCase ? (
+                <>
+                  <strong>
+                    {activeAprilDate ? dayLabel(activeAprilDate) : "18–22 Apr 2026"}
+                  </strong>
+                  <span>
+                    {aprilDays.length > 0 ? (
+                      <>
+                        <i className="roads-bar" aria-hidden="true" />
+                        {aprilDays[effectiveAprilIndex].roads.toLocaleString("en-NZ")} road
+                        sites ·{" "}
+                        <i className="flights-bar" aria-hidden="true" />
+                        {aprilDays[effectiveAprilIndex].flightHours.toLocaleString("en-NZ")}{" "}
+                        flight hours
+                      </>
+                    ) : (
+                      "real event"
+                    )}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <strong>{slotLabel(activeSlot?.target_at ?? health.target_at)}</strong>
+                  <span>
+                    {activeSlot && slotIndex >= 0 && slotBars[slotIndex] ? (
+                      <>
+                        <i className="up" aria-hidden="true" />
+                        {slotBars[slotIndex].up.toLocaleString("en-NZ")} up ·{" "}
+                        <i className="down" aria-hidden="true" />
+                        {slotBars[slotIndex].down.toLocaleString("en-NZ")} down ·{" "}
+                        {activeSlot.data_gap_groups.toLocaleString("en-NZ")} data gaps
+                      </>
+                    ) : (
+                      <>
+                        {health.candidate_count.toLocaleString("en-NZ")} signals ·{" "}
+                        {health.data_gap_groups.toLocaleString("en-NZ")} data gaps
+                      </>
+                    )}
+                  </span>
+                </>
+              )}
+            </p>
             <div className="replay-track">
               {aprilCase ? (
                 <>
@@ -1249,8 +1292,23 @@ export default function MovementCanvas() {
                           1,
                           ...aprilDays.map((day) => day.flightHours),
                         );
+                        const windowStart = aprilDays.findIndex(
+                          (day) => day.date === "2026-04-18",
+                        );
+                        const windowEnd = aprilDays.findIndex(
+                          (day) => day.date === "2026-04-22",
+                        );
                         return (
                           <>
+                            {windowStart >= 0 && windowEnd >= windowStart ? (
+                              <rect
+                                className="event-window"
+                                x={windowStart}
+                                y={0}
+                                width={windowEnd - windowStart + 1}
+                                height={36}
+                              />
+                            ) : null}
                             <rect
                               className="cursor"
                               x={effectiveAprilIndex}
@@ -1383,29 +1441,6 @@ export default function MovementCanvas() {
                 </>
               )}
             </div>
-            <p className="replay-readout">
-              {aprilCase ? (
-                <>
-                  <strong>
-                    {activeAprilDate ? dayLabel(activeAprilDate) : "18–22 Apr 2026"}
-                  </strong>
-                  <span>
-                    {aprilDays.length > 0
-                      ? `${aprilDays[effectiveAprilIndex].roads.toLocaleString("en-NZ")} road sites · ${aprilDays[effectiveAprilIndex].flightHours.toLocaleString("en-NZ")} flight hours`
-                      : "real event"}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <strong>{slotLabel(activeSlot?.target_at ?? health.target_at)}</strong>
-                  <span>
-                    {(activeSlot?.candidate_count ?? health.candidate_count).toLocaleString("en-NZ")}{" "}
-                    signals · {(activeSlot?.data_gap_groups ?? health.data_gap_groups).toLocaleString("en-NZ")}{" "}
-                    data gaps
-                  </span>
-                </>
-              )}
-            </p>
           </div>
           <div className="map-stage" ref={frameRef}>
             <canvas

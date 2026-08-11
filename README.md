@@ -271,14 +271,12 @@ with every feature.
 
 ### One screen you can put away
 
-Three parts of the interface fold down to an icon, and each remembers the
-choice, so the demo shows the full brief and day-to-day work shows the map:
+The interface folds down to the map. The snapshot facts (signals, data gaps,
+data age) live in the title bar, so the map and its timebar take the viewport
+from the first paint:
 
 - **The rail** on the left of every route collapses to an icon strip (a
   scrollable row on small screens).
-- **The brief** at the top of the dashboard folds to a single line: how many
-  data sources are wired in and when one last answered — and says "not tested
-  in this browser" rather than inventing a sync time.
 - **The investigate panel** sits left of the map and slides away from the «
   toggle in the map's top-left corner, the canvas growing into the space. It is
   put away, not merely hidden: its controls leave the tab order.

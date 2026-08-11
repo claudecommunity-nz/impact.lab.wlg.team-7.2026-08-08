@@ -350,15 +350,14 @@ test("carries a hideable sidebar and the agent on every route", async () => {
   }
 });
 
-test("lets the dashboard brief be folded away", async () => {
+test("folds the problem brief into the title bar so the map keeps the viewport", async () => {
   const html = await render("/").then((response) => response.text());
 
-  // First visit shows the brief, so the demo and a new operator both get it.
+  // The snapshot facts live in the header on every visit; no hero band remains.
+  assert.match(html, /aria-label="Snapshot summary"/);
   assert.match(html, /Movement changes worth investigating/);
-  assert.match(html, /Hide the brief/);
-  assert.match(html, /aria-expanded="true"/);
-  // Folded, the strip is what remains: it must not need the hero to make sense.
-  assert.doesNotMatch(html, /Show the brief/);
+  assert.doesNotMatch(html, /Hide the brief|Show the brief/);
+  assert.doesNotMatch(html, /Problem 05 ·/);
 });
 
 test("puts the investigate panel beside the map and lets it slide away", async () => {

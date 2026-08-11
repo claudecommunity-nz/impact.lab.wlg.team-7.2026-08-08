@@ -154,8 +154,15 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .brand-logo { display: block; height: 32px; width: auto; }
 .watch-brand small {
   display: block; max-width: 30ch;
-  color: var(--wcc-grey-700); font-size: var(--text-small); line-height: 1.3;
+  color: var(--wcc-grey-900); font-size: var(--text-small); line-height: 1.3;
 }
+/* The snapshot facts live in the title bar so the map keeps the viewport. */
+.watch-facts {
+  margin: 0 auto; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4);
+  font-size: var(--text-small); color: var(--wcc-grey-700);
+  font-variant-numeric: tabular-nums;
+}
+.watch-facts strong { color: var(--wcc-black); font-weight: 700; }
 .batch-status {
   display: flex; align-items: center; gap: var(--space-2);
   min-height: var(--touch-min); padding: var(--space-2) var(--space-4);
@@ -164,47 +171,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 }
 .status-beacon { width: 8px; height: 8px; border-radius: 50%; background: var(--wcc-black); }
 
-/* Full-bleed brand band, wellington.govt.nz-style: black text on yellow. */
-.brand-band { background: var(--surface-brand); color: var(--wcc-black); }
-/* Folded away, the band keeps only what decides whether to trust the picture:
- * how many sources are wired in, and when one last answered. */
-.intro-bar,
-.intro-strip {
-  max-width: calc(var(--container-max) + 2 * var(--container-pad));
-  margin-inline: auto;
-  padding: var(--space-2) var(--container-pad);
-}
-.intro-bar { display: flex; justify-content: flex-end; padding-bottom: 0; }
-.intro-strip {
-  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5);
-  font-size: var(--text-small);
-}
-.intro-strip p { margin: 0; }
-.intro-strip strong { font-weight: 700; font-variant-numeric: tabular-nums; }
-.intro-strip .intro-toggle { margin-left: auto; }
-.intro-toggle {
-  display: grid; place-items: center;
-  width: var(--touch-min); min-height: var(--touch-min); padding: 0;
-  border: 1px solid var(--wcc-black); border-radius: var(--radius-md);
-  background: transparent; color: var(--wcc-black);
-  font-size: var(--text-body-size); font-weight: 700; line-height: 1; cursor: pointer;
-  transition: background-color var(--dur-base) var(--ease-standard), color var(--dur-base) var(--ease-standard);
-}
-.intro-toggle:hover { background: var(--wcc-black); color: var(--wcc-yellow); }
-/* The toggle row takes the space the hero would have used, not extra space. */
-.intro-bar + .watch-intro { padding-top: var(--space-5); }
-.watch-intro {
-  max-width: calc(var(--container-max) + 2 * var(--container-pad));
-  margin-inline: auto;
-  padding: var(--space-6) var(--container-pad) var(--space-5);
-  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(420px, 0.8fr);
-  gap: clamp(var(--space-5), 4vw, var(--space-7)); align-items: end;
-}
-.brand-band .eyebrow { color: var(--wcc-black); }
-.brand-band .intro-copy { color: var(--wcc-grey-900); }
-.brand-band .snapshot-facts dt,
-.brand-band .snapshot-facts span { color: var(--wcc-grey-900); }
-.brand-band .snapshot-facts div + div { border-left-color: rgba(0, 0, 0, 0.28); }
 .eyebrow {
   margin: 0 0 var(--space-2);
   color: var(--wcc-yellow-ink);
@@ -225,13 +191,6 @@ h1, h2, h3 {
 h1 { max-width: 24ch; font-size: var(--text-h1); font-weight: 700; line-height: 1.1; text-wrap: balance; }
 h2 { font-size: var(--text-h2); }
 h3 { font-size: var(--text-h3); }
-.intro-copy { max-width: 68ch; margin: var(--space-3) 0 0; color: var(--wcc-grey-700); font-size: var(--text-lead); text-wrap: pretty; }
-.snapshot-facts { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--wcc-black); border-bottom: 1px solid var(--wcc-black); }
-.snapshot-facts div { padding: var(--space-3) var(--space-4) var(--space-3) 0; }
-.snapshot-facts div + div { border-left: 1px solid var(--border-hairline); padding-left: var(--space-4); }
-.snapshot-facts dt { color: var(--wcc-grey-700); font-size: var(--text-small); }
-.snapshot-facts dd { margin: var(--space-2) 0 var(--space-1); font-size: clamp(24px, 2.2vw, 34px); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.snapshot-facts span { color: var(--wcc-grey-700); font-size: var(--text-small); line-height: 1.4; }
 
 .investigation-shell {
   max-width: calc(var(--container-max) + 2 * var(--container-pad));
@@ -361,7 +320,8 @@ h3 { font-size: var(--text-h3); }
 .filter-group button:hover:not(.active) { color: var(--wcc-black); }
 .filter-group button.active { background: var(--wcc-black); color: var(--surface-page); }
 .map-stage {
-  position: relative; min-height: 510px; flex: 1; overflow: hidden;
+  /* Fill the viewport under the header and timebar on tall screens. */
+  position: relative; min-height: max(510px, calc(100vh - 300px)); flex: 1; overflow: hidden;
   background-color: var(--surface-alt);
   background-image: linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
   background-size: 28px 28px;
@@ -497,14 +457,24 @@ h3 { font-size: var(--text-h3); }
 .replay-histogram .flights-bar { fill: #0E6B72; }
 .replay-histogram .axis { stroke: var(--wcc-grey-500); stroke-width: 1; }
 .replay-histogram .cursor { fill: rgba(28, 28, 26, 0.18); }
-.replay-slider { width: 100%; margin: 0; accent-color: var(--wcc-black); }
+.replay-slider { width: 100%; margin: 0; accent-color: var(--wcc-yellow-600); }
 .replay-slider:disabled { cursor: not-allowed; }
+/* Readout rides beside the transport controls, where scrubbing eyes already are. */
 .replay-readout {
-  margin: 0; display: flex; flex-direction: column; align-items: flex-end;
+  margin: 0; min-width: 156px; display: flex; flex-direction: column; align-items: flex-start;
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .replay-readout strong { font-size: var(--text-small); }
 .replay-readout span { font-size: 12px; color: var(--wcc-grey-700); }
+/* Inline swatches double as the histogram legend. */
+.replay-readout i {
+  display: inline-block; width: 8px; height: 8px; margin-right: 4px; border-radius: 2px;
+}
+.replay-readout i.up { background: var(--wcc-warning); }
+.replay-readout i.down { background: var(--wcc-error); }
+.replay-readout i.roads-bar { background: #5B4A8A; }
+.replay-readout i.flights-bar { background: #0E6B72; }
+.replay-histogram .event-window { fill: rgba(255, 221, 0, 0.3); }
 
 /* Baseline sparkline in the signal evidence: 12 matched hours, then now. */
 .trend-spark { margin: var(--space-3) 0 0; }
@@ -905,7 +875,7 @@ footer strong { color: var(--surface-page); }
 
 @media (max-width: 1024px) {
   .config-grid, .settings-form { grid-template-columns: 1fr; }
-  .watch-intro, .handoff-section { grid-template-columns: 1fr; }
+  .handoff-section { grid-template-columns: 1fr; }
   /* Stacked, there is no track to animate: the map leads and the panel simply
      goes away when it is closed. */
   .investigation-frame,
@@ -921,9 +891,6 @@ footer strong { color: var(--surface-page); }
 @media (max-width: 640px) {
   .watch-header { position: static; }
   .watch-brand small { display: none; }
-  .watch-intro { padding-top: var(--space-6); padding-bottom: var(--space-5); }
-  .snapshot-facts { grid-template-columns: 1fr; }
-  .snapshot-facts div + div { border-left: 0; border-top: 1px solid var(--border-hairline); padding-left: 0; }
   .filter-group button { flex: 1; }
   .map-stage { min-height: 400px; }
   .investigation-shell { padding-inline: var(--space-2); }
