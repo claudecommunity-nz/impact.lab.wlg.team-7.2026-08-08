@@ -15,6 +15,7 @@ import { createFlagStore } from "./flag-store";
 import health from "../public/cop/v1/movement-health.json";
 
 import {
+  type AprilMovementCollection,
   type CameraCollection,
   type CameraFeature,
   type Cluster,
@@ -312,6 +313,7 @@ export default function MovementCanvas() {
   const [transit, setTransit] = useState<TransitCollection | null>(null);
   const [roads, setRoads] = useState<RoadCollection | null>(null);
   const [flights, setFlights] = useState<FlightCollection | null>(null);
+  const [aprilMovement, setAprilMovement] = useState<AprilMovementCollection | null>(null);
   const [selectedSignalId, setSelectedSignalId] = useState<string | null>(null);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [selectedTransitId, setSelectedTransitId] = useState<string | null>(null);
@@ -450,6 +452,17 @@ export default function MovementCanvas() {
   }, []);
 
   useEffect(() => {
+    fetch("/cop/v1/movement-april.json")
+      .then((response) => response.json())
+      .then((collection: AprilMovementCollection) => {
+        if (Array.isArray(collection.slots)) setAprilMovement(collection);
+      })
+      .catch(() => {
+        // The April case simply shows no movement signals if the file fails.
+      });
+  }, []);
+
+  useEffect(() => {
     fetch("/cop/v1/flight-anomalies.geojson")
       .then((response) => response.json())
       .then((collection: FlightCollection) => {
@@ -461,49 +474,6 @@ export default function MovementCanvas() {
 
   /* Replay signals carry no geometry of their own: the countline id keys into
    * the coverage layer's line, so one geometry file serves every hour. */
-  const countlineGeometry = useMemo(() => {
-    const index = new Map<string, Coordinate[]>();
-    for (const feature of coverage) {
-      index.set(String(feature.properties.countline_id), feature.geometry.coordinates);
-    }
-    return index;
-  }, [coverage]);
-
-  const activeSlot = replay && slotIndex >= 0 ? replay.slots[slotIndex] : null;
-
-  const shownSignals = useMemo<LineFeature[]>(() => {
-    if (!activeSlot || countlineGeometry.size === 0) return signals;
-    return activeSlot.signals.flatMap((signal) => {
-      const coordinates = countlineGeometry.get(signal.countline_id);
-      if (!coordinates) return [];
-      return [
-        {
-          id: signal.id,
-          geometry: { type: "LineString" as const, coordinates },
-          properties: { ...signal },
-        },
-      ];
-    });
-  }, [activeSlot, countlineGeometry, signals]);
-
-  /* Area total per hour: how many countline groups passed every detector gate,
-   * split by direction. Never a raw count sum — hourly coverage varies and a
-   * missing row is a gap, not zero, so summing would confuse dropout with drop. */
-  const slotBars = useMemo(() => {
-    if (!replay) return [];
-    return replay.slots.map((slot) => ({
-      up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
-      down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
-    }));
-  }, [replay]);
-
-  const filteredSignals = useMemo(() => shownSignals.filter((feature) => {
-    const mode = String(feature.properties.transport_class);
-    if (filter === "people") return PEOPLE_CLASSES.has(mode);
-    if (filter === "vehicles") return !PEOPLE_CLASSES.has(mode);
-    return true;
-  }), [shownSignals, filter]);
-
   const cameraFeatures = useMemo(() => cameras?.features ?? [], [cameras]);
   // On-frame cameras first, so the list mirrors what the initial viewport shows.
   const sortedCameras = useMemo(
@@ -535,8 +505,28 @@ export default function MovementCanvas() {
    * data, so they draw as full-day plateaus — the shape states the source's
    * resolution. Counts of flagged units, never raw sums. The sites'
    * full-month history stays in the evidence panel strips. */
+  /* April movement signals, indexed per hour and pre-shaped as line features
+   * (a centroid point drawn as a zero-length line keeps the signal glyphs). */
+  const aprilSignalsBySlot = useMemo(() => {
+    const index = new Map<string, LineFeature[]>();
+    for (const slot of aprilMovement?.slots ?? []) {
+      index.set(
+        slot.target_at.slice(0, 13),
+        slot.signals.map((signal) => {
+          const { coordinates, ...properties } = signal;
+          return {
+            id: signal.id,
+            geometry: { type: "LineString" as const, coordinates: [coordinates, coordinates] },
+            properties,
+          };
+        }),
+      );
+    }
+    return index;
+  }, [aprilMovement]);
+
   const aprilHours = useMemo(() => {
-    if (roadFeatures.length === 0 && flightFeatures.length === 0) return [];
+    if (roadFeatures.length === 0 && flightFeatures.length === 0 && !aprilMovement) return [];
     const dates = ["2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23"];
     const roadsByDate = new Map<string, number>();
     for (const feature of roadFeatures) {
@@ -550,15 +540,27 @@ export default function MovementCanvas() {
         flightByHour.set(`${hour.date}T${hour.hour}`, hour.direction);
       }
     }
+    const signalsByHour = new Map<string, { up: number; down: number }>();
+    for (const slot of aprilMovement?.slots ?? []) {
+      signalsByHour.set(slot.target_at.slice(0, 13), {
+        up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
+        down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
+      });
+    }
     return dates.flatMap((date) =>
-      Array.from({ length: 24 }, (_, hour) => ({
-        date,
-        hour,
-        roads: roadsByDate.get(date) ?? 0,
-        flight: flightByHour.get(`${date}T${hour}`) ?? null,
-      })),
+      Array.from({ length: 24 }, (_, hour) => {
+        const slotKey = `${date}T${String(hour).padStart(2, "0")}`;
+        return {
+          date,
+          hour,
+          roads: roadsByDate.get(date) ?? 0,
+          flight: flightByHour.get(`${date}T${hour}`) ?? null,
+          up: signalsByHour.get(slotKey)?.up ?? 0,
+          down: signalsByHour.get(slotKey)?.down ?? 0,
+        };
+      }),
     );
-  }, [roadFeatures, flightFeatures]);
+  }, [roadFeatures, flightFeatures, aprilMovement]);
 
   // Default the April scrubber to the worst flood hour, without an effect.
   const effectiveAprilIndex =
@@ -582,6 +584,54 @@ export default function MovementCanvas() {
       ),
     );
   }, [roadFeatures, activeAprilDate]);
+
+  const countlineGeometry = useMemo(() => {
+    const index = new Map<string, Coordinate[]>();
+    for (const feature of coverage) {
+      index.set(String(feature.properties.countline_id), feature.geometry.coordinates);
+    }
+    return index;
+  }, [coverage]);
+
+  const activeSlot = replay && slotIndex >= 0 ? replay.slots[slotIndex] : null;
+
+  const shownSignals = useMemo<LineFeature[]>(() => {
+    if (aprilCase) {
+      if (!activeAprilSlot) return [];
+      const slotKey = `${activeAprilSlot.date}T${String(activeAprilSlot.hour).padStart(2, "0")}`;
+      return aprilSignalsBySlot.get(slotKey) ?? [];
+    }
+    if (!activeSlot || countlineGeometry.size === 0) return signals;
+    return activeSlot.signals.flatMap((signal) => {
+      const coordinates = countlineGeometry.get(signal.countline_id);
+      if (!coordinates) return [];
+      return [
+        {
+          id: signal.id,
+          geometry: { type: "LineString" as const, coordinates },
+          properties: { ...signal },
+        },
+      ];
+    });
+  }, [aprilCase, activeAprilSlot, aprilSignalsBySlot, activeSlot, countlineGeometry, signals]);
+
+  /* Area total per hour: how many countline groups passed every detector gate,
+   * split by direction. Never a raw count sum — hourly coverage varies and a
+   * missing row is a gap, not zero, so summing would confuse dropout with drop. */
+  const slotBars = useMemo(() => {
+    if (!replay) return [];
+    return replay.slots.map((slot) => ({
+      up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
+      down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
+    }));
+  }, [replay]);
+
+  const filteredSignals = useMemo(() => shownSignals.filter((feature) => {
+    const mode = String(feature.properties.transport_class);
+    if (filter === "people") return PEOPLE_CLASSES.has(mode);
+    if (filter === "vehicles") return !PEOPLE_CLASSES.has(mode);
+    return true;
+  }), [shownSignals, filter]);
 
   const selectedSignal =
     shownSignals.find((feature) => feature.id === selectedSignalId) ?? filteredSignals[0];
@@ -989,7 +1039,7 @@ export default function MovementCanvas() {
     if (aprilHours.length === 0) return;
     setPlaying(false);
     setHover(null);
-    ensureLayer("road");
+    ensureLayer("signal");
     setAprilIndex(Math.min(Math.max(index, 0), aprilHours.length - 1));
   };
 
@@ -997,7 +1047,7 @@ export default function MovementCanvas() {
     setHover(null);
     if (aprilCase) {
       if (aprilHours.length === 0) return;
-      ensureLayer("road");
+      ensureLayer("signal");
       if (!playing && effectiveAprilIndex >= aprilHours.length - 1) setAprilIndex(0);
       setPlaying((current) => !current);
       return;
@@ -1280,6 +1330,10 @@ export default function MovementCanvas() {
                   <span>
                     {activeAprilSlot ? (
                       <>
+                        <i className="up" aria-hidden="true" />
+                        {activeAprilSlot.up.toLocaleString("en-NZ")} up ·{" "}
+                        <i className="down" aria-hidden="true" />
+                        {activeAprilSlot.down.toLocaleString("en-NZ")} down ·{" "}
                         <i className="roads-bar" aria-hidden="true" />
                         {activeAprilSlot.roads.toLocaleString("en-NZ")} road sites · daily
                         {activeAprilSlot.flight ? (
@@ -1337,6 +1391,10 @@ export default function MovementCanvas() {
                     >
                       {(() => {
                         const maxRoads = Math.max(1, ...aprilHours.map((slot) => slot.roads));
+                        const maxSignal = Math.max(
+                          1,
+                          ...aprilHours.map((slot) => Math.max(slot.up, slot.down)),
+                        );
                         const eventHours = aprilHours.filter(
                           (slot) => slot.date <= "2026-04-22",
                         ).length;
@@ -1376,6 +1434,24 @@ export default function MovementCanvas() {
                                     y={19}
                                     width={0.88}
                                     height={14}
+                                  />
+                                ) : null}
+                                {slot.up > 0 ? (
+                                  <rect
+                                    className="up"
+                                    x={index + 0.08}
+                                    y={17 - (slot.up / maxSignal) * 16}
+                                    width={0.84}
+                                    height={(slot.up / maxSignal) * 16}
+                                  />
+                                ) : null}
+                                {slot.down > 0 ? (
+                                  <rect
+                                    className="down"
+                                    x={index + 0.08}
+                                    y={19}
+                                    width={0.84}
+                                    height={(slot.down / maxSignal) * 16}
                                   />
                                 ) : null}
                               </g>
@@ -2222,7 +2298,7 @@ export default function MovementCanvas() {
                   {evidenceOps(
                     "signal",
                     panelSignal.geometry.coordinates[0],
-                    "/cop/v1/movement-signals.geojson",
+                    aprilCase ? "/cop/v1/movement-april.json" : "/cop/v1/movement-signals.geojson",
                   )}
                 </>
               ) : null}

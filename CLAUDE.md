@@ -66,9 +66,15 @@ Rebuild the WLG air-access layer (stdlib only, reads `data/planes/anomaly/csv/`)
 python scripts\build_flights_layer.py
 ```
 
+Rebuild the April movement backtest (stdlib only, reads `data/sensors/anomaly/csv/`):
+
+```powershell
+python scripts\build_april_movement_layer.py
+```
+
 ## Architecture
 
-Two halves joined by eight committed JSON files. **Those files are the
+Two halves joined by nine committed JSON files. **Those files are the
 contract**, not an intermediate: the site never runs Python, and the pipeline
 never renders.
 
@@ -86,8 +92,11 @@ data/buses_trains/anomaly/csv ──▶ site/public/cop/v1/transit-anomalies.geo
 NZTA/anomaly/csv ──▶ site/public/cop/v1/road-anomalies.geojson ─────────────────┤
    (local, REAL 20–21 Apr 2026 floods)  (scripts/build_road_layer.py)           │
                                                                                 │
-data/planes/anomaly/csv ──▶ site/public/cop/v1/flight-anomalies.geojson ────────┘
-   (local, REAL Apr 2026, OpenSky)  (scripts/build_flights_layer.py)
+data/planes/anomaly/csv ──▶ site/public/cop/v1/flight-anomalies.geojson ────────┤
+   (local, REAL Apr 2026, OpenSky)  (scripts/build_flights_layer.py)            │
+                                                                                │
+data/sensors/anomaly/csv ──▶ site/public/cop/v1/movement-april.json ────────────┘
+   (local, REAL Apr 2026 street aggregates)  (scripts/build_april_movement_layer.py)
 ```
 
 `src/movement_anomaly/`, in call order:
@@ -171,11 +180,16 @@ April layers (roads, flights, synthetic transit) are opt-in there too. The
 chosen case is explicit state (`caseId`), never derived from layer flags —
 hand-toggling layers changes the picture, not which case is open. In the April case the
 timebar replays **by hour**, the same unit as August: 144 slots over
-18–23 Apr (`aprilHours`), flagged road sites up in purple as full-day
-plateaus (the counts are daily — the shape states the resolution), flagged
-airport hours down in teal as true hour ticks, counts never sums. Scrubbing
-filters the road diamonds to the sites flagged on that slot's day
-(`shownRoads`); the roads list and search keep the full flagged set. The point layers (cameras, transit, roads)
+18–23 Apr (`aprilHours`). The signal layer is driven by
+`movement-april.json` — street-level April signals from the same detector
+maths run as a **retrospective backtest** (baselines are April days outside
+the event window, `scripts/build_april_movement_layer.py`; a street centroid,
+not a countline). The histogram keeps the amber/red signal identity, with the
+daily road-site plateau as a purple wash behind it (daily counts — the shape
+states the resolution) and flagged airport hours as teal ticks below, counts
+never sums. Scrubbing ensures the signal layer and filters the road diamonds
+to the sites flagged on that slot's day (`shownRoads`); the roads list and
+search keep the full flagged set. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a
 bubble zooms into it, and zooming naturally dissolves clusters into glyphs.

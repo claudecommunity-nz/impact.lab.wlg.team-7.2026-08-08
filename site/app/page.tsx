@@ -33,6 +33,10 @@ export default function Home() {
             <span>Hourly replay · 1–6 Aug 2026</span>
             <code>/cop/v1/movement-replay.json</code>
           </a>
+          <a href="/cop/v1/movement-april.json">
+            <span>April movement backtest · 18–23 Apr 2026</span>
+            <code>/cop/v1/movement-april.json</code>
+          </a>
           <a href="/cop/v1/traffic-cameras.geojson">
             <span>Traffic camera layer</span>
             <code>/cop/v1/traffic-cameras.geojson</code>

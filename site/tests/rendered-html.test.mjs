@@ -247,6 +247,46 @@ test("ships the state highway layer as a real, attributed flood backtest", async
   }
 });
 
+test("ships the April movement backtest as an honestly bounded contract", async () => {
+  const aprilText = await readFile(
+    new URL("../public/cop/v1/movement-april.json", import.meta.url),
+    "utf8",
+  );
+  const april = JSON.parse(aprilText);
+
+  assert.equal(april.schema, "movement-april-replay/v1");
+  assert.equal(april.window_start, "2026-04-18");
+  assert.equal(april.window_end, "2026-04-23");
+  assert.match(april.attribution, /Wellington City Council/);
+  assert.ok(april.limitations.some((entry) => /[Rr]etrospective backtest/.test(entry)));
+  assert.ok(april.limitations.some((entry) => /centroid/.test(entry)));
+  assert.equal(april.automatic_incident, false);
+
+  let total = 0;
+  for (const slot of april.slots) {
+    // Every slot sits inside the declared window and is internally consistent.
+    const date = slot.target_at.slice(0, 10);
+    assert.ok(date >= april.window_start && date <= april.window_end);
+    assert.equal(slot.signals.length, slot.candidate_count);
+    total += slot.candidate_count;
+    for (const signal of slot.signals) {
+      // The gates actually held.
+      assert.ok(Math.abs(signal.robust_z) >= 4.5);
+      assert.ok(Math.abs(signal.observed_count - signal.expected_count) >= 10);
+      assert.ok(signal.history_samples >= 6);
+      const [longitude, latitude] = signal.coordinates;
+      assert.ok(longitude > 174 && longitude < 175.2 && latitude < -41 && latitude > -41.5);
+      // Baselines never borrow from inside the event window.
+      for (const point of signal.matched_history) {
+        const historyDate = point.observed_at.slice(0, 10);
+        assert.ok(historyDate < april.window_start || historyDate > april.window_end);
+      }
+    }
+  }
+  assert.equal(april.candidate_count, total);
+  assert.ok(total > 0);
+});
+
 test("ships the air-access layer as a real, attributed OpenSky backtest", async () => {
   const flightText = await readFile(
     new URL("../public/cop/v1/flight-anomalies.geojson", import.meta.url),
@@ -401,6 +441,7 @@ test("keeps source settings off the dashboard and on their own route", async () 
   for (const url of [
     "/cop/v1/movement-signals.geojson",
     "/cop/v1/movement-replay.json",
+    "/cop/v1/movement-april.json",
     "/cop/v1/countline-coverage.geojson",
     "/cop/v1/traffic-cameras.geojson",
     "/cop/v1/transit-anomalies.geojson",
@@ -410,7 +451,7 @@ test("keeps source settings off the dashboard and on their own route", async () 
   ]) {
     assert.ok(settings.includes(url), `${url} should be listed as a source`);
   }
-  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 8);
+  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 9);
   // Four export formats are offered per source.
   for (const format of ["GeoJSON", "JSON", "CSV", "NDJSON"]) {
     assert.ok(settings.includes(format), `${format} should be an export option`);

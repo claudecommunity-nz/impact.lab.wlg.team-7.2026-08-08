@@ -238,6 +238,7 @@ export function answer(question: string, brief: Brief): AgentReply {
         "Every layer ships as a file on the same WGS84 frame:",
         "· /cop/v1/movement-signals.geojson — signals with observed, expected, robust score, confidence",
         "· /cop/v1/movement-replay.json — 144 published hours, 1–6 Aug 2026, with matched history",
+        "· /cop/v1/movement-april.json — street-level April backtest signals, 18–23 Apr 2026",
         "· /cop/v1/countline-coverage.geojson — every measured countline",
         "· /cop/v1/traffic-cameras.geojson — NZTA camera positions",
         "· /cop/v1/transit-anomalies.geojson — Metlink hotspots (labelled synthetic)",

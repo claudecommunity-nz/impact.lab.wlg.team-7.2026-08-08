@@ -150,7 +150,7 @@ picture. The map is a view; **the feed is the product**.
   in the visitor's browser and goes only to the provider. A test suite scans
   the repo for key-shaped strings on every build.
 - **No backend to fall over.** The site is static files plus the visitor's
-  browser — eight committed GeoJSON/JSON contracts any COP, GIS client or
+  browser — nine committed GeoJSON/JSON contracts any COP, GIS client or
   teammate's prototype can consume directly.
 
 ### What we found
@@ -182,6 +182,10 @@ From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source rows):
 - Across the **hourly replay** (1–6 Aug, 144 published hours): 929 gated
   candidates in total, between 0 and 33 per hour — scrub the timebar and the
   quiet hours are visibly quiet, which is what precision gates are for.
+- The **April street-movement backtest** (same detector maths, baselines
+  outside the event window) flags 871 street-hours across 18–23 April — 325
+  and 348 of them on the two flood days against 35–65 on the days around
+  them, mostly decreases. The city visibly stopped moving, street by street.
 
 ### Key takeaways
 
@@ -199,7 +203,7 @@ From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source rows):
 
 ### How we know it works
 
-The benchmark above is held-out, chronological and committed. Fourteen
+The benchmark above is held-out, chronological and committed. Fifteen
 automated checks run on every build — the server-rendered contract, internal
 consistency of all eight artifacts (signal count = candidate count, WGS84
 bounds, camera frame flags vs coverage bounds, synthetic labelling, and a
@@ -301,7 +305,7 @@ and falls back to the local answer.
 ### Settings: sources and integrations
 
 **Data sources** (`/settings`, deliberately not on the dashboard) lists the
-eight committed feeds plus anything you add, with **measured** status per source —
+nine committed feeds plus anything you add, with **measured** status per source —
 reachable, reachable-with-odd-payload, or failed — last successful sync, latency
 and record count, a retry per row and **Test all**. Sources can be added by URL
 or imported from a file, and exported as **GeoJSON, JSON, CSV or NDJSON**.
@@ -310,13 +314,14 @@ generates the MCP client config and the A2A agent card for your own endpoint.
 
 ### The feeds
 
-Everything the site shows is served as eight committed files — point any COP,
+Everything the site shows is served as nine committed files — point any COP,
 GIS client or teammate's prototype at them:
 
 | Feed | Path |
 |---|---|
 | Movement signals | `/cop/v1/movement-signals.geojson` |
 | Hourly replay (1–6 Aug 2026, 144 slots) | `/cop/v1/movement-replay.json` |
+| April movement backtest (18–23 Apr 2026, hourly) | `/cop/v1/movement-april.json` |
 | Sensor coverage | `/cop/v1/countline-coverage.geojson` |
 | Traffic cameras | `/cop/v1/traffic-cameras.geojson` |
 | PT anomalies (synthetic) | `/cop/v1/transit-anomalies.geojson` |

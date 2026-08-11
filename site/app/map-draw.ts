@@ -214,6 +214,35 @@ export type FlightCollection = {
   features: FlightFeature[];
 };
 
+export type AprilSignal = {
+  id: string;
+  street: string;
+  name: string;
+  transport_class: string;
+  direction: string;
+  change_direction: string;
+  observed_count: number;
+  expected_count: number;
+  robust_z: number;
+  history_samples: number;
+  data_quality: string;
+  observed_at: string;
+  matched_history: SignalTrendPoint[];
+  countlines: number;
+  coordinates: Coordinate;
+  signal_confidence: { level: string; history_samples: number; basis: string };
+};
+
+export type AprilMovementCollection = {
+  schema: string;
+  window_start: string;
+  window_end: string;
+  candidate_count: number;
+  attribution: string;
+  limitations: string[];
+  slots: { target_at: string; candidate_count: number; signals: AprilSignal[] }[];
+};
+
 /** Transport classes drawn with the person glyph; everything else gets the car. */
 export const PEOPLE_CLASSES = new Set(["Pedestrian", "Cyclist", "E-scooter"]);
 

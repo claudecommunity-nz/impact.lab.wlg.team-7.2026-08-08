@@ -178,6 +178,16 @@ export const BUILTIN_SOURCES: DataSource[] = [
     note: "144 published hours with per-signal matched history for the timebar.",
   },
   {
+    id: "movement-april",
+    label: "April movement backtest",
+    publisher: "Wellington City Council Transport Sensors",
+    url: "/cop/v1/movement-april.json",
+    format: "json",
+    kind: "builtin",
+    cadence: "retrospective backtest · 18–23 Apr 2026, hourly",
+    note: "Street-level signals for the floods case. Never event-time evidence.",
+  },
+  {
     id: "countline-coverage",
     label: "Sensor coverage",
     publisher: "Wellington City Council Transport Sensors",
