@@ -320,25 +320,6 @@ h3 { font-size: var(--text-h3); }
 .search-note { margin: 0; font-size: 12px; color: var(--wcc-grey-700); }
 
 .layer-toggles { display: flex; flex-direction: column; gap: var(--space-1); }
-/* Investigation presets share the layer-chip anatomy; the active case reads
- * as pressed, and the divider separates cases from individual layers. */
-.event-presets {
-  display: flex; flex-direction: column; gap: var(--space-1);
-  padding-bottom: var(--space-2); margin-bottom: var(--space-1);
-  border-bottom: 1px solid var(--border-hairline);
-}
-.event-chip {
-  display: flex; align-items: center; gap: var(--space-2); width: 100%; text-align: left;
-  min-height: var(--touch-min); padding: var(--space-1) var(--space-2); cursor: pointer;
-  border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
-  background: var(--surface-page); color: var(--wcc-black);
-  transition: border-color var(--dur-base) var(--ease-standard), opacity var(--dur-base) var(--ease-standard);
-}
-.event-chip.on { border-color: var(--wcc-black); }
-.event-chip.off { opacity: 0.7; background: transparent; }
-.event-chip .chip-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.event-chip strong { font-size: var(--text-small); font-weight: 700; line-height: var(--leading-heading); }
-.event-chip small { font-size: 11px; color: var(--wcc-grey-700); }
 .layer-chip {
   display: flex; align-items: center; gap: var(--space-2); width: 100%; text-align: left;
   min-height: var(--touch-min); padding: var(--space-1) var(--space-2); cursor: pointer;
@@ -491,6 +472,13 @@ h3 { font-size: var(--text-h3); }
   margin-top: var(--space-2); padding: var(--space-2);
   border: 1px solid var(--border-hairline); background: var(--surface-page);
 }
+.case-picker {
+  min-height: var(--touch-min); max-width: 46%; padding: 0 var(--space-2);
+  border: 1px solid var(--wcc-black); border-radius: var(--radius-md);
+  background: var(--surface-page); color: var(--wcc-black);
+  font-size: var(--text-small); font-weight: 700; cursor: pointer;
+}
+.case-picker:hover { background: var(--wcc-yellow); }
 .replay-bar > button {
   display: grid; place-items: center; min-width: var(--touch-min); min-height: var(--touch-min);
   border: 1px solid var(--wcc-black); border-radius: var(--radius-md);

@@ -232,10 +232,10 @@ sparkline next to the expected median.
 A hand-rolled slippy map on one canvas — CARTO Voyager raster tiles
 (OpenStreetMap data), whole-level zoom 9–18, drag to pan, scroll or +/− to zoom,
 **Fit** to frame the active layers, no map library. Every source is a
-**toggleable layer**, each drawn with its own mini icon, and two
-**investigation presets** frame the published windows in one click: the
-1–6 Aug movement snapshot, and the real 18–22 Apr floods case, which loads
-every April layer at once:
+**toggleable layer**, each drawn with its own mini icon, and an
+**investigation-case dropdown** on the timebar frames the published windows in
+one click: the 1–6 Aug movement snapshot, and the real 18–22 Apr floods case,
+which loads every April layer at once:
 
 - **Movement signals** — the detection output above, with a people/vehicles
   filter. **Person icons** mark pedestrian, cyclist and e-scooter signals;

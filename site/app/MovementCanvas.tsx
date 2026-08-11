@@ -1161,23 +1161,6 @@ export default function MovementCanvas() {
                       <p className="search-note">No match in the loaded layers.</p>
                     ) : null}
                     {locateNote ? <p className="search-note">{locateNote}</p> : null}
-                    <div className="event-presets" role="group" aria-label="Investigations">
-                      {EVENTS.map((event) => (
-                        <button
-                          type="button"
-                          key={event.id}
-                          className={`event-chip ${eventActive(event) ? "on" : "off"}`}
-                          aria-pressed={eventActive(event)}
-                          onClick={() => applyEvent(event)}
-                        >
-                          <span className="chip-text">
-                            <strong>{event.label}</strong>
-                            <small>{event.window}</small>
-                          </span>
-                          <em className={`status-badge ${event.tone}`}>{event.badge}</em>
-                        </button>
-                      ))}
-                    </div>
                     <div className="layer-toggles" role="group" aria-label="Map layers">
                       {LAYERS.map((entry) => (
                         <button
@@ -1404,6 +1387,28 @@ export default function MovementCanvas() {
             {error ? <p className="map-message error" role="alert">{error}</p> : null}
           </div>
           <div className="replay-bar" role="group" aria-label="Batch replay timeline">
+            <select
+              className="case-picker"
+              aria-label="Investigations"
+              value={EVENTS.find(eventActive)?.id ?? "custom"}
+              onChange={(changeEvent) => {
+                const picked = EVENTS.find(
+                  (entry) => entry.id === changeEvent.currentTarget.value,
+                );
+                if (picked) applyEvent(picked);
+              }}
+            >
+              {EVENTS.map((entry) => (
+                <option key={entry.id} value={entry.id}>
+                  {entry.label} · {entry.window} · {entry.badge}
+                </option>
+              ))}
+              {EVENTS.some(eventActive) ? null : (
+                <option value="custom" disabled>
+                  Custom layers
+                </option>
+              )}
+            </select>
             <button
               type="button"
               className="replay-play"
