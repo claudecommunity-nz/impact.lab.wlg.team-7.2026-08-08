@@ -84,20 +84,16 @@ const SEARCH_LIMIT = 8;
 const evidenceStore = createFlagStore("murmur.evidence.open", true);
 /* Same remembered-flag pattern for the floating layer menu. */
 const layerMenuStore = createFlagStore("murmur.layers.open", true);
-/* Layer visibility is remembered per layer. Fresh browsers get movement
- * signals only; every other layer is opt-in. */
-const LAYER_STORES = {
-  signals: createFlagStore("murmur.layer.signals", true),
-  coverage: createFlagStore("murmur.layer.coverage", false),
-  cameras: createFlagStore("murmur.layer.cameras", false),
-  transit: createFlagStore("murmur.layer.transit", false),
-  roads: createFlagStore("murmur.layer.roads", false),
-  flights: createFlagStore("murmur.layer.flights", false),
-} satisfies Record<LayerId, ReturnType<typeof createFlagStore>>;
-
-function useFlag(store: ReturnType<typeof createFlagStore>) {
-  return useSyncExternalStore(store.subscribe, store.snapshot, store.serverSnapshot) === "1";
-}
+/* Layer visibility is session state, never persisted: every load starts with
+ * movement signals only, and every other layer is opt-in for that visit. */
+const DEFAULT_LAYERS: Layers = {
+  signals: true,
+  coverage: false,
+  cameras: false,
+  transit: false,
+  roads: false,
+  flights: false,
+};
 
 /** Every layer states its temporal truth as a badge: live, replay, synthetic or real. */
 const LAYERS: {
@@ -301,21 +297,7 @@ function TrendSparkline({
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
-  const signalsOn = useFlag(LAYER_STORES.signals);
-  const coverageOn = useFlag(LAYER_STORES.coverage);
-  const camerasOn = useFlag(LAYER_STORES.cameras);
-  const transitOn = useFlag(LAYER_STORES.transit);
-  const roadsOn = useFlag(LAYER_STORES.roads);
-  const layers: Layers = useMemo(
-    () => ({
-      signals: signalsOn,
-      coverage: coverageOn,
-      cameras: camerasOn,
-      transit: transitOn,
-      roads: roadsOn,
-    }),
-    [signalsOn, coverageOn, camerasOn, transitOn, roadsOn],
-  );
+  const [layers, setLayers] = useState<Layers>(DEFAULT_LAYERS);
   const [coverage, setCoverage] = useState<LineFeature[]>([]);
   const [signals, setSignals] = useState<LineFeature[]>([]);
   const [cameras, setCameras] = useState<CameraCollection | null>(null);
@@ -825,7 +807,7 @@ export default function MovementCanvas() {
 
   const toggleLayer = (id: LayerId) => {
     setHover(null);
-    LAYER_STORES[id].toggle(layers[id]);
+    setLayers((current) => ({ ...current, [id]: !current[id] }));
   };
 
   /** Selecting from the list recentres the map only when the feature is off screen. */
@@ -918,7 +900,7 @@ export default function MovementCanvas() {
             : kind === "road"
               ? "roads"
               : "flights";
-    if (!layers[id]) LAYER_STORES[id].toggle(false);
+    setLayers((current) => (current[id] ? current : { ...current, [id]: true }));
   };
 
   /** A case only asserts the layers it names; other choices stay the user's. */
@@ -926,9 +908,7 @@ export default function MovementCanvas() {
     setHover(null);
     setPlaying(false);
     setCaseId(event.id);
-    for (const [id, on] of Object.entries(event.layers) as [LayerId, boolean][]) {
-      if (layers[id] !== on) LAYER_STORES[id].toggle(layers[id]);
-    }
+    setLayers((current) => ({ ...current, ...event.layers }));
     setFocus(event.focus);
     if (event.id === "aug-snapshot" && replay) {
       const index = replay.slots.findIndex(
