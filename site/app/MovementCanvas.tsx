@@ -539,7 +539,9 @@ export default function MovementCanvas() {
 
   /* The April case gets its own timeline: per day, how many road sites and
    * how many airport hours passed their gates. Counts of flagged units,
-   * never raw sums — the sources differ and reporting varies by day. */
+   * never raw sums — the sources differ and reporting varies by day. The
+   * track covers the event plus one aftermath day; the sites' full-month
+   * history stays in the evidence panel strips. */
   const aprilDays = useMemo(() => {
     const days = new Map<string, { roads: number; flightHours: number }>();
     const at = (date: string) => {
@@ -557,6 +559,7 @@ export default function MovementCanvas() {
       for (const hour of feature.properties.flagged_hours) at(hour.date).flightHours += 1;
     }
     return [...days.entries()]
+      .filter(([date]) => date >= "2026-04-18" && date <= "2026-04-23")
       .sort(([a], [b]) => (a < b ? -1 : 1))
       .map(([date, counts]) => ({ date, ...counts }));
   }, [roadFeatures, flightFeatures]);
