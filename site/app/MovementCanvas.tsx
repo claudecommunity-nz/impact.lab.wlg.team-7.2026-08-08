@@ -84,11 +84,11 @@ const SEARCH_LIMIT = 8;
 const evidenceStore = createFlagStore("murmur.evidence.open", true);
 /* Same remembered-flag pattern for the floating layer menu. */
 const layerMenuStore = createFlagStore("murmur.layers.open", true);
-/* Layer visibility is remembered per layer. Fresh browsers get the movement
- * picture (signals + coverage); the corroborating layers start off. */
+/* Layer visibility is remembered per layer. Fresh browsers get movement
+ * signals only; every other layer is opt-in. */
 const LAYER_STORES = {
   signals: createFlagStore("murmur.layer.signals", true),
-  coverage: createFlagStore("murmur.layer.coverage", true),
+  coverage: createFlagStore("murmur.layer.coverage", false),
   cameras: createFlagStore("murmur.layer.cameras", false),
   transit: createFlagStore("murmur.layer.transit", false),
   roads: createFlagStore("murmur.layer.roads", false),
@@ -134,7 +134,15 @@ const EVENTS: {
     window: "1–6 Aug 2026",
     badge: "Batch replay",
     tone: "replay",
-    layers: { signals: true, coverage: true, roads: false, flights: false, transit: false },
+    /* The standard view: movement signals only; everything else is opt-in. */
+    layers: {
+      signals: true,
+      coverage: false,
+      cameras: false,
+      roads: false,
+      flights: false,
+      transit: false,
+    },
     focus: "signal",
   },
   {
@@ -1150,6 +1158,255 @@ export default function MovementCanvas() {
           <h2 id="map-heading" className="visually-hidden">
             One map, every source
           </h2>
+          <div className="replay-bar" role="group" aria-label="Batch replay timeline">
+            <select
+              className="case-picker"
+              aria-label="Investigations"
+              value={caseId}
+              onChange={(changeEvent) => {
+                const picked = EVENTS.find(
+                  (entry) => entry.id === changeEvent.currentTarget.value,
+                );
+                if (picked) applyEvent(picked);
+              }}
+            >
+              {EVENTS.map((entry) => (
+                <option key={entry.id} value={entry.id}>
+                  {entry.label} · {entry.window} · {entry.badge}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className="replay-play"
+              onClick={togglePlay}
+              disabled={aprilCase ? aprilDays.length === 0 : !replay}
+              aria-label={playing ? "Pause the replay" : "Play the replay"}
+              title={playing ? "Pause the replay" : "Play the replay"}
+            >
+              {playing ? (
+                <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+                  <rect x="3" y="2.5" width="3.4" height="11" fill="currentColor" />
+                  <rect x="9.6" y="2.5" width="3.4" height="11" fill="currentColor" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+                  <path d="M4 2.4v11.2L13.2 8Z" fill="currentColor" />
+                </svg>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                aprilCase ? scrubAprilTo(effectiveAprilIndex - 1) : scrubTo(slotIndex - 1)
+              }
+              disabled={
+                aprilCase
+                  ? aprilDays.length === 0 || effectiveAprilIndex <= 0
+                  : !replay || slotIndex <= 0
+              }
+              aria-label={aprilCase ? "Previous day" : "Previous hour"}
+              title={aprilCase ? "Previous day" : "Previous hour"}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                aprilCase ? scrubAprilTo(effectiveAprilIndex + 1) : scrubTo(slotIndex + 1)
+              }
+              disabled={
+                aprilCase
+                  ? aprilDays.length === 0 || effectiveAprilIndex >= aprilDays.length - 1
+                  : !replay || slotIndex >= (replay?.slots.length ?? 1) - 1
+              }
+              aria-label={aprilCase ? "Next day" : "Next hour"}
+              title={aprilCase ? "Next day" : "Next hour"}
+            >
+              ›
+            </button>
+            <div className="replay-track">
+              {aprilCase ? (
+                <>
+                  {aprilDays.length > 0 ? (
+                    <svg
+                      className="replay-histogram"
+                      viewBox={`0 0 ${aprilDays.length} 36`}
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                      onPointerDown={(event) => {
+                        const rect = event.currentTarget.getBoundingClientRect();
+                        scrubAprilTo(
+                          Math.floor(
+                            ((event.clientX - rect.left) / rect.width) * aprilDays.length,
+                          ),
+                        );
+                      }}
+                    >
+                      {(() => {
+                        const maxRoads = Math.max(1, ...aprilDays.map((day) => day.roads));
+                        const maxFlights = Math.max(
+                          1,
+                          ...aprilDays.map((day) => day.flightHours),
+                        );
+                        return (
+                          <>
+                            <rect
+                              className="cursor"
+                              x={effectiveAprilIndex}
+                              y={0}
+                              width={1}
+                              height={36}
+                            />
+                            {aprilDays.map((day, index) => (
+                              <g key={day.date}>
+                                {day.roads > 0 ? (
+                                  <rect
+                                    className="roads-bar"
+                                    x={index + 0.08}
+                                    y={17 - (day.roads / maxRoads) * 16}
+                                    width={0.84}
+                                    height={(day.roads / maxRoads) * 16}
+                                  />
+                                ) : null}
+                                {day.flightHours > 0 ? (
+                                  <rect
+                                    className="flights-bar"
+                                    x={index + 0.08}
+                                    y={19}
+                                    width={0.84}
+                                    height={(day.flightHours / maxFlights) * 16}
+                                  />
+                                ) : null}
+                              </g>
+                            ))}
+                            <line
+                              className="axis"
+                              x1={0}
+                              y1={18}
+                              x2={aprilDays.length}
+                              y2={18}
+                              vectorEffect="non-scaling-stroke"
+                            />
+                          </>
+                        );
+                      })()}
+                    </svg>
+                  ) : null}
+                  <input
+                    type="range"
+                    className="replay-slider"
+                    min={0}
+                    max={Math.max(aprilDays.length - 1, 0)}
+                    step={1}
+                    value={effectiveAprilIndex}
+                    disabled={aprilDays.length === 0}
+                    onChange={(event) => scrubAprilTo(Number(event.currentTarget.value))}
+                    aria-label="Replay day"
+                    aria-valuetext={activeAprilDate ? dayLabel(activeAprilDate) : "loading"}
+                  />
+                </>
+              ) : (
+                <>
+                  {replay ? (
+                <svg
+                  className="replay-histogram"
+                  viewBox={`0 0 ${replay.slots.length} 36`}
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  onPointerDown={(event) => {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    scrubTo(
+                      Math.floor(
+                        ((event.clientX - rect.left) / rect.width) * replay.slots.length,
+                      ),
+                    );
+                  }}
+                >
+                  {(() => {
+                    const maxBar = Math.max(
+                      1,
+                      ...slotBars.map((bar) => Math.max(bar.up, bar.down)),
+                    );
+                    return (
+                      <>
+                        <rect className="cursor" x={slotIndex} y={0} width={1} height={36} />
+                        {slotBars.map((bar, index) =>
+                          bar.up === 0 && bar.down === 0 ? null : (
+                            <g key={index}>
+                              {bar.up > 0 ? (
+                                <rect
+                                  className="up"
+                                  x={index + 0.08}
+                                  y={17 - (bar.up / maxBar) * 16}
+                                  width={0.84}
+                                  height={(bar.up / maxBar) * 16}
+                                />
+                              ) : null}
+                              {bar.down > 0 ? (
+                                <rect
+                                  className="down"
+                                  x={index + 0.08}
+                                  y={19}
+                                  width={0.84}
+                                  height={(bar.down / maxBar) * 16}
+                                />
+                              ) : null}
+                            </g>
+                          ),
+                        )}
+                        <line
+                          className="axis"
+                          x1={0}
+                          y1={18}
+                          x2={replay.slots.length}
+                          y2={18}
+                          vectorEffect="non-scaling-stroke"
+                        />
+                      </>
+                    );
+                  })()}
+                </svg>
+                  ) : null}
+                  <input
+                    type="range"
+                    className="replay-slider"
+                    min={0}
+                    max={replay ? replay.slots.length - 1 : 0}
+                    step={1}
+                    value={slotIndex >= 0 ? slotIndex : 0}
+                    disabled={!replay}
+                    onChange={(event) => scrubTo(Number(event.currentTarget.value))}
+                    aria-label="Replay hour"
+                    aria-valuetext={slotLabel(activeSlot?.target_at ?? health.target_at)}
+                  />
+                </>
+              )}
+            </div>
+            <p className="replay-readout">
+              {aprilCase ? (
+                <>
+                  <strong>
+                    {activeAprilDate ? dayLabel(activeAprilDate) : "18–22 Apr 2026"}
+                  </strong>
+                  <span>
+                    {aprilDays.length > 0
+                      ? `${aprilDays[effectiveAprilIndex].roads.toLocaleString("en-NZ")} road sites · ${aprilDays[effectiveAprilIndex].flightHours.toLocaleString("en-NZ")} flight hours`
+                      : "real event"}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <strong>{slotLabel(activeSlot?.target_at ?? health.target_at)}</strong>
+                  <span>
+                    {(activeSlot?.candidate_count ?? health.candidate_count).toLocaleString("en-NZ")}{" "}
+                    signals · {(activeSlot?.data_gap_groups ?? health.data_gap_groups).toLocaleString("en-NZ")}{" "}
+                    data gaps
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
           <div className="map-stage" ref={frameRef}>
             <canvas
               ref={canvasRef}
@@ -1462,255 +1719,6 @@ export default function MovementCanvas() {
             ) : null}
             {coverage.length === 0 && !error ? <p className="map-message">Loading countlines…</p> : null}
             {error ? <p className="map-message error" role="alert">{error}</p> : null}
-          </div>
-          <div className="replay-bar" role="group" aria-label="Batch replay timeline">
-            <select
-              className="case-picker"
-              aria-label="Investigations"
-              value={caseId}
-              onChange={(changeEvent) => {
-                const picked = EVENTS.find(
-                  (entry) => entry.id === changeEvent.currentTarget.value,
-                );
-                if (picked) applyEvent(picked);
-              }}
-            >
-              {EVENTS.map((entry) => (
-                <option key={entry.id} value={entry.id}>
-                  {entry.label} · {entry.window} · {entry.badge}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              className="replay-play"
-              onClick={togglePlay}
-              disabled={aprilCase ? aprilDays.length === 0 : !replay}
-              aria-label={playing ? "Pause the replay" : "Play the replay"}
-              title={playing ? "Pause the replay" : "Play the replay"}
-            >
-              {playing ? (
-                <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
-                  <rect x="3" y="2.5" width="3.4" height="11" fill="currentColor" />
-                  <rect x="9.6" y="2.5" width="3.4" height="11" fill="currentColor" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
-                  <path d="M4 2.4v11.2L13.2 8Z" fill="currentColor" />
-                </svg>
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                aprilCase ? scrubAprilTo(effectiveAprilIndex - 1) : scrubTo(slotIndex - 1)
-              }
-              disabled={
-                aprilCase
-                  ? aprilDays.length === 0 || effectiveAprilIndex <= 0
-                  : !replay || slotIndex <= 0
-              }
-              aria-label={aprilCase ? "Previous day" : "Previous hour"}
-              title={aprilCase ? "Previous day" : "Previous hour"}
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                aprilCase ? scrubAprilTo(effectiveAprilIndex + 1) : scrubTo(slotIndex + 1)
-              }
-              disabled={
-                aprilCase
-                  ? aprilDays.length === 0 || effectiveAprilIndex >= aprilDays.length - 1
-                  : !replay || slotIndex >= (replay?.slots.length ?? 1) - 1
-              }
-              aria-label={aprilCase ? "Next day" : "Next hour"}
-              title={aprilCase ? "Next day" : "Next hour"}
-            >
-              ›
-            </button>
-            <div className="replay-track">
-              {aprilCase ? (
-                <>
-                  {aprilDays.length > 0 ? (
-                    <svg
-                      className="replay-histogram"
-                      viewBox={`0 0 ${aprilDays.length} 36`}
-                      preserveAspectRatio="none"
-                      aria-hidden="true"
-                      onPointerDown={(event) => {
-                        const rect = event.currentTarget.getBoundingClientRect();
-                        scrubAprilTo(
-                          Math.floor(
-                            ((event.clientX - rect.left) / rect.width) * aprilDays.length,
-                          ),
-                        );
-                      }}
-                    >
-                      {(() => {
-                        const maxRoads = Math.max(1, ...aprilDays.map((day) => day.roads));
-                        const maxFlights = Math.max(
-                          1,
-                          ...aprilDays.map((day) => day.flightHours),
-                        );
-                        return (
-                          <>
-                            <rect
-                              className="cursor"
-                              x={effectiveAprilIndex}
-                              y={0}
-                              width={1}
-                              height={36}
-                            />
-                            {aprilDays.map((day, index) => (
-                              <g key={day.date}>
-                                {day.roads > 0 ? (
-                                  <rect
-                                    className="roads-bar"
-                                    x={index + 0.08}
-                                    y={17 - (day.roads / maxRoads) * 16}
-                                    width={0.84}
-                                    height={(day.roads / maxRoads) * 16}
-                                  />
-                                ) : null}
-                                {day.flightHours > 0 ? (
-                                  <rect
-                                    className="flights-bar"
-                                    x={index + 0.08}
-                                    y={19}
-                                    width={0.84}
-                                    height={(day.flightHours / maxFlights) * 16}
-                                  />
-                                ) : null}
-                              </g>
-                            ))}
-                            <line
-                              className="axis"
-                              x1={0}
-                              y1={18}
-                              x2={aprilDays.length}
-                              y2={18}
-                              vectorEffect="non-scaling-stroke"
-                            />
-                          </>
-                        );
-                      })()}
-                    </svg>
-                  ) : null}
-                  <input
-                    type="range"
-                    className="replay-slider"
-                    min={0}
-                    max={Math.max(aprilDays.length - 1, 0)}
-                    step={1}
-                    value={effectiveAprilIndex}
-                    disabled={aprilDays.length === 0}
-                    onChange={(event) => scrubAprilTo(Number(event.currentTarget.value))}
-                    aria-label="Replay day"
-                    aria-valuetext={activeAprilDate ? dayLabel(activeAprilDate) : "loading"}
-                  />
-                </>
-              ) : (
-                <>
-                  {replay ? (
-                <svg
-                  className="replay-histogram"
-                  viewBox={`0 0 ${replay.slots.length} 36`}
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                  onPointerDown={(event) => {
-                    const rect = event.currentTarget.getBoundingClientRect();
-                    scrubTo(
-                      Math.floor(
-                        ((event.clientX - rect.left) / rect.width) * replay.slots.length,
-                      ),
-                    );
-                  }}
-                >
-                  {(() => {
-                    const maxBar = Math.max(
-                      1,
-                      ...slotBars.map((bar) => Math.max(bar.up, bar.down)),
-                    );
-                    return (
-                      <>
-                        <rect className="cursor" x={slotIndex} y={0} width={1} height={36} />
-                        {slotBars.map((bar, index) =>
-                          bar.up === 0 && bar.down === 0 ? null : (
-                            <g key={index}>
-                              {bar.up > 0 ? (
-                                <rect
-                                  className="up"
-                                  x={index + 0.08}
-                                  y={17 - (bar.up / maxBar) * 16}
-                                  width={0.84}
-                                  height={(bar.up / maxBar) * 16}
-                                />
-                              ) : null}
-                              {bar.down > 0 ? (
-                                <rect
-                                  className="down"
-                                  x={index + 0.08}
-                                  y={19}
-                                  width={0.84}
-                                  height={(bar.down / maxBar) * 16}
-                                />
-                              ) : null}
-                            </g>
-                          ),
-                        )}
-                        <line
-                          className="axis"
-                          x1={0}
-                          y1={18}
-                          x2={replay.slots.length}
-                          y2={18}
-                          vectorEffect="non-scaling-stroke"
-                        />
-                      </>
-                    );
-                  })()}
-                </svg>
-                  ) : null}
-                  <input
-                    type="range"
-                    className="replay-slider"
-                    min={0}
-                    max={replay ? replay.slots.length - 1 : 0}
-                    step={1}
-                    value={slotIndex >= 0 ? slotIndex : 0}
-                    disabled={!replay}
-                    onChange={(event) => scrubTo(Number(event.currentTarget.value))}
-                    aria-label="Replay hour"
-                    aria-valuetext={slotLabel(activeSlot?.target_at ?? health.target_at)}
-                  />
-                </>
-              )}
-            </div>
-            <p className="replay-readout">
-              {aprilCase ? (
-                <>
-                  <strong>
-                    {activeAprilDate ? dayLabel(activeAprilDate) : "18–22 Apr 2026"}
-                  </strong>
-                  <span>
-                    {aprilDays.length > 0
-                      ? `${aprilDays[effectiveAprilIndex].roads.toLocaleString("en-NZ")} road sites · ${aprilDays[effectiveAprilIndex].flightHours.toLocaleString("en-NZ")} flight hours`
-                      : "real event"}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <strong>{slotLabel(activeSlot?.target_at ?? health.target_at)}</strong>
-                  <span>
-                    {(activeSlot?.candidate_count ?? health.candidate_count).toLocaleString("en-NZ")}{" "}
-                    signals · {(activeSlot?.data_gap_groups ?? health.data_gap_groups).toLocaleString("en-NZ")}{" "}
-                    data gaps
-                  </span>
-                </>
-              )}
-            </p>
           </div>
           <p className="map-caption">
             Signals mark the sensor line, not the street. Transit: synthetic

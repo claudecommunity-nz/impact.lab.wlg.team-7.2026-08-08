@@ -465,11 +465,12 @@ h3 { font-size: var(--text-h3); }
 .map-message.error { color: var(--wcc-error); }
 .map-caption { margin: var(--space-3) 0 0; color: var(--wcc-grey-700); font-size: var(--text-small); }
 
-/* The replay timebar: one control row under the map. The histogram is the
- * area total per published hour — gated deviations up/down, never raw sums. */
+/* The replay timebar: the control row above the map, case picker first. The
+ * histogram is the area total per published slot — gated deviations up/down,
+ * never raw sums. */
 .replay-bar {
   display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
-  margin-top: var(--space-2); padding: var(--space-2);
+  margin-bottom: var(--space-2); padding: var(--space-2);
   border: 1px solid var(--border-hairline); background: var(--surface-page);
 }
 .case-picker {

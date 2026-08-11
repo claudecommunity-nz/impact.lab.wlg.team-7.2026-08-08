@@ -222,7 +222,7 @@ the artifacts are reproducible from source with the three build scripts below.
 The included 6 August 2026 12:00 replay produces **12 signals** and exposes
 **207 expected-but-missing groups** as data gaps rather than zero counts. The
 full **hourly replay** keeps every published hour from 1–6 August: a timebar
-under the map plays or scrubs through all 144 slots, its histogram showing
+above the map plays or scrubs through all 144 slots, its histogram showing
 each hour's gated deviations (increases up, decreases down — counts, never raw
 sums), and every signal carries its 12 prior matched weekday/hour counts as a
 sparkline next to the expected median.

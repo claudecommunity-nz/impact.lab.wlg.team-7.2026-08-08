@@ -152,9 +152,9 @@ test("merges every source into one map with switchable layers", async () => {
   assert.match(html, /Movement snapshot/);
   assert.match(html, /Floods and storm/);
   assert.match(html, /18–22 Apr 2026/);
-  // Signals and coverage start on; the corroborating layers start off.
-  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 3);
-  assert.ok((html.match(/aria-pressed="false"/g) ?? []).length >= 3);
+  // Movement signals start on; every other layer is opt-in.
+  assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 2);
+  assert.ok((html.match(/aria-pressed="false"/g) ?? []).length >= 5);
   // The floating layer menu starts open, with local search and truth badges.
   assert.match(html, /aria-controls="layer-menu-body"/);
   assert.match(html, /Find on the map/);

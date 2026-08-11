@@ -159,10 +159,10 @@ library**: Web Mercator by hand, raster tiles via `drawImage`.
 
 `MovementCanvas` renders **one** canvas and **one** view; every source is a
 toggleable layer, and visibility is **remembered per layer** (`LAYER_STORES`,
-one flag store each — fresh browsers get signals + coverage on and the
-corroborating cameras/transit/roads/flights off; picking a feature from a list
-or search switches its layer back on via `ensureLayer`), drawn tiles →
-coverage → roads → transit → flights → signals → cameras. The timebar leads
+one flag store each — fresh browsers get **movement signals only**, everything
+else is opt-in; picking a feature from a list or search switches its layer
+back on via `ensureLayer`), drawn tiles → coverage → roads → transit →
+flights → signals → cameras. **Above the map** sits the timebar, which leads
 with an **investigation-case dropdown** (`EVENTS`, `.case-picker` — always
 visible even with the drawer closed): the 1–6 Aug movement snapshot and the
 real 18–22 Apr floods case, which switches on every April layer (roads +
