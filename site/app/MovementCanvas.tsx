@@ -1346,16 +1346,7 @@ export default function MovementCanvas() {
                         <i className="up" aria-hidden="true" />
                         {activeAprilSlot.up.toLocaleString("en-NZ")} up ·{" "}
                         <i className="down" aria-hidden="true" />
-                        {activeAprilSlot.down.toLocaleString("en-NZ")} down ·{" "}
-                        <i className="roads-bar" aria-hidden="true" />
-                        {activeAprilSlot.roads.toLocaleString("en-NZ")} road sites · daily
-                        {activeAprilSlot.flight ? (
-                          <>
-                            {" "}
-                            · <i className="flights-bar" aria-hidden="true" />
-                            flight {activeAprilSlot.flight.toLowerCase()}
-                          </>
-                        ) : null}
+                        {activeAprilSlot.down.toLocaleString("en-NZ")} down
                       </>
                     ) : (
                       "real event"
@@ -1371,14 +1362,10 @@ export default function MovementCanvas() {
                         <i className="up" aria-hidden="true" />
                         {slotBars[slotIndex].up.toLocaleString("en-NZ")} up ·{" "}
                         <i className="down" aria-hidden="true" />
-                        {slotBars[slotIndex].down.toLocaleString("en-NZ")} down ·{" "}
-                        {activeSlot.data_gap_groups.toLocaleString("en-NZ")} data gaps
+                        {slotBars[slotIndex].down.toLocaleString("en-NZ")} down
                       </>
                     ) : (
-                      <>
-                        {health.candidate_count.toLocaleString("en-NZ")} signals ·{" "}
-                        {health.data_gap_groups.toLocaleString("en-NZ")} data gaps
-                      </>
+                      <>{health.candidate_count.toLocaleString("en-NZ")} signals</>
                     )}
                   </span>
                 </>

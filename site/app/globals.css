@@ -463,10 +463,11 @@ h3 { font-size: var(--text-h3); }
 .replay-histogram .cursor { fill: rgba(28, 28, 26, 0.18); }
 .replay-slider { width: 100%; margin: 0; accent-color: var(--wcc-yellow-600); }
 .replay-slider:disabled { cursor: not-allowed; }
-/* Readout rides beside the transport controls, where scrubbing eyes already are. */
+/* Readout rides beside the transport controls, where scrubbing eyes already
+ * are. Fixed width and up/down only, so the track never resizes mid-play. */
 .replay-readout {
-  margin: 0; min-width: 156px; display: flex; flex-direction: column; align-items: flex-start;
-  font-variant-numeric: tabular-nums; white-space: nowrap;
+  margin: 0; flex: none; width: 168px; display: flex; flex-direction: column; align-items: flex-start;
+  font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden;
 }
 .replay-readout strong { font-size: var(--text-small); }
 .replay-readout span { font-size: 12px; color: var(--wcc-grey-700); }
