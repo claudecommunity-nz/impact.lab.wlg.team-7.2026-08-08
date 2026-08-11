@@ -166,9 +166,13 @@ coverage → roads → transit → flights → signals → cameras. The timebar 
 with an **investigation-case dropdown** (`EVENTS`, `.case-picker` — always
 visible even with the drawer closed): the 1–6 Aug movement snapshot and the
 real 18–22 Apr floods case, which switches on every April layer (roads +
-flights + the synthetic transit replay) and refits the view. A case only
-asserts the layers it names; hand-toggling away from a case shows a disabled
-"Custom layers" option. The point layers (cameras, transit, roads)
+flights + the synthetic transit replay) and refits the view. The chosen case
+is explicit state (`caseId`), never derived from layer flags — hand-toggling
+layers changes the picture, not which case is open. In the April case the
+timebar becomes a **daily timeline** over `aprilDays` (flagged road sites up
+in purple, flagged airport hours down in teal, counts never sums) and
+scrubbing filters the road diamonds to the sites flagged on that day
+(`shownRoads`); the roads list and search keep the full flagged set. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a
 bubble zooms into it, and zooming naturally dissolves clusters into glyphs.

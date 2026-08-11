@@ -491,6 +491,9 @@ h3 { font-size: var(--text-h3); }
 .replay-histogram { display: block; width: 100%; height: 36px; cursor: pointer; }
 .replay-histogram .up { fill: var(--wcc-warning); }
 .replay-histogram .down { fill: var(--wcc-error); }
+/* April case: flagged road sites up (purple), flagged airport hours down (teal). */
+.replay-histogram .roads-bar { fill: #5B4A8A; }
+.replay-histogram .flights-bar { fill: #0E6B72; }
 .replay-histogram .axis { stroke: var(--wcc-grey-500); stroke-width: 1; }
 .replay-histogram .cursor { fill: rgba(28, 28, 26, 0.18); }
 .replay-slider { width: 100%; margin: 0; accent-color: var(--wcc-black); }

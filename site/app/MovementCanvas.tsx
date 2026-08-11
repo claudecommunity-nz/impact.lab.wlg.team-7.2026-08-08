@@ -170,10 +170,14 @@ function slotDateParts(targetAt: string) {
   return { year, month, day, time: timePart.slice(0, 5) };
 }
 
-function slotLabel(targetAt: string) {
-  const { year, month, day, time } = slotDateParts(targetAt);
+function dayLabel(date: string) {
+  const { year, month, day } = slotDateParts(date);
   const weekday = WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
-  return `${weekday} ${day} ${MONTHS[month - 1]} · ${time}`;
+  return `${weekday} ${day} ${MONTHS[month - 1]}`;
+}
+
+function slotLabel(targetAt: string) {
+  return `${dayLabel(targetAt)} · ${slotDateParts(targetAt).time}`;
 }
 
 function shortDate(targetAt: string) {
@@ -330,6 +334,10 @@ export default function MovementCanvas() {
   const [replay, setReplay] = useState<ReplayCollection | null>(null);
   const [slotIndex, setSlotIndex] = useState(-1);
   const [playing, setPlaying] = useState(false);
+  // The chosen investigation case is its own state: hand-toggling layers
+  // afterwards changes the picture, never which case is open.
+  const [caseId, setCaseId] = useState<string>(EVENTS[0].id);
+  const [aprilIndex, setAprilIndex] = useState(-1);
   // Hover stores the popup position at pick time; every view change clears it,
   // so the stored screen coordinates never go stale.
   const [hover, setHover] = useState<Hover | null>(null);
@@ -521,6 +529,49 @@ export default function MovementCanvas() {
 
   const flightFeatures = useMemo(() => flights?.features ?? [], [flights]);
 
+  /* The April case gets its own timeline: per day, how many road sites and
+   * how many airport hours passed their gates. Counts of flagged units,
+   * never raw sums — the sources differ and reporting varies by day. */
+  const aprilDays = useMemo(() => {
+    const days = new Map<string, { roads: number; flightHours: number }>();
+    const at = (date: string) => {
+      const entry = days.get(date) ?? { roads: 0, flightHours: 0 };
+      days.set(date, entry);
+      return entry;
+    };
+    for (const feature of roadFeatures) {
+      for (const day of feature.properties.daily_history ?? []) {
+        const entry = at(day.date);
+        if (day.flagged) entry.roads += 1;
+      }
+    }
+    for (const feature of flightFeatures) {
+      for (const hour of feature.properties.flagged_hours) at(hour.date).flightHours += 1;
+    }
+    return [...days.entries()]
+      .sort(([a], [b]) => (a < b ? -1 : 1))
+      .map(([date, counts]) => ({ date, ...counts }));
+  }, [roadFeatures, flightFeatures]);
+
+  // Default the April scrubber to the worst flood day, without an effect.
+  const effectiveAprilIndex =
+    aprilIndex >= 0
+      ? Math.min(aprilIndex, Math.max(aprilDays.length - 1, 0))
+      : Math.max(aprilDays.findIndex((day) => day.date === "2026-04-20"), 0);
+  const aprilCase = caseId === "april-floods";
+  const activeAprilDate = aprilCase ? aprilDays[effectiveAprilIndex]?.date ?? null : null;
+
+  /* Scrubbing the April timeline filters the diamonds to sites flagged on
+   * that day; the roads list and search keep the full flagged set. */
+  const shownRoads = useMemo(() => {
+    if (!activeAprilDate) return roadFeatures;
+    return roadFeatures.filter((feature) =>
+      (feature.properties.daily_history ?? []).some(
+        (day) => day.date === activeAprilDate && day.flagged,
+      ),
+    );
+  }, [roadFeatures, activeAprilDate]);
+
   const selectedSignal =
     shownSignals.find((feature) => feature.id === selectedSignalId) ?? filteredSignals[0];
   const selectedCamera: CameraFeature | undefined =
@@ -579,7 +630,7 @@ export default function MovementCanvas() {
     return {
       cameras: split(cameraFeatures, (feature) => feature.geometry.coordinates, layers.cameras),
       transit: split(transitFeatures, (feature) => feature.geometry.coordinates, layers.transit),
-      roads: split(roadFeatures, (feature) => feature.geometry.coordinates, layers.roads),
+      roads: split(shownRoads, (feature) => feature.geometry.coordinates, layers.roads),
     };
   };
 
@@ -667,14 +718,16 @@ export default function MovementCanvas() {
     return () => observer.disconnect();
   }, []);
 
-  // Playback steps one published hour per tick and stops at the last slot.
-  // The interval reads the live index from a ref, so it needs no re-arming.
+  // Playback steps one published slot per tick and stops at the last one.
+  // The intervals read the live index from refs, so they need no re-arming.
   const slotIndexRef = useRef(slotIndex);
+  const aprilIndexRef = useRef(effectiveAprilIndex);
   useEffect(() => {
     slotIndexRef.current = slotIndex;
+    aprilIndexRef.current = effectiveAprilIndex;
   });
   useEffect(() => {
-    if (!playing || !replay) return;
+    if (!playing || !replay || aprilCase) return;
     const lastIndex = replay.slots.length - 1;
     const interval = setInterval(() => {
       if (slotIndexRef.current >= lastIndex) {
@@ -685,7 +738,20 @@ export default function MovementCanvas() {
       setSlotIndex(slotIndexRef.current + 1);
     }, PLAY_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [playing, replay]);
+  }, [playing, replay, aprilCase]);
+  useEffect(() => {
+    if (!playing || !aprilCase || aprilDays.length === 0) return;
+    const lastIndex = aprilDays.length - 1;
+    const interval = setInterval(() => {
+      if (aprilIndexRef.current >= lastIndex) {
+        setPlaying(false);
+        return;
+      }
+      setHover(null);
+      setAprilIndex(aprilIndexRef.current + 1);
+    }, PLAY_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [playing, aprilCase, aprilDays.length]);
 
   // While a camera popup is open, re-request its frame so the preview stays a
   // stream of pictures rather than one stale snapshot.
@@ -841,15 +907,11 @@ export default function MovementCanvas() {
     if (!layers[id]) LAYER_STORES[id].toggle(false);
   };
 
-  /** A preset only asserts the layers it names; other choices stay the user's. */
-  const eventActive = (event: (typeof EVENTS)[number]) =>
-    (Object.entries(event.layers) as [LayerId, boolean][]).every(
-      ([id, on]) => layers[id] === on,
-    );
-
+  /** A case only asserts the layers it names; other choices stay the user's. */
   const applyEvent = (event: (typeof EVENTS)[number]) => {
     setHover(null);
     setPlaying(false);
+    setCaseId(event.id);
     for (const [id, on] of Object.entries(event.layers) as [LayerId, boolean][]) {
       if (layers[id] !== on) LAYER_STORES[id].toggle(layers[id]);
     }
@@ -883,9 +945,24 @@ export default function MovementCanvas() {
     setSlotIndex(Math.min(Math.max(index, 0), replay.slots.length - 1));
   };
 
-  const togglePlay = () => {
-    if (!replay) return;
+  const scrubAprilTo = (index: number) => {
+    if (aprilDays.length === 0) return;
+    setPlaying(false);
     setHover(null);
+    ensureLayer("road");
+    setAprilIndex(Math.min(Math.max(index, 0), aprilDays.length - 1));
+  };
+
+  const togglePlay = () => {
+    setHover(null);
+    if (aprilCase) {
+      if (aprilDays.length === 0) return;
+      ensureLayer("road");
+      if (!playing && effectiveAprilIndex >= aprilDays.length - 1) setAprilIndex(0);
+      setPlaying((current) => !current);
+      return;
+    }
+    if (!replay) return;
     ensureLayer("signal");
     if (!playing && slotIndex >= replay.slots.length - 1) setSlotIndex(0);
     setPlaying((current) => !current);
@@ -1390,7 +1467,7 @@ export default function MovementCanvas() {
             <select
               className="case-picker"
               aria-label="Investigations"
-              value={EVENTS.find(eventActive)?.id ?? "custom"}
+              value={caseId}
               onChange={(changeEvent) => {
                 const picked = EVENTS.find(
                   (entry) => entry.id === changeEvent.currentTarget.value,
@@ -1403,17 +1480,12 @@ export default function MovementCanvas() {
                   {entry.label} · {entry.window} · {entry.badge}
                 </option>
               ))}
-              {EVENTS.some(eventActive) ? null : (
-                <option value="custom" disabled>
-                  Custom layers
-                </option>
-              )}
             </select>
             <button
               type="button"
               className="replay-play"
               onClick={togglePlay}
-              disabled={!replay}
+              disabled={aprilCase ? aprilDays.length === 0 : !replay}
               aria-label={playing ? "Pause the replay" : "Play the replay"}
               title={playing ? "Pause the replay" : "Play the replay"}
             >
@@ -1430,24 +1502,118 @@ export default function MovementCanvas() {
             </button>
             <button
               type="button"
-              onClick={() => scrubTo(slotIndex - 1)}
-              disabled={!replay || slotIndex <= 0}
-              aria-label="Previous hour"
-              title="Previous hour"
+              onClick={() =>
+                aprilCase ? scrubAprilTo(effectiveAprilIndex - 1) : scrubTo(slotIndex - 1)
+              }
+              disabled={
+                aprilCase
+                  ? aprilDays.length === 0 || effectiveAprilIndex <= 0
+                  : !replay || slotIndex <= 0
+              }
+              aria-label={aprilCase ? "Previous day" : "Previous hour"}
+              title={aprilCase ? "Previous day" : "Previous hour"}
             >
               ‹
             </button>
             <button
               type="button"
-              onClick={() => scrubTo(slotIndex + 1)}
-              disabled={!replay || slotIndex >= (replay?.slots.length ?? 1) - 1}
-              aria-label="Next hour"
-              title="Next hour"
+              onClick={() =>
+                aprilCase ? scrubAprilTo(effectiveAprilIndex + 1) : scrubTo(slotIndex + 1)
+              }
+              disabled={
+                aprilCase
+                  ? aprilDays.length === 0 || effectiveAprilIndex >= aprilDays.length - 1
+                  : !replay || slotIndex >= (replay?.slots.length ?? 1) - 1
+              }
+              aria-label={aprilCase ? "Next day" : "Next hour"}
+              title={aprilCase ? "Next day" : "Next hour"}
             >
               ›
             </button>
             <div className="replay-track">
-              {replay ? (
+              {aprilCase ? (
+                <>
+                  {aprilDays.length > 0 ? (
+                    <svg
+                      className="replay-histogram"
+                      viewBox={`0 0 ${aprilDays.length} 36`}
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                      onPointerDown={(event) => {
+                        const rect = event.currentTarget.getBoundingClientRect();
+                        scrubAprilTo(
+                          Math.floor(
+                            ((event.clientX - rect.left) / rect.width) * aprilDays.length,
+                          ),
+                        );
+                      }}
+                    >
+                      {(() => {
+                        const maxRoads = Math.max(1, ...aprilDays.map((day) => day.roads));
+                        const maxFlights = Math.max(
+                          1,
+                          ...aprilDays.map((day) => day.flightHours),
+                        );
+                        return (
+                          <>
+                            <rect
+                              className="cursor"
+                              x={effectiveAprilIndex}
+                              y={0}
+                              width={1}
+                              height={36}
+                            />
+                            {aprilDays.map((day, index) => (
+                              <g key={day.date}>
+                                {day.roads > 0 ? (
+                                  <rect
+                                    className="roads-bar"
+                                    x={index + 0.08}
+                                    y={17 - (day.roads / maxRoads) * 16}
+                                    width={0.84}
+                                    height={(day.roads / maxRoads) * 16}
+                                  />
+                                ) : null}
+                                {day.flightHours > 0 ? (
+                                  <rect
+                                    className="flights-bar"
+                                    x={index + 0.08}
+                                    y={19}
+                                    width={0.84}
+                                    height={(day.flightHours / maxFlights) * 16}
+                                  />
+                                ) : null}
+                              </g>
+                            ))}
+                            <line
+                              className="axis"
+                              x1={0}
+                              y1={18}
+                              x2={aprilDays.length}
+                              y2={18}
+                              vectorEffect="non-scaling-stroke"
+                            />
+                          </>
+                        );
+                      })()}
+                    </svg>
+                  ) : null}
+                  <input
+                    type="range"
+                    className="replay-slider"
+                    min={0}
+                    max={Math.max(aprilDays.length - 1, 0)}
+                    step={1}
+                    value={effectiveAprilIndex}
+                    disabled={aprilDays.length === 0}
+                    onChange={(event) => scrubAprilTo(Number(event.currentTarget.value))}
+                    aria-label="Replay day"
+                    aria-valuetext={activeAprilDate ? dayLabel(activeAprilDate) : "loading"}
+                  />
+                </>
+              ) : (
+                <>
+                  {replay ? (
                 <svg
                   className="replay-histogram"
                   viewBox={`0 0 ${replay.slots.length} 36`}
@@ -1506,27 +1672,44 @@ export default function MovementCanvas() {
                     );
                   })()}
                 </svg>
-              ) : null}
-              <input
-                type="range"
-                className="replay-slider"
-                min={0}
-                max={replay ? replay.slots.length - 1 : 0}
-                step={1}
-                value={slotIndex >= 0 ? slotIndex : 0}
-                disabled={!replay}
-                onChange={(event) => scrubTo(Number(event.currentTarget.value))}
-                aria-label="Replay hour"
-                aria-valuetext={slotLabel(activeSlot?.target_at ?? health.target_at)}
-              />
+                  ) : null}
+                  <input
+                    type="range"
+                    className="replay-slider"
+                    min={0}
+                    max={replay ? replay.slots.length - 1 : 0}
+                    step={1}
+                    value={slotIndex >= 0 ? slotIndex : 0}
+                    disabled={!replay}
+                    onChange={(event) => scrubTo(Number(event.currentTarget.value))}
+                    aria-label="Replay hour"
+                    aria-valuetext={slotLabel(activeSlot?.target_at ?? health.target_at)}
+                  />
+                </>
+              )}
             </div>
             <p className="replay-readout">
-              <strong>{slotLabel(activeSlot?.target_at ?? health.target_at)}</strong>
-              <span>
-                {(activeSlot?.candidate_count ?? health.candidate_count).toLocaleString("en-NZ")}{" "}
-                signals · {(activeSlot?.data_gap_groups ?? health.data_gap_groups).toLocaleString("en-NZ")}{" "}
-                data gaps
-              </span>
+              {aprilCase ? (
+                <>
+                  <strong>
+                    {activeAprilDate ? dayLabel(activeAprilDate) : "18–22 Apr 2026"}
+                  </strong>
+                  <span>
+                    {aprilDays.length > 0
+                      ? `${aprilDays[effectiveAprilIndex].roads.toLocaleString("en-NZ")} road sites · ${aprilDays[effectiveAprilIndex].flightHours.toLocaleString("en-NZ")} flight hours`
+                      : "real event"}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <strong>{slotLabel(activeSlot?.target_at ?? health.target_at)}</strong>
+                  <span>
+                    {(activeSlot?.candidate_count ?? health.candidate_count).toLocaleString("en-NZ")}{" "}
+                    signals · {(activeSlot?.data_gap_groups ?? health.data_gap_groups).toLocaleString("en-NZ")}{" "}
+                    data gaps
+                  </span>
+                </>
+              )}
             </p>
           </div>
           <p className="map-caption">
