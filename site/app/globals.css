@@ -339,6 +339,7 @@ h3 { font-size: var(--text-h3); }
 .layer-chip .swatch.cameras { background: var(--wcc-success); }
 .layer-chip .swatch.transit { background: #2B5CAD; }
 .layer-chip .swatch.roads { background: #5B4A8A; }
+.layer-chip .swatch.flights { background: #0E6B72; }
 .layer-chip.off .swatch { opacity: 0.45; }
 .status-badge {
   font-style: normal; font-size: 10px; font-weight: 700; white-space: nowrap;
@@ -413,6 +414,7 @@ h3 { font-size: var(--text-h3); }
 .map-key .road, .map-key .road-high { width: 10px; height: 10px; transform: rotate(45deg) scale(0.8); }
 .map-key .road { background: #907FBE; }
 .map-key .road-high { background: #5B4A8A; }
+.map-key .flight { width: 12px; height: 9px; border-radius: 2px 2px 4px 4px; background: #0E6B72; transform: none; }
 .map-popup {
   position: absolute; z-index: 4; width: 248px; pointer-events: none;
   background: var(--surface-page); border: 1px solid var(--wcc-black); box-shadow: var(--shadow-2);
@@ -537,6 +539,7 @@ h3 { font-size: var(--text-h3); }
 .direction-chip.transit-high { background: var(--wcc-error); }
 .direction-chip.road { background: #907FBE; }
 .direction-chip.road-high { background: #5B4A8A; }
+.direction-chip.flight { background: #0E6B72; }
 .selected-evidence h3 { margin-top: var(--space-4); }
 .selected-evidence > p { color: var(--wcc-grey-700); }
 .count-comparison { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin: var(--space-5) 0; border-block: 1px solid var(--border-hairline); }
@@ -601,6 +604,7 @@ h3 { font-size: var(--text-h3); }
 .signal-list em.transit-high { color: var(--wcc-error); }
 .signal-list em.road { color: #907FBE; }
 .signal-list em.road-high { color: #5B4A8A; }
+.signal-list em.flight { color: #0E6B72; }
 .worst-detail {
   margin: var(--space-4) 0; padding: var(--space-3);
   border-left: 4px solid var(--wcc-grey-300); background: var(--wcc-grey-100);

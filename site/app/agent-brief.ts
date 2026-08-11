@@ -242,6 +242,7 @@ export function answer(question: string, brief: Brief): AgentReply {
         "· /cop/v1/traffic-cameras.geojson — NZTA camera positions",
         "· /cop/v1/transit-anomalies.geojson — Metlink hotspots (labelled synthetic)",
         "· /cop/v1/road-anomalies.geojson — NZTA state-highway sites, real April 2026 floods",
+        "· /cop/v1/flight-anomalies.geojson — WLG air access, real April 2026, OpenSky",
         "· /cop/v1/movement-health.json — counts, gaps, data age, limitations",
         "Data sources in the sidebar exports any of them as GeoJSON, JSON, CSV or NDJSON, and builds the MCP and A2A config.",
       ].join("\n"),

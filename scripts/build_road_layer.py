@@ -45,9 +45,29 @@ LIMITATIONS = [
 ]
 
 
-def build(flagged_path: Path, output_path: Path) -> dict:
+def load_daily_history(scored_path: Path) -> dict[str, list[dict]]:
+    """Each site's full April daily series: reported days only — a missing
+    date is a reporting gap, never zero."""
+    history: dict[str, list[dict]] = {}
+    with scored_path.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            history.setdefault(row["SiteRef"], []).append(
+                {
+                    "date": row["count_date"],
+                    "observed": round(float(row["total_count"])),
+                    "baseline": round(float(row["baseline_median"])),
+                    "flagged": row["severity"] != "NONE",
+                }
+            )
+    for series in history.values():
+        series.sort(key=lambda entry: entry["date"])
+    return history
+
+
+def build(flagged_path: Path, scored_path: Path, output_path: Path) -> dict:
     worst_by_site: dict[str, dict] = {}
     site_days: Counter[str] = Counter()
+    daily_history = load_daily_history(scored_path)
     with flagged_path.open(newline="", encoding="utf-8") as handle:
         for row in csv.DictReader(handle):
             site_days[row["SiteRef"]] += 1
@@ -78,6 +98,7 @@ def build(flagged_path: Path, output_path: Path) -> dict:
             "severity": row["severity"],
             "direction": row["direction"],
             "april_anomaly_days": site_days[site_ref],
+            "daily_history": daily_history.get(site_ref, []),
             "event": EVENT_NAME,
             "real_event": True,
             "attribution": ATTRIBUTION,
@@ -111,7 +132,7 @@ def build(flagged_path: Path, output_path: Path) -> dict:
         "type": "FeatureCollection",
         "schema": "road-anomaly-collection/v1",
         "source": "NZTA TMS daily traffic counts, Wellington region, April 2026",
-        "source_csv": "NZTA/anomaly/csv/anomaly_flagged.csv",
+        "source_csv": "NZTA/anomaly/csv/anomaly_flagged.csv + site_daily_scored.csv",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "event": EVENT_NAME,
         "event_dates": list(EVENT_DATES),
@@ -142,13 +163,18 @@ def main() -> None:
         default=ROOT / "NZTA" / "anomaly" / "csv" / "anomaly_flagged.csv",
     )
     parser.add_argument(
+        "--scored",
+        type=Path,
+        default=ROOT / "NZTA" / "anomaly" / "csv" / "site_daily_scored.csv",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=ROOT / "site" / "public" / "cop" / "v1" / "road-anomalies.geojson",
     )
     args = parser.parse_args()
 
-    collection = build(args.flagged, args.output)
+    collection = build(args.flagged, args.scored, args.output)
     severities = Counter(f["properties"]["severity"] for f in collection["features"])
     print(
         f"{collection['site_count']} mapped sites of {collection['flagged_site_count']} flagged "

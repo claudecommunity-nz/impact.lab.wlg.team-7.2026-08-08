@@ -218,6 +218,16 @@ export const BUILTIN_SOURCES: DataSource[] = [
     note: "Real 20-21 April 2026 flood event. TMS counts scored per site.",
   },
   {
+    id: "flight-anomalies",
+    label: "Air access anomalies",
+    publisher: "OpenSky Network",
+    url: "/cop/v1/flight-anomalies.geojson",
+    format: "geojson",
+    kind: "builtin",
+    cadence: "April 2026 backtest · hourly movements",
+    note: "Real WLG flight movements scored per hour. Not an airport feed.",
+  },
+  {
     id: "movement-health",
     label: "Coverage and health",
     publisher: "Wellington City Council Transport Sensors",

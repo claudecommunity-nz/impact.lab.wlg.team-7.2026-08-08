@@ -81,6 +81,10 @@ export default function Home() {
             <span>State highway layer (real April 2026 floods)</span>
             <code>/cop/v1/road-anomalies.geojson</code>
           </a>
+          <a href="/cop/v1/flight-anomalies.geojson">
+            <span>Air access layer (real April 2026, OpenSky)</span>
+            <code>/cop/v1/flight-anomalies.geojson</code>
+          </a>
           <a href="/cop/v1/movement-health.json">
             <span>Coverage and health</span>
             <code>/cop/v1/movement-health.json</code>

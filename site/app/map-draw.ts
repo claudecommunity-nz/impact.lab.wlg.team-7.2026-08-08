@@ -122,6 +122,13 @@ export type TransitCollection = {
   features: TransitFeature[];
 };
 
+export type DailyHistoryPoint = {
+  date: string;
+  observed: number;
+  baseline: number;
+  flagged: boolean;
+};
+
 export type RoadProperties = {
   site_ref: string;
   site_name: string;
@@ -136,6 +143,7 @@ export type RoadProperties = {
   severity: "HIGH" | "MEDIUM" | "LOW";
   direction: "DROP" | "SURGE";
   april_anomaly_days: number;
+  daily_history: DailyHistoryPoint[];
   event: string;
   real_event: boolean;
   attribution: string;
@@ -159,6 +167,51 @@ export type RoadCollection = {
   limitations: string[];
   sites_without_geometry: RoadProperties[];
   features: RoadFeature[];
+};
+
+export type FlightHourRecord = {
+  date: string;
+  hour: number;
+  observed: number;
+  expected: number;
+  ratio: number;
+  robust_z: number;
+  severity: "HIGH" | "MEDIUM" | "LOW" | "NONE";
+  direction: "DROP" | "SURGE";
+};
+
+export type FlightProperties = {
+  site_name: string;
+  iata: string;
+  window_start: string;
+  window_end: string;
+  scored_hours: number;
+  high_hours: number;
+  medium_hours: number;
+  low_hours: number;
+  worst_example: FlightHourRecord;
+  flagged_hours: FlightHourRecord[];
+  daily_movements: { date: string; movements: number; observed_hours: number; flagged: boolean }[];
+  real_data: boolean;
+  attribution: string;
+  limitations: string[];
+};
+
+export type FlightFeature = {
+  id: string;
+  geometry: { type: "Point"; coordinates: Coordinate };
+  properties: FlightProperties;
+};
+
+export type FlightCollection = {
+  type: "FeatureCollection";
+  window_start: string;
+  window_end: string;
+  flagged_hour_count: number;
+  real_data: boolean;
+  attribution: string;
+  limitations: string[];
+  features: FlightFeature[];
 };
 
 /** Transport classes drawn with the person glyph; everything else gets the car. */
@@ -693,6 +746,70 @@ function traceRoundedRect(
   context.arcTo(x, y + height, x, y + height - radius, radius);
   context.lineTo(x, y + radius);
   context.arcTo(x, y, x + radius, y, radius);
+  context.closePath();
+}
+
+/**
+ * Mini plane at the airport air-access site (real April 2026 OpenSky
+ * backtest). Teal, so the layer reads apart from every other glyph colour.
+ */
+export function drawFlights(
+  context: CanvasRenderingContext2D,
+  project: Projector,
+  sites: FlightFeature[],
+  selectedId: string | null,
+  hoveredId: string | null = null,
+  baseScale = 1,
+) {
+  for (const feature of sites) {
+    const [x, y] = project(feature.geometry.coordinates);
+    const isSelected = feature.id === selectedId;
+    const isHovered = feature.id === hoveredId;
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale;
+
+    if (isSelected) {
+      context.beginPath();
+      context.arc(x, y, 9 * scale, 0, Math.PI * 2);
+      context.strokeStyle = "#000000";
+      context.lineWidth = 2;
+      context.stroke();
+    }
+
+    tracePlane(context, x, y, scale);
+    context.fillStyle = "#0E6B72";
+    context.fill();
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 1.3;
+    context.stroke();
+  }
+}
+
+/** Plane silhouette pointing up: nose, swept wings, tailplane. */
+function tracePlane(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  scale: number,
+) {
+  const s = scale;
+  context.beginPath();
+  context.moveTo(x, y - 6 * s);
+  context.quadraticCurveTo(x + 1.4 * s, y - 4.4 * s, x + 1.2 * s, y - 2 * s);
+  context.lineTo(x + 6 * s, y + 1.2 * s);
+  context.lineTo(x + 6 * s, y + 2.6 * s);
+  context.lineTo(x + 1.2 * s, y + 1.2 * s);
+  context.lineTo(x + 1 * s, y + 3.6 * s);
+  context.lineTo(x + 2.6 * s, y + 5 * s);
+  context.lineTo(x + 2.6 * s, y + 6 * s);
+  context.lineTo(x, y + 5.2 * s);
+  context.lineTo(x - 2.6 * s, y + 6 * s);
+  context.lineTo(x - 2.6 * s, y + 5 * s);
+  context.lineTo(x - 1 * s, y + 3.6 * s);
+  context.lineTo(x - 1.2 * s, y + 1.2 * s);
+  context.lineTo(x - 6 * s, y + 2.6 * s);
+  context.lineTo(x - 6 * s, y + 1.2 * s);
+  context.lineTo(x - 1.2 * s, y - 2 * s);
+  context.quadraticCurveTo(x - 1.4 * s, y - 4.4 * s, x, y - 6 * s);
   context.closePath();
 }
 

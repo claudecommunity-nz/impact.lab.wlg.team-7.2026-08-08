@@ -1,0 +1,525 @@
+{
+ "type": "FeatureCollection",
+ "schema": "flight-anomaly-collection/v1",
+ "source": "OpenSky Network arrivals and departures, Wellington Airport, April 2026",
+ "source_csv": "data/planes/anomaly/csv/flights_anomaly.csv",
+ "generated_at": "2026-08-11T11:38:43+00:00",
+ "window_start": "2026-04-01",
+ "window_end": "2026-04-30",
+ "flagged_hour_count": 28,
+ "real_data": true,
+ "attribution": "Flight data © OpenSky Network, opensky-network.org",
+ "limitations": [
+  "Real data: OpenSky flight movements scored against each hour's own weekday-matched median. A flag marks a statistical change, not a diagnosed disruption or its cause.",
+  "Derived third-party tracking data, not an official WCC or airport feed; a movement is not a passenger count.",
+  "April 2026 backtest window, not the 6 August 2026 snapshot the countline layer shows.",
+  "Operating hours only; unobserved hours are gaps, never zeros."
+ ],
+ "features": [
+  {
+   "type": "Feature",
+   "id": "flight-site:WLG",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.8052,
+     -41.3272
+    ]
+   },
+   "properties": {
+    "schema": "flight-anomaly/v1",
+    "source_type": "air_access",
+    "site_name": "Wellington Airport (WLG)",
+    "iata": "WLG",
+    "window_start": "2026-04-01",
+    "window_end": "2026-04-30",
+    "scored_hours": 562,
+    "high_hours": 7,
+    "medium_hours": 21,
+    "low_hours": 71,
+    "worst_example": {
+     "date": "2026-04-12",
+     "hour": 22,
+     "observed": 7,
+     "expected": 1.0,
+     "ratio": 7.0,
+     "robust_z": 8.094,
+     "severity": "HIGH",
+     "direction": "SURGE"
+    },
+    "flagged_hours": [
+     {
+      "date": "2026-04-01",
+      "hour": 8,
+      "observed": 18,
+      "expected": 14.0,
+      "ratio": 1.286,
+      "robust_z": 2.698,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-02",
+      "hour": 17,
+      "observed": 22,
+      "expected": 13.5,
+      "ratio": 1.63,
+      "robust_z": 3.822,
+      "severity": "HIGH",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-03",
+      "hour": 6,
+      "observed": 12,
+      "expected": 8.0,
+      "ratio": 1.5,
+      "robust_z": 2.698,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-03",
+      "hour": 9,
+      "observed": 23,
+      "expected": 15.5,
+      "ratio": 1.484,
+      "robust_z": 2.529,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-06",
+      "hour": 8,
+      "observed": 7,
+      "expected": 14.0,
+      "ratio": 0.5,
+      "robust_z": -4.721,
+      "severity": "HIGH",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-06",
+      "hour": 14,
+      "observed": 23,
+      "expected": 15.5,
+      "ratio": 1.484,
+      "robust_z": 2.529,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-06",
+      "hour": 23,
+      "observed": 0,
+      "expected": 2.0,
+      "ratio": 0.0,
+      "robust_z": -2.698,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-09",
+      "hour": 23,
+      "observed": 0,
+      "expected": 2.0,
+      "ratio": 0.0,
+      "robust_z": -2.698,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-12",
+      "hour": 19,
+      "observed": 2,
+      "expected": 8.0,
+      "ratio": 0.25,
+      "robust_z": -2.698,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-12",
+      "hour": 22,
+      "observed": 7,
+      "expected": 1.0,
+      "ratio": 7.0,
+      "robust_z": 8.094,
+      "severity": "HIGH",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-14",
+      "hour": 6,
+      "observed": 12,
+      "expected": 8.0,
+      "ratio": 1.5,
+      "robust_z": 2.698,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-14",
+      "hour": 8,
+      "observed": 10,
+      "expected": 14.0,
+      "ratio": 0.714,
+      "robust_z": -2.698,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-15",
+      "hour": 15,
+      "observed": 30,
+      "expected": 13.0,
+      "ratio": 2.308,
+      "robust_z": 5.733,
+      "severity": "HIGH",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-17",
+      "hour": 8,
+      "observed": 18,
+      "expected": 14.0,
+      "ratio": 1.286,
+      "robust_z": 2.698,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-17",
+      "hour": 23,
+      "observed": 4,
+      "expected": 2.0,
+      "ratio": 2.0,
+      "robust_z": 2.698,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-18",
+      "hour": 8,
+      "observed": 14,
+      "expected": 9.5,
+      "ratio": 1.474,
+      "robust_z": 3.035,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-19",
+      "hour": 16,
+      "observed": 22,
+      "expected": 16.0,
+      "ratio": 1.375,
+      "robust_z": 2.698,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-19",
+      "hour": 20,
+      "observed": 7,
+      "expected": 4.5,
+      "ratio": 1.556,
+      "robust_z": 3.372,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-20",
+      "hour": 14,
+      "observed": 4,
+      "expected": 15.5,
+      "ratio": 0.258,
+      "robust_z": -3.878,
+      "severity": "HIGH",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-20",
+      "hour": 16,
+      "observed": 3,
+      "expected": 18.5,
+      "ratio": 0.162,
+      "robust_z": -3.485,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-20",
+      "hour": 17,
+      "observed": 3,
+      "expected": 13.5,
+      "ratio": 0.222,
+      "robust_z": -4.721,
+      "severity": "HIGH",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-20",
+      "hour": 23,
+      "observed": 0,
+      "expected": 2.0,
+      "ratio": 0.0,
+      "robust_z": -2.698,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-21",
+      "hour": 17,
+      "observed": 5,
+      "expected": 13.5,
+      "ratio": 0.37,
+      "robust_z": -3.822,
+      "severity": "HIGH",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-23",
+      "hour": 23,
+      "observed": 0,
+      "expected": 2.0,
+      "ratio": 0.0,
+      "robust_z": -2.698,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-24",
+      "hour": 15,
+      "observed": 23,
+      "expected": 13.0,
+      "ratio": 1.769,
+      "robust_z": 3.372,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-25",
+      "hour": 23,
+      "observed": 4,
+      "expected": 2.0,
+      "ratio": 2.0,
+      "robust_z": 2.698,
+      "severity": "MEDIUM",
+      "direction": "SURGE"
+     },
+     {
+      "date": "2026-04-27",
+      "hour": 6,
+      "observed": 4,
+      "expected": 8.0,
+      "ratio": 0.5,
+      "robust_z": -2.698,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     },
+     {
+      "date": "2026-04-27",
+      "hour": 8,
+      "observed": 9,
+      "expected": 14.0,
+      "ratio": 0.643,
+      "robust_z": -3.372,
+      "severity": "MEDIUM",
+      "direction": "DROP"
+     }
+    ],
+    "daily_movements": [
+     {
+      "date": "2026-04-01",
+      "movements": 222,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-02",
+      "movements": 255,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-03",
+      "movements": 219,
+      "observed_hours": 19,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-04",
+      "movements": 132,
+      "observed_hours": 18,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-05",
+      "movements": 162,
+      "observed_hours": 17,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-06",
+      "movements": 181,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-07",
+      "movements": 204,
+      "observed_hours": 19,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-08",
+      "movements": 170,
+      "observed_hours": 22,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-09",
+      "movements": 180,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-10",
+      "movements": 219,
+      "observed_hours": 21,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-11",
+      "movements": 181,
+      "observed_hours": 19,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-12",
+      "movements": 136,
+      "observed_hours": 19,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-13",
+      "movements": 204,
+      "observed_hours": 21,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-14",
+      "movements": 178,
+      "observed_hours": 20,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-15",
+      "movements": 211,
+      "observed_hours": 20,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-16",
+      "movements": 173,
+      "observed_hours": 21,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-17",
+      "movements": 217,
+      "observed_hours": 20,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-18",
+      "movements": 148,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-19",
+      "movements": 177,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-20",
+      "movements": 116,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "movements": 142,
+      "observed_hours": 20,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-22",
+      "movements": 179,
+      "observed_hours": 20,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "movements": 193,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-24",
+      "movements": 230,
+      "observed_hours": 21,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-25",
+      "movements": 179,
+      "observed_hours": 20,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-26",
+      "movements": 146,
+      "observed_hours": 20,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-27",
+      "movements": 183,
+      "observed_hours": 18,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-28",
+      "movements": 190,
+      "observed_hours": 20,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-29",
+      "movements": 175,
+      "observed_hours": 20,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-30",
+      "movements": 190,
+      "observed_hours": 19,
+      "flagged": false
+     }
+    ],
+    "real_data": true,
+    "attribution": "Flight data © OpenSky Network, opensky-network.org",
+    "limitations": [
+     "Real data: OpenSky flight movements scored against each hour's own weekday-matched median. A flag marks a statistical change, not a diagnosed disruption or its cause.",
+     "Derived third-party tracking data, not an official WCC or airport feed; a movement is not a passenger count.",
+     "April 2026 backtest window, not the 6 August 2026 snapshot the countline layer shows.",
+     "Operating hours only; unobserved hours are gaps, never zeros."
+    ]
+   }
+  }
+ ]
+}

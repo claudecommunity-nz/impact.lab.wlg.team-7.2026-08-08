@@ -19,6 +19,8 @@ import {
   type CameraFeature,
   type Cluster,
   type Coordinate,
+  type FlightCollection,
+  type FlightFeature,
   type LineCollection,
   type LineFeature,
   type MapView,
@@ -40,6 +42,7 @@ import {
   drawCameras,
   drawClusters,
   drawCoverage,
+  drawFlights,
   drawRoads,
   drawSignals,
   drawTiles,
@@ -54,9 +57,9 @@ import {
 } from "./map-draw";
 
 type Filter = "all" | "people" | "vehicles";
-type LayerId = "signals" | "coverage" | "cameras" | "transit" | "roads";
+type LayerId = "signals" | "coverage" | "cameras" | "transit" | "roads" | "flights";
 type Layers = Record<LayerId, boolean>;
-type Focus = "signal" | "camera" | "transit" | "road";
+type Focus = "signal" | "camera" | "transit" | "road" | "flight";
 type Hover = {
   kind: Focus;
   id: string;
@@ -89,6 +92,7 @@ const LAYER_STORES = {
   cameras: createFlagStore("murmur.layer.cameras", false),
   transit: createFlagStore("murmur.layer.transit", false),
   roads: createFlagStore("murmur.layer.roads", false),
+  flights: createFlagStore("murmur.layer.flights", false),
 } satisfies Record<LayerId, ReturnType<typeof createFlagStore>>;
 
 function useFlag(store: ReturnType<typeof createFlagStore>) {
@@ -108,6 +112,7 @@ const LAYERS: {
   { id: "cameras", label: "Traffic cameras", publisher: "NZTA", badge: "Live", tone: "live" },
   { id: "transit", label: "Public transport", publisher: "Metlink", badge: "Synthetic", tone: "synthetic" },
   { id: "roads", label: "State highways", publisher: "NZTA", badge: "Real · Apr 2026", tone: "real" },
+  { id: "flights", label: "Air access", publisher: "OpenSky Network", badge: "Real · Apr 2026", tone: "real" },
 ];
 
 type SearchHit = { kind: Focus; id: string; label: string; detail: string; coordinate: Coordinate };
@@ -141,6 +146,56 @@ function slotLabel(targetAt: string) {
 function shortDate(targetAt: string) {
   const { month, day } = slotDateParts(targetAt);
   return `${day} ${MONTHS[month - 1]}`;
+}
+
+/** A month of daily values as bars: flagged days highlighted, an optional
+ * baseline as a dashed reference line. Reported days only — gaps stay gaps. */
+function DailyStrip({
+  points,
+  reference,
+  label,
+}: {
+  points: { date: string; value: number; flagged: boolean }[];
+  reference?: number;
+  label: string;
+}) {
+  if (points.length === 0) return null;
+  const width = 232;
+  const height = 44;
+  const gap = 1.5;
+  const max = Math.max(...points.map((point) => point.value), reference ?? 0, 1);
+  const barWidth = (width - gap * (points.length - 1)) / points.length;
+  const barHeight = (value: number) => Math.max((value / max) * (height - 2), 1);
+  return (
+    <figure className="trend-spark">
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={label}>
+        {points.map((point, index) => (
+          <rect
+            key={point.date}
+            className={point.flagged ? "bar now decrease" : "bar"}
+            x={index * (barWidth + gap)}
+            y={height - barHeight(point.value)}
+            width={barWidth}
+            height={barHeight(point.value)}
+          />
+        ))}
+        {reference !== undefined ? (
+          <line
+            className="expected-line"
+            x1={0}
+            y1={height - (reference / max) * (height - 2)}
+            x2={width}
+            y2={height - (reference / max) * (height - 2)}
+          />
+        ) : null}
+      </svg>
+      <figcaption aria-hidden="true">
+        <span>{shortDate(points[0].date)}</span>
+        {reference !== undefined ? <span>usual {reference.toLocaleString("en-NZ")}</span> : null}
+        <span>{shortDate(points[points.length - 1].date)}</span>
+      </figcaption>
+    </figure>
+  );
 }
 
 /** Prior matched weekday/hour counts as bars, the observed hour highlighted,
@@ -219,16 +274,19 @@ export default function MovementCanvas() {
   const [cameras, setCameras] = useState<CameraCollection | null>(null);
   const [transit, setTransit] = useState<TransitCollection | null>(null);
   const [roads, setRoads] = useState<RoadCollection | null>(null);
+  const [flights, setFlights] = useState<FlightCollection | null>(null);
   const [selectedSignalId, setSelectedSignalId] = useState<string | null>(null);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [selectedTransitId, setSelectedTransitId] = useState<string | null>(null);
   const [selectedRoadId, setSelectedRoadId] = useState<string | null>(null);
+  const [selectedFlightId, setSelectedFlightId] = useState<string | null>(null);
   const [focus, setFocus] = useState<Focus>("signal");
   const [filter, setFilter] = useState<Filter>("all");
   const [error, setError] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [transitError, setTransitError] = useState<string | null>(null);
   const [roadError, setRoadError] = useState<string | null>(null);
+  const [flightError, setFlightError] = useState<string | null>(null);
   const [frameNonce, setFrameNonce] = useState(0);
   // Remember which frame URL failed, so selecting another camera or refreshing
   // clears the failure without an effect.
@@ -349,6 +407,16 @@ export default function MovementCanvas() {
       .catch(() => setRoadError("The state-highway layer could not be loaded."));
   }, []);
 
+  useEffect(() => {
+    fetch("/cop/v1/flight-anomalies.geojson")
+      .then((response) => response.json())
+      .then((collection: FlightCollection) => {
+        setFlights(collection);
+        setSelectedFlightId(collection.features[0]?.id ?? null);
+      })
+      .catch(() => setFlightError("The air-access layer could not be loaded."));
+  }, []);
+
   /* Replay signals carry no geometry of their own: the countline id keys into
    * the coverage layer's line, so one geometry file serves every hour. */
   const countlineGeometry = useMemo(() => {
@@ -418,6 +486,8 @@ export default function MovementCanvas() {
     [roadFeatures],
   );
 
+  const flightFeatures = useMemo(() => flights?.features ?? [], [flights]);
+
   const selectedSignal =
     shownSignals.find((feature) => feature.id === selectedSignalId) ?? filteredSignals[0];
   const selectedCamera: CameraFeature | undefined =
@@ -426,6 +496,8 @@ export default function MovementCanvas() {
     transitFeatures.find((feature) => feature.id === selectedTransitId) ?? transitFeatures[0];
   const selectedRoad: RoadFeature | undefined =
     roadFeatures.find((feature) => feature.id === selectedRoadId) ?? roadFeatures[0];
+  const selectedFlight: FlightFeature | undefined =
+    flightFeatures.find((feature) => feature.id === selectedFlightId) ?? flightFeatures[0];
 
   const hoveredCamera =
     hover?.kind === "camera"
@@ -443,6 +515,10 @@ export default function MovementCanvas() {
     hover?.kind === "road"
       ? roadFeatures.find((feature) => feature.id === hover.id)
       : undefined;
+  const hoveredFlight =
+    hover?.kind === "flight"
+      ? flightFeatures.find((feature) => feature.id === hover.id)
+      : undefined;
 
   /* The investigate panel follows the pointer: hovering any glyph previews its
    * evidence, and the pinned selection returns when the pointer leaves. */
@@ -451,7 +527,10 @@ export default function MovementCanvas() {
   const panelCamera = hoveredCamera ?? selectedCamera;
   const panelTransit = hoveredTransit ?? selectedTransit;
   const panelRoad = hoveredRoad ?? selectedRoad;
-  const previewing = Boolean(hoveredSignal || hoveredCamera || hoveredTransit || hoveredRoad);
+  const panelFlight = hoveredFlight ?? selectedFlight;
+  const previewing = Boolean(
+    hoveredSignal || hoveredCamera || hoveredTransit || hoveredRoad || hoveredFlight,
+  );
 
   /** Per-frame screen-space clustering of the three point layers. */
   const clusterLayers = (width: number, height: number) => {
@@ -504,6 +583,16 @@ export default function MovementCanvas() {
           scale,
         );
         drawClusters(surface.context, groups.transit.clusters, "#2B5CAD");
+      }
+      if (layers.flights) {
+        drawFlights(
+          surface.context,
+          project,
+          flightFeatures,
+          selectedFlight?.id ?? null,
+          hover?.kind === "flight" ? hover.id : null,
+          scale,
+        );
       }
       if (layers.signals) {
         drawSignals(
@@ -613,12 +702,13 @@ export default function MovementCanvas() {
       layers.cameras ? boundsOfPoints(cameraFeatures) : null,
       layers.transit ? boundsOfPoints(transitFeatures) : null,
       layers.roads ? boundsOfPoints(roadFeatures) : null,
+      layers.flights ? boundsOfPoints(flightFeatures) : null,
     );
     if (!bounds) return;
     autoFitRef.current = false;
     setHover(null);
     setView(fitView(bounds, size.width, size.height));
-  }, [stageSize, layers, coverage, cameraFeatures, transitFeatures, roadFeatures]);
+  }, [stageSize, layers, coverage, cameraFeatures, transitFeatures, roadFeatures, flightFeatures]);
 
   const toggleLayer = (id: LayerId) => {
     setHover(null);
@@ -689,12 +779,32 @@ export default function MovementCanvas() {
         });
       }
     }
+    for (const feature of flightFeatures) {
+      if (feature.properties.site_name.toLowerCase().includes(query)) {
+        hits.push({
+          kind: "flight",
+          id: feature.id,
+          label: feature.properties.site_name,
+          detail: "Air access",
+          coordinate: feature.geometry.coordinates,
+        });
+      }
+    }
     return hits.slice(0, SEARCH_LIMIT);
-  }, [search, shownSignals, cameraFeatures, transitFeatures, roadFeatures]);
+  }, [search, shownSignals, cameraFeatures, transitFeatures, roadFeatures, flightFeatures]);
 
   /** Picking a feature switches its layer on, so the pick is always visible. */
   const ensureLayer = (kind: Focus) => {
-    const id: LayerId = kind === "signal" ? "signals" : kind === "camera" ? "cameras" : kind === "transit" ? "transit" : "roads";
+    const id: LayerId =
+      kind === "signal"
+        ? "signals"
+        : kind === "camera"
+          ? "cameras"
+          : kind === "transit"
+            ? "transit"
+            : kind === "road"
+              ? "roads"
+              : "flights";
     if (!layers[id]) LAYER_STORES[id].toggle(false);
   };
 
@@ -719,6 +829,7 @@ export default function MovementCanvas() {
     if (hit.kind === "camera") setSelectedCameraId(hit.id);
     else if (hit.kind === "transit") setSelectedTransitId(hit.id);
     else if (hit.kind === "road") setSelectedRoadId(hit.id);
+    else if (hit.kind === "flight") setSelectedFlightId(hit.id);
     else setSelectedSignalId(hit.id);
     setFocus(hit.kind);
     ensureLayer(hit.kind);
@@ -781,6 +892,10 @@ export default function MovementCanvas() {
     if (layers.roads) {
       const hit = pickNearest(groups.roads.singles, (feature) => feature.geometry.coordinates, project, point);
       if (hit) return place("road", hit.id, project(hit.geometry.coordinates));
+    }
+    if (layers.flights) {
+      const hit = pickNearest(flightFeatures, (feature) => feature.geometry.coordinates, project, point);
+      if (hit) return place("flight", hit.id, project(hit.geometry.coordinates));
     }
     return null;
   };
@@ -856,6 +971,9 @@ export default function MovementCanvas() {
     } else if (hit.kind === "road") {
       setSelectedRoadId(hit.id);
       setFocus("road");
+    } else if (hit.kind === "flight") {
+      setSelectedFlightId(hit.id);
+      setFocus("flight");
     } else {
       setSelectedSignalId(hit.id);
       setFocus("signal");
@@ -874,6 +992,7 @@ export default function MovementCanvas() {
       layers.cameras ? `${cameraFeatures.length} NZTA traffic cameras` : null,
       layers.transit ? `${transitFeatures.length} Metlink anomaly hotspots` : null,
       layers.roads ? `${roadFeatures.length} state highway anomaly sites` : null,
+      layers.flights ? `${flightFeatures.length} air access site` : null,
     ]
       .filter(Boolean)
       .join(", ") || "no layers switched on";
@@ -1096,8 +1215,10 @@ export default function MovementCanvas() {
                   <span><i className="road-high" />High severity</span>
                 </>
               ) : null}
+              {layers.flights ? <span><i className="flight" />Air access</span> : null}
             </div>
-            {hover && (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad) ? (
+            {hover &&
+            (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad || hoveredFlight) ? (
               <div
                 className={`map-popup ${hover.above ? "above" : "below"}`}
                 style={
@@ -1182,6 +1303,15 @@ export default function MovementCanvas() {
                       SH{hoveredRoad.properties.state_highway} ·{" "}
                       <b>{hoveredRoad.properties.ratio.toFixed(2)}×</b> usual ·{" "}
                       {hoveredRoad.properties.date} · real event
+                    </span>
+                  </p>
+                ) : hoveredFlight ? (
+                  <p>
+                    <strong>{hoveredFlight.properties.site_name}</strong>
+                    <span>
+                      <b>{hoveredFlight.properties.high_hours}</b> high ·{" "}
+                      <b>{hoveredFlight.properties.medium_hours}</b> medium flagged hours ·
+                      real April 2026 · OpenSky
                     </span>
                   </p>
                 ) : null}
@@ -1329,7 +1459,9 @@ export default function MovementCanvas() {
                 ? "Public transport evidence"
                 : panelFocus === "road"
                   ? "State highway evidence"
-                  : "Signal evidence"
+                  : panelFocus === "flight"
+                    ? "Air access evidence"
+                    : "Signal evidence"
           }
         >
           <div className="evidence-inner">
@@ -1525,6 +1657,17 @@ export default function MovementCanvas() {
                     </strong>
                   </div>
                 </div>
+                {panelRoad.properties.daily_history?.length ? (
+                  <DailyStrip
+                    points={panelRoad.properties.daily_history.map((day) => ({
+                      date: day.date,
+                      value: day.observed,
+                      flagged: day.flagged,
+                    }))}
+                    reference={panelRoad.properties.baseline_median}
+                    label={`Daily counts at ${panelRoad.properties.site_name}, April 2026, flagged days highlighted`}
+                  />
+                ) : null}
                 <dl className="evidence-metrics">
                   <div>
                     <dt>Ratio</dt>
@@ -1554,6 +1697,73 @@ export default function MovementCanvas() {
             ) : (
               <p className="empty-evidence">
                 {roadError ?? "Loading the state-highway layer…"}
+              </p>
+            )
+          ) : panelFocus === "flight" ? (
+            panelFlight ? (
+              <div className={`selected-evidence ${previewing ? "preview" : ""}`}>
+                <div className="evidence-heading">
+                  <span className="direction-chip flight">
+                    {panelFlight.properties.high_hours + panelFlight.properties.medium_hours}{" "}
+                    flagged hours
+                  </span>
+                  <span>{panelFlight.properties.iata}</span>
+                </div>
+                <h3>{panelFlight.properties.site_name}</h3>
+                <p>OpenSky · real April 2026 backtest</p>
+                <div className="count-comparison">
+                  <div>
+                    <span>High</span>
+                    <strong>{panelFlight.properties.high_hours.toLocaleString("en-NZ")}</strong>
+                  </div>
+                  <div>
+                    <span>Medium</span>
+                    <strong>{panelFlight.properties.medium_hours.toLocaleString("en-NZ")}</strong>
+                  </div>
+                  <div>
+                    <span>Scored hours</span>
+                    <strong>{panelFlight.properties.scored_hours.toLocaleString("en-NZ")}</strong>
+                  </div>
+                </div>
+                <DailyStrip
+                  points={panelFlight.properties.daily_movements.map((day) => ({
+                    date: day.date,
+                    value: day.movements,
+                    flagged: day.flagged,
+                  }))}
+                  label={`Daily flight movements ${shortDate(panelFlight.properties.window_start)} to ${shortDate(panelFlight.properties.window_end)}, flagged days highlighted`}
+                />
+                <dl className="evidence-metrics">
+                  <div>
+                    <dt>Worst hour</dt>
+                    <dd>
+                      {panelFlight.properties.worst_example.date} ·{" "}
+                      {String(panelFlight.properties.worst_example.hour).padStart(2, "0")}:00 ·{" "}
+                      {panelFlight.properties.worst_example.observed} vs{" "}
+                      {panelFlight.properties.worst_example.expected.toLocaleString("en-NZ")}
+                    </dd>
+                  </div>
+                  <div title="How many robust standard deviations the worst hour sits from its weekday-matched hourly baseline">
+                    <dt>Robust score</dt>
+                    <dd>{panelFlight.properties.worst_example.robust_z.toFixed(1)} z</dd>
+                  </div>
+                  <div><dt>Publisher</dt><dd>OpenSky Network</dd></div>
+                  <div>
+                    <dt>Position</dt>
+                    <dd>
+                      {panelFlight.geometry.coordinates[1].toFixed(4)},{" "}
+                      {panelFlight.geometry.coordinates[0].toFixed(4)}
+                    </dd>
+                  </div>
+                </dl>
+                <p className="evidence-note">
+                  Derived third-party tracking, not an airport feed. A flag is a
+                  statistical change, not a diagnosed disruption.
+                </p>
+              </div>
+            ) : (
+              <p className="empty-evidence">
+                {flightError ?? "Loading the air-access layer…"}
               </p>
             )
           ) : panelSignal ? (
@@ -1706,6 +1916,31 @@ export default function MovementCanvas() {
                 </span>
                 <em className={feature.properties.severity === "HIGH" ? "road-high" : "road"}>
                   {feature.properties.ratio.toFixed(2)}×
+                </em>
+              </button>
+            ))}
+            <p className="list-group">Air access ({flightFeatures.length} · real)</p>
+            {flightFeatures.map((feature) => (
+              <button
+                type="button"
+                key={feature.id}
+                className={focus === "flight" && feature.id === selectedFlight?.id ? "selected" : ""}
+                onClick={() => {
+                  setSelectedFlightId(feature.id);
+                  setFocus("flight");
+                  ensureLayer("flight");
+                  revealOnMap(feature.geometry.coordinates);
+                }}
+              >
+                <span>
+                  <strong>{feature.properties.site_name}</strong>
+                  <small>
+                    {feature.properties.iata} · {shortDate(feature.properties.window_start)} –{" "}
+                    {shortDate(feature.properties.window_end)}
+                  </small>
+                </span>
+                <em className="flight">
+                  {feature.properties.high_hours + feature.properties.medium_hours}
                 </em>
               </button>
             ))}

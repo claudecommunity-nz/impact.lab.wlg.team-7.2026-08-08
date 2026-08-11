@@ -146,6 +146,7 @@ test("merges every source into one map with switchable layers", async () => {
   assert.match(html, /Traffic cameras/);
   assert.match(html, /Public transport/);
   assert.match(html, /State highways/);
+  assert.match(html, /Air access/);
   // Signals and coverage start on; the corroborating layers start off.
   assert.ok((html.match(/aria-pressed="true"/g) ?? []).length >= 3);
   assert.ok((html.match(/aria-pressed="false"/g) ?? []).length >= 3);
@@ -223,7 +224,59 @@ test("ships the state highway layer as a real, attributed flood backtest", async
     assert.ok(feature.properties.limitations.length > 0);
     assert.ok(["HIGH", "MEDIUM", "LOW"].includes(feature.properties.severity));
     assert.ok(["2026-04-20", "2026-04-21"].includes(feature.properties.date));
+
+    // Each site carries its April daily series: reported days only, in order,
+    // and the flagged day the feature publishes must appear in its own history.
+    const history = feature.properties.daily_history;
+    assert.ok(history.length > 0);
+    const dates = history.map((day) => day.date);
+    assert.deepEqual(dates, [...dates].sort());
+    assert.ok(
+      history.some(
+        (day) =>
+          day.date === feature.properties.date &&
+          day.observed === feature.properties.observed_count,
+      ),
+    );
   }
+});
+
+test("ships the air-access layer as a real, attributed OpenSky backtest", async () => {
+  const flightText = await readFile(
+    new URL("../public/cop/v1/flight-anomalies.geojson", import.meta.url),
+    "utf8",
+  );
+  const flights = JSON.parse(flightText);
+
+  assert.equal(flights.type, "FeatureCollection");
+  assert.equal(flights.schema, "flight-anomaly-collection/v1");
+  assert.equal(flights.real_data, true);
+  assert.match(flights.attribution, /OpenSky/);
+  assert.ok(flights.limitations.some((entry) => /[Rr]eal data/.test(entry)));
+  assert.ok(flights.limitations.some((entry) => /gaps, never zeros/.test(entry)));
+
+  assert.equal(flights.features.length, 1);
+  const feature = flights.features[0];
+  assert.equal(feature.geometry.type, "Point");
+  const [longitude, latitude] = feature.geometry.coordinates;
+  assert.ok(longitude > 174.7 && longitude < 174.9 && latitude < -41.2 && latitude > -41.4);
+
+  const properties = feature.properties;
+  assert.equal(properties.iata, "WLG");
+  assert.equal(
+    flights.flagged_hour_count,
+    properties.high_hours + properties.medium_hours,
+  );
+  assert.equal(properties.flagged_hours.length, flights.flagged_hour_count);
+  assert.ok(properties.daily_movements.length >= 28);
+  const dates = properties.daily_movements.map((day) => day.date);
+  assert.deepEqual(dates, [...dates].sort());
+  const flaggedDates = new Set(properties.flagged_hours.map((hour) => hour.date));
+  for (const day of properties.daily_movements) {
+    assert.equal(day.flagged, flaggedDates.has(day.date));
+  }
+  // The flood days the roads layer flags are independently visible from the air.
+  assert.ok(properties.flagged_hours.some((hour) => hour.date === "2026-04-20"));
 });
 
 test("ships a camera layer on the same frame with its own attribution and limits", async () => {
@@ -347,11 +400,12 @@ test("keeps source settings off the dashboard and on their own route", async () 
     "/cop/v1/traffic-cameras.geojson",
     "/cop/v1/transit-anomalies.geojson",
     "/cop/v1/road-anomalies.geojson",
+    "/cop/v1/flight-anomalies.geojson",
     "/cop/v1/movement-health.json",
   ]) {
     assert.ok(settings.includes(url), `${url} should be listed as a source`);
   }
-  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 7);
+  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 8);
   // Four export formats are offered per source.
   for (const format of ["GeoJSON", "JSON", "CSV", "NDJSON"]) {
     assert.ok(settings.includes(format), `${format} should be an export option`);
