@@ -14,6 +14,7 @@ import {
 } from "react";
 
 import { createFlagStore } from "./flag-store";
+import { matchAnalogue, slotVectors } from "./analogue";
 import {
   openReview,
   reviewSnapshot,
@@ -33,6 +34,7 @@ import {
   type FlightFeature,
   type LineCollection,
   type LineFeature,
+  type LiveSimCollection,
   type MapView,
   type RainCollection,
   type RainFeature,
@@ -300,7 +302,7 @@ const EVENTS: {
   label: string;
   window: string;
   badge: string;
-  tone: "replay" | "real";
+  tone: "replay" | "real" | "synthetic";
   layers: Partial<Record<LayerId, boolean>>;
   focus: Focus;
   /** Readout copy while the case's artifacts are still loading. */
@@ -346,6 +348,25 @@ const EVENTS: {
     focus: "road",
     fallbackLabel: "18–22 Apr 2026",
     fallbackNote: "real event",
+  },
+  {
+    id: "live-sim",
+    label: "Live monitor",
+    window: "simulated now",
+    badge: "Synthetic",
+    tone: "synthetic",
+    /* The monitor mode: a simulated live feed, signals only like every case. */
+    layers: {
+      signals: true,
+      coverage: false,
+      cameras: false,
+      roads: false,
+      flights: false,
+      transit: false,
+    },
+    focus: "signal",
+    fallbackLabel: "simulated now",
+    fallbackNote: "synthetic feed",
   },
 ];
 
@@ -496,6 +517,38 @@ function buildAprilCaseModel(
   };
 }
 
+function buildLiveSimCaseModel(liveSim: LiveSimCollection | null): CaseModel | null {
+  if (!liveSim) return null;
+  const slots = liveSim.slots.map((slot) => ({
+    key: slot.target_at.slice(0, 13),
+    date: slot.target_at.slice(0, 10),
+    label: slotLabel(slot.target_at),
+    up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
+    down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
+    wash: 0,
+    tick: false,
+    rainMm: slot.rain_max_mm,
+    rainFlag: slot.rain_max_mm >= 10,
+    rainWarning: slot.rain_warning_stations > 0,
+    signals: slot.signals.map((signal) => {
+      const { coordinates, ...properties } = signal;
+      return {
+        id: signal.id,
+        geometry: { type: "LineString" as const, coordinates: [coordinates, coordinates] },
+        properties,
+      };
+    }),
+  }));
+  return {
+    slots,
+    // The monitor opens on "now": the last simulated hour.
+    defaultIndex: Math.max(slots.length - 1, 0),
+    eventHours: 0,
+    feed: "/cop/v1/live-sim.json",
+    roadDayFilter: false,
+  };
+}
+
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -510,6 +563,7 @@ export default function MovementCanvas() {
   const [rain, setRain] = useState<RainCollection | null>(null);
   const [reports, setReports] = useState<ReportCollection | null>(null);
   const [aprilMovement, setAprilMovement] = useState<AprilMovementCollection | null>(null);
+  const [liveSim, setLiveSim] = useState<LiveSimCollection | null>(null);
   const [selectedSignalId, setSelectedSignalId] = useState<string | null>(null);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [selectedTransitId, setSelectedTransitId] = useState<string | null>(null);
@@ -675,6 +729,19 @@ export default function MovementCanvas() {
   }, []);
 
   useEffect(() => {
+    fetch("/cop/v1/live-sim.json")
+      .then((response) => response.json())
+      .then((collection: LiveSimCollection) => {
+        if (Array.isArray(collection.slots) && collection.synthetic === true) {
+          setLiveSim(collection);
+        }
+      })
+      .catch(() => {
+        // Without the simulation feed the Live monitor case stays empty.
+      });
+  }, []);
+
+  useEffect(() => {
     fetch("/cop/v1/flight-anomalies.geojson")
       .then((response) => response.json())
       .then((collection: FlightCollection) => {
@@ -754,8 +821,9 @@ export default function MovementCanvas() {
     () => ({
       "aug-snapshot": buildAugCaseModel(replay, countlineGeometry),
       "april-floods": buildAprilCaseModel(aprilMovement, roadFeatures, flightFeatures, rainHourly),
+      "live-sim": buildLiveSimCaseModel(liveSim),
     }),
-    [replay, countlineGeometry, aprilMovement, roadFeatures, flightFeatures, rainHourly],
+    [replay, countlineGeometry, aprilMovement, roadFeatures, flightFeatures, rainHourly, liveSim],
   );
   const activeModel = caseModels[caseId] ?? null;
   const activeEvent = EVENTS.find((entry) => entry.id === caseId) ?? EVENTS[0];
@@ -852,6 +920,10 @@ export default function MovementCanvas() {
         if (mm > rainMm) rainMm = mm;
         if (feature.properties.warning_by_hour?.[activeCaseSlot.key]) rainWarning = true;
       }
+    } else if (caseId === "live-sim") {
+      // The simulation has no per-gauge geometry: the slot aggregate speaks.
+      rainMm = activeCaseSlot.rainMm;
+      rainWarning = activeCaseSlot.rainWarning;
     }
     /* Layer-adaptive rows: a layer that is switched on contributes its own
      * in-view figures, so the card grows with the picture. */
@@ -999,7 +1071,23 @@ export default function MovementCanvas() {
         } · ${shownRoads.length} highway sites · air ${
           activeCaseSlot?.tick ? "flagged" : "normal"
         }`
-      : "none in this window · missing ≠ contradicting";
+      : caseId === "live-sim"
+        ? `rain ${activeCaseSlot?.rainMm ?? 0} mm/h${
+            activeCaseSlot?.rainWarning ? " (warning-level)" : ""
+          } · synthetic simulation`
+        : "none in this window · missing ≠ contradicting";
+
+  /* The analogue advisor: in the Live monitor, the trailing three hours are
+   * matched against every hour of the saved April investigation. */
+  const aprilModel = caseModels["april-floods"];
+  const aprilVectors = useMemo(
+    () => (aprilModel ? slotVectors(aprilModel.slots) : []),
+    [aprilModel],
+  );
+  const analogue = useMemo(() => {
+    if (caseId !== "live-sim" || !activeModel || aprilVectors.length === 0) return null;
+    return matchAnalogue(activeModel.slots, effectiveIndex, aprilVectors);
+  }, [caseId, activeModel, effectiveIndex, aprilVectors]);
 
   /** Per-frame screen-space clustering of the three point layers. */
   const clusterLayers = (width: number, height: number) => {
@@ -1800,6 +1888,35 @@ export default function MovementCanvas() {
                 )}
               </svg>
             </button>
+            <button
+              type="button"
+              className={caseId === "live-sim" ? "sim-on" : ""}
+              onClick={() => {
+                const target =
+                  caseId === "live-sim"
+                    ? EVENTS[0]
+                    : EVENTS.find((entry) => entry.id === "live-sim");
+                if (target) applyEvent(target);
+              }}
+              disabled={!liveSim}
+              aria-pressed={caseId === "live-sim"}
+              aria-label={
+                caseId === "live-sim" ? "Leave simulation mode" : "Enter simulation mode"
+              }
+              title={caseId === "live-sim" ? "Leave simulation mode" : "Enter simulation mode"}
+            >
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                <path
+                  d="M6.2 1.6h3.6M7 1.6v4.6L3.7 12a2 2 0 0 0 1.8 2.9h5a2 2 0 0 0 1.8-2.9L9 6.2V1.6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path d="M5.2 10.6h5.6" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
+            </button>
             <p className="replay-readout">
               <strong>{activeCaseSlot?.label ?? activeEvent.fallbackLabel}</strong>
               <span>
@@ -1815,15 +1932,38 @@ export default function MovementCanvas() {
                 )}
               </span>
             </p>
-            {caseId === "april-floods" ? (
+            {caseId === "april-floods" || caseId === "live-sim" ? (
               <p
                 className="replay-rain"
-                title="Peak gauge rainfall this hour, GWRC record; orange = MetService warning criteria met"
+                title={
+                  caseId === "live-sim"
+                    ? "Peak simulated rainfall this hour; orange = MetService warning criteria met"
+                    : "Peak gauge rainfall this hour, GWRC record; orange = MetService warning criteria met"
+                }
               >
                 <i className="drop" aria-hidden="true" />
                 <strong>{activeCaseSlot ? `${activeCaseSlot.rainMm} mm/h` : "–"}</strong>
                 {activeCaseSlot?.rainWarning ? <em>warning</em> : null}
               </p>
+            ) : null}
+            {caseId === "live-sim" && analogue && aprilModel ? (
+              <button
+                type="button"
+                className="analogue-chip"
+                onClick={() => {
+                  const april = EVENTS.find((entry) => entry.id === "april-floods");
+                  if (!april) return;
+                  applyEvent(april);
+                  setSlotIndices((current) => ({
+                    ...current,
+                    "april-floods": analogue.index,
+                  }));
+                }}
+                title="Analogue advisory: nearest saved investigation hour by situation vector — investigate, not a forecast"
+              >
+                ≈ Floods and storm · {aprilModel.slots[analogue.index].label} ·{" "}
+                {Math.round(analogue.score * 100)}%
+              </button>
             ) : null}
             <div className="replay-track">
               {activeModel ? (
@@ -2245,7 +2385,7 @@ export default function MovementCanvas() {
                     </strong>
                   </div>
                 ) : null}
-                {caseId === "april-floods" ? (
+                {caseId === "april-floods" || caseId === "live-sim" ? (
                   <div>
                     <span>Rain</span>
                     <strong className={situation.rainWarning ? "warn" : ""}>

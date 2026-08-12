@@ -339,6 +339,23 @@ export type AprilMovementCollection = {
   slots: { target_at: string; candidate_count: number; signals: AprilSignal[] }[];
 };
 
+export type LiveSimCollection = {
+  schema: string;
+  mode: string;
+  synthetic: boolean;
+  reference_now: string;
+  scenario: string;
+  attribution: string;
+  limitations: string[];
+  slots: {
+    target_at: string;
+    candidate_count: number;
+    rain_max_mm: number;
+    rain_warning_stations: number;
+    signals: AprilSignal[];
+  }[];
+};
+
 /** Transport classes drawn with the person glyph; everything else gets the car. */
 export const PEOPLE_CLASSES = new Set(["Pedestrian", "Cyclist", "E-scooter"]);
 

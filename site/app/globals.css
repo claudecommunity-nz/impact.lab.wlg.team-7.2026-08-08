@@ -518,6 +518,16 @@ h3 { font-size: var(--text-h3); }
 .replay-bar > button:hover:not(:disabled) { background: var(--wcc-yellow); }
 .replay-bar > button:disabled { color: var(--wcc-grey-500); border-color: var(--border-hairline); cursor: not-allowed; }
 .replay-bar > button.off { color: var(--wcc-grey-500); border-color: var(--border-hairline); }
+.replay-bar > button.sim-on { background: var(--wcc-black); color: var(--surface-page); }
+.replay-bar > button.sim-on:hover:not(:disabled) { background: var(--wcc-grey-900); }
+/* The analogue advisory: brand yellow because it means "investigate". */
+.replay-bar > button.analogue-chip {
+  min-width: 0; padding: 0 var(--space-3);
+  font-size: 12px; font-weight: 700; white-space: nowrap;
+  background: var(--wcc-yellow); border-color: var(--wcc-black);
+  font-variant-numeric: tabular-nums;
+}
+.replay-bar > button.analogue-chip:hover { background: var(--wcc-yellow-600); }
 .replay-track { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 2px; }
 .replay-histogram { display: block; width: 100%; height: 36px; cursor: pointer; }
 .replay-histogram .up { fill: var(--wcc-warning); }

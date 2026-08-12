@@ -57,6 +57,10 @@ export default function Home() {
             <span>Public reports layer (synthetic ticket flow)</span>
             <code>/cop/v1/reports-april.geojson</code>
           </a>
+          <a href="/cop/v1/live-sim.json">
+            <span>Live monitor simulation (synthetic)</span>
+            <code>/cop/v1/live-sim.json</code>
+          </a>
           <a href="/cop/v1/flight-anomalies.geojson">
             <span>Air access layer (real April 2026, OpenSky)</span>
             <code>/cop/v1/flight-anomalies.geojson</code>

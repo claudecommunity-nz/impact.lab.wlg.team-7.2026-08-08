@@ -208,6 +208,16 @@ export const BUILTIN_SOURCES: DataSource[] = [
     note: "Synthetic ticket flow: clustering, source grades, corroboration rule.",
   },
   {
+    id: "live-sim",
+    label: "Live monitor simulation",
+    publisher: "Team 7 simulator (synthetic)",
+    url: "/cop/v1/live-sim.json",
+    format: "json",
+    kind: "builtin",
+    cadence: "synthetic simulation · 48 hourly slots",
+    note: "No live sensor API exists; a storm ramp cloned from the April record.",
+  },
+  {
     id: "countline-coverage",
     label: "Sensor coverage",
     publisher: "Wellington City Council Transport Sensors",

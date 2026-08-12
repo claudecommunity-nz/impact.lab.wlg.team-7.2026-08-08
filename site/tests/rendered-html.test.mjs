@@ -46,6 +46,7 @@ test("server-renders the movement investigation surface with truthful batch stat
   assert.ok(html.includes("/cop/v1/road-anomalies.geojson"));
   assert.ok(html.includes("/cop/v1/rain-april.geojson"));
   assert.ok(html.includes("/cop/v1/reports-april.geojson"));
+  assert.ok(html.includes("/cop/v1/live-sim.json"));
   // The replay timebar server-renders on the default published hour.
   assert.match(html, /aria-label="Batch replay timeline"/);
   assert.match(html, /aria-label="Replay hour"/);
@@ -454,11 +455,12 @@ test("keeps source settings off the dashboard and on their own route", async () 
     "/cop/v1/flight-anomalies.geojson",
     "/cop/v1/rain-april.geojson",
     "/cop/v1/reports-april.geojson",
+    "/cop/v1/live-sim.json",
     "/cop/v1/movement-health.json",
   ]) {
     assert.ok(settings.includes(url), `${url} should be listed as a source`);
   }
-  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 11);
+  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 12);
   // Four export formats are offered per source.
   for (const format of ["GeoJSON", "JSON", "CSV", "NDJSON"]) {
     assert.ok(settings.includes(format), `${format} should be an export option`);
@@ -552,6 +554,25 @@ test("ships the rainfall and public-report layers as honest contracts", async ()
     }
     if (properties.corroborated) {
       assert.ok(properties.corroborated_by, `${properties.report_id} corroborated_by`);
+    }
+  }
+});
+
+test("ships the live-monitor simulation as a labelled synthetic contract", async () => {
+  const sim = JSON.parse(
+    await readFile(new URL("../public/cop/v1/live-sim.json", import.meta.url), "utf8"),
+  );
+  assert.equal(sim.schema, "live-sim/v1");
+  assert.equal(sim.mode, "simulation");
+  assert.equal(sim.synthetic, true);
+  assert.equal(sim.automatic_incident, false);
+  assert.equal(sim.automatic_warning, false);
+  assert.equal(sim.slots.length, sim.window_hours);
+  assert.ok(sim.limitations.some((entry) => entry.includes("SYNTHETIC")));
+  for (const slot of sim.slots) {
+    assert.equal(slot.signals.length, slot.candidate_count);
+    for (const signal of slot.signals) {
+      assert.equal(signal.synthetic, true, `${signal.id} must be labelled`);
     }
   }
 });

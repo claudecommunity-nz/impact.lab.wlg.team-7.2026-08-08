@@ -302,6 +302,22 @@ whole queue over as a `movement-review/v1` contract with those truth
 boundaries embedded, so a shift handover or the shared COP can consume it
 without ever mistaking it for confirmed fact.
 
+### Live monitor and the analogue advisor
+
+The case picker's third mode is a **Live monitor**: there is no live WCC
+movement-sensor API today, so it runs a loudly-labelled **simulation** — 48
+hourly slots ending at a reference "now", quiet and then a storm ramp cloned
+from the real April 2026 trajectory (same streets, 0.85 scale). The flask
+icon in the timebar enters and leaves simulation mode. As the simulated storm
+builds, the **analogue advisor** compares the trailing three hours against
+every hour of the saved April investigation using a six-number situation
+vector (signals down/up, vehicle and people drop, rain, warning state —
+fixed, stated scales; cosine similarity; no fitted weights). When the match
+clears 70% a yellow `≈` chip appears: *"Floods and storm · Sun 20 Apr ·
+14:00 · 87%"* — click it and the saved investigation opens at that hour. An
+analogue is an advisory to investigate, never a forecast: the same doctrine
+as every other surface, now pointed at history.
+
 ### The Murmur agent
 
 A floating ✦ button on every page opens the chat; ⤢ expands it to full screen

@@ -86,6 +86,13 @@ April movement artifact — no gitignored inputs):
 python scripts\build_reports_layer.py
 ```
 
+Rebuild the synthetic live-monitor simulation (stdlib only, reads the
+committed April movement and rain artifacts):
+
+```powershell
+python scripts\build_live_sim_layer.py
+```
+
 Capture live Metlink GTFS-RT (stdlib only, needs `METLINK_API_KEY`; realtime
 is ephemeral and Metlink keeps no archive — the April 2026 RT is
 unrecoverable, which is why the transit layer is synthetic; run this during
@@ -205,8 +212,22 @@ April timeline pulls the roads layer in the same way. Drawn tiles → coverage
 (`.replay-bar`, absolutely positioned inside `.map-stage`; its measured height
 feeds the `--timebar-h` CSS var that pushes the corner controls and layer
 drawer below it), which leads with an **investigation-case dropdown** (`EVENTS`, `.case-picker` — always
-visible even with the drawer closed): the 1–6 Aug movement snapshot and the
-real 18–22 Apr floods case. Both assert the same signals-only start; the
+visible even with the drawer closed): the 1–6 Aug movement snapshot, the
+real 18–22 Apr floods case, and the **Live monitor** (`live-sim`, badge
+Synthetic) — the three map modes: replay a date, investigate a saved event,
+watch a (simulated) now. There is no live WCC movement-sensor API, so the
+monitor runs on `live-sim.json` (`scripts/build_live_sim_layer.py`): 48
+hourly slots ending at a fixed reference now, quiet then a storm ramp cloned
+from the real April trajectory at 0.85 scale — loudly synthetic, so the
+**analogue advisor** (`app/analogue.ts`) has something to recognise. The
+advisor is deliberately auditable: a six-number situation vector per hour
+(down, up, vehicle drop, people drop, rain, warning; fixed stated scales),
+cosine similarity over the trailing three hours against every saved April
+hour, advisory floor 0.7, silent while the current hour is calm. When it
+fires, a yellow **`≈` chip** in the timebar names the matched hour and score
+and opens the April case at that slot — an advisory to investigate, never a
+forecast. A **flask icon** beside the playback controls toggles simulation
+mode (aria-pressed; black when on). All cases assert the same signals-only start; the
 April layers (roads, flights, synthetic transit) are opt-in there too. The
 chosen case is explicit state (`caseId`), never derived from layer flags —
 hand-toggling layers changes the picture, not which case is open. Every case loads
