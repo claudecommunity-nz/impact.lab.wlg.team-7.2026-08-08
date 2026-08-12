@@ -965,9 +965,28 @@ function tracePlane(
   context.closePath();
 }
 
-/** Rain gauge: a droplet. With an hour key the droplet follows the timeline —
- * dry gauges fade small and pale, wet ones grow with that hour's mm, heavy
- * hours darken. Without a key it shows the whole record (violent hours dark). */
+/** One droplet silhouette anchored at (x, y). */
+function traceDrop(context: CanvasRenderingContext2D, x: number, y: number, s: number) {
+  context.beginPath();
+  context.moveTo(x, y - 5.6 * s);
+  context.bezierCurveTo(x + 4.6 * s, y - 0.6 * s, x + 3.6 * s, y + 4.6 * s, x, y + 4.6 * s);
+  context.bezierCurveTo(x - 3.6 * s, y + 4.6 * s, x - 4.6 * s, y - 0.6 * s, x, y - 5.6 * s);
+  context.closePath();
+}
+
+/* Weather-icon grammar: the number of droplets is the intensity class and the
+ * group's size grows with the hour's millimetres. */
+const DROP_LAYOUT: [number, number, number][][] = [
+  [[0, 0, 1]],
+  [[-2.6, 0.6, 0.94], [3.4, -3.2, 0.6]],
+  [[-2.8, 0.8, 0.94], [3.6, -3, 0.62], [-4.6, -4.4, 0.48]],
+];
+
+/** Rain gauge: droplets. With an hour key the glyph follows the timeline —
+ * dry gauges fade to one small pale drop; one drop is light rain, two
+ * moderate, three heavy, orange at the MetService torrential rate, ringed
+ * orange when rolling totals meet the warning criteria. Without a key it
+ * summarises the whole record. */
 export function drawRain(
   context: CanvasRenderingContext2D,
   project: Projector,
@@ -984,40 +1003,17 @@ export function drawRain(
     const mmNow = hourKey ? feature.properties.mm_by_hour?.[hourKey] ?? 0 : null;
     const warningNow = Boolean(hourKey && feature.properties.warning_by_hour?.[hourKey]);
     const wet = mmNow === null ? 1 : Math.min(1, mmNow / 25);
-    const size = mmNow === null ? 1 : mmNow > 0 ? 0.85 + wet * 0.55 : 0.7;
+    const size = mmNow === null ? 1 : mmNow > 0 ? 0.8 + wet * 0.6 : 0.7;
     const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.95 * size;
-
-    if (warningNow) {
-      // Rolling totals meet the MetService warning criteria this hour.
-      context.beginPath();
-      context.arc(x, y, 8 * scale, 0, Math.PI * 2);
-      context.strokeStyle = "#D9640A";
-      context.lineWidth = 2.2;
-      context.stroke();
-    }
-
-    if (isSelected) {
-      context.beginPath();
-      context.arc(x, y, 8.5 * scale, 0, Math.PI * 2);
-      context.strokeStyle = "#000000";
-      context.lineWidth = 2;
-      context.stroke();
-    }
-
-    context.beginPath();
-    context.moveTo(x, y - 5.6 * scale);
-    context.bezierCurveTo(
-      x + 4.6 * scale, y - 0.6 * scale,
-      x + 3.6 * scale, y + 4.6 * scale,
-      x, y + 4.6 * scale,
-    );
-    context.bezierCurveTo(
-      x - 3.6 * scale, y + 4.6 * scale,
-      x - 4.6 * scale, y - 0.6 * scale,
-      x, y - 5.6 * scale,
-    );
-    context.closePath();
-    context.fillStyle =
+    const drops =
+      mmNow === null
+        ? feature.properties.violent_hours > 0 ? 3 : feature.properties.heavy_hours > 0 ? 2 : 1
+        : mmNow >= 10
+          ? 3
+          : mmNow >= 2.5
+            ? 2
+            : 1;
+    const fill =
       mmNow === null
         ? feature.properties.violent_hours > 0 ? "#0D5C8C" : "#1E90CF"
         : mmNow >= 25
@@ -1027,10 +1023,32 @@ export function drawRain(
             : mmNow > 0
               ? "#1E90CF"
               : "#B9CFDE";
-    context.fill();
+
+    if (warningNow) {
+      // Rolling totals meet the MetService warning criteria this hour.
+      context.beginPath();
+      context.arc(x, y - scale, 9 * scale, 0, Math.PI * 2);
+      context.strokeStyle = "#D9640A";
+      context.lineWidth = 2.2;
+      context.stroke();
+    }
+
+    if (isSelected) {
+      context.beginPath();
+      context.arc(x, y - scale, 9.5 * scale, 0, Math.PI * 2);
+      context.strokeStyle = "#000000";
+      context.lineWidth = 2;
+      context.stroke();
+    }
+
+    context.fillStyle = fill;
     context.strokeStyle = "#FFFFFF";
     context.lineWidth = 1.3;
-    context.stroke();
+    for (const [dx, dy, ds] of DROP_LAYOUT[drops - 1]) {
+      traceDrop(context, x + dx * scale, y + dy * scale, scale * ds);
+      context.fill();
+      context.stroke();
+    }
   }
 }
 

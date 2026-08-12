@@ -278,8 +278,10 @@ Synthetic / Real · Apr 2026), a **local search** over loaded feature names
   weekday-matched median + MAD. **Real data**, OpenSky attribution required.
   Its flagged 20–21 Apr drops corroborate the roads layer independently.
 - `rain` — GWRC Hilltop rain gauges for the April case, drawn as blue
-  **droplets** (`drawRain`), darker where the record holds violent-intensity
-  hours. Real official record, 18–23 Apr 2026, hourly. Two cited standards,
+  **droplets** (`drawRain`) in weather-icon grammar: the **drop count is the
+  intensity class** (1 light, 2 moderate ≥ 2.5, 3 heavy ≥ 10 mm/h) and the
+  group's **size grows with the hour's mm**; dry gauges fade to one small
+  pale drop. Real official record, 18–23 Apr 2026, hourly. Two cited standards,
   never detector output: hourly fills are **WMO intensity classes** (moderate
   2.5 / heavy 10 / violent 50 mm/h; ≥ 25 mm/h draws orange, the MetService
   torrential rate), and an **orange ring** marks hours whose rolling 6 h/24 h

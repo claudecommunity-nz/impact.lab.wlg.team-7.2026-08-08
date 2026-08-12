@@ -390,6 +390,10 @@ h3 { font-size: var(--text-h3); }
   width: 10px; height: 12px; background: #1E90CF;
   border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
 }
+.map-key .rain.rain-heavy {
+  box-shadow: 7px -4px 0 -3px #0D5C8C, -6px -5px 0 -4px #0D5C8C;
+  background: #0D5C8C; margin-right: 4px;
+}
 .map-key .rain.rain-warning { background: #D9640A; }
 .map-key .report, .map-key .report-high { width: 12px; height: 9px; border-radius: 2px; }
 .map-key .report { background: #77776F; }

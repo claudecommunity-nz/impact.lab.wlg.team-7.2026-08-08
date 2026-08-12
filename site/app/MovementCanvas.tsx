@@ -1913,8 +1913,9 @@ export default function MovementCanvas() {
               {layers.flights ? <span><i className="flight" />Air access</span> : null}
               {layers.rain ? (
                 <>
-                  <span><i className="rain" />Rain gauge</span>
-                  <span><i className="rain rain-warning" />Warning-level rain</span>
+                  <span><i className="rain" />Light rain</span>
+                  <span><i className="rain rain-heavy" />Heavy rain</span>
+                  <span><i className="rain rain-warning" />Warning-level</span>
                 </>
               ) : null}
               {layers.reports ? (
