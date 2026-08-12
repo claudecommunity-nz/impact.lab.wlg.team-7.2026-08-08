@@ -5,11 +5,19 @@
 Use a 12-week, matched weekday/hour median and median absolute deviation (MAD)
 baseline for each `countline × transport class × direction` series.
 
-A row is an investigation candidate only when all three gates pass:
+A row is an investigation candidate only when all four gates pass:
 
 - absolute robust score ≥ 4.5;
 - absolute count change ≥ 10;
-- relative change ≥ 35%.
+- relative change ≥ 35%;
+- expected count ≥ 5.
+
+The robust scale has a floor of 3, so a near-zero baseline cannot turn a raw
+count into its own z-score. A deviation passing the change gates on an
+expected count under 5 is `low_baseline` — counted in health, never queued:
+at that end of the range the three change gates collapse into one test, and a
+sensor that has never reported a class suddenly reporting one is a
+commissioning or classification change until proven otherwise.
 
 Rows without at least eight matching historical hours are marked
 `insufficient_baseline`. Expected rows missing from the current batch are
@@ -49,7 +57,8 @@ The split is time ordered, not a random 7,000/1,000/2,000 split.
 
 An LLM may turn the structured evidence into a short operator explanation. It
 must not change the numerical score, create labels, declare an emergency or
-override `normal`, `candidate`, `data_gap` and `insufficient_baseline` states.
+override `normal`, `candidate`, `low_baseline`, `data_gap` and
+`insufficient_baseline` states.
 
 ## Known limits
 

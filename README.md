@@ -130,7 +130,9 @@ picture. The map is a view; **the feed is the product**.
   classifier could only learn our own labelling rule back; the model that won
   is one an EOC operator can check by hand. Full reasoning in
   [`docs/model-card.md`](docs/model-card.md), machine-readable result in
-  [`artifacts/model-benchmark.json`](artifacts/model-benchmark.json).
+  [`artifacts/model-benchmark.json`](artifacts/model-benchmark.json), rerun it
+  with [`scripts/benchmark_models.py`](scripts/benchmark_models.py) (needs the
+  gitignored WCC Parquet and `pip install -e ".[benchmark]"`).
 - **Absence is a signal.** Most dashboards silently zero-fill missing data —
   which reads as "the city went quiet" exactly when a sensor (or the city)
   broke. Murmur models expected-but-missing groups as first-class
@@ -155,37 +157,46 @@ picture. The map is a view; **the feed is the product**.
 
 ### What we found
 
-From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source rows):
-
-- **12 signals worth investigating** out of 2,728 observed
-  countline × class × direction groups — the gates hold precision, so an
-  operator sees a shortlist, not a wall of amber.
-- The two loudest: **Cuba St road (Car S) — 20 observed vs 0 expected
-  (+20.0 z)** and **Vivian St road (Car SE) — 640 observed vs 1,259.5
-  expected (−17.4 z)**, the shape you'd expect from a closure pushing traffic
-  onto a parallel street.
+- **The April backtest lands on the streets that actually flooded.** Run
+  street by street inside WCC's own boundary (same detector maths, baselines
+  outside the event window), 18–23 April 2026 yields **776 flagged
+  street-hours** — 288 and 327 on the two flood days against 30–53 on the
+  days around them, 601 of them decreases. The city visibly stopped moving,
+  street by street.
+- **The flagged streets read like the incident log**: Rintoul St (44 flagged
+  hours), Aro St (26), Karori Rd (18), Riddiford St (11), The Parade (9, all
+  on the flood days) — Newtown, Berhampore, Aro Valley, Karori, Island Bay,
+  the southern suburbs where the 20 April flooding and slips concentrated.
+  The coverage is there to see it: 53 of the 414 countlines sit south of
+  −41.31, sixteen on The Parade alone.
+- From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source
+  rows): **7 signals worth investigating** out of 2,728 observed
+  countline × class × direction groups — a shortlist, not a wall of amber.
+  The loudest is a large-baseline decrease, **Vivian St road (Car SE) — 640
+  observed vs 1,259.5 expected (−17.4 z)**, with the same street's bus and
+  pedestrian counts down in the same hour.
+- **The low-baseline gate holds the dead sensors out of the queue.** A
+  countline that has never reported a class suddenly reporting one is a
+  commissioning or classification change until proven otherwise, so a gated
+  deviation with an expected count under 5 is published as `low_baseline` in
+  health — 2 in the snapshot, 107 across the replay — never as a signal.
 - **207 data gaps** and 430 groups without enough baseline — a fifth of the
   picture is "we don't know", and saying so is the feature.
+- Across the **hourly replay** (1–6 Aug, 144 published hours): 686 gated
+  candidates in total, between 0 and 30 per hour — scrub the timebar and the
+  quiet hours are visibly quiet, which is what precision gates are for.
+- Corroboration from outside the city's own sensors, same April event: the
+  **real** NZTA TMS backtest flagged the floods blind — the SH2/Wairarapa
+  corridor collapsed to 0.08–0.57× its own baseline (worst: South of Waingawa
+  Bridge at 0.35×, −39.4 z) while SH1 stayed normal, matching the actual
+  closures and the regional state of emergency declared 20 April — and the
+  **real** OpenSky backtest shows WLG flight movements at 0.16–0.26× their
+  hourly baselines the same flood afternoons (20 April 14:00: 4 movements vs
+  15.5 expected), an independent witness no road sensor can see.
 - From the labelled-synthetic Metlink replay: 75,087 injected anomalies
   condense to **350 stop-level hotspots** (Kilbirnie Stop A worst at 270
   anomalies, 65 high-severity, delay-outlier dominated) — evidence the same
   hotspot pattern works for public transport when real GTFS-RT is captured.
-- From the **real** NZTA TMS backtest: the per-site weekday-median detector
-  flagged the **20–21 April 2026 Wellington floods blind** — the SH2/Wairarapa
-  corridor collapsed to 0.08–0.57× its own baseline (worst: South of Waingawa
-  Bridge at 0.35×, −39.4 z) while SH1 stayed normal, matching the actual
-  closures and the regional state of emergency declared 20 April.
-- From the **real** OpenSky air-access backtest: WLG flight movements dropped
-  to 0.16–0.26× their hourly baselines on the **same flood afternoons**
-  (20 April 14:00: 4 movements vs 15.5 expected) — an independent witness on
-  the event no road sensor can see.
-- Across the **hourly replay** (1–6 Aug, 144 published hours): 929 gated
-  candidates in total, between 0 and 33 per hour — scrub the timebar and the
-  quiet hours are visibly quiet, which is what precision gates are for.
-- The **April street-movement backtest** (same detector maths, baselines
-  outside the event window) flags 871 street-hours across 18–23 April — 325
-  and 348 of them on the two flood days against 35–65 on the days around
-  them, mostly decreases. The city visibly stopped moving, street by street.
 
 ### Key takeaways
 
@@ -203,27 +214,33 @@ From the real 6 August 2026 12:00 replay (WCC countlines, 34.7M source rows):
 
 ### How we know it works
 
-The benchmark above is held-out, chronological and committed. Fifteen
-automated checks run on every build — the server-rendered contract, internal
-consistency of all eight artifacts (signal count = candidate count, WGS84
-bounds, camera frame flags vs coverage bounds, synthetic labelling, and a
-leakage check on every replay slot's matched history), and the secret scan.
-Every interactive feature was verified in a real browser before merging, and
-the artifacts are reproducible from source with the three build scripts below.
+The benchmark above is held-out, chronological and committed, and the script
+that produced it is too: [`scripts/benchmark_models.py`](scripts/benchmark_models.py).
+Nineteen Python tests and eighteen site checks run on every build — the
+server-rendered contract, internal consistency of the artifacts (signal count
+= candidate count, WGS84 bounds, camera frame flags vs coverage bounds,
+synthetic labelling, and a leakage check on every replay slot's matched
+history), and the secret scan. Every interactive feature was verified in a
+real browser before merging. Every artifact is reproducible with the build
+scripts below; the August movement artifacts and the benchmark need the
+gitignored WCC Parquet (the committed August files carry the low-baseline
+migration applied exactly by
+[`scripts/reclassify_low_baseline.py`](scripts/reclassify_low_baseline.py)).
 
 ### Detection
 
 - Matched weekday/hour **median + MAD** over the prior 12 weeks, per
   countline × transport class × direction.
-- Precision gates: robust score ≥ 4.5, absolute change ≥ 10 and relative change
-  ≥ 35%.
+- Precision gates: robust score ≥ 4.5, absolute change ≥ 10, relative change
+  ≥ 35% and expected count ≥ 5 — a gated deviation on a near-zero baseline is
+  published as `low_baseline` in health, never queued as a signal.
 - Truth boundary: signals mean **investigate**; they do not diagnose disruption,
   evacuation or loss of access.
 - Cadence: the WCC source is updated at least monthly, so the current build is a
   labelled **batch replay**, not a live feed. A missing row is a data gap, never
   a zero.
 
-The included 6 August 2026 12:00 replay produces **12 signals** and exposes
+The included 6 August 2026 12:00 replay produces **7 signals** and exposes
 **207 expected-but-missing groups** as data gaps rather than zero counts. The
 full **hourly replay** keeps every published hour from 1–6 August: a timebar
 above the map plays or scrubs through all 144 slots, its histogram showing

@@ -527,14 +527,17 @@ counted in health (`low_baseline_count`), never queued as a signal.
 
 ### Demo numbers are hardcoded in three places
 
-12 signals, 207 data gaps, 414 countlines, data through 6 Aug 2026. They appear
+7 signals, 207 data gaps, 414 countlines, data through 6 Aug 2026. They appear
 in the artifacts, in the title-bar facts (`site/app/SiteChrome.tsx`), and as
 assertions in `site/tests/rendered-html.test.mjs`. Rebuilding artifacts for a
 different `--target-at` means updating all three or the site test fails — and
 `movement-replay.json` must be rebuilt with it: the test suite asserts the
 replay's default slot matches `movement-health.json` number for number, and
 the timebar's server-rendered label ("Thu 6 Aug · 12:00") comes from
-`health.target_at`.
+`health.target_at`. The committed August artifacts additionally carry the
+low-baseline migration (`scripts/reclassify_low_baseline.py`, idempotent) —
+the source Parquet is no longer on hand, so a fresh `build_demo.py` run on
+new data supersedes it, and nothing may re-run the old pre-gate build.
 
 ## UI copy: hard rule
 
