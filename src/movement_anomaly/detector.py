@@ -9,6 +9,8 @@ class DetectorConfig:
     z_threshold: float = 4.5
     min_absolute_change: float = 10.0
     min_relative_change: float = 0.35
+    min_expected_count: float = 5.0
+    scale_floor: float = 3.0
 
 
 SEASONAL_KEYS = ["countline_id", "transport_class", "direction", "dow", "hour"]
@@ -51,7 +53,7 @@ def score_observations(
         [
             1.4826 * scored["mad"].fillna(0).to_numpy(dtype=float),
             np.sqrt(scored["expected_count"].fillna(0).to_numpy(dtype=float) + 1),
-            np.ones(len(scored)),
+            np.full(len(scored), config.scale_floor),
         ]
     )
     scored["robust_z"] = np.where(
@@ -68,14 +70,20 @@ def score_observations(
         ["decrease", "increase"],
         default="stable",
     )
-    candidate = (
+    gated = (
         matched
         & (scored["robust_z"].abs() >= config.z_threshold)
         & (scored["absolute_change"] >= config.min_absolute_change)
         & (scored["relative_change"] >= config.min_relative_change)
     )
+    # At near-zero baselines the three gates collapse into one test and the
+    # z-score is close to the raw count; those deviations are held out of the
+    # candidate queue rather than presented as investigable signals.
+    low_baseline = gated & (scored["expected_count"] < config.min_expected_count)
     scored["status"] = np.select(
-        [~matched, candidate], ["insufficient_baseline", "candidate"], default="normal"
+        [~matched, gated & ~low_baseline, low_baseline],
+        ["insufficient_baseline", "candidate", "low_baseline"],
+        default="normal",
     )
     scored["data_quality"] = np.where(matched, "complete", "no_matching_history")
     return scored.drop(columns=["dow"]).reset_index(drop=True)

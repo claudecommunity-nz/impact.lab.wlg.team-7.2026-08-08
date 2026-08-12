@@ -56,6 +56,7 @@ def test_snapshot_excludes_future_rows_and_reports_missing_groups_as_data_gaps()
         "data_gap_groups": 1,
         "candidate_count": 1,
         "insufficient_baseline_count": 0,
+        "low_baseline_count": 0,
     }
     candidate = result["candidates"].iloc[0]
     assert candidate["expected_count"] == 100.0

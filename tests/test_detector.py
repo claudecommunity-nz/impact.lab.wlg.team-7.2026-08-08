@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 
 from movement_anomaly.detector import DetectorConfig, fit_seasonal_baseline, score_observations
 
@@ -36,6 +37,48 @@ def test_scores_large_drop_against_prior_matching_weekday_and_hour():
     assert row["change_direction"] == "decrease"
     assert row["status"] == "candidate"
     assert row["robust_z"] < -4.5
+
+
+def test_surge_at_dead_sensor_is_low_baseline_not_candidate():
+    history = history_frame()
+    history["count"] = 0.0
+    baseline = fit_seasonal_baseline(history, min_samples=8)
+    current = history.iloc[[0]].copy()
+    current["date"] = pd.Timestamp("2026-08-06")
+    current["count"] = 52.0
+
+    scored = score_observations(current, baseline, DetectorConfig())
+
+    row = scored.iloc[0]
+    assert row["expected_count"] == 0.0
+    assert row["status"] == "low_baseline"
+    assert row["robust_z"] == pytest.approx(52.0 / 3.0)
+
+
+def test_scale_floor_stops_the_z_score_equalling_the_raw_count():
+    history = history_frame()
+    history["count"] = 0.0
+    baseline = fit_seasonal_baseline(history, min_samples=8)
+    current = history.iloc[[0]].copy()
+    current["date"] = pd.Timestamp("2026-08-06")
+    current["count"] = 20.0
+
+    scored = score_observations(current, baseline, DetectorConfig())
+
+    assert scored.iloc[0]["robust_z"] < 20.0
+
+
+def test_expected_count_at_the_gate_boundary_stays_a_candidate():
+    history = history_frame()
+    history["count"] = 5.0
+    baseline = fit_seasonal_baseline(history, min_samples=8)
+    current = history.iloc[[0]].copy()
+    current["date"] = pd.Timestamp("2026-08-06")
+    current["count"] = 52.0
+
+    scored = score_observations(current, baseline, DetectorConfig())
+
+    assert scored.iloc[0]["status"] == "candidate"
 
 
 def test_observation_without_matching_history_is_not_mislabeled_as_zero_flow():

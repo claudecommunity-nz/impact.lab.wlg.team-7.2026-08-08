@@ -7,7 +7,8 @@ street; the street grouping is a naming heuristic, and the centroid is the
 street's countlines' centroid, not a countline).
 
 Same detector mathematics as the live pipeline — median + MAD per group, the
-z / absolute / relative gates unchanged — run as a RETROSPECTIVE BACKTEST:
+z / absolute / relative / expected-count gates unchanged — run as a
+RETROSPECTIVE BACKTEST:
 each event-window hour (18-23 April 2026) is scored against that street ×
 class × weekday-or-weekend × hour's median over April days OUTSIDE the event
 window, including days after it. That keeps weekend baselines at six samples
@@ -34,6 +35,8 @@ Z_THRESHOLD = 4.5
 MIN_ABSOLUTE_CHANGE = 10.0
 MIN_RELATIVE_CHANGE = 0.35
 MIN_SAMPLES = 6
+MIN_EXPECTED_COUNT = 5.0
+SCALE_FLOOR = 3.0
 
 MODES = [
     ("Pedestrian", "pedestrian_count"),
@@ -50,6 +53,8 @@ LIMITATIONS = [
     "grouping heuristic and the point is a centroid, not a countline.",
     "Weekend baselines carry six April days, weekday baselines up to sixteen; "
     "each signal states its own sample count.",
+    "A gated deviation on a baseline under five counts is held out as "
+    "low_baseline, never queued as a signal.",
     "A missing mode-hour is a gap, never zero movement.",
     "A signal means investigate, not a diagnosed disruption or its cause.",
 ]
@@ -96,6 +101,7 @@ def build(hourly_path: Path, dim_path: Path, output_path: Path) -> dict:
     slots: dict[str, list[dict]] = {}
     scored_groups = 0
     insufficient = 0
+    low_baseline = 0
     for key, observations in sorted(event_obs.items()):
         street, transport_class, _is_weekend, hour = key
         history = sorted(baseline_obs.get(key, []))
@@ -107,13 +113,16 @@ def build(hourly_path: Path, dim_path: Path, output_path: Path) -> dict:
         counts = [count for _, count in history]
         expected = statistics.median(counts)
         mad = statistics.median([abs(count - expected) for count in counts])
-        scale = max(1.4826 * mad, math.sqrt(expected + 1), 1.0)
+        scale = max(1.4826 * mad, math.sqrt(expected + 1), SCALE_FLOOR)
         for date, observed in sorted(observations):
             scored_groups += 1
             z = (observed - expected) / scale
             absolute = abs(observed - expected)
             relative = absolute / max(abs(expected), 10)
             if abs(z) < Z_THRESHOLD or absolute < MIN_ABSOLUTE_CHANGE or relative < MIN_RELATIVE_CHANGE:
+                continue
+            if expected < MIN_EXPECTED_COUNT:
+                low_baseline += 1
                 continue
             observed_at = f"{date}T{hour:02d}:00:00+12:00"
             slots.setdefault(f"{date}T{hour:02d}", []).append(
@@ -167,9 +176,12 @@ def build(hourly_path: Path, dim_path: Path, output_path: Path) -> dict:
             "min_absolute_change": MIN_ABSOLUTE_CHANGE,
             "min_relative_change": MIN_RELATIVE_CHANGE,
             "min_samples": MIN_SAMPLES,
+            "min_expected_count": MIN_EXPECTED_COUNT,
+            "scale_floor": SCALE_FLOOR,
         },
         "scored_observations": scored_groups,
         "insufficient_baseline_observations": insufficient,
+        "low_baseline_observations": low_baseline,
         "candidate_count": candidate_count,
         "automatic_incident": False,
         "automatic_warning": False,
@@ -213,7 +225,8 @@ def main() -> None:
     print(
         f"{collection['candidate_count']} signals across {len(collection['slots'])} hours "
         f"({collection['scored_observations']} scored, "
-        f"{collection['insufficient_baseline_observations']} insufficient baseline) "
+        f"{collection['insufficient_baseline_observations']} insufficient baseline, "
+        f"{collection['low_baseline_observations']} low baseline) "
         f"-> {args.output}"
     )
     if worst:

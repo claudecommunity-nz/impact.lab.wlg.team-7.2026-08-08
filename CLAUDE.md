@@ -156,9 +156,15 @@ movement-april.json ──▶ site/public/cop/v1/reports-april.geojson ───
   guards are pinned by `tests/test_replay.py`.
 - **`detector.py`** — median + MAD per `countline × transport_class × direction ×
   dow × hour`, minimum 8 samples. The z-scale is
-  `max(1.4826·MAD, sqrt(expected+1), 1)`, so quiet, low-variance series cannot
-  manufacture huge scores. Three gates in `DetectorConfig` (z ≥ 4.5, absolute
-  change ≥ 10, relative change ≥ 35%) — change thresholds there, nowhere else.
+  `max(1.4826·MAD, sqrt(expected+1), 3)`. At a near-zero baseline the z is
+  still roughly the raw count over 3 and the three change gates collapse into
+  one test, so a fourth gate routes any gated deviation with
+  `expected_count < 5` to the `low_baseline` status instead of the candidate
+  queue — a dead sensor waking up is not an investigable signal. Four gates in
+  `DetectorConfig` (z ≥ 4.5, absolute change ≥ 10, relative change ≥ 35%,
+  expected ≥ 5) — change thresholds there, nowhere else.
+  `scripts/build_april_movement_layer.py` mirrors the same maths and gates in
+  stdlib form; a threshold change must land in both.
 - **`contract.py`** — WGS84 `LineString` GeoJSON, `movement-signal/v1`. Note it
   **inner-joins** metadata: a countline missing from the CSV silently drops its
   signal, which breaks the site's `features.length === candidate_count` assertion.
@@ -513,9 +519,11 @@ and tokens).
 
 ### Status vocabulary
 
-`normal` · `candidate` · `insufficient_baseline` · `data_gap`. A missing row is
-a gap, never a zero — that distinction is the point of the prototype, and
-`insufficient_baseline` forces `signal_confidence.level` to `low`.
+`normal` · `candidate` · `low_baseline` · `insufficient_baseline` · `data_gap`.
+A missing row is a gap, never a zero — that distinction is the point of the
+prototype, and `insufficient_baseline` forces `signal_confidence.level` to
+`low`. `low_baseline` is a gated deviation whose expected count is under 5:
+counted in health (`low_baseline_count`), never queued as a signal.
 
 ### Demo numbers are hardcoded in three places
 

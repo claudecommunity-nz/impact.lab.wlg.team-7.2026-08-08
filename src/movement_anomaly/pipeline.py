@@ -62,6 +62,7 @@ def analyze_snapshot(frame, *, target_at, lookback_weeks, config):
         "insufficient_baseline_count": int(
             (scored["status"] == "insufficient_baseline").sum()
         ),
+        "low_baseline_count": int((scored["status"] == "low_baseline").sum()),
     }
     return {
         "scored": scored,
@@ -174,6 +175,7 @@ def analyze_replay(frame, *, start_at, end_at, lookback_weeks, config):
                 "expected_groups": int(len(expected)),
                 "data_gap_groups": int(len(gaps)),
                 "candidate_count": int(len(signals)),
+                "low_baseline_count": int((scored["status"] == "low_baseline").sum()),
                 "signals": signals,
             }
         )
