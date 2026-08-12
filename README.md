@@ -7,6 +7,7 @@ Saturday 8 August 2026 · Waimanga Room, Wellington City Council
 
 **video link** — https://www.youtube.com/watch?v=BJZiOcQzmTU
 
+![Murmur: the April 2026 storm hour on the one-canvas operating picture, every panel folded to an icon](docs/screenshots/map-only-april.png)
 
 ---
 
@@ -356,8 +357,6 @@ from the first paint:
 - **The investigate panel** sits left of the map and slides away from the «
   toggle in the map's top-left corner, the canvas growing into the space. It is
   put away, not merely hidden: its controls leave the tab order.
-
-![Everything folded to an icon: the April storm hour as a full-width map, timebar and rain readout still in place](docs/screenshots/map-only-april.png)
 
 ### Signal review
 
