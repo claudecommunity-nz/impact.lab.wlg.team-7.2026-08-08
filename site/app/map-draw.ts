@@ -236,6 +236,10 @@ export type RainProperties = {
   violent_hours: number;
   /** Sparse map of hour key (YYYY-MM-DDTHH) to mm for hours with rain. */
   mm_by_hour: Record<string, number>;
+  /** Hours whose rolling 6 h/24 h totals met the MetService warning criteria,
+   * mapped to the worst accumulation in mm. */
+  warning_by_hour?: Record<string, number>;
+  warning_hours: number;
   daily_totals: { date: string; mm: number; flagged: boolean }[];
   attribution: string;
   limitations: string[];
@@ -252,6 +256,7 @@ export type RainHourly = {
   max_mm: number;
   max_site: string;
   heavy_stations: number;
+  warning_stations: number;
   class: string;
 };
 
@@ -977,9 +982,19 @@ export function drawRain(
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
     const mmNow = hourKey ? feature.properties.mm_by_hour?.[hourKey] ?? 0 : null;
+    const warningNow = Boolean(hourKey && feature.properties.warning_by_hour?.[hourKey]);
     const wet = mmNow === null ? 1 : Math.min(1, mmNow / 25);
     const size = mmNow === null ? 1 : mmNow > 0 ? 0.85 + wet * 0.55 : 0.7;
     const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.95 * size;
+
+    if (warningNow) {
+      // Rolling totals meet the MetService warning criteria this hour.
+      context.beginPath();
+      context.arc(x, y, 8 * scale, 0, Math.PI * 2);
+      context.strokeStyle = "#D9640A";
+      context.lineWidth = 2.2;
+      context.stroke();
+    }
 
     if (isSelected) {
       context.beginPath();
@@ -1005,11 +1020,13 @@ export function drawRain(
     context.fillStyle =
       mmNow === null
         ? feature.properties.violent_hours > 0 ? "#0D5C8C" : "#1E90CF"
-        : mmNow >= 10
-          ? "#0D5C8C"
-          : mmNow > 0
-            ? "#1E90CF"
-            : "#B9CFDE";
+        : mmNow >= 25
+          ? "#D9640A"
+          : mmNow >= 10
+            ? "#0D5C8C"
+            : mmNow > 0
+              ? "#1E90CF"
+              : "#B9CFDE";
     context.fill();
     context.strokeStyle = "#FFFFFF";
     context.lineWidth = 1.3;

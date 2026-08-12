@@ -279,11 +279,15 @@ Synthetic / Real · Apr 2026), a **local search** over loaded feature names
   Its flagged 20–21 Apr drops corroborate the roads layer independently.
 - `rain` — GWRC Hilltop rain gauges for the April case, drawn as blue
   **droplets** (`drawRain`), darker where the record holds violent-intensity
-  hours. Real official record, 18–23 Apr 2026, hourly. Flags are fixed **WMO
-  intensity classes** (moderate 2.5 / heavy 10 / violent 50 mm/h), never
-  detector output — the extract covers only the event window, so no baseline
-  can be fitted from it, and the artifact stores the thresholds. Its `hourly`
-  region aggregate feeds the April timebar and corroboration row.
+  hours. Real official record, 18–23 Apr 2026, hourly. Two cited standards,
+  never detector output: hourly fills are **WMO intensity classes** (moderate
+  2.5 / heavy 10 / violent 50 mm/h; ≥ 25 mm/h draws orange, the MetService
+  torrential rate), and an **orange ring** marks hours whose rolling 6 h/24 h
+  totals met the general **MetService heavy-rain warning criteria** (50 mm/6 h
+  · 100 mm/24 h, region-dependent; `warning_by_hour`, precomputed by the build
+  script — a gauge fact, not an issued warning). The `hourly` region aggregate
+  feeds the April timebar (rain ticks turn orange on warning hours) and the
+  corroboration row ("rain N mm/h (warning-level)").
 - `reports` — the **SYNTHETIC** public-reports demonstration of the
   service-desk ticket flow, drawn as speech-bubble pins coloured by
   escalation level (grey low, amber elevated, red investigate). Deterministic

@@ -27,6 +27,16 @@ THRESHOLDS = {
     "source": "WMO rainfall-intensity definitions",
 }
 
+# The NZ operational standard: MetService severe-weather criteria. Torrential
+# (severe thunderstorm) is published exactly; the heavy-rain warning
+# accumulations are the widely documented general criteria and vary by region.
+METSERVICE = {
+    "torrential_mm_per_hour": 25.0,
+    "warning_6h_mm": 50.0,
+    "warning_24h_mm": 100.0,
+    "source": "MetService severe-weather criteria (general; region-dependent)",
+}
+
 
 def hour_class(value: float) -> str:
     if value >= THRESHOLDS["violent_mm_per_hour"]:
@@ -51,6 +61,7 @@ def main() -> None:
     features = []
     hourly_max: dict[str, tuple[float, str]] = {}
     hourly_heavy: dict[str, int] = defaultdict(int)
+    hourly_warning: dict[str, int] = defaultdict(int)
 
     for series in rain_series:
         observations = series["observations"]
@@ -59,6 +70,16 @@ def main() -> None:
         mm_by_hour: dict[str, float] = {}
         heavy_hours = 0
         violent_hours = 0
+        # Rolling accumulations against the MetService warning criteria.
+        values = [float(o["value"]) for o in observations]
+        hour_keys = [o["observed_at"][:13] for o in observations]
+        warning_by_hour: dict[str, float] = {}
+        for index, key in enumerate(hour_keys):
+            sum_6h = sum(values[max(0, index - 5) : index + 1])
+            sum_24h = sum(values[max(0, index - 23) : index + 1])
+            if sum_6h >= METSERVICE["warning_6h_mm"] or sum_24h >= METSERVICE["warning_24h_mm"]:
+                warning_by_hour[key] = round(max(sum_6h, sum_24h), 1)
+                hourly_warning[key] += 1
         for observation in observations:
             observed_at = observation["observed_at"][:19]
             value = float(observation["value"])
@@ -95,6 +116,8 @@ def main() -> None:
                     "heavy_hours": heavy_hours,
                     "violent_hours": violent_hours,
                     "mm_by_hour": mm_by_hour,
+                    "warning_by_hour": warning_by_hour,
+                    "warning_hours": len(warning_by_hour),
                     "daily_totals": [
                         {
                             "date": day,
@@ -119,6 +142,7 @@ def main() -> None:
             "max_mm": round(value, 1),
             "max_site": site,
             "heavy_stations": hourly_heavy.get(hour, 0),
+            "warning_stations": hourly_warning.get(hour[:13], 0),
             "class": hour_class(value),
         }
         for hour, (value, site) in sorted(hourly_max.items())
@@ -133,10 +157,12 @@ def main() -> None:
         "window_end": hourly[-1]["hour"],
         "station_count": len(features),
         "thresholds": THRESHOLDS,
+        "metservice_criteria": METSERVICE,
         "hourly": hourly,
         "limitations": [
             "Real GWRC Hilltop rainfall record for 18-23 April 2026, published after the event; a validated backtest, never a live detector.",
             "Rainfall corroborates a movement signal; it does not confirm flooding, disruption or loss of access.",
+            "MetService warning criteria are the general published values and vary by region; a criteria exceedance here is a gauge fact, not an issued warning.",
         ],
         "features": features,
     }

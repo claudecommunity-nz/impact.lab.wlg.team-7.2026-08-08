@@ -358,6 +358,8 @@ type CaseSlot = {
   rainMm: number;
   /** True when any gauge hit the WMO heavy class (>= 10 mm/h) this hour. */
   rainFlag: boolean;
+  /** True when any gauge's rolling totals met the MetService warning criteria. */
+  rainWarning: boolean;
   signals: LineFeature[];
 };
 
@@ -387,6 +389,7 @@ function buildAugCaseModel(
     tick: false,
     rainMm: 0,
     rainFlag: false,
+    rainWarning: false,
     signals: slot.signals.flatMap((signal) => {
       const coordinates = countlineGeometry.get(signal.countline_id);
       if (!coordinates) return [];
@@ -465,6 +468,7 @@ function buildAprilCaseModel(
         tick: flightByHour.has(key),
         rainMm: rainByHour.get(key)?.max_mm ?? 0,
         rainFlag: ["heavy", "violent"].includes(rainByHour.get(key)?.class ?? ""),
+        rainWarning: (rainByHour.get(key)?.warning_stations ?? 0) > 0,
         signals,
       };
     }),
@@ -861,7 +865,9 @@ export default function MovementCanvas() {
   const panelSignalReview = panelSignalKey ? review.items[panelSignalKey] : undefined;
   const corroboration =
     caseId === "april-floods"
-      ? `rain ${activeCaseSlot?.rainMm ?? 0} mm/h · ${shownRoads.length} highway sites · air ${
+      ? `rain ${activeCaseSlot?.rainMm ?? 0} mm/h${
+          activeCaseSlot?.rainWarning ? " (warning-level)" : ""
+        } · ${shownRoads.length} highway sites · air ${
           activeCaseSlot?.tick ? "flagged" : "normal"
         }`
       : "none in this window · missing ≠ contradicting";
@@ -1625,7 +1631,7 @@ export default function MovementCanvas() {
                           <g key={slot.key}>
                             {slot.rainMm > 0 ? (
                               <rect
-                                className="rain-bar"
+                                className={`rain-bar ${slot.rainWarning ? "warning" : ""}`}
                                 x={index + 0.05}
                                 y={0}
                                 width={0.9}
@@ -1905,7 +1911,12 @@ export default function MovementCanvas() {
                 </>
               ) : null}
               {layers.flights ? <span><i className="flight" />Air access</span> : null}
-              {layers.rain ? <span><i className="rain" />Rain gauge</span> : null}
+              {layers.rain ? (
+                <>
+                  <span><i className="rain" />Rain gauge</span>
+                  <span><i className="rain rain-warning" />Warning-level rain</span>
+                </>
+              ) : null}
               {layers.reports ? (
                 <>
                   <span><i className="report" />Report</span>
@@ -2455,6 +2466,10 @@ export default function MovementCanvas() {
                         </dd>
                       </div>
                       <div><dt>Cadence</dt><dd>hourly totals</dd></div>
+                      <div title="Hours whose rolling 6-hour or 24-hour totals met the general MetService heavy-rain warning criteria (50 mm/6 h · 100 mm/24 h)">
+                        <dt>MetService criteria</dt>
+                        <dd>{panelRain.properties.warning_hours} h met · 50 mm/6 h or 100 mm/24 h</dd>
+                      </div>
                       <div>
                         <dt>Position</dt>
                         <dd>
@@ -2464,8 +2479,9 @@ export default function MovementCanvas() {
                       </div>
                     </dl>
                     <p className="evidence-note">
-                      Official gauge record. Intensity classes are WMO definitions,
-                      not detector output.
+                      Official gauge record. Intensity classes are WMO, warning
+                      states are MetService criteria — a gauge fact, not an
+                      issued warning.
                     </p>
                     {evidenceOps(
                       "rain",

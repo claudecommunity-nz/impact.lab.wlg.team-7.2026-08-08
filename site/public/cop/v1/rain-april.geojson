@@ -12,12 +12,19 @@
   "violent_mm_per_hour": 50.0,
   "source": "WMO rainfall-intensity definitions"
  },
+ "metservice_criteria": {
+  "torrential_mm_per_hour": 25.0,
+  "warning_6h_mm": 50.0,
+  "warning_24h_mm": 100.0,
+  "source": "MetService severe-weather criteria (general; region-dependent)"
+ },
  "hourly": [
   {
    "hour": "2026-04-18T00:00:00",
    "max_mm": 0.0,
    "max_site": "Berhampore at Nursery",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -25,6 +32,7 @@
    "max_mm": 1.2,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -32,6 +40,7 @@
    "max_mm": 2.0,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -39,6 +48,7 @@
    "max_mm": 5.7,
    "max_site": "Hutt River at Savage Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -46,6 +56,7 @@
    "max_mm": 6.5,
    "max_site": "Porirua Stream at Seton Nossiter Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -53,6 +64,7 @@
    "max_mm": 3.1,
    "max_site": "Hutt River at Savage Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -60,6 +72,7 @@
    "max_mm": 8.7,
    "max_site": "Hutt River at Savage Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -67,6 +80,7 @@
    "max_mm": 21.5,
    "max_site": "Hutt River at Savage Park",
    "heavy_stations": 3,
+   "warning_stations": 0,
    "class": "heavy"
   },
   {
@@ -74,6 +88,7 @@
    "max_mm": 19.1,
    "max_site": "Hutt River at Savage Park",
    "heavy_stations": 3,
+   "warning_stations": 1,
    "class": "heavy"
   },
   {
@@ -81,6 +96,7 @@
    "max_mm": 28.2,
    "max_site": "Pinehaven Stream at Pinehaven Reservoir",
    "heavy_stations": 1,
+   "warning_stations": 2,
    "class": "heavy"
   },
   {
@@ -88,6 +104,7 @@
    "max_mm": 11.4,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 2,
+   "warning_stations": 3,
    "class": "heavy"
   },
   {
@@ -95,6 +112,7 @@
    "max_mm": 3.0,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "moderate"
   },
   {
@@ -102,6 +120,7 @@
    "max_mm": 2.4,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "light"
   },
   {
@@ -109,6 +128,7 @@
    "max_mm": 1.7,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "light"
   },
   {
@@ -116,6 +136,7 @@
    "max_mm": 5.0,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -123,6 +144,7 @@
    "max_mm": 5.4,
    "max_site": "Hutt River at Savage Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -130,6 +152,7 @@
    "max_mm": 6.1,
    "max_site": "Kaiwharawhara Stream at Karori Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -137,6 +160,7 @@
    "max_mm": 4.5,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -144,6 +168,7 @@
    "max_mm": 3.2,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -151,6 +176,7 @@
    "max_mm": 4.3,
    "max_site": "Kaiwharawhara Stream at Karori Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -158,6 +184,7 @@
    "max_mm": 6.1,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "moderate"
   },
   {
@@ -165,6 +192,7 @@
    "max_mm": 3.5,
    "max_site": "Hutt River at Savage Park",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "moderate"
   },
   {
@@ -172,6 +200,7 @@
    "max_mm": 4.6,
    "max_site": "Pinehaven Stream at Pinehaven Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "moderate"
   },
   {
@@ -179,6 +208,7 @@
    "max_mm": 2.2,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "light"
   },
   {
@@ -186,6 +216,7 @@
    "max_mm": 1.2,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "light"
   },
   {
@@ -193,6 +224,7 @@
    "max_mm": 0.2,
    "max_site": "Newtown at Carmichael Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "light"
   },
   {
@@ -200,6 +232,7 @@
    "max_mm": 0.2,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "light"
   },
   {
@@ -207,6 +240,7 @@
    "max_mm": 0.2,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "light"
   },
   {
@@ -214,6 +248,7 @@
    "max_mm": 0.2,
    "max_site": "Pinehaven Stream at Pinehaven Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "light"
   },
   {
@@ -221,6 +256,7 @@
    "max_mm": 0.4,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -228,6 +264,7 @@
    "max_mm": 0.0,
    "max_site": "Berhampore at Nursery",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -235,6 +272,7 @@
    "max_mm": 0.0,
    "max_site": "Berhampore at Nursery",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -242,6 +280,7 @@
    "max_mm": 0.0,
    "max_site": "Berhampore at Nursery",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -249,6 +288,7 @@
    "max_mm": 0.2,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -256,6 +296,7 @@
    "max_mm": 1.6,
    "max_site": "Porirua Stream at Seton Nossiter Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -263,6 +304,7 @@
    "max_mm": 4.7,
    "max_site": "Kaiwharawhara Stream at Karori Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -270,6 +312,7 @@
    "max_mm": 10.1,
    "max_site": "Kaiwharawhara Stream at Karori Reservoir",
    "heavy_stations": 1,
+   "warning_stations": 0,
    "class": "heavy"
   },
   {
@@ -277,6 +320,7 @@
    "max_mm": 2.2,
    "max_site": "Porirua Stream at Seton Nossiter Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -284,6 +328,7 @@
    "max_mm": 1.8,
    "max_site": "Porirua Stream at Seton Nossiter Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -291,6 +336,7 @@
    "max_mm": 1.1,
    "max_site": "Hutt River at Birch Lane",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -298,6 +344,7 @@
    "max_mm": 0.2,
    "max_site": "Porirua Stream at Seton Nossiter Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -305,6 +352,7 @@
    "max_mm": 0.2,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -312,6 +360,7 @@
    "max_mm": 0.1,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -319,6 +368,7 @@
    "max_mm": 1.4,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -326,6 +376,7 @@
    "max_mm": 1.6,
    "max_site": "Hutt River at Savage Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -333,6 +384,7 @@
    "max_mm": 2.9,
    "max_site": "Porirua Stream at Seton Nossiter Park",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -340,6 +392,7 @@
    "max_mm": 3.8,
    "max_site": "Lake Kohangatera",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -347,6 +400,7 @@
    "max_mm": 6.8,
    "max_site": "Newtown at Carmichael Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -354,6 +408,7 @@
    "max_mm": 3.2,
    "max_site": "Berhampore at Nursery",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -361,6 +416,7 @@
    "max_mm": 1.8,
    "max_site": "Wellington at Te Papa",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -368,6 +424,7 @@
    "max_mm": 5.3,
    "max_site": "Newtown at Carmichael Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -375,6 +432,7 @@
    "max_mm": 3.6,
    "max_site": "Pinehaven Stream at Pinehaven Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -382,6 +440,7 @@
    "max_mm": 77.1,
    "max_site": "Berhampore at Nursery",
    "heavy_stations": 4,
+   "warning_stations": 2,
    "class": "violent"
   },
   {
@@ -389,6 +448,7 @@
    "max_mm": 24.0,
    "max_site": "Wellington at Te Papa",
    "heavy_stations": 4,
+   "warning_stations": 3,
    "class": "heavy"
   },
   {
@@ -396,6 +456,7 @@
    "max_mm": 4.5,
    "max_site": "Porirua Stream at Seton Nossiter Park",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "moderate"
   },
   {
@@ -403,6 +464,7 @@
    "max_mm": 5.5,
    "max_site": "Lake Kohangatera",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "moderate"
   },
   {
@@ -410,6 +472,7 @@
    "max_mm": 4.5,
    "max_site": "Porirua Stream at Seton Nossiter Park",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "moderate"
   },
   {
@@ -417,6 +480,7 @@
    "max_mm": 2.2,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "light"
   },
   {
@@ -424,6 +488,7 @@
    "max_mm": 3.7,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "moderate"
   },
   {
@@ -431,6 +496,7 @@
    "max_mm": 10.1,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 1,
+   "warning_stations": 1,
    "class": "heavy"
   },
   {
@@ -438,6 +504,7 @@
    "max_mm": 7.6,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "moderate"
   },
   {
@@ -445,6 +512,7 @@
    "max_mm": 22.4,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 1,
+   "warning_stations": 2,
    "class": "heavy"
   },
   {
@@ -452,6 +520,7 @@
    "max_mm": 23.8,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 4,
+   "warning_stations": 3,
    "class": "heavy"
   },
   {
@@ -459,6 +528,7 @@
    "max_mm": 9.8,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "moderate"
   },
   {
@@ -466,6 +536,7 @@
    "max_mm": 10.6,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 1,
+   "warning_stations": 4,
    "class": "heavy"
   },
   {
@@ -473,6 +544,7 @@
    "max_mm": 13.9,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 1,
+   "warning_stations": 4,
    "class": "heavy"
   },
   {
@@ -480,6 +552,7 @@
    "max_mm": 14.2,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 2,
+   "warning_stations": 5,
    "class": "heavy"
   },
   {
@@ -487,6 +560,7 @@
    "max_mm": 10.2,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 1,
+   "warning_stations": 5,
    "class": "heavy"
   },
   {
@@ -494,6 +568,7 @@
    "max_mm": 8.3,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 0,
+   "warning_stations": 5,
    "class": "moderate"
   },
   {
@@ -501,6 +576,7 @@
    "max_mm": 10.0,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 1,
+   "warning_stations": 5,
    "class": "heavy"
   },
   {
@@ -508,6 +584,7 @@
    "max_mm": 8.3,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 4,
    "class": "moderate"
   },
   {
@@ -515,6 +592,7 @@
    "max_mm": 6.8,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "moderate"
   },
   {
@@ -522,6 +600,7 @@
    "max_mm": 5.6,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 4,
    "class": "moderate"
   },
   {
@@ -529,6 +608,7 @@
    "max_mm": 4.9,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 5,
    "class": "moderate"
   },
   {
@@ -536,6 +616,7 @@
    "max_mm": 3.6,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 4,
    "class": "moderate"
   },
   {
@@ -543,6 +624,7 @@
    "max_mm": 2.9,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 3,
    "class": "moderate"
   },
   {
@@ -550,6 +632,7 @@
    "max_mm": 1.7,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "light"
   },
   {
@@ -557,6 +640,7 @@
    "max_mm": 1.2,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "light"
   },
   {
@@ -564,6 +648,7 @@
    "max_mm": 1.4,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "light"
   },
   {
@@ -571,6 +656,7 @@
    "max_mm": 2.9,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "moderate"
   },
   {
@@ -578,6 +664,7 @@
    "max_mm": 2.0,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "light"
   },
   {
@@ -585,6 +672,7 @@
    "max_mm": 5.5,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "moderate"
   },
   {
@@ -592,6 +680,7 @@
    "max_mm": 4.8,
    "max_site": "Newtown at Carmichael Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "moderate"
   },
   {
@@ -599,6 +688,7 @@
    "max_mm": 3.4,
    "max_site": "Berhampore at Nursery",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "moderate"
   },
   {
@@ -606,6 +696,7 @@
    "max_mm": 3.9,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "moderate"
   },
   {
@@ -613,6 +704,7 @@
    "max_mm": 5.9,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 2,
    "class": "moderate"
   },
   {
@@ -620,6 +712,7 @@
    "max_mm": 3.3,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "moderate"
   },
   {
@@ -627,6 +720,7 @@
    "max_mm": 3.6,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "moderate"
   },
   {
@@ -634,6 +728,7 @@
    "max_mm": 3.2,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "moderate"
   },
   {
@@ -641,6 +736,7 @@
    "max_mm": 1.6,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "light"
   },
   {
@@ -648,6 +744,7 @@
    "max_mm": 2.4,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 1,
    "class": "light"
   },
   {
@@ -655,6 +752,7 @@
    "max_mm": 4.6,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -662,6 +760,7 @@
    "max_mm": 6.4,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -669,6 +768,7 @@
    "max_mm": 3.8,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -676,6 +776,7 @@
    "max_mm": 2.2,
    "max_site": "Wellington at Te Papa",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -683,6 +784,7 @@
    "max_mm": 2.4,
    "max_site": "Newtown at Carmichael Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -690,6 +792,7 @@
    "max_mm": 1.1,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -697,6 +800,7 @@
    "max_mm": 0.8,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -704,6 +808,7 @@
    "max_mm": 2.3,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -711,6 +816,7 @@
    "max_mm": 1.8,
    "max_site": "Hutt River at Birch Lane",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -718,6 +824,7 @@
    "max_mm": 1.1,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -725,6 +832,7 @@
    "max_mm": 2.8,
    "max_site": "Kaiwharawhara Stream at Karori Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -732,6 +840,7 @@
    "max_mm": 2.5,
    "max_site": "Kaiwharawhara Stream at Karori Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -739,6 +848,7 @@
    "max_mm": 5.3,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -746,6 +856,7 @@
    "max_mm": 6.4,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -753,6 +864,7 @@
    "max_mm": 3.5,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -760,6 +872,7 @@
    "max_mm": 3.9,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -767,6 +880,7 @@
    "max_mm": 3.9,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -774,6 +888,7 @@
    "max_mm": 2.9,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -781,6 +896,7 @@
    "max_mm": 1.8,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -788,6 +904,7 @@
    "max_mm": 1.2,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -795,6 +912,7 @@
    "max_mm": 4.0,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -802,6 +920,7 @@
    "max_mm": 1.1,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -809,6 +928,7 @@
    "max_mm": 0.6,
    "max_site": "Pinehaven Stream at Pinehaven Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -816,6 +936,7 @@
    "max_mm": 0.4,
    "max_site": "Hutt River at Kaitoke Headworks",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -823,6 +944,7 @@
    "max_mm": 1.8,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -830,6 +952,7 @@
    "max_mm": 2.4,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -837,6 +960,7 @@
    "max_mm": 2.8,
    "max_site": "Kaiwharawhara Stream at Karori Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -844,6 +968,7 @@
    "max_mm": 2.0,
    "max_site": "Mangaroa River at Maymorn Pump Station",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "light"
   },
   {
@@ -851,6 +976,7 @@
    "max_mm": 3.2,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   },
   {
@@ -858,12 +984,14 @@
    "max_mm": 6.6,
    "max_site": "Wainuiomata River at Wainui Reservoir",
    "heavy_stations": 0,
+   "warning_stations": 0,
    "class": "moderate"
   }
  ],
  "limitations": [
   "Real GWRC Hilltop rainfall record for 18-23 April 2026, published after the event; a validated backtest, never a live detector.",
-  "Rainfall corroborates a movement signal; it does not confirm flooding, disruption or loss of access."
+  "Rainfall corroborates a movement signal; it does not confirm flooding, disruption or loss of access.",
+  "MetService warning criteria are the general published values and vary by region; a criteria exceedance here is a gauge fact, not an issued warning."
  ],
  "features": [
   {
@@ -972,6 +1100,33 @@
      "2026-04-22T22": 0.6,
      "2026-04-23T00": 2.0
     },
+    "warning_by_hour": {
+     "2026-04-20T04": 103.8,
+     "2026-04-20T05": 122.6,
+     "2026-04-20T06": 122.6,
+     "2026-04-20T07": 123.8,
+     "2026-04-20T08": 124.2,
+     "2026-04-20T09": 124.4,
+     "2026-04-20T10": 124.4,
+     "2026-04-20T11": 127.5,
+     "2026-04-20T12": 127.0,
+     "2026-04-20T13": 134.0,
+     "2026-04-20T14": 136.6,
+     "2026-04-20T15": 137.6,
+     "2026-04-20T16": 138.0,
+     "2026-04-20T17": 139.0,
+     "2026-04-20T18": 141.1,
+     "2026-04-20T19": 141.8,
+     "2026-04-20T20": 141.8,
+     "2026-04-20T21": 140.7,
+     "2026-04-20T22": 139.5,
+     "2026-04-20T23": 135.2,
+     "2026-04-21T00": 134.0,
+     "2026-04-21T01": 134.3,
+     "2026-04-21T02": 133.0,
+     "2026-04-21T03": 130.5
+    },
+    "warning_hours": 24,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -1118,6 +1273,26 @@
      "2026-04-22T23": 0.2,
      "2026-04-23T00": 2.2
     },
+    "warning_by_hour": {
+     "2026-04-20T04": 66.7,
+     "2026-04-20T05": 82.4,
+     "2026-04-20T06": 82.9,
+     "2026-04-20T07": 84.8,
+     "2026-04-20T08": 85.4,
+     "2026-04-20T09": 85.4,
+     "2026-04-20T14": 100.4,
+     "2026-04-20T15": 102.2,
+     "2026-04-20T16": 103.1,
+     "2026-04-20T17": 103.8,
+     "2026-04-20T18": 106.0,
+     "2026-04-20T19": 106.8,
+     "2026-04-20T20": 106.8,
+     "2026-04-20T21": 105.2,
+     "2026-04-20T22": 104.5,
+     "2026-04-21T00": 100.1,
+     "2026-04-21T01": 101.5
+    },
+    "warning_hours": 17,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -1261,6 +1436,8 @@
      "2026-04-22T23": 0.4,
      "2026-04-23T00": 2.1
     },
+    "warning_by_hour": {},
+    "warning_hours": 0,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -1408,6 +1585,20 @@
      "2026-04-22T22": 1.0,
      "2026-04-23T00": 3.6
     },
+    "warning_by_hour": {
+     "2026-04-20T05": 79.8,
+     "2026-04-20T06": 80.9,
+     "2026-04-20T07": 85.2,
+     "2026-04-20T08": 85.6,
+     "2026-04-20T09": 85.8,
+     "2026-04-20T18": 100.2,
+     "2026-04-20T19": 101.2,
+     "2026-04-20T20": 101.4,
+     "2026-04-20T21": 100.5,
+     "2026-04-21T01": 100.2,
+     "2026-04-21T02": 100.1
+    },
+    "warning_hours": 11,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -1561,6 +1752,8 @@
      "2026-04-22T23": 1.8,
      "2026-04-23T00": 1.7
     },
+    "warning_by_hour": {},
+    "warning_hours": 0,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -1720,6 +1913,8 @@
      "2026-04-22T23": 1.2,
      "2026-04-23T00": 1.9
     },
+    "warning_by_hour": {},
+    "warning_hours": 0,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -1866,6 +2061,23 @@
      "2026-04-22T23": 0.7,
      "2026-04-23T00": 3.3
     },
+    "warning_by_hour": {
+     "2026-04-18T08": 62.2,
+     "2026-04-18T09": 67.7,
+     "2026-04-18T10": 78.8,
+     "2026-04-18T11": 78.8,
+     "2026-04-18T12": 80.2,
+     "2026-04-18T20": 100.2,
+     "2026-04-18T21": 103.7,
+     "2026-04-18T22": 108.2,
+     "2026-04-18T23": 109.6,
+     "2026-04-19T00": 110.0,
+     "2026-04-19T01": 110.0,
+     "2026-04-19T02": 109.6,
+     "2026-04-19T03": 103.9,
+     "2026-04-19T04": 100.2
+    },
+    "warning_hours": 14,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -2019,6 +2231,18 @@
      "2026-04-22T23": 1.0,
      "2026-04-23T00": 4.2
     },
+    "warning_by_hour": {
+     "2026-04-18T09": 68.3,
+     "2026-04-18T10": 78.0,
+     "2026-04-18T11": 78.0,
+     "2026-04-18T12": 79.0,
+     "2026-04-18T13": 80.2,
+     "2026-04-18T23": 100.8,
+     "2026-04-19T00": 101.0,
+     "2026-04-19T01": 101.0,
+     "2026-04-19T02": 100.8
+    },
+    "warning_hours": 9,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -2185,6 +2409,39 @@
      "2026-04-22T23": 3.2,
      "2026-04-23T00": 6.6
     },
+    "warning_by_hour": {
+     "2026-04-20T13": 60.4,
+     "2026-04-20T14": 79.1,
+     "2026-04-20T15": 84.5,
+     "2026-04-20T16": 89.6,
+     "2026-04-20T17": 96.2,
+     "2026-04-20T18": 105.6,
+     "2026-04-20T19": 114.4,
+     "2026-04-20T20": 121.9,
+     "2026-04-20T21": 130.9,
+     "2026-04-20T22": 134.0,
+     "2026-04-20T23": 140.1,
+     "2026-04-21T00": 145.7,
+     "2026-04-21T01": 150.6,
+     "2026-04-21T02": 154.0,
+     "2026-04-21T03": 155.3,
+     "2026-04-21T04": 155.8,
+     "2026-04-21T05": 156.8,
+     "2026-04-21T06": 158.2,
+     "2026-04-21T07": 160.5,
+     "2026-04-21T08": 158.4,
+     "2026-04-21T09": 161.6,
+     "2026-04-21T10": 161.5,
+     "2026-04-21T11": 154.7,
+     "2026-04-21T12": 151.0,
+     "2026-04-21T13": 134.5,
+     "2026-04-21T14": 118.9,
+     "2026-04-21T15": 116.6,
+     "2026-04-21T16": 114.8,
+     "2026-04-21T17": 109.6,
+     "2026-04-21T18": 102.0
+    },
+    "warning_hours": 30,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -2335,6 +2592,12 @@
      "2026-04-22T23": 1.4,
      "2026-04-23T00": 1.8
     },
+    "warning_by_hour": {
+     "2026-04-18T10": 62.8,
+     "2026-04-18T11": 62.8,
+     "2026-04-18T12": 64.8
+    },
+    "warning_hours": 3,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -2480,6 +2743,8 @@
      "2026-04-22T23": 0.4,
      "2026-04-23T00": 1.8
     },
+    "warning_by_hour": {},
+    "warning_hours": 0,
     "daily_totals": [
      {
       "date": "2026-04-18",
@@ -2641,6 +2906,31 @@
      "2026-04-22T23": 0.2,
      "2026-04-23T00": 2.0
     },
+    "warning_by_hour": {
+     "2026-04-20T16": 58.8,
+     "2026-04-20T17": 72.6,
+     "2026-04-20T18": 83.8,
+     "2026-04-20T19": 92.5,
+     "2026-04-20T20": 99.9,
+     "2026-04-20T21": 104.4,
+     "2026-04-20T22": 111.1,
+     "2026-04-20T23": 117.2,
+     "2026-04-21T00": 121.8,
+     "2026-04-21T01": 123.8,
+     "2026-04-21T02": 125.3,
+     "2026-04-21T03": 125.5,
+     "2026-04-21T04": 125.6,
+     "2026-04-21T05": 125.6,
+     "2026-04-21T06": 125.5,
+     "2026-04-21T07": 125.4,
+     "2026-04-21T08": 125.3,
+     "2026-04-21T09": 125.3,
+     "2026-04-21T10": 125.4,
+     "2026-04-21T11": 124.9,
+     "2026-04-21T12": 124.3,
+     "2026-04-21T13": 119.9
+    },
+    "warning_hours": 22,
     "daily_totals": [
      {
       "date": "2026-04-18",

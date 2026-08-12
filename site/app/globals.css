@@ -390,6 +390,7 @@ h3 { font-size: var(--text-h3); }
   width: 10px; height: 12px; background: #1E90CF;
   border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
 }
+.map-key .rain.rain-warning { background: #D9640A; }
 .map-key .report, .map-key .report-high { width: 12px; height: 9px; border-radius: 2px; }
 .map-key .report { background: #77776F; }
 .map-key .report-high { background: #D6482B; }
@@ -482,6 +483,7 @@ h3 { font-size: var(--text-h3); }
 .replay-histogram .roads-bar { fill: #5B4A8A; opacity: 0.3; }
 .replay-histogram .flights-bar { fill: #0E6B72; opacity: 0.85; }
 .replay-histogram .rain-bar { fill: #1E90CF; opacity: 0.75; }
+.replay-histogram .rain-bar.warning { fill: #D9640A; }
 .replay-histogram .axis { stroke: var(--wcc-grey-500); stroke-width: 1; }
 .replay-histogram .cursor { fill: rgba(28, 28, 26, 0.18); }
 .replay-slider { width: 100%; margin: 0; accent-color: var(--wcc-yellow-600); }
