@@ -301,8 +301,11 @@ Synthetic / Real · Apr 2026), a **local search** over loaded feature names
   totals met the general **MetService heavy-rain warning criteria** (50 mm/6 h
   · 100 mm/24 h, region-dependent; `warning_by_hour`, precomputed by the build
   script — a gauge fact, not an issued warning). The `hourly` region aggregate
-  feeds the April timebar (rain ticks turn orange on warning hours) and the
-  corroboration row ("rain N mm/h (warning-level)").
+  feeds the April timebar (rain ticks turn orange on warning hours), the
+  corroboration row ("rain N mm/h (warning-level)") and the timebar's
+  fixed-width **always-on rain readout** (`.replay-rain`, April case only:
+  droplet swatch, this hour's peak mm/h, orange "warning" tag) — rain stays
+  visible even with the rain layer off and the popups on movement.
 - `reports` — the **SYNTHETIC** public-reports demonstration of the
   service-desk ticket flow, drawn as speech-bubble pins coloured by
   escalation level (grey low, amber elevated, red investigate). Deterministic

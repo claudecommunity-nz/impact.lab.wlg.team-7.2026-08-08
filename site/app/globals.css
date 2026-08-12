@@ -527,6 +527,20 @@ h3 { font-size: var(--text-h3); }
 .replay-readout i.down { background: var(--wcc-error); }
 .replay-readout i.roads-bar { background: #5B4A8A; }
 .replay-readout i.flights-bar { background: #0E6B72; }
+/* Always-on rain readout in the timebar: fixed width so playback never
+ * resizes the track. */
+.replay-rain {
+  margin: 0; flex: none; width: 132px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--wcc-grey-700);
+  font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden;
+}
+.replay-rain .drop {
+  flex: none; width: 8px; height: 10px; background: #1E90CF;
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+}
+.replay-rain strong { font-size: var(--text-small); color: var(--wcc-black); }
+.replay-rain em { font-style: normal; font-weight: 700; color: #A64A08; }
 .replay-histogram .event-window { fill: rgba(255, 221, 0, 0.3); }
 
 /* Baseline sparkline in the signal evidence: 12 matched hours, then now. */

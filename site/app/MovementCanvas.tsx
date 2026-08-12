@@ -1682,6 +1682,16 @@ export default function MovementCanvas() {
                 )}
               </span>
             </p>
+            {caseId === "april-floods" ? (
+              <p
+                className="replay-rain"
+                title="Peak gauge rainfall this hour, GWRC record; orange = MetService warning criteria met"
+              >
+                <i className="drop" aria-hidden="true" />
+                <strong>{activeCaseSlot ? `${activeCaseSlot.rainMm} mm/h` : "–"}</strong>
+                {activeCaseSlot?.rainWarning ? <em>warning</em> : null}
+              </p>
+            ) : null}
             <div className="replay-track">
               {activeModel ? (
                 <svg
