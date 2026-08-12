@@ -86,6 +86,15 @@ April movement artifact — no gitignored inputs):
 python scripts\build_reports_layer.py
 ```
 
+Capture live Metlink GTFS-RT (stdlib only, needs `METLINK_API_KEY`; realtime
+is ephemeral and Metlink keeps no archive — the April 2026 RT is
+unrecoverable, which is why the transit layer is synthetic; run this during
+the next event to capture the real thing):
+
+```powershell
+python scripts\capture_metlink_rt.py --interval 30 --hours 24
+```
+
 ## Architecture
 
 Two halves joined by eleven committed JSON files. **Those files are the
@@ -247,7 +256,14 @@ Synthetic / Real · Apr 2026), a **local search** over loaded feature names
   data** (real timetable, simulated running, injected anomalies): the artifact,
   the evidence panel, the hover popup and the caption all say so — keep that
   labelling. The sidebar lists only the top `TRANSIT_LIST_LIMIT` hotspots and
-  says it does; the map and the feed carry all of them.
+  says it does; the map and the feed carry all of them. The collection carries
+  `official_context`: quoted figures from the real Metlink April 2026 monthly
+  report (services significantly impacted 20–21 Apr; rail partly closed
+  overnight 20–21), read from the committed
+  `data/metlink/april-2026-performance.json` extract and rendered as a second
+  evidence-panel note — the real anchor beside the synthetic replay. Metlink
+  keeps no GTFS-RT archive, so the April realtime is unrecoverable;
+  `scripts/capture_metlink_rt.py` archives the live feed for the next event.
 - `roads` — NZTA TMS state-highway sites flagged in the **real 20–21 April
   2026 Wellington floods**, drawn as purple **diamonds** (`drawRoads`), darker
   for HIGH severity. Built by `scripts/build_road_layer.py` from the committed

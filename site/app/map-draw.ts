@@ -122,6 +122,14 @@ export type TransitCollection = {
   synthetic: boolean;
   attribution: string;
   limitations: string[];
+  /** Quoted figures from the official Metlink April 2026 monthly report —
+   * the real anchor beside the synthetic replay. */
+  official_context?: {
+    source: string;
+    source_url: string;
+    figures: Record<string, number>;
+    storm_notes: string[];
+  } | null;
   features: TransitFeature[];
 };
 

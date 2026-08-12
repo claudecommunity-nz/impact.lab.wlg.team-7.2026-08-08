@@ -1,0 +1,25 @@
+{
+  "source": "Metlink monthly performance report – April 2026",
+  "source_url": "https://www.metlink.org.nz/assets/Policies-and-reports/Performance-of-our-network/Performance-Reports/April-2026-Monthly-Report.pdf",
+  "publisher": "Metlink / Greater Wellington Regional Council",
+  "retrieved_at": "2026-08-12",
+  "truth": "official_published_report",
+  "figures": {
+    "bus_punctuality_april_pct": 94.1,
+    "bus_early_departures_pct": 0.83,
+    "rail_punctuality_april_pct": 84.4,
+    "rail_reliability_april_pct": 99.69,
+    "rail_services_bus_replaced_pct": 15.7,
+    "rail_services_bus_replaced_count": 1438,
+    "rail_unplanned_bus_replacements": 180,
+    "rail_delay_incidents_severe_weather": 13
+  },
+  "storm_notes": [
+    "Services were also significantly impacted by the severe weather conditions on 20 and 21 April 2026.",
+    "Severe weather (rain & predicted high river levels) forced the partial closure of the network on the evening of Monday 20th in the morning of Tuesday 21st April."
+  ],
+  "limitations": [
+    "Monthly aggregate report; no per-stop or per-hour breakdown is published.",
+    "Quoted verbatim from the official PDF; figures are Metlink's own measures."
+  ]
+}

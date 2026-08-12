@@ -2211,6 +2211,12 @@ export default function MovementCanvas() {
                       Synthetic data: real timetable, simulated running, injected
                       anomalies. Not an actual event.
                     </p>
+                    {transit?.official_context ? (
+                      <p className="evidence-note">
+                        Official April report (real):{" "}
+                        {transit.official_context.storm_notes[0]}
+                      </p>
+                    ) : null}
                     {evidenceOps(
                       "transit",
                       panelTransit.geometry.coordinates,

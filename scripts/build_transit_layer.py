@@ -134,9 +134,19 @@ def build(events_path: Path, output_path: Path) -> dict:
         )
     )
 
+    # Real anchor for the synthetic layer: the official Metlink April 2026
+    # monthly report, quoted figures only, if the derived extract is present.
+    official_path = ROOT / "data" / "metlink" / "april-2026-performance.json"
+    official_context = (
+        json.loads(official_path.read_text(encoding="utf-8"))
+        if official_path.exists()
+        else None
+    )
+
     collection = {
         "type": "FeatureCollection",
         "schema": "transit-anomaly-collection/v1",
+        "official_context": official_context,
         "source": "Metlink April 2026 synthetic replay, Team 7 detection pipeline",
         "source_csv": "data/buses_trains/anomaly/csv/anomaly_events.csv",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),

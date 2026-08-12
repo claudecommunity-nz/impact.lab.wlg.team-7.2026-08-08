@@ -53,4 +53,8 @@ Thumbs.db
 secrets/
 murmur-settings.json
 murmur-review.json
+# Raw Metlink downloads: keep the derived JSON, not the PDF or RT captures
+data/metlink/*.pdf
+data/metlink/*.txt
+data/metlink/rt/
 *.egg-info/
