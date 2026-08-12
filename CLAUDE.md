@@ -104,7 +104,7 @@ python scripts\capture_metlink_rt.py --interval 30 --hours 24
 
 ## Architecture
 
-Two halves joined by eleven committed JSON files. **Those files are the
+Two halves joined by twelve committed JSON files. **Those files are the
 contract**, not an intermediate: the site never runs Python, and the pipeline
 never renders.
 

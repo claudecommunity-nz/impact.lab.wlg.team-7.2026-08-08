@@ -119,6 +119,8 @@ unusual hourly pedestrian and vehicle counts at WCC Transport Sensor countlines,
 and publishes the same evidence as WGS84 GeoJSON for the shared common operating
 picture. The map is a view; **the feed is the product**.
 
+![The operating picture: investigate panel, layer drawer with truth badges, timebar and the in-view situation card over the one-canvas map](docs/screenshots/dashboard-august.png)
+
 ### Why Murmur is different
 
 - **We benchmarked the fancy models and picked the transparent one.** On a
@@ -152,7 +154,7 @@ picture. The map is a view; **the feed is the product**.
   in the visitor's browser and goes only to the provider. A test suite scans
   the repo for key-shaped strings on every build.
 - **No backend to fall over.** The site is static files plus the visitor's
-  browser — eleven committed GeoJSON/JSON contracts any COP, GIS client or
+  browser — twelve committed GeoJSON/JSON contracts any COP, GIS client or
   teammate's prototype can consume directly.
 
 ### What we found
@@ -197,6 +199,8 @@ picture. The map is a view; **the feed is the product**.
   condense to **350 stop-level hotspots** (Kilbirnie Stop A worst at 270
   anomalies, 65 high-severity, delay-outlier dominated) — evidence the same
   hotspot pattern works for public transport when real GTFS-RT is captured.
+
+![The April floods case at Mon 20 Apr 16:00: 24 street signals, Willis St pedestrians 283 observed vs 698 expected, warning-level rain on the timebar readout](docs/screenshots/case-april-floods.png)
 
 ### Key takeaways
 
@@ -247,6 +251,57 @@ above the map plays or scrubs through all 144 slots, its histogram showing
 each hour's gated deviations (increases up, decreases down — counts, never raw
 sums), and every signal carries its 12 prior matched weekday/hour counts as a
 sparkline next to the expected median.
+
+### Architecture ontology
+
+The whole system is a small set of named concepts, and every file in the repo
+is one of them or a mapping between two of them:
+
+```mermaid
+graph LR
+  subgraph Pipeline["Detection pipeline (Python, batch)"]
+    OBS["Observation<br/>countline × class × direction × hour"]
+    BAS["Baseline<br/>12-week matched weekday/hour<br/>median + MAD"]
+    DET{"Detector<br/>4 gates"}
+    OBS --> DET
+    BAS --> DET
+    DET -->|"gated, expected ≥ 5"| SIG["Signal — investigate"]
+    DET -->|"gated, expected < 5"| LOW["low_baseline"]
+    DET -->|"< 8 matched hours"| INS["insufficient_baseline"]
+    ABS["expected row absent"] --> GAP["data_gap — never zero"]
+  end
+  subgraph Contract["COP contract — versioned committed files"]
+    ART["Artifact<br/>schema id · limitations[] · confidence"]
+  end
+  SIG --> ART
+  LOW --> ART
+  GAP --> ART
+  subgraph Site["Site (browser only, no backend)"]
+    LAYER["Layer<br/>+ truth badge"]
+    CASE["Case<br/>hourly CaseSlots"]
+    EVID["Evidence panel<br/>+ corroboration"]
+    REV["Review item<br/>browser-local"]
+    ADV["Analogue advisor<br/>situation vectors"]
+  end
+  ART --> LAYER
+  ART --> CASE
+  LAYER --> EVID
+  CASE --> ADV
+  EVID --> REV
+```
+
+| Concept | Meaning | Lives in |
+|---|---|---|
+| **Observation** | One hourly count for countline × transport class × direction — the only input fact | `src/movement_anomaly/ingest.py` |
+| **Baseline** | That group's 12-week matched weekday/hour median + MAD, minimum 8 samples | `detector.py` |
+| **Signal** | A deviation passing all four gates; always *investigate*, never a diagnosed incident | `movement-signal/v1` |
+| **Status** | `normal` · `candidate` · `low_baseline` · `insufficient_baseline` · `data_gap` — a missing row is a gap, never zero | every artifact |
+| **Artifact** | A versioned committed file with schema id, `limitations[]` and confidence; the whole interface between pipeline and site | `site/public/cop/v1/` |
+| **Layer** | One source drawn on the one canvas, carrying its truth badge (Live / Batch replay / Synthetic / Real · Apr 2026) | `map-draw.ts` |
+| **Case** | A saved investigation window (Aug snapshot, April floods, Live monitor) as hourly `CaseSlot`s; one code path drives timebar, histogram and every time-bearing layer | `MovementCanvas.tsx` |
+| **Corroboration** | An independent source agreeing in the same window (roads day, air tick, rain mm/h, reports rule); *missing ≠ contradicting* | evidence panel |
+| **Review item** | Browser-local triage state keyed at place level; `movement-review/v1` on export, never a Council record | `review-store.ts` |
+| **Analogue** | Cosine match of the current six-number situation vector against saved case hours; an advisory to investigate, never a forecast | `analogue.ts` |
 
 ### One map, every source
 
@@ -319,6 +374,8 @@ whole queue over as a `movement-review/v1` contract with those truth
 boundaries embedded, so a shift handover or the shared COP can consume it
 without ever mistaking it for confirmed fact.
 
+![Signal review: the four queues over the 7 published signals, Vivian St pinned with Start investigating and the investigate-not-incident note](docs/screenshots/review.png)
+
 ### Live monitor and the analogue advisor
 
 The case picker's third mode is a **Live monitor**: there is no live WCC
@@ -334,6 +391,8 @@ clears 70% a yellow `≈` chip appears: *"Floods and storm · Sun 20 Apr ·
 14:00 · 87%"* — click it and the saved investigation opens at that hour. An
 analogue is an advisory to investigate, never a forecast: the same doctrine
 as every other surface, now pointed at history.
+
+![Live monitor in simulation mode: the analogue chip matching the developing storm to the saved April case, with the 12-hour episode rating on the situation card](docs/screenshots/live-monitor.png)
 
 ### The Murmur agent
 
@@ -355,16 +414,18 @@ and falls back to the local answer.
 ### Settings: sources and integrations
 
 **Data sources** (`/settings`, deliberately not on the dashboard) lists the
-eleven committed feeds plus anything you add, with **measured** status per source —
+twelve committed feeds plus anything you add, with **measured** status per source —
 reachable, reachable-with-odd-payload, or failed — last successful sync, latency
 and record count, a retry per row and **Test all**. Sources can be added by URL
 or imported from a file, and exported as **GeoJSON, JSON, CSV or NDJSON**.
 **Integrations** registers REST, MCP, A2A and webhook endpoints, tests them, and
 generates the MCP client config and the A2A agent card for your own endpoint.
 
+![Data sources: every feed with measured status, last sync and per-format export](docs/screenshots/settings.png)
+
 ### The feeds
 
-Everything the site shows is served as eleven committed files, **hosted at**
+Everything the site shows is served as twelve committed files, **hosted at**
 `https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08` —
 point any COP, GIS client or teammate's prototype at them:
 
@@ -380,6 +441,7 @@ point any COP, GIS client or teammate's prototype at them:
 | Air access (real April 2026, OpenSky) | `/cop/v1/flight-anomalies.geojson` |
 | Rainfall (real April 2026, GWRC Hilltop) | `/cop/v1/rain-april.geojson` |
 | Public reports (synthetic ticket flow) | `/cop/v1/reports-april.geojson` |
+| Live-monitor simulation (synthetic, 48 h) | `/cop/v1/live-sim.json` |
 | Coverage and health | `/cop/v1/movement-health.json` |
 
 Live, no clone needed:
