@@ -234,6 +234,9 @@ export type RainProperties = {
   peak: { observed_at: string; value_mm: number };
   heavy_hours: number;
   violent_hours: number;
+  /** Inside the WCC countline frame — out-of-frame gauges are context and
+   * never speak through the auto popup. */
+  within_countline_frame: boolean;
   /** Sparse map of hour key (YYYY-MM-DDTHH) to mm for hours with rain. */
   mm_by_hour: Record<string, number>;
   /** Hours whose rolling 6 h/24 h totals met the MetService warning criteria,

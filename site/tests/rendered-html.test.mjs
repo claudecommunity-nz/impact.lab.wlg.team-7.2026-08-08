@@ -506,11 +506,27 @@ test("ships the rainfall and public-report layers as honest contracts", async ()
   assert.equal(rain.thresholds.heavy_mm_per_hour, 10);
   assert.ok(rain.hourly.length >= 120);
   assert.ok(rain.limitations.length > 0);
+  const coverage = JSON.parse(
+    await readFile(new URL("../public/cop/v1/countline-coverage.geojson", import.meta.url), "utf8"),
+  );
+  const lons = coverage.features.flatMap((f) => f.geometry.coordinates.map(([lon]) => lon));
+  const lats = coverage.features.flatMap((f) => f.geometry.coordinates.map(([, lat]) => lat));
+  const frame = {
+    west: Math.min(...lons), east: Math.max(...lons),
+    south: Math.min(...lats), north: Math.max(...lats),
+  };
   for (const feature of rain.features) {
     const [longitude, latitude] = feature.geometry.coordinates;
     assert.ok(longitude > 174.5 && longitude < 176.1, `${feature.id} longitude`);
     assert.ok(latitude > -41.7 && latitude < -40.5, `${feature.id} latitude`);
     assert.ok(feature.properties.daily_totals.length > 0);
+    // The frame flag must agree with the coverage bounds, like the cameras.
+    assert.equal(
+      feature.properties.within_countline_frame,
+      longitude >= frame.west && longitude <= frame.east &&
+        latitude >= frame.south && latitude <= frame.north,
+      `${feature.id} frame flag`,
+    );
   }
 
   // Public reports: synthetic, labelled, privacy-clean, with stated rules.

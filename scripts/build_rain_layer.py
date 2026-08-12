@@ -18,7 +18,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data" / "hydro" / "april-storm-hilltop-observations.json"
+COVERAGE = ROOT / "site" / "public" / "cop" / "v1" / "countline-coverage.geojson"
 OUTPUT = ROOT / "site" / "public" / "cop" / "v1" / "rain-april.geojson"
+
+
+def coverage_frame() -> tuple[float, float, float, float]:
+    """West, east, south, north bounds of the WCC countline coverage."""
+    collection = json.loads(COVERAGE.read_text(encoding="utf-8"))
+    lons: list[float] = []
+    lats: list[float] = []
+    for feature in collection["features"]:
+        for lon, lat in feature["geometry"]["coordinates"]:
+            lons.append(lon)
+            lats.append(lat)
+    return min(lons), max(lons), min(lats), max(lats)
 
 THRESHOLDS = {
     "moderate_mm_per_hour": 2.5,
@@ -62,6 +75,7 @@ def main() -> None:
     hourly_max: dict[str, tuple[float, str]] = {}
     hourly_heavy: dict[str, int] = defaultdict(int)
     hourly_warning: dict[str, int] = defaultdict(int)
+    west, east, south, north = coverage_frame()
 
     for series in rain_series:
         observations = series["observations"]
@@ -115,6 +129,10 @@ def main() -> None:
                     },
                     "heavy_hours": heavy_hours,
                     "violent_hours": violent_hours,
+                    "within_countline_frame": (
+                        west <= series["geometry"]["coordinates"][0] <= east
+                        and south <= series["geometry"]["coordinates"][1] <= north
+                    ),
                     "mm_by_hour": mm_by_hour,
                     "warning_by_hour": warning_by_hour,
                     "warning_hours": len(warning_by_hour),
@@ -135,6 +153,15 @@ def main() -> None:
                 },
             }
         )
+
+    # City gauges first, like the camera list: the frame is where the
+    # countline signals live, so those gauges lead every surface.
+    features.sort(
+        key=lambda feature: (
+            not feature["properties"]["within_countline_frame"],
+            -feature["properties"]["window_total_mm"],
+        )
+    )
 
     hourly = [
         {

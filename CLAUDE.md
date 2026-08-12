@@ -238,9 +238,13 @@ the biggest gated signal — opens the same callout a hover would, if it is on
 screen; a real hover, pan or zoom takes over exactly as before. The
 bottom-right **situation card** (`.map-status`) states the hour in plain
 numbers for a first-time reader: abnormal-record count, people and vehicle %
-change (observed vs expected aggregated across the slot's gated signals —
-flagged sites only, the tooltip says so), rain mm/h with the warning tag, and
-cumulative reports; labels and values only, no prose. The point layers (cameras, transit, roads)
+change with observed/expected counts (aggregated across the slot's gated
+signals — flagged sites only, the tooltip says so), rain mm/h with the
+warning tag, and cumulative reports; labels and values only, no prose. The
+auto popup never speaks for an out-of-frame rain gauge
+(`within_countline_frame`, computed against the coverage bounds like the
+cameras and test-asserted): Hutt Valley and Wainuiomata gauges stay drawn and
+hoverable as context, but the callouts belong to the city. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a
 bubble zooms into it, and zooming naturally dissolves clusters into glyphs.

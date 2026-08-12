@@ -799,15 +799,19 @@ export default function MovementCanvas() {
       group.expected += Number(feature.properties.expected_count);
       group.count += 1;
     }
-    const percent = (group: typeof groups.people) =>
+    const summarise = (group: typeof groups.people) =>
       group.count === 0 || group.expected === 0
         ? null
-        : Math.round(((group.observed - group.expected) / group.expected) * 100);
+        : {
+            percent: Math.round(((group.observed - group.expected) / group.expected) * 100),
+            observed: Math.round(group.observed),
+            expected: Math.round(group.expected),
+          };
     return {
       up: activeCaseSlot.up,
       down: activeCaseSlot.down,
-      people: percent(groups.people),
-      vehicles: percent(groups.vehicles),
+      people: summarise(groups.people),
+      vehicles: summarise(groups.vehicles),
     };
   }, [activeCaseSlot]);
 
@@ -1085,6 +1089,9 @@ export default function MovementCanvas() {
         let worst: RainFeature | null = null;
         let worstMm = 0;
         for (const feature of rainFeatures) {
+          // Out-of-frame gauges (Hutt Valley, Wainuiomata) are context, not
+          // the city's story — they never take the auto popup.
+          if (!feature.properties.within_countline_frame) continue;
           const mm = feature.properties.mm_by_hour?.[slot.key] ?? 0;
           const warning = Boolean(feature.properties.warning_by_hour?.[slot.key]);
           if ((warning || mm >= 25) && mm >= worstMm) {
@@ -2020,7 +2027,7 @@ export default function MovementCanvas() {
             {activeCaseSlot && situation ? (
               <div
                 className="map-status"
-                title="This hour at flagged sites: gated signals, observed vs expected aggregated per class"
+                title="This hour at flagged sites: gated signals aggregated per class, shown as % change and observed/expected counts"
               >
                 <p>{activeCaseSlot.label}</p>
                 <div>
@@ -2031,24 +2038,28 @@ export default function MovementCanvas() {
                   <span>People</span>
                   <strong
                     className={
-                      situation.people === null ? "" : situation.people < 0 ? "down" : "up"
+                      situation.people === null ? "" : situation.people.percent < 0 ? "down" : "up"
                     }
                   >
                     {situation.people === null
                       ? "–"
-                      : `${situation.people > 0 ? "+" : ""}${situation.people}%`}
+                      : `${situation.people.percent > 0 ? "+" : ""}${situation.people.percent}% · ${situation.people.observed.toLocaleString("en-NZ")}/${situation.people.expected.toLocaleString("en-NZ")}`}
                   </strong>
                 </div>
                 <div>
                   <span>Vehicles</span>
                   <strong
                     className={
-                      situation.vehicles === null ? "" : situation.vehicles < 0 ? "down" : "up"
+                      situation.vehicles === null
+                        ? ""
+                        : situation.vehicles.percent < 0
+                          ? "down"
+                          : "up"
                     }
                   >
                     {situation.vehicles === null
                       ? "–"
-                      : `${situation.vehicles > 0 ? "+" : ""}${situation.vehicles}%`}
+                      : `${situation.vehicles.percent > 0 ? "+" : ""}${situation.vehicles.percent}% · ${situation.vehicles.observed.toLocaleString("en-NZ")}/${situation.vehicles.expected.toLocaleString("en-NZ")}`}
                   </strong>
                 </div>
                 {caseId === "april-floods" ? (
