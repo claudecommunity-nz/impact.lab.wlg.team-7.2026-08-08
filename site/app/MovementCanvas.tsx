@@ -89,8 +89,10 @@ const HOVER_STICKY_PX = 18;
 const TRANSIT_LIST_LIMIT = 30;
 const ROAD_LIST_LIMIT = 30;
 /* Points whose projected positions land within one cell merge into a density
- * bubble; zooming in grows the screen distances and dissolves the bubbles. */
-const CLUSTER_CELL = 34;
+ * bubble; zooming in grows the screen distances and dissolves the bubbles.
+ * 16px ≈ one glyph, so only genuinely overlapping marks group — bubbles
+ * dissolve a zoom level earlier than the previous 34px cell. */
+const CLUSTER_CELL = 16;
 const SEARCH_LIMIT = 8;
 
 /* The evidence column slides away rather than disappearing, so the map can grow
