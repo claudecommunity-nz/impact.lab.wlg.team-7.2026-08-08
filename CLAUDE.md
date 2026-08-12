@@ -235,7 +235,11 @@ timeline filters the map, never the evidence. Every scrub or playback step
 also runs the **auto-popup adapter** (`severeFnRef`, gate `AUTO_POPUP_Z`):
 the hour's severest issue — a gauge at warning/torrential level first, else
 the biggest gated signal — opens the same callout a hover would, if it is on
-screen; a real hover, pan or zoom takes over exactly as before. The
+screen; a real hover, pan or zoom takes over exactly as before. Auto
+callouts render the **compact popup** (`COMPACT_POPUP_WIDTH`,
+`.map-popup.compact`) so they cover fewer records, and the timebar carries an
+icon toggle (`murmur.autopopup.on` flag store, speech-bubble glyph, slashed
+when off) that switches them off entirely. The
 bottom-right **situation card** (`.map-status`) states the hour in plain
 numbers for a first-time reader, **grouped over the current view**: every
 figure counts only features whose anchors project inside the canvas, so pan
@@ -244,7 +248,9 @@ card). Rows: abnormal-record count, people and vehicle % change with
 observed/expected counts (across the in-view gated signals), worst in-view
 rain mm/h with the warning tag, in-view highway sites, hour-active bus stops
 (labelled synthetic), air access flagged/normal when the airport is in view,
-and cumulative in-view reports; labels and values only, no prose. The
+and cumulative in-view reports; labels and values only, no prose. Like the
+rail, panel and drawer it **folds away to an icon** (`murmur.status.open`
+flag store, icon-only controls) so it never has to cover records. The
 auto popup never speaks for an out-of-frame rain gauge
 (`within_countline_frame`, computed against the coverage bounds like the
 cameras and test-asserted): Hutt Valley and Wainuiomata gauges stay drawn and

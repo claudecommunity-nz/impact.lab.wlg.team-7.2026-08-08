@@ -398,24 +398,38 @@ h3 { font-size: var(--text-h3); }
 .map-key .report, .map-key .report-high { width: 12px; height: 9px; border-radius: 2px; }
 .map-key .report { background: #77776F; }
 .map-key .report-high { background: #D6482B; }
-/* The corner situation card: what this hour means, in plain numbers. */
+/* The corner situation card: what this hour means, in plain numbers. Compact
+ * on purpose, and it folds away to an icon so it never has to cover records. */
 .map-status {
   position: absolute; right: var(--space-3); bottom: calc(var(--space-3) + 30px);
-  z-index: 5; min-width: 172px;
-  padding: var(--space-2) var(--space-3);
-  background: rgba(255, 255, 255, 0.94); border: 1px solid var(--border-hairline);
-  font-size: 12.5px; display: grid; gap: 2px;
+  z-index: 5; min-width: 146px;
+  padding: var(--space-1) 20px var(--space-1) var(--space-2);
+  background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-hairline);
+  font-size: 11.5px; line-height: 1.45; display: grid; gap: 1px;
 }
 .map-status p {
-  margin: 0 0 2px; font-size: 11px; font-weight: 700;
+  margin: 0 0 1px; font-size: 10px; font-weight: 700;
   color: var(--wcc-grey-700); text-transform: uppercase; letter-spacing: 0.04em;
 }
-.map-status div { display: flex; justify-content: space-between; gap: var(--space-3); }
+.map-status div { display: flex; justify-content: space-between; gap: var(--space-2); }
 .map-status span { color: var(--wcc-grey-700); }
-.map-status strong { font-variant-numeric: tabular-nums; }
+.map-status strong { font-variant-numeric: tabular-nums; font-size: 11.5px; }
 .map-status strong.up { color: var(--wcc-warning); }
 .map-status strong.down { color: var(--wcc-error); }
 .map-status strong.warn { color: #A64A08; }
+.status-close {
+  position: absolute; top: 1px; right: 1px;
+  display: grid; place-items: center; width: 18px; height: 18px;
+  border: 0; background: transparent; color: var(--wcc-grey-700); cursor: pointer;
+}
+.status-close:hover { color: var(--wcc-black); }
+.map-status-toggle {
+  position: absolute; right: var(--space-3); bottom: calc(var(--space-3) + 30px);
+  z-index: 5; display: grid; place-items: center; width: 32px; height: 32px;
+  border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.92); color: var(--wcc-grey-700); cursor: pointer;
+}
+.map-status-toggle:hover { background: var(--wcc-yellow); color: var(--wcc-black); }
 
 .map-popup {
   position: absolute; z-index: 4; width: 248px; pointer-events: none;
@@ -423,6 +437,12 @@ h3 { font-size: var(--text-h3); }
 }
 .map-popup.above { transform: translateY(calc(-100% - 12px)); }
 .map-popup.below { transform: translateY(12px); }
+/* Auto callouts run narrow and small so they cover fewer records. */
+.map-popup.compact { width: 186px; }
+.map-popup.compact p {
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  font-size: 12px; line-height: 1.4;
+}
 .popup-media { position: relative; background: var(--wcc-grey-100); }
 .popup-media img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .live-chip {
@@ -497,6 +517,7 @@ h3 { font-size: var(--text-h3); }
 }
 .replay-bar > button:hover:not(:disabled) { background: var(--wcc-yellow); }
 .replay-bar > button:disabled { color: var(--wcc-grey-500); border-color: var(--border-hairline); cursor: not-allowed; }
+.replay-bar > button.off { color: var(--wcc-grey-500); border-color: var(--border-hairline); }
 .replay-track { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 2px; }
 .replay-histogram { display: block; width: 100%; height: 36px; cursor: pointer; }
 .replay-histogram .up { fill: var(--wcc-warning); }

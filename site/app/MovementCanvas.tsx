@@ -85,9 +85,13 @@ type Hover = {
   above: boolean;
   /** Beak position in px from the popup's left edge, aimed at the anchor. */
   beakX: number;
+  /** Auto callouts render the narrow variant so they cover fewer records. */
+  compact?: boolean;
 };
 
 const POPUP_WIDTH = 248;
+/** Auto callouts use the narrow popup so they cover fewer records. */
+const COMPACT_POPUP_WIDTH = 186;
 const HOVER_REFRESH_MS = 15_000;
 /* Once a glyph is hovered it stays hovered until the pointer leaves this
  * radius of its anchor — without the slack, overlapping glyphs trade the
@@ -110,6 +114,10 @@ const AUTO_POPUP_Z = 8;
 const evidenceStore = createFlagStore("murmur.evidence.open", true);
 /* Same remembered-flag pattern for the floating layer menu. */
 const layerMenuStore = createFlagStore("murmur.layers.open", true);
+/* And for the corner situation card, which folds away to an icon. */
+const statusStore = createFlagStore("murmur.status.open", true);
+/* Auto callouts during playback can be switched off from the timebar. */
+const autoPopupStore = createFlagStore("murmur.autopopup.on", true);
 /* Layer visibility is session state, never persisted: every load starts with
  * movement signals only, and every other layer is opt-in for that visit. */
 const DEFAULT_LAYERS: Layers = {
@@ -562,6 +570,18 @@ export default function MovementCanvas() {
       layerMenuStore.subscribe,
       layerMenuStore.snapshot,
       layerMenuStore.serverSnapshot,
+    ) === "1";
+  const statusOpen =
+    useSyncExternalStore(
+      statusStore.subscribe,
+      statusStore.snapshot,
+      statusStore.serverSnapshot,
+    ) === "1";
+  const autoPopupOn =
+    useSyncExternalStore(
+      autoPopupStore.subscribe,
+      autoPopupStore.snapshot,
+      autoPopupStore.serverSnapshot,
     ) === "1";
 
   const stageSize = useCallback(() => {
@@ -1119,17 +1139,18 @@ export default function MovementCanvas() {
     severeFnRef.current = (index: number) => {
       const slot = activeModel?.slots[index];
       const size = stageSize();
-      if (!slot || !size) {
+      if (!slot || !size || autoPopupStore.snapshot() !== "1") {
         setHover(null);
         return;
       }
       const project = createProjector(view, size.width, size.height);
+      const width = COMPACT_POPUP_WIDTH;
       const makeHover = (kind: Focus, id: string, coordinate: Coordinate): Hover | null => {
         const [px, py] = project(coordinate);
         if (px < 0 || px > size.width || py < 0 || py > size.height) return null;
         const left = Math.min(
-          Math.max(px - POPUP_WIDTH / 2, 8),
-          Math.max(8, size.width - POPUP_WIDTH - 8),
+          Math.max(px - width / 2, 8),
+          Math.max(8, size.width - width - 8),
         );
         return {
           kind,
@@ -1137,7 +1158,8 @@ export default function MovementCanvas() {
           left,
           top: py,
           above: py > 120,
-          beakX: Math.min(Math.max(px - left, 14), POPUP_WIDTH - 14),
+          beakX: Math.min(Math.max(px - left, 14), width - 14),
+          compact: true,
         };
       };
       let next: Hover | null = null;
@@ -1723,6 +1745,40 @@ export default function MovementCanvas() {
                 </option>
               ))}
             </select>
+            <button
+              type="button"
+              className={autoPopupOn ? "" : "off"}
+              onClick={() => {
+                autoPopupStore.toggle(autoPopupOn);
+                if (autoPopupOn) setHover(null);
+              }}
+              aria-pressed={autoPopupOn}
+              aria-label={autoPopupOn ? "Turn auto callouts off" : "Turn auto callouts on"}
+              title={autoPopupOn ? "Turn auto callouts off" : "Turn auto callouts on"}
+            >
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                {autoPopupOn ? (
+                  <path d="M2 2.6h12v8H8.4L5 13.6v-3H2z" fill="currentColor" />
+                ) : (
+                  <>
+                    <path
+                      d="M2 2.6h12v8H8.4L5 13.6v-3H2z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                    />
+                    <line
+                      x1="1.6"
+                      y1="14.4"
+                      x2="14.4"
+                      y2="1.6"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                    />
+                  </>
+                )}
+              </svg>
+            </button>
             <p className="replay-readout">
               <strong>{activeCaseSlot?.label ?? activeEvent.fallbackLabel}</strong>
               <span>
@@ -2091,10 +2147,25 @@ export default function MovementCanvas() {
               ) : null}
             </div>
             {activeCaseSlot && situation ? (
+              statusOpen ? (
               <div
                 className="map-status"
+                id="situation-card"
                 title="This hour, grouped over the current view: gated signals aggregated per class (% change and observed/expected counts), worst in-view rain, and in-view record counts per layer"
               >
+                <button
+                  type="button"
+                  className="status-close"
+                  onClick={() => statusStore.toggle(statusOpen)}
+                  aria-expanded
+                  aria-controls="situation-card"
+                  aria-label="Hide the situation card"
+                  title="Hide the situation card"
+                >
+                  <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                    <path d="M3 10l5-5 5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" transform="rotate(180 8 7.5)" />
+                  </svg>
+                </button>
                 <p>{activeCaseSlot.label} · in view</p>
                 <div>
                   <span>Abnormal records</span>
@@ -2164,12 +2235,33 @@ export default function MovementCanvas() {
                   </div>
                 ) : null}
               </div>
+              ) : (
+                <button
+                  type="button"
+                  className="map-status-toggle"
+                  onClick={() => statusStore.toggle(statusOpen)}
+                  aria-expanded={false}
+                  aria-controls="situation-card"
+                  aria-label="Show the situation card"
+                  title="Show the situation card"
+                >
+                  <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                    <path
+                      d="M2.5 13.5v-5M8 13.5v-9M13.5 13.5v-3"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
+                  </svg>
+                </button>
+              )
             ) : null}
             {hover &&
             (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad || hoveredFlight ||
               hoveredRain || hoveredReport) ? (
               <div
-                className={`map-popup ${hover.above ? "above" : "below"}`}
+                className={`map-popup ${hover.above ? "above" : "below"} ${hover.compact ? "compact" : ""}`}
                 style={
                   {
                     left: hover.left,
