@@ -617,19 +617,19 @@ export function drawSignals(
     const dx = rawEnd[0] - start[0];
     const dy = rawEnd[1] - start[1];
     const length = Math.hypot(dx, dy) || 1;
-    const end: Coordinate = length < 12
-      ? [start[0] + (dx / length) * 12, start[1] + (dy / length) * 12]
+    const end: Coordinate = length < 16
+      ? [start[0] + (dx / length) * 16, start[1] + (dy / length) * 16]
       : rawEnd;
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
     const decreasing = feature.properties.change_direction === "decrease";
     const colour = decreasing ? "#B3261E" : "#8A5A00";
-    const lineWidth = isSelected ? 6 : isHovered ? 5 : 3.5;
-    // The mark is an arrow, not a bar: the head points the travel direction
-    // the countline measured, so flow reads at a glance.
+    // Thin shaft, clear head: the head is sized on its own so a slim arrow
+    // still reads at city zoom.
+    const lineWidth = isSelected ? 4.5 : isHovered ? 3.5 : 2.5;
     const angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
-    const headLength = lineWidth * 2.6;
-    const headWidth = lineWidth * 2.4;
+    const headLength = 6 + lineWidth * 2;
+    const headWidth = 5 + lineWidth * 1.6;
     const shaftEnd: Coordinate = [
       end[0] - Math.cos(angle) * headLength * 0.72,
       end[1] - Math.sin(angle) * headLength * 0.72,
@@ -656,7 +656,7 @@ export function drawSignals(
     // White casing under the coloured arrow lifts the primary layer off the
     // basemap and the secondary glyphs around it.
     context.strokeStyle = "#FFFFFF";
-    context.lineWidth = lineWidth + 2.5;
+    context.lineWidth = lineWidth + 2;
     context.beginPath();
     context.moveTo(...start);
     context.lineTo(...shaftEnd);
