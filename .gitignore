@@ -52,4 +52,5 @@ Thumbs.db
 *.pem
 secrets/
 murmur-settings.json
+murmur-review.json
 *.egg-info/

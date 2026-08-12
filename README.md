@@ -297,7 +297,10 @@ review, and a **Corroboration** row states what the other loaded sources say
 for the case window — and when none covers it, "missing ≠ contradicting":
 absence adds uncertainty, it never clears a signal. Status and notes live in
 that browser's localStorage only — working notes for a shift, never a Council
-record, and no status confirms an incident.
+record, and no status confirms an incident. **Export queue (JSON)** hands the
+whole queue over as a `movement-review/v1` contract with those truth
+boundaries embedded, so a shift handover or the shared COP can consume it
+without ever mistaking it for confirmed fact.
 
 ### The Murmur agent
 

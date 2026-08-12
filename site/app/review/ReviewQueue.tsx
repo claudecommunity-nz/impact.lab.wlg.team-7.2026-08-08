@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
+import { download } from "../data-sources";
 import {
   OUTCOMES,
   clearReview,
@@ -120,6 +121,43 @@ export default function ReviewQueue() {
   const selected = shown.find((row) => row.key === selectedKey) ?? shown[0] ?? null;
   const selectedItem = selected ? review.items[selected.key] : undefined;
 
+  /* Same composable-output rule as every Murmur surface: the queue leaves as a
+   * versioned JSON contract, truth boundaries attached. */
+  const exportQueue = () => {
+    download(
+      "murmur-review.json",
+      JSON.stringify(
+        {
+          schema: "movement-review/v1",
+          generated_at: new Date().toISOString(),
+          source: "/cop/v1/movement-signals.geojson",
+          browser_local: true,
+          limitations: [
+            "Browser-local working notes, never a Council record.",
+            "A signal means investigate; no status confirms an incident.",
+          ],
+          items: rows.map((row) => {
+            const item = review.items[row.key];
+            return {
+              key: row.key,
+              name: row.name,
+              detail: row.detail,
+              robust_z: row.z,
+              status: row.status,
+              outcome: item?.outcome ?? null,
+              note: item?.note ?? "",
+              opened_at: item?.openedAt || null,
+              closed_at: item?.closedAt ?? null,
+            };
+          }),
+        },
+        null,
+        2,
+      ),
+      "application/json",
+    );
+  };
+
   return (
     <section className="review-shell" aria-labelledby="review-queues-heading">
       <div className="review-list-column">
@@ -138,6 +176,11 @@ export default function ReviewQueue() {
               {entry.label} ({counts[entry.id]})
             </button>
           ))}
+        </div>
+        <div className="evidence-ops review-export">
+          <button type="button" onClick={exportQueue} disabled={rows.length === 0}>
+            Export queue (JSON)
+          </button>
         </div>
         <div className="signal-list review-list" aria-label="Signals in this queue">
           {shown.map((row) => (

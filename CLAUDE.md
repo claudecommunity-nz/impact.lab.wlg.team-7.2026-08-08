@@ -303,7 +303,10 @@ link), an "in review"/"closed" suffix in the signal list, and a
 August: "none in this window · missing ≠ contradicting"). Browser-local
 working notes, never a Council record — the route copy and
 `rendered-html.test.mjs` both assert that boundary, and the review key is not
-part of the settings export.
+part of the settings export. **Export queue (JSON)** downloads the queue as a
+`movement-review/v1` contract (`murmur-review.json`, gitignored like the
+settings export) with `browser_local: true` and the truth boundaries in its
+`limitations` — the composable-output story, not a published artifact.
 
 ### Shell, agent and settings
 

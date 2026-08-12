@@ -477,6 +477,8 @@ test("ships a browser-local signal review queue on its own route", async () => {
   assert.match(reviewPage, /stay in this browser/);
   assert.match(reviewPage, /12 published signals/);
   assert.match(reviewPage, /aria-label="Review queues"/);
+  // The queue leaves as a versioned JSON contract, like every other surface.
+  assert.match(reviewPage, /Export queue \(JSON\)/);
   // SSR ships the empty shell; the browser's queue arrives with the feed.
   assert.match(reviewPage, /Loading the signal feed…|Select a signal to triage it\./);
   // The queue never adds a second map.
