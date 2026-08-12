@@ -65,7 +65,7 @@
   --container-pad: 24px;
   --measure-content: 720px;
   --touch-min: 44px;
-  --header-height: 72px;
+  --header-height: 60px;
 
   /* Type */
   --wcc-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -141,7 +141,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-3) var(--container-pad);
+  padding: var(--space-2) var(--container-pad);
   border-bottom: 1px solid var(--border-hairline);
   background: var(--surface-page);
   position: sticky;
@@ -202,8 +202,11 @@ h3 { font-size: var(--text-h3); }
  * grows with it — the ResizeObserver redraws on every frame of the transition. */
 .investigation-frame {
   --evidence-width: 420px;
-  margin: var(--space-6) 0 var(--space-9);
-  min-height: 690px; display: grid;
+  margin: var(--space-4) 0 var(--space-9);
+  /* One screen: the frame owns the viewport under the header and the evidence
+     column scrolls inside it, so the map never pushes past the fold. */
+  height: calc(100vh - var(--header-height) - var(--space-4) - var(--space-2));
+  min-height: 600px; display: grid;
   grid-template-columns: var(--evidence-width) minmax(0, 1fr);
   background: var(--surface-page); border: 1px solid var(--border-hairline);
   transition: grid-template-columns var(--dur-base) var(--ease-standard);
@@ -213,7 +216,7 @@ h3 { font-size: var(--text-h3); }
 /* Sits over the map's top-left corner, right beside the panel it collapses;
  * same look as the zoom stack in the opposite corner. */
 .evidence-toggle {
-  position: absolute; left: var(--space-3); top: var(--space-3); z-index: 5;
+  position: absolute; left: var(--space-3); top: calc(var(--timebar-h, 62px) + var(--space-3)); z-index: 5;
   display: grid; place-items: center;
   min-width: var(--touch-min); min-height: var(--touch-min);
   border: 1px solid var(--wcc-black); border-radius: var(--radius-md);
@@ -226,9 +229,10 @@ h3 { font-size: var(--text-h3); }
  * to a single icon (the shared flag-store pattern remembers the choice). */
 .layer-drawer {
   position: absolute; z-index: 5;
-  left: var(--space-3); top: calc(var(--space-3) + var(--touch-min) + var(--space-2));
+  left: var(--space-3);
+  top: calc(var(--timebar-h, 62px) + var(--space-3) + var(--touch-min) + var(--space-2));
   width: min(276px, calc(100% - 2 * var(--space-3)));
-  max-height: calc(100% - var(--touch-min) - 4 * var(--space-3));
+  max-height: calc(100% - var(--timebar-h, 62px) - var(--touch-min) - 4 * var(--space-3));
   display: flex; flex-direction: column; overflow: hidden;
   /* Near-solid, no blur: design.md §5 bans backdrop blur for old-device performance. */
   background: rgba(255, 255, 255, 0.95);
@@ -320,8 +324,9 @@ h3 { font-size: var(--text-h3); }
 .filter-group button:hover:not(.active) { color: var(--wcc-black); }
 .filter-group button.active { background: var(--wcc-black); color: var(--surface-page); }
 .map-stage {
-  /* Fill the viewport under the header and timebar on tall screens. */
-  position: relative; min-height: max(510px, calc(100vh - 300px)); flex: 1; overflow: hidden;
+  /* One screen: viewport minus the header, frame margin, paddings and caption.
+     The timebar overlays the map, so it costs no height here. */
+  position: relative; min-height: max(480px, calc(100vh - 200px)); flex: 1; overflow: hidden;
   background-color: var(--surface-alt);
   background-image: linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
   background-size: 28px 28px;
@@ -331,7 +336,7 @@ h3 { font-size: var(--text-h3); }
 .map-canvas { cursor: grab; touch-action: none; }
 .map-canvas:active { cursor: grabbing; }
 .map-controls {
-  position: absolute; right: var(--space-3); top: var(--space-3);
+  position: absolute; right: var(--space-3); top: calc(var(--timebar-h, 62px) + var(--space-3));
   display: flex; flex-direction: column; gap: var(--space-1); align-items: stretch;
 }
 .map-controls button {
@@ -425,13 +430,17 @@ h3 { font-size: var(--text-h3); }
 .map-message.error { color: var(--wcc-error); }
 .map-caption { margin: var(--space-3) 0 0; color: var(--wcc-grey-700); font-size: var(--text-small); }
 
-/* The replay timebar: the control row above the map, case picker first. The
- * histogram is the area total per published slot — gated deviations up/down,
- * never raw sums. */
+/* The replay timebar floats over the map's top edge, case picker first; its
+ * measured height (--timebar-h, set by the component) pushes the corner
+ * controls and layer drawer below it. The histogram is the area total per
+ * published slot — gated deviations up/down, never raw sums. */
 .replay-bar {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 6;
   display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
-  margin-bottom: var(--space-2); padding: var(--space-2);
-  border: 1px solid var(--border-hairline); background: var(--surface-page);
+  margin: 0; padding: var(--space-2);
+  border-bottom: 1px solid var(--border-hairline);
+  /* Near-solid, no blur: design.md §5 bans backdrop blur. */
+  background: rgba(255, 255, 255, 0.92);
 }
 .case-picker,
 .speed-picker {
@@ -504,6 +513,7 @@ h3 { font-size: var(--text-h3); }
 .evidence-inner {
   width: var(--evidence-width); height: 100%; min-height: 0;
   display: flex; flex-direction: column;
+  overflow-y: auto;
 }
 /* Visibility flips only once the slide has finished, which also takes the
  * hidden controls out of the tab order and the accessibility tree. */
@@ -574,7 +584,7 @@ h3 { font-size: var(--text-h3); }
 .evidence-ops button:hover { background: var(--wcc-yellow); }
 .evidence-ops a { font-size: var(--text-small); font-weight: 700; }
 .camera-link { display: inline-block; margin: var(--space-4) 0; }
-.signal-list { flex: 1; padding: var(--space-2); overflow-y: auto; max-height: 460px; }
+.signal-list { flex: 1; min-height: 220px; padding: var(--space-2); overflow-y: auto; max-height: 460px; }
 .list-group {
   margin: 0; padding: var(--space-3) var(--space-3) var(--space-1);
   color: var(--wcc-grey-700); font-size: 12px; font-weight: 700;
@@ -894,7 +904,7 @@ footer strong { color: var(--surface-page); }
   /* Stacked, there is no track to animate: the map leads and the panel simply
      goes away when it is closed. */
   .investigation-frame,
-  .investigation-frame.evidence-closed { grid-template-columns: 1fr; }
+  .investigation-frame.evidence-closed { grid-template-columns: 1fr; height: auto; }
   .investigation-frame.evidence-closed .evidence-column { display: none; }
   .map-column { border-right: 0; border-bottom: 1px solid var(--border-hairline); }
   .evidence-column { order: 0; border-right: 0; }
@@ -910,7 +920,7 @@ footer strong { color: var(--surface-page); }
   .map-stage { min-height: 400px; }
   .investigation-shell { padding-inline: var(--space-2); }
   .investigation-frame { margin-bottom: var(--space-8); }
-  .layer-drawer { max-height: calc(100% - var(--touch-min) - 3 * var(--space-3)); }
+  .layer-drawer { max-height: calc(100% - var(--timebar-h, 62px) - var(--touch-min) - 3 * var(--space-3)); }
   .limit-grid { grid-template-columns: 1fr; }
   .limit-grid p + p { border-left: 0; border-top: 1px solid var(--border-hairline); padding-left: 0; }
 }

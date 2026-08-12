@@ -452,6 +452,7 @@ function buildAprilCaseModel(
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
+  const timebarRef = useRef<HTMLDivElement>(null);
   const [layers, setLayers] = useState<Layers>(DEFAULT_LAYERS);
   const [coverage, setCoverage] = useState<LineFeature[]>([]);
   const [signals, setSignals] = useState<LineFeature[]>([]);
@@ -856,6 +857,19 @@ export default function MovementCanvas() {
       drawRef.current();
     });
     observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
+
+  // The timebar floats over the map's top edge; its measured height feeds the
+  // CSS var that keeps the corner controls and the layer drawer clear of it.
+  useEffect(() => {
+    const frame = frameRef.current;
+    const bar = timebarRef.current;
+    if (!frame || !bar) return;
+    const observer = new ResizeObserver(() => {
+      frame.style.setProperty("--timebar-h", `${bar.offsetHeight}px`);
+    });
+    observer.observe(bar);
     return () => observer.disconnect();
   }, []);
 
@@ -1287,7 +1301,13 @@ export default function MovementCanvas() {
           <h2 id="map-heading" className="visually-hidden">
             One map, every source
           </h2>
-          <div className="replay-bar" role="group" aria-label="Batch replay timeline">
+          <div className="map-stage" ref={frameRef}>
+          <div
+            className="replay-bar"
+            role="group"
+            aria-label="Batch replay timeline"
+            ref={timebarRef}
+          >
             <select
               className="case-picker"
               aria-label="Investigations"
@@ -1476,7 +1496,6 @@ export default function MovementCanvas() {
               />
             </div>
           </div>
-          <div className="map-stage" ref={frameRef}>
             <canvas
               ref={canvasRef}
               className="map-canvas"

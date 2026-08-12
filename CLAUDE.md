@@ -172,8 +172,10 @@ toggleable layer, and visibility is **session state, never persisted**
 only, and every other layer is opt-in for that visit — picking a feature from
 a list or search switches its layer on via `ensureLayer`, and scrubbing the
 April timeline pulls the roads layer in the same way. Drawn tiles → coverage
-→ roads → transit → flights → signals → cameras. **Above the map** sits the timebar, which leads
-with an **investigation-case dropdown** (`EVENTS`, `.case-picker` — always
+→ roads → transit → flights → signals → cameras. **Floating over the map's top edge** sits the timebar
+(`.replay-bar`, absolutely positioned inside `.map-stage`; its measured height
+feeds the `--timebar-h` CSS var that pushes the corner controls and layer
+drawer below it), which leads with an **investigation-case dropdown** (`EVENTS`, `.case-picker` — always
 visible even with the drawer closed): the 1–6 Aug movement snapshot and the
 real 18–22 Apr floods case. Both assert the same signals-only start; the
 April layers (roads, flights, synthetic transit) are opt-in there too. The
@@ -245,7 +247,9 @@ strips, the source metrics, the truth-boundary note and an operations row
 
 ### The replay timebar
 
-Under the map: play/pause, prev/next, a scrub slider and a diverging
+Overlaid across the map's top edge (it costs the page no height — the
+investigation frame is capped to one viewport, `height: calc(100vh - …)`, and
+the evidence column scrolls inside it): play/pause, prev/next, a scrub slider and a diverging
 **histogram** over the 144 published hours of `movement-replay.json` —
 increases up (amber), decreases down (red), each column the **count of gated
 deviations** that hour, never a raw count sum (hourly coverage varies, and a
