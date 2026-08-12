@@ -973,7 +973,7 @@ export function drawRain(
       x, y - 5.6 * scale,
     );
     context.closePath();
-    context.fillStyle = feature.properties.violent_hours > 0 ? "#1E4F7A" : "#3B78A8";
+    context.fillStyle = feature.properties.violent_hours > 0 ? "#0D5C8C" : "#1E90CF";
     context.fill();
     context.strokeStyle = "#FFFFFF";
     context.lineWidth = 1.3;
@@ -997,7 +997,7 @@ export function drawReports(
     const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.9;
     const level = feature.properties.level;
     const colour =
-      level === "investigate" ? "#B3261E" : level === "elevated" ? "#B26A00" : "#77776F";
+      level === "investigate" ? "#D6482B" : level === "elevated" ? "#E08A00" : "#77776F";
 
     if (isSelected) {
       context.beginPath();
@@ -1045,7 +1045,7 @@ export function drawCameras(
     const height = 9 * scale;
     const left = x - width / 2;
     const top = y - height / 2;
-    const body = feature.properties.offline ? "#6F6F69" : "#0B6B3A";
+    const body = feature.properties.offline ? "#6F6F69" : "#12934B";
 
     if (isSelected) {
       traceRoundedRect(context, left - 3, top - 3, width + 6, height + 6, 4 * scale);

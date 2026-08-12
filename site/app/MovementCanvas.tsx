@@ -950,7 +950,7 @@ export default function MovementCanvas() {
           hover?.kind === "camera" ? hover.id : null,
           scale,
         );
-        drawClusters(surface.context, groups.cameras.clusters, "#0B6B3A");
+        drawClusters(surface.context, groups.cameras.clusters, "#12934B");
       }
     };
     drawRef.current();

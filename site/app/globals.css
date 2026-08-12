@@ -299,11 +299,11 @@ h3 { font-size: var(--text-h3); }
 .layer-chip .swatch { flex: none; width: 12px; height: 12px; border-radius: 2px; }
 .layer-chip .swatch.signals { background: var(--wcc-warning); }
 .layer-chip .swatch.coverage { background: var(--wcc-grey-500); height: 3px; border-radius: 0; }
-.layer-chip .swatch.cameras { background: var(--wcc-success); }
+.layer-chip .swatch.cameras { background: #12934B; }
 .layer-chip .swatch.transit { background: #2B5CAD; }
 .layer-chip .swatch.roads { background: #5B4A8A; }
 .layer-chip .swatch.flights { background: #0E6B72; }
-.layer-chip .swatch.rain { background: #3B78A8; }
+.layer-chip .swatch.rain { background: #1E90CF; }
 .layer-chip .swatch.reports { background: #77776F; }
 .layer-chip.off .swatch { opacity: 0.45; }
 .status-badge {
@@ -377,7 +377,7 @@ h3 { font-size: var(--text-h3); }
 .map-key .decrease { background: var(--wcc-error); }
 .map-key .coverage { background: var(--wcc-grey-500); height: 1px; }
 .map-key .camera, .map-key .camera-offline { width: 12px; height: 9px; border-radius: 2px; }
-.map-key .camera { background: var(--wcc-success); }
+.map-key .camera { background: #12934B; }
 .map-key .camera-offline { background: var(--wcc-grey-500); }
 .map-key .transit, .map-key .transit-high { width: 12px; height: 9px; border-radius: 2px; }
 .map-key .transit { background: #2B5CAD; }
@@ -387,12 +387,12 @@ h3 { font-size: var(--text-h3); }
 .map-key .road-high { background: #5B4A8A; }
 .map-key .flight { width: 12px; height: 9px; border-radius: 2px 2px 4px 4px; background: #0E6B72; transform: none; }
 .map-key .rain {
-  width: 10px; height: 12px; background: #3B78A8;
+  width: 10px; height: 12px; background: #1E90CF;
   border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
 }
 .map-key .report, .map-key .report-high { width: 12px; height: 9px; border-radius: 2px; }
 .map-key .report { background: #77776F; }
-.map-key .report-high { background: #B3261E; }
+.map-key .report-high { background: #D6482B; }
 .map-popup {
   position: absolute; z-index: 4; width: 248px; pointer-events: none;
   background: var(--surface-page); border: 1px solid var(--wcc-black); box-shadow: var(--shadow-2);
@@ -481,7 +481,7 @@ h3 { font-size: var(--text-h3); }
  * recedes to a wash behind them, flights stay teal hour ticks. */
 .replay-histogram .roads-bar { fill: #5B4A8A; opacity: 0.3; }
 .replay-histogram .flights-bar { fill: #0E6B72; opacity: 0.85; }
-.replay-histogram .rain-bar { fill: #3B78A8; opacity: 0.75; }
+.replay-histogram .rain-bar { fill: #1E90CF; opacity: 0.75; }
 .replay-histogram .axis { stroke: var(--wcc-grey-500); stroke-width: 1; }
 .replay-histogram .cursor { fill: rgba(28, 28, 26, 0.18); }
 .replay-slider { width: 100%; margin: 0; accent-color: var(--wcc-yellow-600); }
