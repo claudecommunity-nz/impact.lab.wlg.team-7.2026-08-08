@@ -624,54 +624,40 @@ export function drawSignals(
     const isHovered = feature.id === hoveredId;
     const decreasing = feature.properties.change_direction === "decrease";
     const colour = decreasing ? "#B3261E" : "#8A5A00";
-    // Thin shaft, clear head: the head is sized on its own so a slim arrow
-    // still reads at city zoom.
+    // One clean element: the whole arrow is a single filled silhouette (the
+    // same shape as the map-key swatch) with one white outline, so it stays
+    // crisp at small sizes instead of dissolving into strokes.
     const lineWidth = isSelected ? 4.5 : isHovered ? 3.5 : 2.5;
     const angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
+    const shaftHalf = lineWidth / 2;
     const headLength = 6 + lineWidth * 2;
-    const headWidth = 5 + lineWidth * 1.6;
-    const shaftEnd: Coordinate = [
-      end[0] - Math.cos(angle) * headLength * 0.72,
-      end[1] - Math.sin(angle) * headLength * 0.72,
+    const headHalf = (5 + lineWidth * 1.6) / 2;
+    const arrowLength = Math.hypot(end[0] - start[0], end[1] - start[1]);
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const outline: Coordinate[] = [
+      [0, -shaftHalf],
+      [arrowLength - headLength, -shaftHalf],
+      [arrowLength - headLength, -headHalf],
+      [arrowLength, 0],
+      [arrowLength - headLength, headHalf],
+      [arrowLength - headLength, shaftHalf],
+      [0, shaftHalf],
     ];
-    const barbs: Coordinate[] = [
-      [
-        end[0] - Math.cos(angle) * headLength - Math.sin(angle) * (headWidth / 2),
-        end[1] - Math.sin(angle) * headLength + Math.cos(angle) * (headWidth / 2),
-      ],
-      [
-        end[0] - Math.cos(angle) * headLength + Math.sin(angle) * (headWidth / 2),
-        end[1] - Math.sin(angle) * headLength - Math.cos(angle) * (headWidth / 2),
-      ],
-    ];
-    const traceHead = () => {
-      context.beginPath();
-      context.moveTo(...end);
-      context.lineTo(...barbs[0]);
-      context.lineTo(...barbs[1]);
-      context.closePath();
-    };
-    context.lineCap = "round";
+    context.beginPath();
+    outline.forEach(([localX, localY], index) => {
+      const x = start[0] + cos * localX - sin * localY;
+      const y = start[1] + sin * localX + cos * localY;
+      if (index === 0) context.moveTo(x, y);
+      else context.lineTo(x, y);
+    });
+    context.closePath();
     context.lineJoin = "round";
-    // White casing under the coloured arrow lifts the primary layer off the
-    // basemap and the secondary glyphs around it.
-    context.strokeStyle = "#FFFFFF";
-    context.lineWidth = lineWidth + 2;
-    context.beginPath();
-    context.moveTo(...start);
-    context.lineTo(...shaftEnd);
-    context.stroke();
-    traceHead();
-    context.stroke();
-    context.strokeStyle = colour;
-    context.lineWidth = lineWidth;
-    context.beginPath();
-    context.moveTo(...start);
-    context.lineTo(...shaftEnd);
-    context.stroke();
-    traceHead();
     context.fillStyle = colour;
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 1.5;
     context.fill();
+    context.stroke();
 
     // Signals carry the story, so their glyphs run a step larger than the
     // corroborating camera and bus icons.
