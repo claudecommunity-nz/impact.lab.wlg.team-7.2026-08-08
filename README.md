@@ -364,8 +364,9 @@ generates the MCP client config and the A2A agent card for your own endpoint.
 
 ### The feeds
 
-Everything the site shows is served as eleven committed files — point any COP,
-GIS client or teammate's prototype at them:
+Everything the site shows is served as eleven committed files, **hosted at**
+`https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08` —
+point any COP, GIS client or teammate's prototype at them:
 
 | Feed | Path |
 |---|---|
@@ -380,6 +381,12 @@ GIS client or teammate's prototype at them:
 | Rainfall (real April 2026, GWRC Hilltop) | `/cop/v1/rain-april.geojson` |
 | Public reports (synthetic ticket flow) | `/cop/v1/reports-april.geojson` |
 | Coverage and health | `/cop/v1/movement-health.json` |
+
+Live, no clone needed:
+
+```
+curl https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08/cop/v1/movement-health.json
+```
 
 The rainfall and public-report layers close the last two limbs of problem 05
 ("compare movement changes with weather warnings, road closures or public
