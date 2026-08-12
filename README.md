@@ -357,6 +357,8 @@ from the first paint:
   toggle in the map's top-left corner, the canvas growing into the space. It is
   put away, not merely hidden: its controls leave the tab order.
 
+![Everything folded to an icon: the April storm hour as a full-width map, timebar and rain readout still in place](docs/screenshots/map-only-april.png)
+
 ### Signal review
 
 `/review` (in the rail) is the triage queue over the published signals. Every

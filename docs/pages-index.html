@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Murmur COP feeds</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; color: #1a1a1a; background: #fff; }
+  h1 { font-size: 1.4rem; }
+  ul { padding-left: 1.2rem; }
+  li { margin: 0.35rem 0; }
+  code { background: #f4f4f4; padding: 0.1rem 0.3rem; }
+  .note { color: #6b5900; background: #fdf6d8; padding: 0.5rem 0.75rem; }
+  footer { margin-top: 2rem; font-size: 0.85rem; color: #555; }
+</style>
+</head>
+<body>
+<h1>Murmur COP feeds</h1>
+<p class="note">Batch replay · not live emergency information — in an emergency call 111.</p>
+<ul>
+  <li><a href="cop/v1/movement-signals.geojson">Movement signals</a></li>
+  <li><a href="cop/v1/movement-replay.json">Hourly replay · 1–6 Aug 2026</a></li>
+  <li><a href="cop/v1/movement-april.json">April movement backtest · 18–23 Apr 2026</a></li>
+  <li><a href="cop/v1/countline-coverage.geojson">Sensor coverage</a></li>
+  <li><a href="cop/v1/traffic-cameras.geojson">Traffic cameras · NZTA</a></li>
+  <li><a href="cop/v1/transit-anomalies.geojson">PT anomalies · synthetic</a></li>
+  <li><a href="cop/v1/road-anomalies.geojson">State highways · real Apr 2026</a></li>
+  <li><a href="cop/v1/flight-anomalies.geojson">Air access · real Apr 2026 · OpenSky</a></li>
+  <li><a href="cop/v1/rain-april.geojson">Rainfall · real Apr 2026 · GWRC</a></li>
+  <li><a href="cop/v1/reports-april.geojson">Public reports · synthetic</a></li>
+  <li><a href="cop/v1/live-sim.json">Live-monitor simulation · synthetic</a></li>
+  <li><a href="cop/v1/movement-health.json">Coverage and health</a></li>
+</ul>
+<p>Schema id, confidence and <code>limitations[]</code> ship inside each file. Signals mean investigate, never a diagnosed incident.</p>
+<footer>
+  <a href="https://github.com/claudecommunity-nz/impact.lab.wlg.team-7.2026-08-08">Repository</a> ·
+  Data: WCC Transport Sensors · NZTA · Metlink · GWRC · OpenSky Network · Map data © OpenStreetMap · © CARTO
+</footer>
+</body>
+</html>
