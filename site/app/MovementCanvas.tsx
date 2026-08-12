@@ -523,6 +523,9 @@ export default function MovementCanvas() {
   // clears the failure without an effect.
   const [failedFrame, setFailedFrame] = useState<string | null>(null);
   const [view, setView] = useState<MapView>(DEFAULT_VIEW);
+  // The stage's measured size, mirrored into state so render-time consumers
+  // (the view-scoped situation card) never touch a ref during render.
+  const [stageBox, setStageBox] = useState<{ width: number; height: number } | null>(null);
   // The hourly replay drives the signal layer once it loads; until then the
   // committed snapshot renders, so a failed fetch degrades to today's map.
   const [replay, setReplay] = useState<ReplayCollection | null>(null);
@@ -782,16 +785,29 @@ export default function MovementCanvas() {
     );
   }, [reportFeatures, timeSyncKey]);
 
-  /* The corner situation card: what is happening right now, in plain numbers.
-   * People/vehicle percentages aggregate observed vs expected across the
-   * slot's gated signals — flagged sites only, which the tooltip says. */
+  /* The corner situation card: what is happening right now IN THE CURRENT
+   * VIEW, in plain numbers. Every figure is scoped to features whose anchors
+   * project inside the canvas, so panning and zooming re-frame the story —
+   * pan to Wainuiomata and its rain takes the card. */
   const situation = useMemo(() => {
     if (!activeCaseSlot) return null;
+    const size = stageBox;
+    const project = size ? createProjector(view, size.width, size.height) : null;
+    const inView = (coordinate: Coordinate) => {
+      if (!project || !size) return true;
+      const [x, y] = project(coordinate);
+      return x >= 0 && x <= size.width && y >= 0 && y <= size.height;
+    };
+    let up = 0;
+    let down = 0;
     const groups = {
       people: { observed: 0, expected: 0, count: 0 },
       vehicles: { observed: 0, expected: 0, count: 0 },
     };
     for (const feature of activeCaseSlot.signals) {
+      if (!inView(feature.geometry.coordinates[0])) continue;
+      if (feature.properties.change_direction === "decrease") down += 1;
+      else up += 1;
       const group = PEOPLE_CLASSES.has(String(feature.properties.transport_class))
         ? groups.people
         : groups.vehicles;
@@ -807,13 +823,49 @@ export default function MovementCanvas() {
             observed: Math.round(group.observed),
             expected: Math.round(group.expected),
           };
+    let rainMm = 0;
+    let rainWarning = false;
+    if (caseId === "april-floods") {
+      for (const feature of rainFeatures) {
+        if (!inView(feature.geometry.coordinates)) continue;
+        const mm = feature.properties.mm_by_hour?.[activeCaseSlot.key] ?? 0;
+        if (mm > rainMm) rainMm = mm;
+        if (feature.properties.warning_by_hour?.[activeCaseSlot.key]) rainWarning = true;
+      }
+    }
+    const reports = timeSyncKey
+      ? shownReports.filter((feature) => inView(feature.geometry.coordinates)).length
+      : null;
+    const transit = timeSyncKey
+      ? shownTransit.filter((feature) => inView(feature.geometry.coordinates)).length
+      : null;
+    const roads =
+      caseId === "april-floods"
+        ? shownRoads.filter((feature) => inView(feature.geometry.coordinates)).length
+        : null;
+    const airInView = flightFeatures.some((feature) => inView(feature.geometry.coordinates));
+    const air =
+      caseId === "april-floods" && airInView
+        ? activeCaseSlot.tick
+          ? "flagged"
+          : "normal"
+        : null;
     return {
-      up: activeCaseSlot.up,
-      down: activeCaseSlot.down,
+      up,
+      down,
       people: summarise(groups.people),
       vehicles: summarise(groups.vehicles),
+      rainMm,
+      rainWarning,
+      reports,
+      transit,
+      roads,
+      air,
     };
-  }, [activeCaseSlot]);
+  }, [
+    activeCaseSlot, view, caseId, rainFeatures, timeSyncKey, shownReports,
+    shownTransit, shownRoads, flightFeatures, stageBox,
+  ]);
 
   const filteredSignals = useMemo(() => shownSignals.filter((feature) => {
     const mode = String(feature.properties.transport_class);
@@ -1026,7 +1078,11 @@ export default function MovementCanvas() {
   useEffect(() => {
     const frame = frameRef.current;
     if (!frame) return;
-    const observer = new ResizeObserver(() => {
+    const observer = new ResizeObserver((entries) => {
+      const rect = entries[0]?.contentRect;
+      if (rect && rect.width > 0) {
+        setStageBox({ width: rect.width, height: rect.height });
+      }
       autoFitFnRef.current();
       drawRef.current();
     });
@@ -2037,9 +2093,9 @@ export default function MovementCanvas() {
             {activeCaseSlot && situation ? (
               <div
                 className="map-status"
-                title="This hour at flagged sites: gated signals aggregated per class, shown as % change and observed/expected counts"
+                title="This hour, grouped over the current view: gated signals aggregated per class (% change and observed/expected counts), worst in-view rain, and in-view record counts per layer"
               >
-                <p>{activeCaseSlot.label}</p>
+                <p>{activeCaseSlot.label} · in view</p>
                 <div>
                   <span>Abnormal records</span>
                   <strong>{situation.up + situation.down}</strong>
@@ -2075,16 +2131,36 @@ export default function MovementCanvas() {
                 {caseId === "april-floods" ? (
                   <div>
                     <span>Rain</span>
-                    <strong className={activeCaseSlot.rainWarning ? "warn" : ""}>
-                      {activeCaseSlot.rainMm > 0 ? `${activeCaseSlot.rainMm} mm/h` : "none"}
-                      {activeCaseSlot.rainWarning ? " · warning" : ""}
+                    <strong className={situation.rainWarning ? "warn" : ""}>
+                      {situation.rainMm > 0 ? `${situation.rainMm} mm/h` : "none"}
+                      {situation.rainWarning ? " · warning" : ""}
                     </strong>
                   </div>
                 ) : null}
-                {timeSyncKey ? (
+                {situation.roads !== null ? (
+                  <div>
+                    <span>Highway sites</span>
+                    <strong>{situation.roads}</strong>
+                  </div>
+                ) : null}
+                {situation.transit !== null ? (
+                  <div>
+                    <span>Buses (synthetic)</span>
+                    <strong>{situation.transit}</strong>
+                  </div>
+                ) : null}
+                {situation.air !== null ? (
+                  <div>
+                    <span>Air access</span>
+                    <strong className={situation.air === "flagged" ? "warn" : ""}>
+                      {situation.air}
+                    </strong>
+                  </div>
+                ) : null}
+                {situation.reports !== null ? (
                   <div>
                     <span>Reports so far</span>
-                    <strong>{shownReports.length}</strong>
+                    <strong>{situation.reports}</strong>
                   </div>
                 ) : null}
               </div>

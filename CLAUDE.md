@@ -237,10 +237,14 @@ the hour's severest issue — a gauge at warning/torrential level first, else
 the biggest gated signal — opens the same callout a hover would, if it is on
 screen; a real hover, pan or zoom takes over exactly as before. The
 bottom-right **situation card** (`.map-status`) states the hour in plain
-numbers for a first-time reader: abnormal-record count, people and vehicle %
-change with observed/expected counts (aggregated across the slot's gated
-signals — flagged sites only, the tooltip says so), rain mm/h with the
-warning tag, and cumulative reports; labels and values only, no prose. The
+numbers for a first-time reader, **grouped over the current view**: every
+figure counts only features whose anchors project inside the canvas, so pan
+and zoom re-frame the story (pan to Wainuiomata and its rain takes the
+card). Rows: abnormal-record count, people and vehicle % change with
+observed/expected counts (across the in-view gated signals), worst in-view
+rain mm/h with the warning tag, in-view highway sites, hour-active bus stops
+(labelled synthetic), air access flagged/normal when the airport is in view,
+and cumulative in-view reports; labels and values only, no prose. The
 auto popup never speaks for an out-of-frame rain gauge
 (`within_countline_frame`, computed against the coverage bounds like the
 cameras and test-asserted): Hutt Valley and Wainuiomata gauges stay drawn and
