@@ -3,38 +3,201 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Murmur COP feeds</title>
+<title>Murmur — movement signals for Wellington</title>
+<meta name="description" content="Movement-change signals from Wellington City Council transport sensors: quiet hours quiet, storms unmistakable, missing data shown as missing.">
+<link rel="icon" href="murmur-favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Murmur — movement signals for Wellington">
+<meta property="og:description" content="Measuring the city's heartbeat and detecting irregularities. Live demo and twelve open COP feeds.">
+<meta property="og:image" content="https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08/og-card.png">
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; color: #1a1a1a; background: #fff; }
-  h1 { font-size: 1.4rem; }
-  ul { padding-left: 1.2rem; }
-  li { margin: 0.35rem 0; }
-  code { background: #f4f4f4; padding: 0.1rem 0.3rem; }
-  .note { color: #6b5900; background: #fdf6d8; padding: 0.5rem 0.75rem; }
-  footer { margin-top: 2rem; font-size: 0.85rem; color: #555; }
+  :root {
+    --yellow: #ffdd00; --yellow-600: #ebc900; --yellow-ink: #5c4e00;
+    --ink: #1c1c1a; --grey-700: #45453f; --grey-500: #6f6f69;
+    --grey-300: #d8d8d3; --grey-100: #efefec; --alt: #f7f7f5;
+    --link: #0b4ea2; --up: #8a5a00; --down: #b3261e;
+    --success: #0b6b3a; --success-surface: #e9f3ed;
+    --synthetic: #5b4a8a; --synthetic-surface: #efecf6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--ink); background: #fff;
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  a { color: var(--link); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  header.top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 18px 0; border-bottom: 4px solid var(--ink);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand img { height: 34px; width: auto; }
+  .brand b { font-size: 22px; letter-spacing: -0.01em; }
+  .mode {
+    background: var(--yellow); color: var(--ink); font-weight: 700; font-size: 13px;
+    padding: 6px 12px; white-space: nowrap;
+  }
+
+  .hero { padding: 56px 0 8px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--grey-500); margin: 0 0 14px;
+  }
+  h1 {
+    font-size: clamp(34px, 6vw, 62px); line-height: 1.02; letter-spacing: -0.025em;
+    font-weight: 800; margin: 0 0 18px; max-width: 17ch;
+  }
+  .lede { font-size: 19px; color: var(--grey-700); max-width: 56ch; margin: 0 0 30px; }
+  .cta-row { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-bottom: 8px; }
+  .cta {
+    display: inline-block; background: var(--yellow); color: var(--ink); text-decoration: none;
+    font-weight: 800; font-size: 18px; padding: 15px 28px; border: 2px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .cta:hover { background: var(--yellow-600); }
+  .cta:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+  .qr { display: flex; align-items: center; gap: 10px; color: var(--grey-500); font-size: 13px; }
+  .qr img { width: 92px; height: 92px; border: 1px solid var(--grey-300); }
+
+  .band { padding: 26px 0 10px; }
+  .band svg { width: 100%; height: auto; display: block; }
+  .bars-up, .bars-dn { animation: grow 900ms cubic-bezier(.2,.7,.2,1) both; }
+  .bars-up { fill: var(--up); transform-origin: 0 32px; }
+  .bars-dn { fill: var(--down); transform-origin: 0 34px; }
+  @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  @media (prefers-reduced-motion: reduce) { .bars-up, .bars-dn { animation: none; } }
+  .band figcaption { font-size: 13px; color: var(--grey-500); margin-top: 6px; }
+  .band figcaption b { color: var(--down); }
+  .band figure { margin: 0; }
+
+  .facts { display: flex; flex-wrap: wrap; gap: 10px; padding: 22px 0 34px; }
+  .facts span {
+    background: var(--grey-100); font-weight: 700; font-size: 14px; padding: 7px 13px;
+  }
+  .facts span small { font-weight: 400; color: var(--grey-500); }
+
+  .shot { margin: 0 0 48px; }
+  .shot a { display: block; border: 2px solid var(--ink); box-shadow: 6px 6px 0 var(--yellow); }
+  .shot img { width: 100%; height: auto; display: block; }
+  .shot figcaption { font-size: 13px; color: var(--grey-500); margin-top: 10px; }
+
+  h2 {
+    font-size: 15px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    border-top: 4px solid var(--ink); padding-top: 14px; margin: 0 0 18px;
+  }
+  .feeds { padding-bottom: 8px; }
+  .feeds p.note { color: var(--grey-700); max-width: 62ch; margin: 0 0 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--grey-300); vertical-align: baseline; }
+  td.path { font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  td.badge-cell { text-align: right; white-space: nowrap; }
+  .badge { font-size: 12px; font-weight: 700; padding: 3px 8px; }
+  .badge.replay { background: #fff7c2; color: var(--yellow-ink); }
+  .badge.live { background: var(--success-surface); color: var(--success); }
+  .badge.synthetic { background: var(--synthetic-surface); color: var(--synthetic); }
+  .badge.real { background: var(--grey-100); color: var(--grey-700); }
+  pre {
+    background: var(--alt); border: 1px solid var(--grey-300); padding: 12px 14px;
+    font: 13px/1.5 ui-monospace, Consolas, monospace; overflow-x: auto; margin: 20px 0 0;
+  }
+
+  .truth {
+    margin: 48px 0 0; background: var(--ink); color: #fff; padding: 18px 20px;
+    font-weight: 700; font-size: 15px;
+  }
+  .truth b { color: var(--yellow); }
+  footer { padding: 22px 0 48px; font-size: 13px; color: var(--grey-500); }
+  footer a { color: inherit; }
+
+  @media (max-width: 640px) {
+    .hero { padding-top: 36px; }
+    td.badge-cell { display: none; }
+    .qr { display: none; }
+  }
 </style>
 </head>
 <body>
-<h1>Murmur COP feeds</h1>
-<p class="note">Batch replay · not live emergency information — in an emergency call 111.</p>
-<ul>
-  <li><a href="cop/v1/movement-signals.geojson">Movement signals</a></li>
-  <li><a href="cop/v1/movement-replay.json">Hourly replay · 1–6 Aug 2026</a></li>
-  <li><a href="cop/v1/movement-april.json">April movement backtest · 18–23 Apr 2026</a></li>
-  <li><a href="cop/v1/countline-coverage.geojson">Sensor coverage</a></li>
-  <li><a href="cop/v1/traffic-cameras.geojson">Traffic cameras · NZTA</a></li>
-  <li><a href="cop/v1/transit-anomalies.geojson">PT anomalies · synthetic</a></li>
-  <li><a href="cop/v1/road-anomalies.geojson">State highways · real Apr 2026</a></li>
-  <li><a href="cop/v1/flight-anomalies.geojson">Air access · real Apr 2026 · OpenSky</a></li>
-  <li><a href="cop/v1/rain-april.geojson">Rainfall · real Apr 2026 · GWRC</a></li>
-  <li><a href="cop/v1/reports-april.geojson">Public reports · synthetic</a></li>
-  <li><a href="cop/v1/live-sim.json">Live-monitor simulation · synthetic</a></li>
-  <li><a href="cop/v1/movement-health.json">Coverage and health</a></li>
-</ul>
-<p>Schema id, confidence and <code>limitations[]</code> ship inside each file. Signals mean investigate, never a diagnosed incident.</p>
-<footer>
-  <a href="https://github.com/claudecommunity-nz/impact.lab.wlg.team-7.2026-08-08">Repository</a> ·
-  Data: WCC Transport Sensors · NZTA · Metlink · GWRC · OpenSky Network · Map data © OpenStreetMap · © CARTO
-</footer>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <img src="murmur-logo.svg" alt="Murmur">
+    </div>
+    <span class="mode">Batch replay · not live emergency information</span>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Wellington · WCC transport sensors · problem 05</p>
+    <h1>Measuring the city's heartbeat.</h1>
+    <p class="lede">Movement-change signals from 414 counted street lines — quiet hours
+    visibly quiet, the April storm unmistakable, and missing data shown as missing,
+    never as zero.</p>
+    <div class="cta-row">
+      <a class="cta" href="https://murmur.asun28.workers.dev">Open the live demo</a>
+      <span class="qr"><img src="assets/qr-live-demo.png" alt="QR code opening the live demo">scan for<br>your phone</span>
+    </div>
+  </section>
+
+  <section class="band">
+    <figure>
+      <svg viewBox="0 0 1100 140" role="img" aria-label="Hourly signal counts, 18 to 23 April 2026: increases up in amber, decreases down in red, peaking at 47 streets down at 5pm on 20 April">
+        <line x1="0" y1="33" x2="1100" y2="33" stroke="#d8d8d3" stroke-width="1"/>
+        <path class="bars-up" d="M1 32v-1.8h8v1.8zM11 32v-3.6h8v3.6zM21 32v-5.4h8v5.4zM31 32v-1.8h8v1.8zM41 32v-5.4h8v5.4zM51 32v-1.8h8v1.8zM61 32v-1.8h8v1.8zM71 32v-1.8h8v1.8zM81 32v-3.6h8v3.6zM91 32v-1.8h8v1.8zM111 32v-1.8h8v1.8zM121 32v-3.6h8v3.6zM131 32v-5.4h8v5.4zM141 32v-5.4h8v5.4zM151 32v-5.4h8v5.4zM161 32v-3.6h8v3.6zM171 32v-1.8h8v1.8zM181 32v-1.8h8v1.8zM191 32v-1.8h8v1.8zM201 32v-3.6h8v3.6zM211 32v-1.8h8v1.8zM221 32v-1.8h8v1.8zM231 32v-1.8h8v1.8zM241 32v-5.4h8v5.4zM251 32v-1.8h8v1.8zM261 32v-1.8h8v1.8zM271 32v-1.8h8v1.8zM301 32v-1.8h8v1.8zM311 32v-3.6h8v3.6zM321 32v-5.4h8v5.4zM331 32v-3.6h8v3.6zM341 32v-3.6h8v3.6zM351 32v-5.4h8v5.4zM361 32v-1.8h8v1.8zM371 32v-1.8h8v1.8zM381 32v-5.4h8v5.4zM391 32v-7.2h8v7.2zM401 32v-1.8h8v1.8zM411 32v-5.4h8v5.4zM421 32v-3.6h8v3.6zM431 32v-3.6h8v3.6zM441 32v-1.8h8v1.8zM451 32v-1.8h8v1.8zM461 32v-1.8h8v1.8zM471 32v-5.4h8v5.4zM481 32v-7.2h8v7.2zM491 32v-7.2h8v7.2zM501 32v-3.6h8v3.6zM511 32v-3.6h8v3.6zM521 32v-1.8h8v1.8zM531 32v-1.8h8v1.8zM541 32v-1.8h8v1.8zM551 32v-1.8h8v1.8zM561 32v-1.8h8v1.8zM571 32v-3.6h8v3.6zM581 32v-3.6h8v3.6zM591 32v-1.8h8v1.8zM601 32v-3.6h8v3.6zM611 32v-1.8h8v1.8zM631 32v-3.6h8v3.6zM641 32v-1.8h8v1.8zM651 32v-3.6h8v3.6zM661 32v-3.6h8v3.6zM671 32v-1.8h8v1.8zM681 32v-1.8h8v1.8zM691 32v-1.8h8v1.8zM701 32v-1.8h8v1.8zM711 32v-5.4h8v5.4zM721 32v-3.6h8v3.6zM731 32v-1.8h8v1.8zM751 32v-1.8h8v1.8zM771 32v-1.8h8v1.8zM781 32v-1.8h8v1.8zM791 32v-1.8h8v1.8zM801 32v-1.8h8v1.8zM811 32v-1.8h8v1.8zM821 32v-1.8h8v1.8zM831 32v-5.4h8v5.4zM841 32v-5.4h8v5.4zM851 32v-3.6h8v3.6zM861 32v-3.6h8v3.6zM871 32v-1.8h8v1.8zM881 32v-1.8h8v1.8zM901 32v-1.8h8v1.8zM911 32v-9.0h8v9.0zM921 32v-1.8h8v1.8zM931 32v-3.6h8v3.6zM941 32v-1.8h8v1.8zM961 32v-3.6h8v3.6zM971 32v-1.8h8v1.8zM981 32v-3.6h8v3.6zM991 32v-5.4h8v5.4zM1001 32v-7.2h8v7.2zM1031 32v-9.0h8v9.0zM1061 32v-1.8h8v1.8zM1071 32v-3.6h8v3.6zM1081 32v-5.4h8v5.4zM1091 32v-1.8h8v1.8z"/>
+        <path class="bars-dn" d="M21 34v3.6h8v-3.6zM41 34v5.4h8v-5.4zM51 34v1.8h8v-1.8zM61 34v7.2h8v-7.2zM71 34v7.2h8v-7.2zM91 34v1.8h8v-1.8zM101 34v1.8h8v-1.8zM111 34v3.6h8v-3.6zM121 34v3.6h8v-3.6zM141 34v1.8h8v-1.8zM171 34v1.8h8v-1.8zM261 34v5.4h8v-5.4zM271 34v1.8h8v-1.8zM281 34v1.8h8v-1.8zM291 34v1.8h8v-1.8zM341 34v1.8h8v-1.8zM401 34v23.4h8v-23.4zM411 34v16.2h8v-16.2zM421 34v3.6h8v-3.6zM431 34v5.4h8v-5.4zM441 34v16.2h8v-16.2zM451 34v19.8h8v-19.8zM461 34v30.6h8v-30.6zM471 34v25.2h8v-25.2zM481 34v9.0h8v-9.0zM491 34v5.4h8v-5.4zM501 34v39.6h8v-39.6zM511 34v84.6h8v-84.6zM521 34v73.8h8v-73.8zM531 34v41.4h8v-41.4zM541 34v28.8h8v-28.8zM551 34v7.2h8v-7.2zM561 34v7.2h8v-7.2zM581 34v3.6h8v-3.6zM621 34v10.8h8v-10.8zM631 34v39.6h8v-39.6zM641 34v36.0h8v-36.0zM651 34v50.4h8v-50.4zM661 34v39.6h8v-39.6zM671 34v32.4h8v-32.4zM681 34v48.6h8v-48.6zM691 34v43.2h8v-43.2zM701 34v41.4h8v-41.4zM711 34v50.4h8v-50.4zM721 34v68.4h8v-68.4zM731 34v36.0h8v-36.0zM741 34v25.2h8v-25.2zM751 34v12.6h8v-12.6zM761 34v5.4h8v-5.4zM821 34v1.8h8v-1.8zM831 34v5.4h8v-5.4zM841 34v5.4h8v-5.4zM861 34v1.8h8v-1.8zM871 34v1.8h8v-1.8zM881 34v1.8h8v-1.8zM891 34v1.8h8v-1.8zM901 34v1.8h8v-1.8zM911 34v3.6h8v-3.6zM921 34v3.6h8v-3.6zM951 34v1.8h8v-1.8zM1011 34v3.6h8v-3.6zM1021 34v3.6h8v-3.6zM1031 34v3.6h8v-3.6zM1041 34v3.6h8v-3.6zM1051 34v1.8h8v-1.8zM1061 34v1.8h8v-1.8z"/>
+      </svg>
+      <figcaption>Every hour the detector flagged, 18–23 April 2026 — increases up, decreases down.
+      The peak: <b>47 streets down at 5&thinsp;pm on 20 April</b>, the day of the floods.</figcaption>
+    </figure>
+  </section>
+
+  <section class="facts" aria-label="Snapshot facts">
+    <span>7 <small>signals · 6 Aug</small></span>
+    <span>207 <small>data gaps</small></span>
+    <span>414 <small>countlines</small></span>
+    <span>776 <small>April street-hours</small></span>
+    <span>6 <small>independent sources</small></span>
+    <span>12 <small>open feeds</small></span>
+  </section>
+
+  <figure class="shot">
+    <a href="https://murmur.asun28.workers.dev">
+      <img src="assets/map-only-april.png" alt="The live operating picture: Wellington city at 4pm on 20 April 2026, red decrease glyphs across the CBD and southern suburbs, warning-level rain on the timebar" loading="lazy">
+    </a>
+    <figcaption>Mon 20 Apr · 16:00 in the live demo — the whole interface folds down to the map.</figcaption>
+  </figure>
+
+  <section class="feeds">
+    <h2>The feeds</h2>
+    <p class="note">The map is a view; the feed is the product. Twelve files, each carrying
+    its schema id, confidence and <code>limitations[]</code> — point any COP or GIS client at them.</p>
+    <table>
+      <tr><td>Movement signals</td><td class="path"><a href="cop/v1/movement-signals.geojson">cop/v1/movement-signals.geojson</a></td><td class="badge-cell"><span class="badge replay">Batch replay</span></td></tr>
+      <tr><td>Hourly replay · 1–6 Aug 2026</td><td class="path"><a href="cop/v1/movement-replay.json">cop/v1/movement-replay.json</a></td><td class="badge-cell"><span class="badge replay">Batch replay</span></td></tr>
+      <tr><td>April movement backtest</td><td class="path"><a href="cop/v1/movement-april.json">cop/v1/movement-april.json</a></td><td class="badge-cell"><span class="badge real">Real · Apr 2026</span></td></tr>
+      <tr><td>Sensor coverage</td><td class="path"><a href="cop/v1/countline-coverage.geojson">cop/v1/countline-coverage.geojson</a></td><td class="badge-cell"><span class="badge replay">Batch replay</span></td></tr>
+      <tr><td>Traffic cameras · NZTA</td><td class="path"><a href="cop/v1/traffic-cameras.geojson">cop/v1/traffic-cameras.geojson</a></td><td class="badge-cell"><span class="badge live">Live</span></td></tr>
+      <tr><td>PT anomalies · Metlink</td><td class="path"><a href="cop/v1/transit-anomalies.geojson">cop/v1/transit-anomalies.geojson</a></td><td class="badge-cell"><span class="badge synthetic">Synthetic</span></td></tr>
+      <tr><td>State highways · NZTA TMS</td><td class="path"><a href="cop/v1/road-anomalies.geojson">cop/v1/road-anomalies.geojson</a></td><td class="badge-cell"><span class="badge real">Real · Apr 2026</span></td></tr>
+      <tr><td>Air access · OpenSky</td><td class="path"><a href="cop/v1/flight-anomalies.geojson">cop/v1/flight-anomalies.geojson</a></td><td class="badge-cell"><span class="badge real">Real · Apr 2026</span></td></tr>
+      <tr><td>Rainfall · GWRC Hilltop</td><td class="path"><a href="cop/v1/rain-april.geojson">cop/v1/rain-april.geojson</a></td><td class="badge-cell"><span class="badge real">Real · Apr 2026</span></td></tr>
+      <tr><td>Public reports</td><td class="path"><a href="cop/v1/reports-april.geojson">cop/v1/reports-april.geojson</a></td><td class="badge-cell"><span class="badge synthetic">Synthetic</span></td></tr>
+      <tr><td>Live-monitor simulation</td><td class="path"><a href="cop/v1/live-sim.json">cop/v1/live-sim.json</a></td><td class="badge-cell"><span class="badge synthetic">Synthetic</span></td></tr>
+      <tr><td>Coverage and health</td><td class="path"><a href="cop/v1/movement-health.json">cop/v1/movement-health.json</a></td><td class="badge-cell"><span class="badge replay">Batch replay</span></td></tr>
+    </table>
+    <pre>curl https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08/cop/v1/movement-health.json</pre>
+  </section>
+
+  <p class="truth">Signals mean <b>investigate</b>, never a diagnosed incident.
+  Batch-published hazard-planning data — in an emergency, call <b>111</b>.</p>
+
+  <footer>
+    <a href="https://github.com/claudecommunity-nz/impact.lab.wlg.team-7.2026-08-08">Repository</a> ·
+    MIT (code) · Impact Lab Wellington Team 7, 8 August 2026<br>
+    Data: Wellington City Council Transport Sensors · NZTA · Metlink · Greater Wellington
+    Regional Council · OpenSky Network · Map data © OpenStreetMap contributors, © CARTO
+  </footer>
+
+</div>
 </body>
 </html>

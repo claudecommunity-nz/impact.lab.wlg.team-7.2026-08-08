@@ -6,6 +6,8 @@ on:
     paths:
       - "site/public/**"
       - "docs/pages-index.html"
+      - "docs/screenshots/**"
+      - "docs/qr-live-demo.png"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -28,9 +30,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Stage the feeds behind an index page
         run: |
-          mkdir -p _pages
+          mkdir -p _pages/assets
           cp -r site/public/* _pages/
           cp docs/pages-index.html _pages/index.html
+          cp docs/screenshots/map-only-april.png docs/qr-live-demo.png _pages/assets/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _pages
