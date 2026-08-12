@@ -34,7 +34,7 @@ test("server-renders the movement investigation surface with truthful batch stat
   );
   assert.match(html, /Movement changes worth investigating/);
   assert.match(html, /Batch replay/);
-  assert.match(html, /12 signals/);
+  assert.match(html, /7 signals/);
   assert.match(html, /207 data gaps/);
   assert.match(html, /Data through/);
   assert.match(html, /6 Aug 2026/);
@@ -483,7 +483,7 @@ test("ships a browser-local signal review queue on its own route", async () => {
   // The truth boundaries: browser-local working notes, never a Council record.
   assert.match(reviewPage, /not a Council record/);
   assert.match(reviewPage, /stay in this browser/);
-  assert.match(reviewPage, /12 published signals/);
+  assert.match(reviewPage, /7 published signals/);
   assert.match(reviewPage, /aria-label="Review queues"/);
   // The queue leaves as a versioned JSON contract, like every other surface.
   assert.match(reviewPage, /Export queue \(JSON\)/);

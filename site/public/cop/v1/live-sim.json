@@ -942,61 +942,10 @@
   },
   {
    "target_at": "2026-08-11T17:00:00",
-   "candidate_count": 4,
+   "candidate_count": 3,
    "rain_max_mm": 3.8,
    "rain_warning_stations": 0,
    "signals": [
-    {
-     "id": "sim:2026-08-11T17:Lambton Quay Turning:Pedestrian",
-     "street": "Lambton Quay Turning",
-     "name": "Lambton Quay Turning",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 20.8,
-     "expected_count": 2.0,
-     "robust_z": 11.1,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-11T17:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T17:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-05T17:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-11T17:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-12T17:00:00+12:00",
-       "observed_count": 0.0
-      },
-      {
-       "observed_at": "2026-04-25T17:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-26T17:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 1,
-     "coordinates": [
-      174.776031,
-      -41.282076
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-11T17:Customhouse Quay:Cyclist",
      "street": "Customhouse Quay",
@@ -1154,7 +1103,7 @@
   },
   {
    "target_at": "2026-08-11T18:00:00",
-   "candidate_count": 5,
+   "candidate_count": 4,
    "rain_max_mm": 2.7,
    "rain_warning_stations": 0,
    "signals": [
@@ -1252,57 +1201,6 @@
      "coordinates": [
       174.776825,
       -41.285625
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-11T18:New Zealand State Highway1:Cyclist",
-     "street": "New Zealand State Highway1",
-     "name": "New Zealand State Highway1",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 14.8,
-     "expected_count": 3.0,
-     "robust_z": 5.4,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-11T18:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T18:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-05T18:00:00+12:00",
-       "observed_count": 11.0
-      },
-      {
-       "observed_at": "2026-04-11T18:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-12T18:00:00+12:00",
-       "observed_count": 12.0
-      },
-      {
-       "observed_at": "2026-04-25T18:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-26T18:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 1,
-     "coordinates": [
-      174.773636,
-      -41.297171
      ],
      "signal_confidence": {
       "level": "low",
@@ -1578,61 +1476,10 @@
   },
   {
    "target_at": "2026-08-11T20:00:00",
-   "candidate_count": 6,
+   "candidate_count": 4,
    "rain_max_mm": 5.2,
    "rain_warning_stations": 1,
    "signals": [
-    {
-     "id": "sim:2026-08-11T20:Willowbank Rd:Pedestrian",
-     "street": "Willowbank Rd",
-     "name": "Willowbank Rd",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 20.2,
-     "expected_count": 2.5,
-     "robust_z": 8.07,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-11T20:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T20:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-05T20:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-11T20:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-12T20:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-25T20:00:00+12:00",
-       "observed_count": 8.0
-      },
-      {
-       "observed_at": "2026-04-26T20:00:00+12:00",
-       "observed_count": 5.0
-      }
-     ],
-     "countlines": 1,
-     "coordinates": [
-      174.828071,
-      -41.18573
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-11T20:Customhouse Quay:Cyclist",
      "street": "Customhouse Quay",
@@ -1642,7 +1489,7 @@
      "change_direction": "increase",
      "observed_count": 23.3,
      "expected_count": 5.5,
-     "robust_z": 7.05,
+     "robust_z": 5.99,
      "history_samples": 6,
      "data_quality": "complete",
      "observed_at": "2026-08-11T20:00:00",
@@ -1676,57 +1523,6 @@
      "coordinates": [
       174.776825,
       -41.285625
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-11T20:Hutt Rd:Pedestrian",
-     "street": "Hutt Rd",
-     "name": "Hutt Rd",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 15.7,
-     "expected_count": 4.0,
-     "robust_z": 5.55,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-11T20:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T20:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-05T20:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-11T20:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-12T20:00:00+12:00",
-       "observed_count": 25.0
-      },
-      {
-       "observed_at": "2026-04-25T20:00:00+12:00",
-       "observed_count": 7.0
-      },
-      {
-       "observed_at": "2026-04-26T20:00:00+12:00",
-       "observed_count": 3.0
-      }
-     ],
-     "countlines": 14,
-     "coordinates": [
-      174.798049,
-      -41.25564
      ],
      "signal_confidence": {
       "level": "low",
@@ -1956,7 +1752,7 @@
      "change_direction": "increase",
      "observed_count": 21.3,
      "expected_count": 6.5,
-     "robust_z": 5.92,
+     "robust_z": 5.4,
      "history_samples": 6,
      "data_quality": "complete",
      "observed_at": "2026-08-11T21:00:00",
@@ -2007,7 +1803,7 @@
      "change_direction": "increase",
      "observed_count": 15.6,
      "expected_count": 5.0,
-     "robust_z": 4.86,
+     "robust_z": 3.97,
      "history_samples": 6,
      "data_quality": "complete",
      "observed_at": "2026-08-11T21:00:00",
@@ -2053,61 +1849,10 @@
   },
   {
    "target_at": "2026-08-11T22:00:00",
-   "candidate_count": 3,
+   "candidate_count": 2,
    "rain_max_mm": 3.9,
    "rain_warning_stations": 1,
    "signals": [
-    {
-     "id": "sim:2026-08-11T22:Lambton Quay Turning:Pedestrian",
-     "street": "Lambton Quay Turning",
-     "name": "Lambton Quay Turning",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 95.3,
-     "expected_count": 2.0,
-     "robust_z": 42.04,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-11T22:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T22:00:00+12:00",
-       "observed_count": 0.0
-      },
-      {
-       "observed_at": "2026-04-05T22:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-11T22:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-12T22:00:00+12:00",
-       "observed_count": 32.0
-      },
-      {
-       "observed_at": "2026-04-25T22:00:00+12:00",
-       "observed_count": 12.0
-      },
-      {
-       "observed_at": "2026-04-26T22:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 1,
-     "coordinates": [
-      174.776031,
-      -41.282076
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-11T22:Hutt Rd:Cyclist",
      "street": "Hutt Rd",
@@ -2345,120 +2090,17 @@
   },
   {
    "target_at": "2026-08-12T03:00:00",
-   "candidate_count": 1,
+   "candidate_count": 0,
    "rain_max_mm": 4.8,
    "rain_warning_stations": 0,
-   "signals": [
-    {
-     "id": "sim:2026-08-12T03:Ara Moana:Cyclist",
-     "street": "Ara Moana",
-     "name": "Ara Moana",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 49.5,
-     "expected_count": 1.5,
-     "robust_z": 30.47,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T03:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-05T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-11T03:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-12T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-25T03:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-26T03:00:00+12:00",
-       "observed_count": 5.0
-      }
-     ],
-     "countlines": 3,
-     "coordinates": [
-      174.78347,
-      -41.290457
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    }
-   ]
+   "signals": []
   },
   {
    "target_at": "2026-08-12T04:00:00",
-   "candidate_count": 2,
+   "candidate_count": 1,
    "rain_max_mm": 5.5,
    "rain_warning_stations": 0,
    "signals": [
-    {
-     "id": "sim:2026-08-12T04:Hutt Rd:Cyclist",
-     "street": "Hutt Rd",
-     "name": "Hutt Rd",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 12.2,
-     "expected_count": 3.5,
-     "robust_z": 4.11,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T04:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-05T04:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-11T04:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-12T04:00:00+12:00",
-       "observed_count": 9.0
-      },
-      {
-       "observed_at": "2026-04-25T04:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-26T04:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 14,
-     "coordinates": [
-      174.798049,
-      -41.25564
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-12T04:Rintoul St:Vehicle",
      "street": "Rintoul St",
@@ -2514,112 +2156,10 @@
   },
   {
    "target_at": "2026-08-12T05:00:00",
-   "candidate_count": 4,
+   "candidate_count": 2,
    "rain_max_mm": 2.6,
    "rain_warning_stations": 0,
    "signals": [
-    {
-     "id": "sim:2026-08-12T05:Hutt Rd:Pedestrian",
-     "street": "Hutt Rd",
-     "name": "Hutt Rd",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 19.7,
-     "expected_count": 2.0,
-     "robust_z": 10.51,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T05:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-05T05:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-11T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-12T05:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-25T05:00:00+12:00",
-       "observed_count": 9.0
-      },
-      {
-       "observed_at": "2026-04-26T05:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 14,
-     "coordinates": [
-      174.798049,
-      -41.25564
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T05:Ara Moana:Vehicle",
-     "street": "Ara Moana",
-     "name": "Ara Moana",
-     "transport_class": "Vehicle",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 13.7,
-     "expected_count": 3.5,
-     "robust_z": 5.13,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T05:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-05T05:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-11T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-12T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-25T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-26T05:00:00+12:00",
-       "observed_count": 4.0
-      }
-     ],
-     "countlines": 3,
-     "coordinates": [
-      174.78347,
-      -41.290457
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-12T05:Commonwealth:Vehicle",
      "street": "Commonwealth",
@@ -2726,7 +2266,7 @@
   },
   {
    "target_at": "2026-08-12T06:00:00",
-   "candidate_count": 6,
+   "candidate_count": 5,
    "rain_max_mm": 7.4,
    "rain_warning_stations": 0,
    "signals": [
@@ -2790,7 +2330,7 @@
      "change_direction": "increase",
      "observed_count": 26.5,
      "expected_count": 6.5,
-     "robust_z": 7.66,
+     "robust_z": 6.99,
      "history_samples": 6,
      "data_quality": "complete",
      "observed_at": "2026-08-12T06:00:00",
@@ -2892,7 +2432,7 @@
      "change_direction": "increase",
      "observed_count": 23.4,
      "expected_count": 6.0,
-     "robust_z": 5.92,
+     "robust_z": 5.85,
      "history_samples": 6,
      "data_quality": "complete",
      "observed_at": "2026-08-12T06:00:00",
@@ -2984,122 +2524,19 @@
       "basis": "April weekday/weekend matched hour, outside the event window"
      },
      "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T06:Ara Moana:Vehicle",
-     "street": "Ara Moana",
-     "name": "Ara Moana",
-     "transport_class": "Vehicle",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 17.1,
-     "expected_count": 4.5,
-     "robust_z": 4.4,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T06:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T06:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-05T06:00:00+12:00",
-       "observed_count": 11.0
-      },
-      {
-       "observed_at": "2026-04-11T06:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-12T06:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-25T06:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-26T06:00:00+12:00",
-       "observed_count": 14.0
-      }
-     ],
-     "countlines": 3,
-     "coordinates": [
-      174.78347,
-      -41.290457
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
     }
    ]
   },
   {
    "target_at": "2026-08-12T07:00:00",
-   "candidate_count": 1,
+   "candidate_count": 0,
    "rain_max_mm": 18.3,
    "rain_warning_stations": 0,
-   "signals": [
-    {
-     "id": "sim:2026-08-12T07:Customhouse Quay:Cyclist",
-     "street": "Customhouse Quay",
-     "name": "Customhouse Quay",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 21.2,
-     "expected_count": 1.5,
-     "robust_z": 12.62,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T07:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T07:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-05T07:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-11T07:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-12T07:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-25T07:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-26T07:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 5,
-     "coordinates": [
-      174.776825,
-      -41.285625
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    }
-   ]
+   "signals": []
   },
   {
    "target_at": "2026-08-12T08:00:00",
-   "candidate_count": 2,
+   "candidate_count": 1,
    "rain_max_mm": 16.2,
    "rain_warning_stations": 1,
    "signals": [
@@ -3146,57 +2583,6 @@
      "coordinates": [
       174.78347,
       -41.290457
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T08:Lambton Quay Turning:Pedestrian",
-     "street": "Lambton Quay Turning",
-     "name": "Lambton Quay Turning",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 10.9,
-     "expected_count": 1.0,
-     "robust_z": 6.73,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T08:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T08:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-05T08:00:00+12:00",
-       "observed_count": 0.0
-      },
-      {
-       "observed_at": "2026-04-11T08:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-12T08:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-25T08:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-26T08:00:00+12:00",
-       "observed_count": 0.0
-      }
-     ],
-     "countlines": 1,
-     "coordinates": [
-      174.776031,
-      -41.282076
      ],
      "signal_confidence": {
       "level": "low",
@@ -4445,61 +3831,10 @@
   },
   {
    "target_at": "2026-08-12T17:00:00",
-   "candidate_count": 4,
+   "candidate_count": 3,
    "rain_max_mm": 3.8,
    "rain_warning_stations": 0,
    "signals": [
-    {
-     "id": "sim:2026-08-12T17:Lambton Quay Turning:Pedestrian",
-     "street": "Lambton Quay Turning",
-     "name": "Lambton Quay Turning",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 20.4,
-     "expected_count": 2.0,
-     "robust_z": 10.88,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T17:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-04T17:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-05T17:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-11T17:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-12T17:00:00+12:00",
-       "observed_count": 0.0
-      },
-      {
-       "observed_at": "2026-04-25T17:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-26T17:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 1,
-     "coordinates": [
-      174.776031,
-      -41.282076
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-12T17:Customhouse Quay:Cyclist",
      "street": "Customhouse Quay",
@@ -4825,144 +4160,10 @@
   },
   {
    "target_at": "2026-08-12T20:00:00",
-   "candidate_count": 6,
+   "candidate_count": 3,
    "rain_max_mm": 2.7,
    "rain_warning_stations": 0,
    "signals": [
-    {
-     "id": "sim:2026-08-12T20:Lambton Quay Turning:Pedestrian",
-     "street": "Lambton Quay Turning",
-     "name": "Lambton Quay Turning",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 80.0,
-     "expected_count": 1.5,
-     "robust_z": 49.8,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T20:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-03T00:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-06T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T00:00:00+12:00",
-       "observed_count": 10.0
-      },
-      {
-       "observed_at": "2026-04-10T00:00:00+12:00",
-       "observed_count": 0.0
-      },
-      {
-       "observed_at": "2026-04-13T00:00:00+12:00",
-       "observed_count": 20.0
-      }
-     ],
-     "countlines": 1,
-     "coordinates": [
-      174.776031,
-      -41.282076
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T20:Karori Rd:Cyclist",
-     "street": "Karori Rd",
-     "name": "Karori Rd",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 23.5,
-     "expected_count": 2.0,
-     "robust_z": 12.54,
-     "history_samples": 14,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T20:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T00:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-02T00:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-03T00:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-06T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-07T00:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-08T00:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-09T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-10T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-14T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-15T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-16T00:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-24T00:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-27T00:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-30T00:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 10,
-     "coordinates": [
-      174.739316,
-      -41.284198
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 14,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-12T20:Vivian St:Cyclist",
      "street": "Vivian St",
@@ -4972,7 +4173,7 @@
      "change_direction": "increase",
      "observed_count": 28.4,
      "expected_count": 6.0,
-     "robust_z": 8.02,
+     "robust_z": 7.93,
      "history_samples": 17,
      "data_quality": "complete",
      "observed_at": "2026-08-12T20:00:00",
@@ -5054,73 +4255,6 @@
      "signal_confidence": {
       "level": "high",
       "history_samples": 17,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T20:Ara Moana:Vehicle",
-     "street": "Ara Moana",
-     "name": "Ara Moana",
-     "transport_class": "Vehicle",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 15.3,
-     "expected_count": 2.0,
-     "robust_z": 7.9,
-     "history_samples": 10,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T20:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-03T00:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-06T00:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-07T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-13T00:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-15T00:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-24T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-27T00:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-28T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-29T00:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-30T00:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 3,
-     "coordinates": [
-      174.78347,
-      -41.290457
-     ],
-     "signal_confidence": {
-      "level": "medium",
-      "history_samples": 10,
       "basis": "April weekday/weekend matched hour, outside the event window"
      },
      "synthetic": true
@@ -5327,255 +4461,10 @@
   },
   {
    "target_at": "2026-08-12T21:00:00",
-   "candidate_count": 4,
+   "candidate_count": 1,
    "rain_max_mm": 1.5,
    "rain_warning_stations": 0,
    "signals": [
-    {
-     "id": "sim:2026-08-12T21:Jarden Mile:Cyclist",
-     "street": "Jarden Mile",
-     "name": "Jarden Mile",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 37.7,
-     "expected_count": 2.0,
-     "robust_z": 20.71,
-     "history_samples": 15,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T21:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-02T01:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-06T01:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-09T01:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-10T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-13T01:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-14T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-15T01:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-16T01:00:00+12:00",
-       "observed_count": 14.0
-      },
-      {
-       "observed_at": "2026-04-17T01:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-24T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-27T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-28T01:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-29T01:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-30T01:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 11,
-     "coordinates": [
-      174.813407,
-      -41.247349
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 15,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T21:Karori Rd:Cyclist",
-     "street": "Karori Rd",
-     "name": "Karori Rd",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 20.6,
-     "expected_count": 2.0,
-     "robust_z": 11.04,
-     "history_samples": 10,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T21:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T01:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-07T01:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T01:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-09T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-10T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-14T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-15T01:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-17T01:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-27T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-30T01:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 10,
-     "coordinates": [
-      174.739316,
-      -41.284198
-     ],
-     "signal_confidence": {
-      "level": "medium",
-      "history_samples": 10,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T21:Vivian St:Cyclist",
-     "street": "Vivian St",
-     "name": "Vivian St",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 27.1,
-     "expected_count": 4.0,
-     "robust_z": 10.8,
-     "history_samples": 16,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T21:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-02T01:00:00+12:00",
-       "observed_count": 10.0
-      },
-      {
-       "observed_at": "2026-04-03T01:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-06T01:00:00+12:00",
-       "observed_count": 8.0
-      },
-      {
-       "observed_at": "2026-04-07T01:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-08T01:00:00+12:00",
-       "observed_count": 7.0
-      },
-      {
-       "observed_at": "2026-04-09T01:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-10T01:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-15T01:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-16T01:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-17T01:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-24T01:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-27T01:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-28T01:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-29T01:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-30T01:00:00+12:00",
-       "observed_count": 4.0
-      }
-     ],
-     "countlines": 7,
-     "coordinates": [
-      174.774801,
-      -41.294761
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 16,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-12T21:Kaiwharawhara Rd:Vehicle",
      "street": "Kaiwharawhara Rd",
@@ -5679,599 +4568,17 @@
   },
   {
    "target_at": "2026-08-12T22:00:00",
-   "candidate_count": 4,
+   "candidate_count": 0,
    "rain_max_mm": 4.5,
    "rain_warning_stations": 0,
-   "signals": [
-    {
-     "id": "sim:2026-08-12T22:Jarden Mile:Cyclist",
-     "street": "Jarden Mile",
-     "name": "Jarden Mile",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 27.6,
-     "expected_count": 2.0,
-     "robust_z": 14.84,
-     "history_samples": 15,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T22:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T02:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-02T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-03T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-07T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-09T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-13T02:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-14T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-15T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-16T02:00:00+12:00",
-       "observed_count": 31.0
-      },
-      {
-       "observed_at": "2026-04-17T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-24T02:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-28T02:00:00+12:00",
-       "observed_count": 8.0
-      },
-      {
-       "observed_at": "2026-04-29T02:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-30T02:00:00+12:00",
-       "observed_count": 7.0
-      }
-     ],
-     "countlines": 11,
-     "coordinates": [
-      174.813407,
-      -41.247349
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 15,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T22:Commonwealth:Vehicle",
-     "street": "Commonwealth",
-     "name": "Commonwealth",
-     "transport_class": "Vehicle",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 28.4,
-     "expected_count": 3.0,
-     "robust_z": 8.65,
-     "history_samples": 15,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T22:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T02:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-02T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-03T02:00:00+12:00",
-       "observed_count": 25.0
-      },
-      {
-       "observed_at": "2026-04-07T02:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-08T02:00:00+12:00",
-       "observed_count": 10.0
-      },
-      {
-       "observed_at": "2026-04-09T02:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-10T02:00:00+12:00",
-       "observed_count": 19.0
-      },
-      {
-       "observed_at": "2026-04-13T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-14T02:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-15T02:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-16T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-17T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T02:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-27T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-30T02:00:00+12:00",
-       "observed_count": 3.0
-      }
-     ],
-     "countlines": 9,
-     "coordinates": [
-      174.779927,
-      -41.28859
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 15,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T22:Ara Moana:Vehicle",
-     "street": "Ara Moana",
-     "name": "Ara Moana",
-     "transport_class": "Vehicle",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 10.9,
-     "expected_count": 1.0,
-     "robust_z": 7.08,
-     "history_samples": 11,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T22:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-02T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-03T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-06T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-07T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-09T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-16T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-28T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-30T02:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 3,
-     "coordinates": [
-      174.78347,
-      -41.290457
-     ],
-     "signal_confidence": {
-      "level": "medium",
-      "history_samples": 11,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T22:Hutt Rd:Cyclist",
-     "street": "Hutt Rd",
-     "name": "Hutt Rd",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 12.7,
-     "expected_count": 2.0,
-     "robust_z": 6.21,
-     "history_samples": 17,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T22:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-03T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-06T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-07T02:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-08T02:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-09T02:00:00+12:00",
-       "observed_count": 9.0
-      },
-      {
-       "observed_at": "2026-04-10T02:00:00+12:00",
-       "observed_count": 8.0
-      },
-      {
-       "observed_at": "2026-04-13T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-14T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-15T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-16T02:00:00+12:00",
-       "observed_count": 0.0
-      },
-      {
-       "observed_at": "2026-04-17T02:00:00+12:00",
-       "observed_count": 0.0
-      },
-      {
-       "observed_at": "2026-04-24T02:00:00+12:00",
-       "observed_count": 0.0
-      },
-      {
-       "observed_at": "2026-04-27T02:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-28T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-29T02:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-30T02:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 14,
-     "coordinates": [
-      174.798049,
-      -41.25564
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 17,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    }
-   ]
+   "signals": []
   },
   {
    "target_at": "2026-08-12T23:00:00",
-   "candidate_count": 5,
+   "candidate_count": 1,
    "rain_max_mm": 3.1,
    "rain_warning_stations": 0,
    "signals": [
-    {
-     "id": "sim:2026-08-12T23:Karori Rd:Cyclist",
-     "street": "Karori Rd",
-     "name": "Karori Rd",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 28.3,
-     "expected_count": 2.5,
-     "robust_z": 14.0,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T23:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-03T03:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-08T03:00:00+12:00",
-       "observed_count": 11.0
-      },
-      {
-       "observed_at": "2026-04-09T03:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-13T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-14T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-29T03:00:00+12:00",
-       "observed_count": 3.0
-      }
-     ],
-     "countlines": 10,
-     "coordinates": [
-      174.739316,
-      -41.284198
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T23:Ara Moana:Pedestrian",
-     "street": "Ara Moana",
-     "name": "Ara Moana",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 18.7,
-     "expected_count": 3.5,
-     "robust_z": 7.14,
-     "history_samples": 16,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T23:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T03:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-02T03:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-03T03:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-06T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-07T03:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-08T03:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-09T03:00:00+12:00",
-       "observed_count": 10.0
-      },
-      {
-       "observed_at": "2026-04-14T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-15T03:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-16T03:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-17T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T03:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-27T03:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-28T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-29T03:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-30T03:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 3,
-     "coordinates": [
-      174.78347,
-      -41.290457
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 16,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T23:Jarden Mile:Cyclist",
-     "street": "Jarden Mile",
-     "name": "Jarden Mile",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 15.3,
-     "expected_count": 4.0,
-     "robust_z": 5.53,
-     "history_samples": 18,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T23:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T03:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-02T03:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-03T03:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-06T03:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-07T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T03:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-09T03:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-10T03:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-13T03:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-14T03:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-15T03:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-16T03:00:00+12:00",
-       "observed_count": 28.0
-      },
-      {
-       "observed_at": "2026-04-17T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T03:00:00+12:00",
-       "observed_count": 9.0
-      },
-      {
-       "observed_at": "2026-04-27T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-28T03:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-29T03:00:00+12:00",
-       "observed_count": 14.0
-      },
-      {
-       "observed_at": "2026-04-30T03:00:00+12:00",
-       "observed_count": 11.0
-      }
-     ],
-     "countlines": 11,
-     "coordinates": [
-      174.813407,
-      -41.247349
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 18,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-12T23:Commonwealth:Vehicle",
      "street": "Commonwealth",
@@ -6354,299 +4661,15 @@
       "basis": "April weekday/weekend matched hour, outside the event window"
      },
      "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-12T23:Ara Moana:Vehicle",
-     "street": "Ara Moana",
-     "name": "Ara Moana",
-     "transport_class": "Vehicle",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 13.2,
-     "expected_count": 2.5,
-     "robust_z": 5.09,
-     "history_samples": 8,
-     "data_quality": "complete",
-     "observed_at": "2026-08-12T23:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-03T03:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-06T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-13T03:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-14T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T03:00:00+12:00",
-       "observed_count": 20.0
-      },
-      {
-       "observed_at": "2026-04-27T03:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-28T03:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-30T03:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 3,
-     "coordinates": [
-      174.78347,
-      -41.290457
-     ],
-     "signal_confidence": {
-      "level": "medium",
-      "history_samples": 8,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
     }
    ]
   },
   {
    "target_at": "2026-08-13T00:00:00",
-   "candidate_count": 7,
+   "candidate_count": 3,
    "rain_max_mm": 65.5,
    "rain_warning_stations": 2,
    "signals": [
-    {
-     "id": "sim:2026-08-13T00:The Parade:Pedestrian",
-     "street": "The Parade",
-     "name": "The Parade",
-     "transport_class": "Pedestrian",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 124.6,
-     "expected_count": 1.0,
-     "robust_z": 87.53,
-     "history_samples": 11,
-     "data_quality": "complete",
-     "observed_at": "2026-08-13T00:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-02T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-03T04:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-07T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-10T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-14T04:00:00+12:00",
-       "observed_count": 6.0
-      },
-      {
-       "observed_at": "2026-04-15T04:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-17T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-28T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-29T04:00:00+12:00",
-       "observed_count": 5.0
-      }
-     ],
-     "countlines": 16,
-     "coordinates": [
-      174.773392,
-      -41.334611
-     ],
-     "signal_confidence": {
-      "level": "medium",
-      "history_samples": 11,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-13T00:Customhouse Quay:Cyclist",
-     "street": "Customhouse Quay",
-     "name": "Customhouse Quay",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 49.4,
-     "expected_count": 2.0,
-     "robust_z": 27.46,
-     "history_samples": 12,
-     "data_quality": "complete",
-     "observed_at": "2026-08-13T00:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-02T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-03T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-06T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-07T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-09T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-13T04:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-17T04:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-24T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-29T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-30T04:00:00+12:00",
-       "observed_count": 3.0
-      }
-     ],
-     "countlines": 5,
-     "coordinates": [
-      174.776825,
-      -41.285625
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 12,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-13T00:Karori Rd:Cyclist",
-     "street": "Karori Rd",
-     "name": "Karori Rd",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 42.2,
-     "expected_count": 2.0,
-     "robust_z": 23.38,
-     "history_samples": 13,
-     "data_quality": "complete",
-     "observed_at": "2026-08-13T00:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-02T04:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-06T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-08T04:00:00+12:00",
-       "observed_count": 10.0
-      },
-      {
-       "observed_at": "2026-04-09T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-13T04:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-14T04:00:00+12:00",
-       "observed_count": 7.0
-      },
-      {
-       "observed_at": "2026-04-15T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-16T04:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-17T04:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-24T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-28T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-30T04:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 10,
-     "coordinates": [
-      174.739316,
-      -41.284198
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 13,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
     {
      "id": "sim:2026-08-13T00:Commonwealth:Vehicle",
      "street": "Commonwealth",
@@ -6743,57 +4766,6 @@
      "synthetic": true
     },
     {
-     "id": "sim:2026-08-13T00:Moorefield Rd:Cyclist",
-     "street": "Moorefield Rd",
-     "name": "Moorefield Rd",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 12.5,
-     "expected_count": 1.0,
-     "robust_z": 8.18,
-     "history_samples": 6,
-     "data_quality": "complete",
-     "observed_at": "2026-08-13T00:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-02T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-17T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-29T04:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-30T04:00:00+12:00",
-       "observed_count": 1.0
-      }
-     ],
-     "countlines": 7,
-     "coordinates": [
-      174.803907,
-      -41.224257
-     ],
-     "signal_confidence": {
-      "level": "low",
-      "history_samples": 6,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
      "id": "sim:2026-08-13T00:Elizabeth St:Vehicle",
      "street": "Elizabeth St",
      "name": "Elizabeth St",
@@ -6802,7 +4774,7 @@
      "change_direction": "increase",
      "observed_count": 17.2,
      "expected_count": 5.0,
-     "robust_z": 4.42,
+     "robust_z": 4.37,
      "history_samples": 17,
      "data_quality": "complete",
      "observed_at": "2026-08-13T00:00:00",
@@ -6991,7 +4963,7 @@
   },
   {
    "target_at": "2026-08-13T01:00:00",
-   "candidate_count": 6,
+   "candidate_count": 4,
    "rain_max_mm": 20.4,
    "rain_warning_stations": 3,
    "signals": [
@@ -7185,200 +5157,6 @@
      "coordinates": [
       174.779233,
       -41.311751
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 18,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-13T01:Customhouse Quay:Cyclist",
-     "street": "Customhouse Quay",
-     "name": "Customhouse Quay",
-     "transport_class": "Cyclist",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 20.2,
-     "expected_count": 3.0,
-     "robust_z": 9.03,
-     "history_samples": 17,
-     "data_quality": "complete",
-     "observed_at": "2026-08-13T01:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-02T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-06T05:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-07T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-08T05:00:00+12:00",
-       "observed_count": 23.0
-      },
-      {
-       "observed_at": "2026-04-09T05:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-10T05:00:00+12:00",
-       "observed_count": 7.0
-      },
-      {
-       "observed_at": "2026-04-13T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-14T05:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-15T05:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-16T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-17T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-27T05:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-28T05:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-29T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-30T05:00:00+12:00",
-       "observed_count": 3.0
-      }
-     ],
-     "countlines": 5,
-     "coordinates": [
-      174.776825,
-      -41.285625
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 17,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-13T01:Queens Wharf:Vehicle",
-     "street": "Queens Wharf",
-     "name": "Queens Wharf",
-     "transport_class": "Vehicle",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 10.7,
-     "expected_count": 1.0,
-     "robust_z": 6.91,
-     "history_samples": 18,
-     "data_quality": "complete",
-     "observed_at": "2026-08-13T01:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-02T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-03T05:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-06T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-07T05:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-08T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-09T05:00:00+12:00",
-       "observed_count": 13.0
-      },
-      {
-       "observed_at": "2026-04-10T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-13T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-14T05:00:00+12:00",
-       "observed_count": 10.0
-      },
-      {
-       "observed_at": "2026-04-15T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-16T05:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-17T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-27T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-28T05:00:00+12:00",
-       "observed_count": 30.0
-      },
-      {
-       "observed_at": "2026-04-29T05:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-30T05:00:00+12:00",
-       "observed_count": 2.0
-      }
-     ],
-     "countlines": 4,
-     "coordinates": [
-      174.778265,
-      -41.284981
      ],
      "signal_confidence": {
       "level": "high",
@@ -8979,7 +6757,7 @@
   },
   {
    "target_at": "2026-08-13T03:00:00",
-   "candidate_count": 13,
+   "candidate_count": 12,
    "rain_max_mm": 4.7,
    "rain_warning_stations": 3,
    "signals": [
@@ -9178,7 +6956,7 @@
      "change_direction": "increase",
      "observed_count": 25.6,
      "expected_count": 5.5,
-     "robust_z": 7.21,
+     "robust_z": 7.12,
      "history_samples": 18,
      "data_quality": "complete",
      "observed_at": "2026-08-13T03:00:00",
@@ -9363,85 +7141,6 @@
      "signal_confidence": {
       "level": "high",
       "history_samples": 18,
-      "basis": "April weekday/weekend matched hour, outside the event window"
-     },
-     "synthetic": true
-    },
-    {
-     "id": "sim:2026-08-13T03:Allington Rd:Vehicle",
-     "street": "Allington Rd",
-     "name": "Allington Rd",
-     "transport_class": "Vehicle",
-     "direction": "all",
-     "change_direction": "increase",
-     "observed_count": 10.5,
-     "expected_count": 2.0,
-     "robust_z": 5.14,
-     "history_samples": 13,
-     "data_quality": "complete",
-     "observed_at": "2026-08-13T03:00:00",
-     "matched_history": [
-      {
-       "observed_at": "2026-04-01T07:00:00+12:00",
-       "observed_count": 5.0
-      },
-      {
-       "observed_at": "2026-04-02T07:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-03T07:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-06T07:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-09T07:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-10T07:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-15T07:00:00+12:00",
-       "observed_count": 3.0
-      },
-      {
-       "observed_at": "2026-04-16T07:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-17T07:00:00+12:00",
-       "observed_count": 1.0
-      },
-      {
-       "observed_at": "2026-04-24T07:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-28T07:00:00+12:00",
-       "observed_count": 2.0
-      },
-      {
-       "observed_at": "2026-04-29T07:00:00+12:00",
-       "observed_count": 4.0
-      },
-      {
-       "observed_at": "2026-04-30T07:00:00+12:00",
-       "observed_count": 3.0
-      }
-     ],
-     "countlines": 1,
-     "coordinates": [
-      174.723129,
-      -41.288877
-     ],
-     "signal_confidence": {
-      "level": "high",
-      "history_samples": 13,
       "basis": "April weekday/weekend matched hour, outside the event window"
      },
      "synthetic": true
@@ -10350,7 +8049,7 @@
      "change_direction": "increase",
      "observed_count": 26.3,
      "expected_count": 6.5,
-     "robust_z": 7.18,
+     "robust_z": 7.09,
      "history_samples": 18,
      "data_quality": "complete",
      "observed_at": "2026-08-13T04:00:00",

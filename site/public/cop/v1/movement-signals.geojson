@@ -1,607 +1,357 @@
 {
-  "type": "FeatureCollection",
-  "schema": "movement-signal-collection/v1",
-  "data_as_of": "2026-08-06T23:00:00+12:00",
-  "features": [
-    {
-      "type": "Feature",
-      "id": "movement:56052:Car:S:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.774872,
-            -41.294682
-          ],
-          [
-            174.774979,
-            -41.294701
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "56052",
-        "viewpoint_id": "10479",
-        "name": "Cuba St road",
-        "transport_class": "Car",
-        "direction": "S",
-        "change_direction": "increase",
-        "observed_count": 20.0,
-        "expected_count": 0.0,
-        "robust_z": 20.0,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
+ "type": "FeatureCollection",
+ "schema": "movement-signal-collection/v1",
+ "data_as_of": "2026-08-06T23:00:00+12:00",
+ "features": [
+  {
+   "type": "Feature",
+   "id": "movement:56053:Bus:SE:2026-08-06T12:00:00",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      174.774765,
+      -41.294781
+     ],
+     [
+      174.774811,
+      -41.294701
+     ]
+    ]
+   },
+   "properties": {
+    "schema": "movement-signal/v1",
+    "signal_type": "classified_count_change",
+    "status": "candidate",
+    "attention": "investigate",
+    "countline_id": "56053",
+    "viewpoint_id": "10479",
+    "name": "Vivian St road",
+    "transport_class": "Bus",
+    "direction": "SE",
+    "change_direction": "decrease",
+    "observed_count": 1.0,
+    "expected_count": 31.5,
+    "robust_z": -5.350053917772878,
+    "observed_at": "2026-08-06T12:00:00",
+    "data_as_of": "2026-08-06T23:00:00+12:00",
+    "publisher_cadence": "at least monthly",
+    "data_quality": "complete",
+    "signal_confidence": {
+     "level": "high",
+     "history_samples": 12,
+     "basis": "matched weekday and hour"
     },
-    {
-      "type": "Feature",
-      "id": "movement:56053:Bus:SE:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.774765,
-            -41.294781
-          ],
-          [
-            174.774811,
-            -41.294701
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "56053",
-        "viewpoint_id": "10479",
-        "name": "Vivian St road",
-        "transport_class": "Bus",
-        "direction": "SE",
-        "change_direction": "decrease",
-        "observed_count": 1.0,
-        "expected_count": 31.5,
-        "robust_z": -5.350053917772878,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
+    "location_confidence": "metadata coordinates",
+    "limitations": [
+     "Fixed sensors do not represent every city journey.",
+     "A counted vehicle is not a passenger count.",
+     "Nearby countlines may count the same traveller more than once.",
+     "Missing records are data gaps, not zero movement.",
+     "Publisher data is batch refreshed, not a live emergency feed."
+    ],
+    "attribution": "Wellington City Council Transport Sensors"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "movement:52149:OGV2:SE:2026-08-06T12:00:00",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      174.763214,
+      -41.305309
+     ],
+     [
+      174.763397,
+      -41.305244
+     ]
+    ]
+   },
+   "properties": {
+    "schema": "movement-signal/v1",
+    "signal_type": "classified_count_change",
+    "status": "candidate",
+    "attention": "investigate",
+    "countline_id": "52149",
+    "viewpoint_id": "3160",
+    "name": "Todman St road LHS",
+    "transport_class": "OGV2",
+    "direction": "SE",
+    "change_direction": "increase",
+    "observed_count": 32.0,
+    "expected_count": 10.5,
+    "robust_z": 5.800620531498719,
+    "observed_at": "2026-08-06T12:00:00",
+    "data_as_of": "2026-08-06T23:00:00+12:00",
+    "publisher_cadence": "at least monthly",
+    "data_quality": "complete",
+    "signal_confidence": {
+     "level": "high",
+     "history_samples": 12,
+     "basis": "matched weekday and hour"
     },
-    {
-      "type": "Feature",
-      "id": "movement:52149:OGV2:SE:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.763214,
-            -41.305309
-          ],
-          [
-            174.763397,
-            -41.305244
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "52149",
-        "viewpoint_id": "3160",
-        "name": "Todman St road LHS",
-        "transport_class": "OGV2",
-        "direction": "SE",
-        "change_direction": "increase",
-        "observed_count": 32.0,
-        "expected_count": 10.5,
-        "robust_z": 5.800620531498719,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
+    "location_confidence": "metadata coordinates",
+    "limitations": [
+     "Fixed sensors do not represent every city journey.",
+     "A counted vehicle is not a passenger count.",
+     "Nearby countlines may count the same traveller more than once.",
+     "Missing records are data gaps, not zero movement.",
+     "Publisher data is batch refreshed, not a live emergency feed."
+    ],
+    "attribution": "Wellington City Council Transport Sensors"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "movement:52151:OGV2:S:2026-08-06T12:00:00",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      174.76326,
+      -41.30547
+     ],
+     [
+      174.763397,
+      -41.305439
+     ]
+    ]
+   },
+   "properties": {
+    "schema": "movement-signal/v1",
+    "signal_type": "classified_count_change",
+    "status": "candidate",
+    "attention": "investigate",
+    "countline_id": "52151",
+    "viewpoint_id": "3160",
+    "name": "Todman St road RHS",
+    "transport_class": "OGV2",
+    "direction": "S",
+    "change_direction": "increase",
+    "observed_count": 32.0,
+    "expected_count": 10.0,
+    "robust_z": 6.6332495807108,
+    "observed_at": "2026-08-06T12:00:00",
+    "data_as_of": "2026-08-06T23:00:00+12:00",
+    "publisher_cadence": "at least monthly",
+    "data_quality": "complete",
+    "signal_confidence": {
+     "level": "high",
+     "history_samples": 12,
+     "basis": "matched weekday and hour"
     },
-    {
-      "type": "Feature",
-      "id": "movement:52151:OGV2:S:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.76326,
-            -41.30547
-          ],
-          [
-            174.763397,
-            -41.305439
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "52151",
-        "viewpoint_id": "3160",
-        "name": "Todman St road RHS",
-        "transport_class": "OGV2",
-        "direction": "S",
-        "change_direction": "increase",
-        "observed_count": 32.0,
-        "expected_count": 10.0,
-        "robust_z": 6.6332495807108,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
+    "location_confidence": "metadata coordinates",
+    "limitations": [
+     "Fixed sensors do not represent every city journey.",
+     "A counted vehicle is not a passenger count.",
+     "Nearby countlines may count the same traveller more than once.",
+     "Missing records are data gaps, not zero movement.",
+     "Publisher data is batch refreshed, not a live emergency feed."
+    ],
+    "attribution": "Wellington City Council Transport Sensors"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "movement:56053:Car:SE:2026-08-06T12:00:00",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      174.774765,
+      -41.294781
+     ],
+     [
+      174.774811,
+      -41.294701
+     ]
+    ]
+   },
+   "properties": {
+    "schema": "movement-signal/v1",
+    "signal_type": "classified_count_change",
+    "status": "candidate",
+    "attention": "investigate",
+    "countline_id": "56053",
+    "viewpoint_id": "10479",
+    "name": "Vivian St road",
+    "transport_class": "Car",
+    "direction": "SE",
+    "change_direction": "decrease",
+    "observed_count": 640.0,
+    "expected_count": 1259.5,
+    "robust_z": -17.448973605600216,
+    "observed_at": "2026-08-06T12:00:00",
+    "data_as_of": "2026-08-06T23:00:00+12:00",
+    "publisher_cadence": "at least monthly",
+    "data_quality": "complete",
+    "signal_confidence": {
+     "level": "high",
+     "history_samples": 12,
+     "basis": "matched weekday and hour"
     },
-    {
-      "type": "Feature",
-      "id": "movement:57989:Pedestrian:SW:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.779297,
-            -41.27924
-          ],
-          [
-            174.77948,
-            -41.279301
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "57989",
-        "viewpoint_id": "11884",
-        "name": "Thorndon Quay road",
-        "transport_class": "Pedestrian",
-        "direction": "SW",
-        "change_direction": "increase",
-        "observed_count": 13.0,
-        "expected_count": 2.0,
-        "robust_z": 6.3508529610858835,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
+    "location_confidence": "metadata coordinates",
+    "limitations": [
+     "Fixed sensors do not represent every city journey.",
+     "A counted vehicle is not a passenger count.",
+     "Nearby countlines may count the same traveller more than once.",
+     "Missing records are data gaps, not zero movement.",
+     "Publisher data is batch refreshed, not a live emergency feed."
+    ],
+    "attribution": "Wellington City Council Transport Sensors"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "movement:56053:Pedestrian:NW:2026-08-06T12:00:00",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      174.774765,
+      -41.294781
+     ],
+     [
+      174.774811,
+      -41.294701
+     ]
+    ]
+   },
+   "properties": {
+    "schema": "movement-signal/v1",
+    "signal_type": "classified_count_change",
+    "status": "candidate",
+    "attention": "investigate",
+    "countline_id": "56053",
+    "viewpoint_id": "10479",
+    "name": "Vivian St road",
+    "transport_class": "Pedestrian",
+    "direction": "NW",
+    "change_direction": "decrease",
+    "observed_count": 1.0,
+    "expected_count": 57.5,
+    "robust_z": -4.763590988803454,
+    "observed_at": "2026-08-06T12:00:00",
+    "data_as_of": "2026-08-06T23:00:00+12:00",
+    "publisher_cadence": "at least monthly",
+    "data_quality": "complete",
+    "signal_confidence": {
+     "level": "high",
+     "history_samples": 12,
+     "basis": "matched weekday and hour"
     },
-    {
-      "type": "Feature",
-      "id": "movement:51673:Cyclist:NW:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.813492,
-            -41.247612
-          ],
-          [
-            174.813461,
-            -41.247654
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "51673",
-        "viewpoint_id": "2768",
-        "name": "Jarden Mile path",
-        "transport_class": "Cyclist",
-        "direction": "NW",
-        "change_direction": "increase",
-        "observed_count": 19.0,
-        "expected_count": 2.0,
-        "robust_z": 5.73317145555106,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "medium",
-          "history_samples": 8,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
+    "location_confidence": "metadata coordinates",
+    "limitations": [
+     "Fixed sensors do not represent every city journey.",
+     "A counted vehicle is not a passenger count.",
+     "Nearby countlines may count the same traveller more than once.",
+     "Missing records are data gaps, not zero movement.",
+     "Publisher data is batch refreshed, not a live emergency feed."
+    ],
+    "attribution": "Wellington City Council Transport Sensors"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "movement:53200:Cyclist:W:2026-08-06T12:00:00",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      174.783539,
+      -41.290581
+     ],
+     [
+      174.783554,
+      -41.290642
+     ]
+    ]
+   },
+   "properties": {
+    "schema": "movement-signal/v1",
+    "signal_type": "classified_count_change",
+    "status": "candidate",
+    "attention": "investigate",
+    "countline_id": "53200",
+    "viewpoint_id": "9023",
+    "name": "Ara Moana left",
+    "transport_class": "Cyclist",
+    "direction": "W",
+    "change_direction": "increase",
+    "observed_count": 33.0,
+    "expected_count": 13.0,
+    "robust_z": 5.3452248382484875,
+    "observed_at": "2026-08-06T12:00:00",
+    "data_as_of": "2026-08-06T23:00:00+12:00",
+    "publisher_cadence": "at least monthly",
+    "data_quality": "complete",
+    "signal_confidence": {
+     "level": "medium",
+     "history_samples": 10,
+     "basis": "matched weekday and hour"
     },
-    {
-      "type": "Feature",
-      "id": "movement:51673:Pedestrian:SE:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.813492,
-            -41.247612
-          ],
-          [
-            174.813461,
-            -41.247654
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "51673",
-        "viewpoint_id": "2768",
-        "name": "Jarden Mile path",
-        "transport_class": "Pedestrian",
-        "direction": "SE",
-        "change_direction": "increase",
-        "observed_count": 14.0,
-        "expected_count": 2.5,
-        "robust_z": 5.171095822653896,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "medium",
-          "history_samples": 10,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
+    "location_confidence": "metadata coordinates",
+    "limitations": [
+     "Fixed sensors do not represent every city journey.",
+     "A counted vehicle is not a passenger count.",
+     "Nearby countlines may count the same traveller more than once.",
+     "Missing records are data gaps, not zero movement.",
+     "Publisher data is batch refreshed, not a live emergency feed."
+    ],
+    "attribution": "Wellington City Council Transport Sensors"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "movement:48038:Car:N:2026-08-06T12:00:00",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      174.813293,
+      -41.247211
+     ],
+     [
+      174.813202,
+      -41.247189
+     ]
+    ]
+   },
+   "properties": {
+    "schema": "movement-signal/v1",
+    "signal_type": "classified_count_change",
+    "status": "candidate",
+    "attention": "investigate",
+    "countline_id": "48038",
+    "viewpoint_id": "7332",
+    "name": "Centennial Hwy road Northbound",
+    "transport_class": "Car",
+    "direction": "N",
+    "change_direction": "decrease",
+    "observed_count": 502.0,
+    "expected_count": 873.5,
+    "robust_z": -5.331347173309683,
+    "observed_at": "2026-08-06T12:00:00",
+    "data_as_of": "2026-08-06T23:00:00+12:00",
+    "publisher_cadence": "at least monthly",
+    "data_quality": "complete",
+    "signal_confidence": {
+     "level": "high",
+     "history_samples": 12,
+     "basis": "matched weekday and hour"
     },
-    {
-      "type": "Feature",
-      "id": "movement:55175:Pedestrian:NW:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.783173,
-            -41.301201
-          ],
-          [
-            174.783157,
-            -41.30122
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "55175",
-        "viewpoint_id": "9030",
-        "name": "Paterson St path LHS",
-        "transport_class": "Pedestrian",
-        "direction": "NW",
-        "change_direction": "increase",
-        "observed_count": 15.0,
-        "expected_count": 3.0,
-        "robust_z": 6.0,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "movement:56053:Car:SE:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.774765,
-            -41.294781
-          ],
-          [
-            174.774811,
-            -41.294701
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "56053",
-        "viewpoint_id": "10479",
-        "name": "Vivian St road",
-        "transport_class": "Car",
-        "direction": "SE",
-        "change_direction": "decrease",
-        "observed_count": 640.0,
-        "expected_count": 1259.5,
-        "robust_z": -17.448973605600216,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "movement:56053:Pedestrian:NW:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.774765,
-            -41.294781
-          ],
-          [
-            174.774811,
-            -41.294701
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "56053",
-        "viewpoint_id": "10479",
-        "name": "Vivian St road",
-        "transport_class": "Pedestrian",
-        "direction": "NW",
-        "change_direction": "decrease",
-        "observed_count": 1.0,
-        "expected_count": 57.5,
-        "robust_z": -4.763590988803454,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "movement:53200:Cyclist:W:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.783539,
-            -41.290581
-          ],
-          [
-            174.783554,
-            -41.290642
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "53200",
-        "viewpoint_id": "9023",
-        "name": "Ara Moana left",
-        "transport_class": "Cyclist",
-        "direction": "W",
-        "change_direction": "increase",
-        "observed_count": 33.0,
-        "expected_count": 13.0,
-        "robust_z": 5.3452248382484875,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "medium",
-          "history_samples": 10,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "movement:48038:Car:N:2026-08-06T12:00:00",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            174.813293,
-            -41.247211
-          ],
-          [
-            174.813202,
-            -41.247189
-          ]
-        ]
-      },
-      "properties": {
-        "schema": "movement-signal/v1",
-        "signal_type": "classified_count_change",
-        "status": "candidate",
-        "attention": "investigate",
-        "countline_id": "48038",
-        "viewpoint_id": "7332",
-        "name": "Centennial Hwy road Northbound",
-        "transport_class": "Car",
-        "direction": "N",
-        "change_direction": "decrease",
-        "observed_count": 502.0,
-        "expected_count": 873.5,
-        "robust_z": -5.331347173309683,
-        "observed_at": "2026-08-06T12:00:00",
-        "data_as_of": "2026-08-06T23:00:00+12:00",
-        "publisher_cadence": "at least monthly",
-        "data_quality": "complete",
-        "signal_confidence": {
-          "level": "high",
-          "history_samples": 12,
-          "basis": "matched weekday and hour"
-        },
-        "location_confidence": "metadata coordinates",
-        "limitations": [
-          "Fixed sensors do not represent every city journey.",
-          "A counted vehicle is not a passenger count.",
-          "Nearby countlines may count the same traveller more than once.",
-          "Missing records are data gaps, not zero movement.",
-          "Publisher data is batch refreshed, not a live emergency feed."
-        ],
-        "attribution": "Wellington City Council Transport Sensors"
-      }
-    }
-  ]
+    "location_confidence": "metadata coordinates",
+    "limitations": [
+     "Fixed sensors do not represent every city journey.",
+     "A counted vehicle is not a passenger count.",
+     "Nearby countlines may count the same traveller more than once.",
+     "Missing records are data gaps, not zero movement.",
+     "Publisher data is batch refreshed, not a live emergency feed."
+    ],
+    "attribution": "Wellington City Council Transport Sensors"
+   }
+  }
+ ]
 }
