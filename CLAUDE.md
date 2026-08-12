@@ -8,6 +8,15 @@ Wellington Team 7, problem 05: *detect unusual changes in movement around the ci
 Wellington City Council Emergency Management, Saturday 8 August 2026. One
 prototype, demoed in four minutes at 16:30.
 
+**Live demo**: https://murmur.asun28.workers.dev — Cloudflare Workers, free
+tier; redeploy with `npm run build && npx wrangler deploy -c dist/server/wrangler.json`
+from `site/` (wrangler OAuth on this machine). The COP feeds are also on
+GitHub Pages at
+https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08/
+(`.github/workflows/pages.yml`, redeploys on any `site/public/**` push). The
+README's hero screenshot is `docs/screenshots/map-only-april.png`, captured by
+Playwright scripts in the session scratchpad against `npm run dev`.
+
 ## Commands
 
 ```powershell
