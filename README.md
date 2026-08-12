@@ -5,6 +5,8 @@ Saturday 8 August 2026 · Waimanga Room, Wellington City Council
 
 ### ▶ Live demo — https://murmur.asun28.workers.dev
 
+<img src="docs/qr-live-demo.png" width="150" alt="QR code: open the live demo on your phone">
+
 [![Murmur: the April 2026 storm hour on the one-canvas operating picture, every panel folded to an icon](docs/screenshots/map-only-april.png)](https://murmur.asun28.workers.dev)
 
 **16:30 demo deck** — https://github.com/claudecommunity-nz/impact.lab.wlg.team-7.2026-08-08/blob/main/Team7_Problem05_movement_anomalies.pptx
