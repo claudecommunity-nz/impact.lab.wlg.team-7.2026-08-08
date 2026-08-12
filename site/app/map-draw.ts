@@ -617,29 +617,61 @@ export function drawSignals(
     const dx = rawEnd[0] - start[0];
     const dy = rawEnd[1] - start[1];
     const length = Math.hypot(dx, dy) || 1;
-    const end: Coordinate = length < 9
-      ? [start[0] + (dx / length) * 9, start[1] + (dy / length) * 9]
+    const end: Coordinate = length < 12
+      ? [start[0] + (dx / length) * 12, start[1] + (dy / length) * 12]
       : rawEnd;
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
     const decreasing = feature.properties.change_direction === "decrease";
     const colour = decreasing ? "#B3261E" : "#8A5A00";
     const lineWidth = isSelected ? 6 : isHovered ? 5 : 3.5;
+    // The mark is an arrow, not a bar: the head points the travel direction
+    // the countline measured, so flow reads at a glance.
+    const angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
+    const headLength = lineWidth * 2.6;
+    const headWidth = lineWidth * 2.4;
+    const shaftEnd: Coordinate = [
+      end[0] - Math.cos(angle) * headLength * 0.72,
+      end[1] - Math.sin(angle) * headLength * 0.72,
+    ];
+    const barbs: Coordinate[] = [
+      [
+        end[0] - Math.cos(angle) * headLength - Math.sin(angle) * (headWidth / 2),
+        end[1] - Math.sin(angle) * headLength + Math.cos(angle) * (headWidth / 2),
+      ],
+      [
+        end[0] - Math.cos(angle) * headLength + Math.sin(angle) * (headWidth / 2),
+        end[1] - Math.sin(angle) * headLength - Math.cos(angle) * (headWidth / 2),
+      ],
+    ];
+    const traceHead = () => {
+      context.beginPath();
+      context.moveTo(...end);
+      context.lineTo(...barbs[0]);
+      context.lineTo(...barbs[1]);
+      context.closePath();
+    };
     context.lineCap = "round";
-    // White casing under the coloured line lifts the primary layer off the
+    context.lineJoin = "round";
+    // White casing under the coloured arrow lifts the primary layer off the
     // basemap and the secondary glyphs around it.
     context.strokeStyle = "#FFFFFF";
     context.lineWidth = lineWidth + 2.5;
     context.beginPath();
     context.moveTo(...start);
-    context.lineTo(...end);
+    context.lineTo(...shaftEnd);
+    context.stroke();
+    traceHead();
     context.stroke();
     context.strokeStyle = colour;
     context.lineWidth = lineWidth;
     context.beginPath();
     context.moveTo(...start);
-    context.lineTo(...end);
+    context.lineTo(...shaftEnd);
     context.stroke();
+    traceHead();
+    context.fillStyle = colour;
+    context.fill();
 
     // Signals carry the story, so their glyphs run a step larger than the
     // corroborating camera and bus icons.
