@@ -72,7 +72,8 @@ Rebuild the April movement backtest (stdlib only, reads `data/sensors/anomaly/cs
 python scripts\build_april_movement_layer.py
 ```
 
-Rebuild the April rainfall layer (stdlib only, reads `data/hydro/`):
+Rebuild the April rainfall layer (stdlib only, reads the committed GWRC
+extract in `data/hydro/` — fully reproducible):
 
 ```powershell
 python scripts\build_rain_layer.py
@@ -112,7 +113,7 @@ data/sensors/anomaly/csv ──▶ site/public/cop/v1/movement-april.json ──
    (local, REAL Apr 2026 street aggregates)  (scripts/build_april_movement_layer.py)
                                                                                 │
 data/hydro/…hilltop… ──▶ site/public/cop/v1/rain-april.geojson ─────────────────┤
-   (local, REAL Apr 2026, GWRC)  (scripts/build_rain_layer.py)                  │
+   (committed extract, REAL Apr 2026, GWRC)  (scripts/build_rain_layer.py)      │
                                                                                 │
 movement-april.json ──▶ site/public/cop/v1/reports-april.geojson ───────────────┘
    (committed input, SYNTHETIC ticket flow)  (scripts/build_reports_layer.py)
