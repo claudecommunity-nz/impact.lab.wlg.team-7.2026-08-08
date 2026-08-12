@@ -231,7 +231,11 @@ hour (`event_hours` → `shownTransit`), public reports accumulate by log time
 (`shownReports`), rain droplets size and shade to the slot hour's gauge value
 (`mm_by_hour`, dry gauges fade pale) and the plane gains a red halo on
 flagged hours. Every list and search keeps its layer's full set — the
-timeline filters the map, never the evidence. The point layers (cameras, transit, roads)
+timeline filters the map, never the evidence. Every scrub or playback step
+also runs the **auto-popup adapter** (`severeFnRef`, gate `AUTO_POPUP_Z`):
+the hour's severest issue — a gauge at warning/torrential level first, else
+the biggest gated signal — opens the same callout a hover would, if it is on
+screen; a real hover, pan or zoom takes over exactly as before. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a
 bubble zooms into it, and zooming naturally dissolves clusters into glyphs.

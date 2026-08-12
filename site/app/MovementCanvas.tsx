@@ -101,6 +101,9 @@ const ROAD_LIST_LIMIT = 30;
  * dissolve a zoom level earlier than the previous 34px cell. */
 const CLUSTER_CELL = 16;
 const SEARCH_LIMIT = 8;
+/* While the timeline moves, the hour's worst issue opens its own callout —
+ * a warning/torrential gauge first, else a signal at or beyond this |z|. */
+const AUTO_POPUP_Z = 8;
 
 /* The evidence column slides away rather than disappearing, so the map can grow
  * to the full frame when someone is scanning rather than investigating. */
@@ -1017,6 +1020,66 @@ export default function MovementCanvas() {
   useEffect(() => {
     indexRef.current = effectiveIndex;
   });
+
+  /* The auto popup adapter: on every scrub or playback step, the severest
+   * issue of the hour opens the same callout a hover would — a gauge at
+   * warning or torrential level first, else the biggest gated signal. A real
+   * hover, pan or zoom takes over exactly as it always did. */
+  const severeFnRef = useRef<(index: number) => void>(() => {});
+  useEffect(() => {
+    severeFnRef.current = (index: number) => {
+      const slot = activeModel?.slots[index];
+      const size = stageSize();
+      if (!slot || !size) {
+        setHover(null);
+        return;
+      }
+      const project = createProjector(view, size.width, size.height);
+      const makeHover = (kind: Focus, id: string, coordinate: Coordinate): Hover | null => {
+        const [px, py] = project(coordinate);
+        if (px < 0 || px > size.width || py < 0 || py > size.height) return null;
+        const left = Math.min(
+          Math.max(px - POPUP_WIDTH / 2, 8),
+          Math.max(8, size.width - POPUP_WIDTH - 8),
+        );
+        return {
+          kind,
+          id,
+          left,
+          top: py,
+          above: py > 120,
+          beakX: Math.min(Math.max(px - left, 14), POPUP_WIDTH - 14),
+        };
+      };
+      let next: Hover | null = null;
+      if (layers.rain && caseId === "april-floods") {
+        let worst: RainFeature | null = null;
+        let worstMm = 0;
+        for (const feature of rainFeatures) {
+          const mm = feature.properties.mm_by_hour?.[slot.key] ?? 0;
+          const warning = Boolean(feature.properties.warning_by_hour?.[slot.key]);
+          if ((warning || mm >= 25) && mm >= worstMm) {
+            worst = feature;
+            worstMm = mm;
+          }
+        }
+        if (worst) next = makeHover("rain", worst.id, worst.geometry.coordinates);
+      }
+      if (!next) {
+        let worst: LineFeature | null = null;
+        let worstZ = AUTO_POPUP_Z;
+        for (const feature of slot.signals) {
+          const z = Math.abs(Number(feature.properties.robust_z));
+          if (z >= worstZ) {
+            worst = feature;
+            worstZ = z;
+          }
+        }
+        if (worst) next = makeHover("signal", worst.id, worst.geometry.coordinates[0]);
+      }
+      setHover(next);
+    };
+  });
   useEffect(() => {
     if (!playing || !activeModel) return;
     const lastIndex = activeModel.slots.length - 1;
@@ -1025,9 +1088,9 @@ export default function MovementCanvas() {
         setPlaying(false);
         return;
       }
-      setHover(null);
       const next = indexRef.current + 1;
       setSlotIndices((current) => ({ ...current, [caseId]: next }));
+      severeFnRef.current(next);
     }, PLAY_INTERVAL_MS / speed);
     return () => clearInterval(interval);
   }, [playing, activeModel, caseId, speed]);
@@ -1267,10 +1330,10 @@ export default function MovementCanvas() {
   const scrubTo = (index: number) => {
     if (!activeModel) return;
     setPlaying(false);
-    setHover(null);
     ensureLayer("signal");
     const clamped = Math.min(Math.max(index, 0), activeModel.slots.length - 1);
     setSlotIndices((current) => ({ ...current, [caseId]: clamped }));
+    severeFnRef.current(clamped);
   };
 
   const togglePlay = () => {
@@ -2026,6 +2089,20 @@ export default function MovementCanvas() {
                 ) : hoveredRain ? (
                   <p>
                     <strong>{hoveredRain.properties.site_name}</strong>
+                    {timeSyncKey ? (
+                      <span>
+                        now{" "}
+                        <b>
+                          {(hoveredRain.properties.mm_by_hour?.[timeSyncKey] ?? 0).toLocaleString(
+                            "en-NZ",
+                          )}{" "}
+                          mm/h
+                        </b>
+                        {hoveredRain.properties.warning_by_hour?.[timeSyncKey]
+                          ? " · warning-level accumulation"
+                          : ""}
+                      </span>
+                    ) : null}
                     <span>
                       peak <b>{hoveredRain.properties.peak.value_mm} mm/h</b> ·{" "}
                       <b>{hoveredRain.properties.heavy_hours}</b> heavy hours ·
