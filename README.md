@@ -7,6 +7,8 @@ Saturday 8 August 2026 · Waimanga Room, Wellington City Council
 
 **video link** — https://www.youtube.com/watch?v=BJZiOcQzmTU
 
+**live demo** — https://murmur.asun28.workers.dev
+
 ![Murmur: the April 2026 storm hour on the one-canvas operating picture, every panel folded to an icon](docs/screenshots/map-only-april.png)
 
 ---
