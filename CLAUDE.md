@@ -215,9 +215,14 @@ are April days outside the event window,
 `rain-april.geojson`'s hourly aggregate, also the corroboration row's
 "rain N mm/h"). Counts never sums; each case
 remembers its own scrub position and opens on its `defaultIndex`. Scrubbing
-ensures the signal layer, and a case with `roadDayFilter` narrows the
-diamonds to the slot's day (`shownRoads`); the roads list and search keep the
-full flagged set. The point layers (cameras, transit, roads)
+ensures the signal layer, and the April slot drives **every time-bearing
+layer** (`timeSyncKey`), not just signals: roads narrow to the slot's day
+(`roadDayFilter` → `shownRoads`), buses to stops with anomalies in the slot's
+hour (`event_hours` → `shownTransit`), public reports accumulate by log time
+(`shownReports`), rain droplets size and shade to the slot hour's gauge value
+(`mm_by_hour`, dry gauges fade pale) and the plane gains a red halo on
+flagged hours. Every list and search keeps its layer's full set — the
+timeline filters the map, never the evidence. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a
 bubble zooms into it, and zooming naturally dissolves clusters into glyphs.

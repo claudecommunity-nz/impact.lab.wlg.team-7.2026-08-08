@@ -25,6 +25,9 @@ ROOT = Path(__file__).resolve().parents[1]
 MIN_COUNT = 50
 MIN_HIGH = 10
 HIGH_TIER = 20  # high-severity anomalies needed for the "dense high severity" tier
+# The April investigation window the site's timebar replays; per-hour activity
+# is published for these dates so the map can follow the timeline.
+EVENT_DATES = ("2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23")
 
 ATTRIBUTION = (
     "Metlink GTFS timetable © Greater Wellington Regional Council; "
@@ -58,12 +61,21 @@ def build(events_path: Path, output_path: Path) -> dict:
                     "severities": Counter(),
                     "modes": set(),
                     "detectors": Counter(),
+                    "daily": {},
+                    "event_hours": set(),
                     "worst": None,
                 },
             )
             entry["severities"][row["SEVERITY"]] += 1
             entry["modes"].add(row["MODE"])
             entry["detectors"][row["DETECTOR_NAME"]] += 1
+            day = row["SERVICE_DATE"]
+            daily = entry["daily"].setdefault(day, {"count": 0, "high": 0})
+            daily["count"] += 1
+            if row["SEVERITY"] == "HIGH":
+                daily["high"] += 1
+            if day in EVENT_DATES and row["EVENT_HOUR"]:
+                entry["event_hours"].add(f"{day}T{int(row['EVENT_HOUR']):02d}")
             score = float(row["SCORE"] or 0)
             if entry["worst"] is None or score > entry["worst"]["score"]:
                 entry["worst"] = {
@@ -103,6 +115,11 @@ def build(events_path: Path, output_path: Path) -> dict:
                     "top_detector": top_detector,
                     "top_detector_count": top_detector_count,
                     "worst_example": entry["worst"],
+                    "daily_counts": [
+                        {"date": day, **counts}
+                        for day, counts in sorted(entry["daily"].items())
+                    ],
+                    "event_hours": sorted(entry["event_hours"]),
                     "synthetic": True,
                     "attribution": ATTRIBUTION,
                     "limitations": LIMITATIONS,

@@ -101,6 +101,9 @@ export type TransitProperties = {
   top_detector: string;
   top_detector_count: number;
   worst_example: { date: string; hour: number; severity: string; score: number; detail: string };
+  daily_counts?: { date: string; count: number; high: number }[];
+  /** Hour keys (YYYY-MM-DDTHH) inside the April event window with activity. */
+  event_hours?: string[];
   synthetic: boolean;
   attribution: string;
   limitations: string[];
@@ -223,6 +226,8 @@ export type RainProperties = {
   peak: { observed_at: string; value_mm: number };
   heavy_hours: number;
   violent_hours: number;
+  /** Sparse map of hour key (YYYY-MM-DDTHH) to mm for hours with rain. */
+  mm_by_hour: Record<string, number>;
   daily_totals: { date: string; mm: number; flagged: boolean }[];
   attribution: string;
   limitations: string[];
@@ -884,12 +889,22 @@ export function drawFlights(
   selectedId: string | null,
   hoveredId: string | null = null,
   baseScale = 1,
+  flaggedHour = false,
 ) {
   for (const feature of sites) {
     const [x, y] = project(feature.geometry.coordinates);
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
     const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale;
+
+    if (flaggedHour) {
+      // The timeline sits on an hour this site flagged: a red halo says so.
+      context.beginPath();
+      context.arc(x, y, 10 * scale, 0, Math.PI * 2);
+      context.strokeStyle = "#B3261E";
+      context.lineWidth = 2.5;
+      context.stroke();
+    }
 
     if (isSelected) {
       context.beginPath();
@@ -937,7 +952,9 @@ function tracePlane(
   context.closePath();
 }
 
-/** Rain gauge: a droplet, darker where the record holds violent-intensity hours. */
+/** Rain gauge: a droplet. With an hour key the droplet follows the timeline —
+ * dry gauges fade small and pale, wet ones grow with that hour's mm, heavy
+ * hours darken. Without a key it shows the whole record (violent hours dark). */
 export function drawRain(
   context: CanvasRenderingContext2D,
   project: Projector,
@@ -945,12 +962,16 @@ export function drawRain(
   selectedId: string | null,
   hoveredId: string | null = null,
   baseScale = 1,
+  hourKey: string | null = null,
 ) {
   for (const feature of stations) {
     const [x, y] = project(feature.geometry.coordinates);
     const isSelected = feature.id === selectedId;
     const isHovered = feature.id === hoveredId;
-    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.95;
+    const mmNow = hourKey ? feature.properties.mm_by_hour?.[hourKey] ?? 0 : null;
+    const wet = mmNow === null ? 1 : Math.min(1, mmNow / 25);
+    const size = mmNow === null ? 1 : mmNow > 0 ? 0.85 + wet * 0.55 : 0.7;
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.95 * size;
 
     if (isSelected) {
       context.beginPath();
@@ -973,7 +994,14 @@ export function drawRain(
       x, y - 5.6 * scale,
     );
     context.closePath();
-    context.fillStyle = feature.properties.violent_hours > 0 ? "#0D5C8C" : "#1E90CF";
+    context.fillStyle =
+      mmNow === null
+        ? feature.properties.violent_hours > 0 ? "#0D5C8C" : "#1E90CF"
+        : mmNow >= 10
+          ? "#0D5C8C"
+          : mmNow > 0
+            ? "#1E90CF"
+            : "#B9CFDE";
     context.fill();
     context.strokeStyle = "#FFFFFF";
     context.lineWidth = 1.3;

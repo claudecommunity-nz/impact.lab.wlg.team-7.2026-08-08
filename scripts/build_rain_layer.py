@@ -56,12 +56,15 @@ def main() -> None:
         observations = series["observations"]
         daily: dict[str, float] = defaultdict(float)
         daily_heavy: set[str] = set()
+        mm_by_hour: dict[str, float] = {}
         heavy_hours = 0
         violent_hours = 0
         for observation in observations:
             observed_at = observation["observed_at"][:19]
             value = float(observation["value"])
             day = observed_at[:10]
+            if value > 0:
+                mm_by_hour[observed_at[:13]] = round(value, 1)
             daily[day] += value
             klass = hour_class(value)
             if klass in ("heavy", "violent"):
@@ -91,6 +94,7 @@ def main() -> None:
                     },
                     "heavy_hours": heavy_hours,
                     "violent_hours": violent_hours,
+                    "mm_by_hour": mm_by_hour,
                     "daily_totals": [
                         {
                             "date": day,

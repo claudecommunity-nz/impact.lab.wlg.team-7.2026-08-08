@@ -756,6 +756,25 @@ export default function MovementCanvas() {
     return caseId === EVENTS[0].id ? signals : [];
   }, [activeCaseSlot, caseId, signals]);
 
+  /* The April timeline drives every time-bearing layer, not just signals:
+   * the slot key filters buses to the hour, accumulates reports by log time,
+   * sizes the rain droplets and haloes the plane. The lists and search keep
+   * each layer's full set, like the roads day filter. */
+  const timeSyncKey =
+    caseId === "april-floods" && activeCaseSlot ? activeCaseSlot.key : null;
+  const shownTransit = useMemo(() => {
+    if (!timeSyncKey) return transitFeatures;
+    return transitFeatures.filter((feature) =>
+      feature.properties.event_hours?.includes(timeSyncKey),
+    );
+  }, [transitFeatures, timeSyncKey]);
+  const shownReports = useMemo(() => {
+    if (!timeSyncKey) return reportFeatures;
+    return reportFeatures.filter(
+      (feature) => feature.properties.created_at.slice(0, 13) <= timeSyncKey,
+    );
+  }, [reportFeatures, timeSyncKey]);
+
   const filteredSignals = useMemo(() => shownSignals.filter((feature) => {
     const mode = String(feature.properties.transport_class);
     if (filter === "people") return PEOPLE_CLASSES.has(mode);
@@ -860,9 +879,9 @@ export default function MovementCanvas() {
     };
     return {
       cameras: split(cameraFeatures, (feature) => feature.geometry.coordinates, layers.cameras),
-      transit: split(transitFeatures, (feature) => feature.geometry.coordinates, layers.transit),
+      transit: split(shownTransit, (feature) => feature.geometry.coordinates, layers.transit),
       roads: split(shownRoads, (feature) => feature.geometry.coordinates, layers.roads),
-      reports: split(reportFeatures, (feature) => feature.geometry.coordinates, layers.reports),
+      reports: split(shownReports, (feature) => feature.geometry.coordinates, layers.reports),
     };
   };
 
@@ -886,6 +905,7 @@ export default function MovementCanvas() {
           selectedRain?.id ?? null,
           hover?.kind === "rain" ? hover.id : null,
           scale,
+          timeSyncKey,
         );
       }
       if (layers.roads) {
@@ -929,6 +949,7 @@ export default function MovementCanvas() {
           selectedFlight?.id ?? null,
           hover?.kind === "flight" ? hover.id : null,
           scale,
+          Boolean(timeSyncKey && activeCaseSlot?.tick),
         );
       }
       if (layers.signals) {
