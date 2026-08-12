@@ -226,8 +226,12 @@ cosine similarity over the trailing three hours against every saved April
 hour, advisory floor 0.7, silent while the current hour is calm. When it
 fires, a yellow **`≈` chip** in the timebar names the matched hour and score
 and opens the April case at that slot — an advisory to investigate, never a
-forecast. A **flask icon** beside the playback controls toggles simulation
-mode (aria-pressed; black when on). All cases assert the same signals-only start; the
+forecast. Beside the flickering per-hour match sits the **episode rating**
+(`matchPeriod`): the trailing 12-hour window against the best-aligned April
+window, shown as a standing "≈ April · 12 h · N%" row on the situation card
+(no score floor — a rating, not an alert; activity-gated so calm never
+rates; orange at ≥ 85%). A **flask icon** beside the playback controls
+toggles simulation mode (aria-pressed; black when on). All cases assert the same signals-only start; the
 April layers (roads, flights, synthetic transit) are opt-in there too. The
 chosen case is explicit state (`caseId`), never derived from layer flags —
 hand-toggling layers changes the picture, not which case is open. Every case loads

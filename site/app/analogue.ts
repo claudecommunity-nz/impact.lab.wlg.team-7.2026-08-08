@@ -24,6 +24,9 @@ const SCALE_SIGNALS = 12;
 const SCALE_RAIN_MM = 50;
 const WINDOW_HOURS = 3;
 const MIN_SCORE = 0.7;
+/* The episode rating compares a longer stretch, so one loud hour cannot
+ * carry the score: the whole period has to rhyme with the saved event. */
+const PERIOD_HOURS = 12;
 
 function classDrop(slot: VectorSlot, people: boolean): number {
   let observed = 0;
@@ -53,9 +56,9 @@ export function slotVectors(slots: VectorSlot[]): number[][] {
   return slots.map(situationVector);
 }
 
-function windowVector(vectors: number[][], atIndex: number): number[] {
+function windowVector(vectors: number[][], atIndex: number, windowHours: number): number[] {
   const joined: number[] = [];
-  for (let back = WINDOW_HOURS - 1; back >= 0; back -= 1) {
+  for (let back = windowHours - 1; back >= 0; back -= 1) {
     joined.push(...vectors[Math.max(0, atIndex - back)]);
   }
   return joined;
@@ -90,11 +93,43 @@ export function matchAnalogue(
   const now = currentSlots[atIndex];
   if (now.down < 2 && now.rainMm < 2.5) return null;
   const currentVectors = slotVectors(currentSlots);
-  const current = windowVector(currentVectors, atIndex);
+  const current = windowVector(currentVectors, atIndex, WINDOW_HOURS);
   let best: AnalogueMatch | null = null;
   for (let index = WINDOW_HOURS - 1; index < savedVectors.length; index += 1) {
-    const score = cosine(current, windowVector(savedVectors, index));
+    const score = cosine(current, windowVector(savedVectors, index, WINDOW_HOURS));
     if (!best || score > best.score) best = { index, score };
   }
   return best && best.score >= MIN_SCORE ? best : null;
+}
+
+/**
+ * The period rating: the trailing PERIOD_HOURS window against the
+ * best-aligned same-length window of the saved case. Individual moments
+ * flicker; the episode score is the stable "how much does this event rhyme
+ * with the saved one" number. Returned whenever the current period holds
+ * real activity (no score floor — it is a rating, not an alert); the index
+ * is the saved window's ending hour.
+ */
+export function matchPeriod(
+  currentSlots: VectorSlot[],
+  atIndex: number,
+  savedVectors: number[][],
+): AnalogueMatch | null {
+  if (atIndex < 0 || atIndex >= currentSlots.length) return null;
+  const from = Math.max(0, atIndex - PERIOD_HOURS + 1);
+  let totalDown = 0;
+  let maxRain = 0;
+  for (let index = from; index <= atIndex; index += 1) {
+    totalDown += currentSlots[index].down;
+    maxRain = Math.max(maxRain, currentSlots[index].rainMm);
+  }
+  if (totalDown < 4 && maxRain < 10) return null;
+  const currentVectors = slotVectors(currentSlots);
+  const current = windowVector(currentVectors, atIndex, PERIOD_HOURS);
+  let best: AnalogueMatch | null = null;
+  for (let index = PERIOD_HOURS - 1; index < savedVectors.length; index += 1) {
+    const score = cosine(current, windowVector(savedVectors, index, PERIOD_HOURS));
+    if (!best || score > best.score) best = { index, score };
+  }
+  return best;
 }

@@ -14,7 +14,7 @@ import {
 } from "react";
 
 import { createFlagStore } from "./flag-store";
-import { matchAnalogue, slotVectors } from "./analogue";
+import { matchAnalogue, matchPeriod, slotVectors } from "./analogue";
 import {
   openReview,
   reviewSnapshot,
@@ -1087,6 +1087,11 @@ export default function MovementCanvas() {
   const analogue = useMemo(() => {
     if (caseId !== "live-sim" || !activeModel || aprilVectors.length === 0) return null;
     return matchAnalogue(activeModel.slots, effectiveIndex, aprilVectors);
+  }, [caseId, activeModel, effectiveIndex, aprilVectors]);
+  /* The stable episode rating beside the flickering per-hour match. */
+  const periodMatch = useMemo(() => {
+    if (caseId !== "live-sim" || !activeModel || aprilVectors.length === 0) return null;
+    return matchPeriod(activeModel.slots, effectiveIndex, aprilVectors);
   }, [caseId, activeModel, effectiveIndex, aprilVectors]);
 
   /** Per-frame screen-space clustering of the three point layers. */
@@ -2391,6 +2396,16 @@ export default function MovementCanvas() {
                     <strong className={situation.rainWarning ? "warn" : ""}>
                       {situation.rainMm > 0 ? `${situation.rainMm} mm/h` : "none"}
                       {situation.rainWarning ? " · warning" : ""}
+                    </strong>
+                  </div>
+                ) : null}
+                {periodMatch && aprilModel ? (
+                  <div
+                    title={`Episode rating: the trailing 12 hours against the best-aligned April window (ending ${aprilModel.slots[periodMatch.index].label}) — concatenated situation vectors, cosine; advisory, not a forecast`}
+                  >
+                    <span>≈ April · 12 h</span>
+                    <strong className={periodMatch.score >= 0.85 ? "warn" : ""}>
+                      {Math.round(periodMatch.score * 100)}%
                     </strong>
                   </div>
                 ) : null}
