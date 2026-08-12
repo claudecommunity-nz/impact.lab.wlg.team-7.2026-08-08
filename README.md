@@ -150,7 +150,7 @@ picture. The map is a view; **the feed is the product**.
   in the visitor's browser and goes only to the provider. A test suite scans
   the repo for key-shaped strings on every build.
 - **No backend to fall over.** The site is static files plus the visitor's
-  browser — nine committed GeoJSON/JSON contracts any COP, GIS client or
+  browser — eleven committed GeoJSON/JSON contracts any COP, GIS client or
   teammate's prototype can consume directly.
 
 ### What we found
@@ -322,7 +322,7 @@ and falls back to the local answer.
 ### Settings: sources and integrations
 
 **Data sources** (`/settings`, deliberately not on the dashboard) lists the
-nine committed feeds plus anything you add, with **measured** status per source —
+eleven committed feeds plus anything you add, with **measured** status per source —
 reachable, reachable-with-odd-payload, or failed — last successful sync, latency
 and record count, a retry per row and **Test all**. Sources can be added by URL
 or imported from a file, and exported as **GeoJSON, JSON, CSV or NDJSON**.
@@ -331,7 +331,7 @@ generates the MCP client config and the A2A agent card for your own endpoint.
 
 ### The feeds
 
-Everything the site shows is served as nine committed files — point any COP,
+Everything the site shows is served as eleven committed files — point any COP,
 GIS client or teammate's prototype at them:
 
 | Feed | Path |
@@ -344,7 +344,17 @@ GIS client or teammate's prototype at them:
 | PT anomalies (synthetic) | `/cop/v1/transit-anomalies.geojson` |
 | State highways (real April 2026 floods) | `/cop/v1/road-anomalies.geojson` |
 | Air access (real April 2026, OpenSky) | `/cop/v1/flight-anomalies.geojson` |
+| Rainfall (real April 2026, GWRC Hilltop) | `/cop/v1/rain-april.geojson` |
+| Public reports (synthetic ticket flow) | `/cop/v1/reports-april.geojson` |
 | Coverage and health | `/cop/v1/movement-health.json` |
+
+The rainfall and public-report layers close the last two limbs of problem 05
+("compare movement changes with weather warnings, road closures or public
+reports"): rain is the real GWRC gauge record classed by fixed WMO intensity
+definitions, and the reports layer demonstrates the service-desk ticket flow —
+clustering, source grades, count-raises-level escalation and an explicit
+corroboration rule against the movement detector — with synthetic,
+privacy-clean records anchored on genuinely flagged streets.
 
 ### Keys and secrets stay out of this repo
 

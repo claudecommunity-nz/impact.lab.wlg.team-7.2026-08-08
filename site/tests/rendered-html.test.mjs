@@ -44,6 +44,8 @@ test("server-renders the movement investigation surface with truthful batch stat
   assert.ok(html.includes("/cop/v1/traffic-cameras.geojson"));
   assert.ok(html.includes("/cop/v1/transit-anomalies.geojson"));
   assert.ok(html.includes("/cop/v1/road-anomalies.geojson"));
+  assert.ok(html.includes("/cop/v1/rain-april.geojson"));
+  assert.ok(html.includes("/cop/v1/reports-april.geojson"));
   // The replay timebar server-renders on the default published hour.
   assert.match(html, /aria-label="Batch replay timeline"/);
   assert.match(html, /aria-label="Replay hour"/);
@@ -148,6 +150,8 @@ test("merges every source into one map with switchable layers", async () => {
   assert.match(html, /Public transport/);
   assert.match(html, /State highways/);
   assert.match(html, /Air access/);
+  assert.match(html, /Rainfall/);
+  assert.match(html, /Public reports/);
   // Investigation presets: the batch snapshot and the real April case.
   assert.match(html, /aria-label="Investigations"/);
   assert.match(html, /Movement snapshot/);
@@ -448,11 +452,13 @@ test("keeps source settings off the dashboard and on their own route", async () 
     "/cop/v1/transit-anomalies.geojson",
     "/cop/v1/road-anomalies.geojson",
     "/cop/v1/flight-anomalies.geojson",
+    "/cop/v1/rain-april.geojson",
+    "/cop/v1/reports-april.geojson",
     "/cop/v1/movement-health.json",
   ]) {
     assert.ok(settings.includes(url), `${url} should be listed as a source`);
   }
-  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 9);
+  assert.ok((settings.match(/Test or retry/g) ?? []).length >= 11);
   // Four export formats are offered per source.
   for (const format of ["GeoJSON", "JSON", "CSV", "NDJSON"]) {
     assert.ok(settings.includes(format), `${format} should be an export option`);
@@ -483,6 +489,55 @@ test("ships a browser-local signal review queue on its own route", async () => {
   assert.match(reviewPage, /Loading the signal feed…|Select a signal to triage it\./);
   // The queue never adds a second map.
   assert.equal(reviewPage.match(/<canvas/g), null);
+});
+
+test("ships the rainfall and public-report layers as honest contracts", async () => {
+  const [rainText, reportsText] = await Promise.all([
+    readFile(new URL("../public/cop/v1/rain-april.geojson", import.meta.url), "utf8"),
+    readFile(new URL("../public/cop/v1/reports-april.geojson", import.meta.url), "utf8"),
+  ]);
+  const rain = JSON.parse(rainText);
+  const reports = JSON.parse(reportsText);
+
+  // Rainfall: real GWRC gauge record with fixed, citable intensity classes.
+  assert.equal(rain.schema, "rain-april/v1");
+  assert.equal(rain.truth, "official_historical_observations");
+  assert.equal(rain.features.length, rain.station_count);
+  assert.equal(rain.thresholds.heavy_mm_per_hour, 10);
+  assert.ok(rain.hourly.length >= 120);
+  assert.ok(rain.limitations.length > 0);
+  for (const feature of rain.features) {
+    const [longitude, latitude] = feature.geometry.coordinates;
+    assert.ok(longitude > 174.5 && longitude < 176.1, `${feature.id} longitude`);
+    assert.ok(latitude > -41.7 && latitude < -40.5, `${feature.id} latitude`);
+    assert.ok(feature.properties.daily_totals.length > 0);
+  }
+
+  // Public reports: synthetic, labelled, privacy-clean, with stated rules.
+  assert.equal(reports.schema, "reports-april/v1");
+  assert.equal(reports.synthetic, true);
+  assert.equal(reports.automatic_incident, false);
+  assert.equal(reports.automatic_warning, false);
+  assert.equal(reports.features.length, reports.report_count);
+  assert.ok(reports.escalation_rules.investigate.length > 0);
+  assert.equal(reports.corroboration_rule.window_hours, 2);
+  const allowedKeys = new Set([
+    "report_id", "street", "category", "channel", "source_grade", "created_at",
+    "status", "cluster_id", "cluster_size", "level", "corroborated",
+    "corroborated_by", "synthetic", "limitations",
+  ]);
+  for (const feature of reports.features) {
+    const properties = feature.properties;
+    assert.equal(properties.synthetic, true, `${properties.report_id} must be labelled`);
+    assert.ok(["low", "elevated", "investigate"].includes(properties.level));
+    // Privacy floor: enumerated fields only — no names, contacts or free text.
+    for (const key of Object.keys(properties)) {
+      assert.ok(allowedKeys.has(key), `unexpected report field ${key}`);
+    }
+    if (properties.corroborated) {
+      assert.ok(properties.corroborated_by, `${properties.report_id} corroborated_by`);
+    }
+  }
 });
 
 test("removes the disposable starter preview and its dependency", async () => {

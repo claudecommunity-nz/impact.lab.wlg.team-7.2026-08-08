@@ -303,6 +303,8 @@ h3 { font-size: var(--text-h3); }
 .layer-chip .swatch.transit { background: #2B5CAD; }
 .layer-chip .swatch.roads { background: #5B4A8A; }
 .layer-chip .swatch.flights { background: #0E6B72; }
+.layer-chip .swatch.rain { background: #3B78A8; }
+.layer-chip .swatch.reports { background: #77776F; }
 .layer-chip.off .swatch { opacity: 0.45; }
 .status-badge {
   font-style: normal; font-size: 10px; font-weight: 700; white-space: nowrap;
@@ -384,6 +386,13 @@ h3 { font-size: var(--text-h3); }
 .map-key .road { background: #907FBE; }
 .map-key .road-high { background: #5B4A8A; }
 .map-key .flight { width: 12px; height: 9px; border-radius: 2px 2px 4px 4px; background: #0E6B72; transform: none; }
+.map-key .rain {
+  width: 10px; height: 12px; background: #3B78A8;
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+}
+.map-key .report, .map-key .report-high { width: 12px; height: 9px; border-radius: 2px; }
+.map-key .report { background: #77776F; }
+.map-key .report-high { background: #B3261E; }
 .map-popup {
   position: absolute; z-index: 4; width: 248px; pointer-events: none;
   background: var(--surface-page); border: 1px solid var(--wcc-black); box-shadow: var(--shadow-2);
@@ -472,6 +481,7 @@ h3 { font-size: var(--text-h3); }
  * recedes to a wash behind them, flights stay teal hour ticks. */
 .replay-histogram .roads-bar { fill: #5B4A8A; opacity: 0.3; }
 .replay-histogram .flights-bar { fill: #0E6B72; opacity: 0.85; }
+.replay-histogram .rain-bar { fill: #3B78A8; opacity: 0.75; }
 .replay-histogram .axis { stroke: var(--wcc-grey-500); stroke-width: 1; }
 .replay-histogram .cursor { fill: rgba(28, 28, 26, 0.18); }
 .replay-slider { width: 100%; margin: 0; accent-color: var(--wcc-yellow-600); }
@@ -540,6 +550,10 @@ h3 { font-size: var(--text-h3); }
 .direction-chip.road { background: #907FBE; }
 .direction-chip.road-high { background: #5B4A8A; }
 .direction-chip.flight { background: #0E6B72; }
+.direction-chip.rain { background: #3B78A8; }
+.direction-chip.report-low { background: #77776F; }
+.direction-chip.report-elevated { background: #B26A00; }
+.direction-chip.report-investigate { background: #B3261E; }
 .selected-evidence h3 { margin-top: var(--space-4); }
 .selected-evidence > p { color: var(--wcc-grey-700); }
 .count-comparison { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin: var(--space-5) 0; border-block: 1px solid var(--border-hairline); }
@@ -615,6 +629,10 @@ h3 { font-size: var(--text-h3); }
 .signal-list em.road { color: #907FBE; }
 .signal-list em.road-high { color: #5B4A8A; }
 .signal-list em.flight { color: #0E6B72; }
+.signal-list em.rain { color: #2E6396; }
+.signal-list em.report-low { color: var(--wcc-grey-700); }
+.signal-list em.report-elevated { color: var(--wcc-warning); }
+.signal-list em.report-investigate { color: var(--wcc-error); }
 .worst-detail {
   margin: var(--space-4) 0; padding: var(--space-3);
   border-left: 4px solid var(--wcc-grey-300); background: var(--wcc-grey-100);

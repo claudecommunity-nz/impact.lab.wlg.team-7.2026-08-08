@@ -34,7 +34,12 @@ import {
   type LineCollection,
   type LineFeature,
   type MapView,
+  type RainCollection,
+  type RainFeature,
+  type RainHourly,
   type ReplayCollection,
+  type ReportCollection,
+  type ReportFeature,
   type RoadCollection,
   type RoadFeature,
   type SignalTrendPoint,
@@ -53,6 +58,8 @@ import {
   drawClusters,
   drawCoverage,
   drawFlights,
+  drawRain,
+  drawReports,
   drawRoads,
   drawSignals,
   drawTiles,
@@ -67,9 +74,9 @@ import {
 } from "./map-draw";
 
 type Filter = "all" | "people" | "vehicles";
-type LayerId = "signals" | "coverage" | "cameras" | "transit" | "roads" | "flights";
+type LayerId = "signals" | "coverage" | "cameras" | "transit" | "roads" | "flights" | "rain" | "reports";
 type Layers = Record<LayerId, boolean>;
-type Focus = "signal" | "camera" | "transit" | "road" | "flight";
+type Focus = "signal" | "camera" | "transit" | "road" | "flight" | "rain" | "report";
 type Hover = {
   kind: Focus;
   id: string;
@@ -109,6 +116,8 @@ const DEFAULT_LAYERS: Layers = {
   transit: false,
   roads: false,
   flights: false,
+  rain: false,
+  reports: false,
 };
 
 /** Every layer states its temporal truth as a badge: live, replay, synthetic or real. */
@@ -125,6 +134,8 @@ const LAYERS: {
   { id: "transit", label: "Public transport", publisher: "Metlink", badge: "Synthetic", tone: "synthetic" },
   { id: "roads", label: "State highways", publisher: "NZTA", badge: "Real · Apr 2026", tone: "real" },
   { id: "flights", label: "Air access", publisher: "OpenSky Network", badge: "Real · Apr 2026", tone: "real" },
+  { id: "rain", label: "Rainfall", publisher: "GWRC Hilltop", badge: "Real · Apr 2026", tone: "real" },
+  { id: "reports", label: "Public reports", publisher: "WCC service desk", badge: "Synthetic", tone: "synthetic" },
 ];
 
 type SearchHit = { kind: Focus; id: string; label: string; detail: string; coordinate: Coordinate };
@@ -343,6 +354,10 @@ type CaseSlot = {
   wash: number;
   /** Hourly corroboration tick (e.g. a flagged airport hour). */
   tick: boolean;
+  /** Peak gauge rainfall for the hour, mm/h; 0 when no rain layer exists. */
+  rainMm: number;
+  /** True when any gauge hit the WMO heavy class (>= 10 mm/h) this hour. */
+  rainFlag: boolean;
   signals: LineFeature[];
 };
 
@@ -370,6 +385,8 @@ function buildAugCaseModel(
     down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
     wash: 0,
     tick: false,
+    rainMm: 0,
+    rainFlag: false,
     signals: slot.signals.flatMap((signal) => {
       const coordinates = countlineGeometry.get(signal.countline_id);
       if (!coordinates) return [];
@@ -398,8 +415,10 @@ function buildAprilCaseModel(
   aprilMovement: AprilMovementCollection | null,
   roadFeatures: RoadFeature[],
   flightFeatures: FlightFeature[],
+  rainHourly: RainHourly[],
 ): CaseModel | null {
   if (!aprilMovement && roadFeatures.length === 0 && flightFeatures.length === 0) return null;
+  const rainByHour = new Map(rainHourly.map((entry) => [entry.hour.slice(0, 13), entry]));
   const dates = ["2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23"];
   const roadsByDate = new Map<string, number>();
   for (const feature of roadFeatures) {
@@ -444,6 +463,8 @@ function buildAprilCaseModel(
         ).length,
         wash: (roadsByDate.get(date) ?? 0) / maxRoads,
         tick: flightByHour.has(key),
+        rainMm: rainByHour.get(key)?.max_mm ?? 0,
+        rainFlag: ["heavy", "violent"].includes(rainByHour.get(key)?.class ?? ""),
         signals,
       };
     }),
@@ -471,12 +492,16 @@ export default function MovementCanvas() {
   const [transit, setTransit] = useState<TransitCollection | null>(null);
   const [roads, setRoads] = useState<RoadCollection | null>(null);
   const [flights, setFlights] = useState<FlightCollection | null>(null);
+  const [rain, setRain] = useState<RainCollection | null>(null);
+  const [reports, setReports] = useState<ReportCollection | null>(null);
   const [aprilMovement, setAprilMovement] = useState<AprilMovementCollection | null>(null);
   const [selectedSignalId, setSelectedSignalId] = useState<string | null>(null);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [selectedTransitId, setSelectedTransitId] = useState<string | null>(null);
   const [selectedRoadId, setSelectedRoadId] = useState<string | null>(null);
   const [selectedFlightId, setSelectedFlightId] = useState<string | null>(null);
+  const [selectedRainId, setSelectedRainId] = useState<string | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [focus, setFocus] = useState<Focus>("signal");
   const [filter, setFilter] = useState<Filter>("all");
   const [error, setError] = useState<string | null>(null);
@@ -484,6 +509,8 @@ export default function MovementCanvas() {
   const [transitError, setTransitError] = useState<string | null>(null);
   const [roadError, setRoadError] = useState<string | null>(null);
   const [flightError, setFlightError] = useState<string | null>(null);
+  const [rainError, setRainError] = useState<string | null>(null);
+  const [reportError, setReportError] = useState<string | null>(null);
   const [frameNonce, setFrameNonce] = useState(0);
   // Remember which frame URL failed, so selecting another camera or refreshing
   // clears the failure without an effect.
@@ -627,6 +654,26 @@ export default function MovementCanvas() {
       .catch(() => setFlightError("The air-access layer could not be loaded."));
   }, []);
 
+  useEffect(() => {
+    fetch("/cop/v1/rain-april.geojson")
+      .then((response) => response.json())
+      .then((collection: RainCollection) => {
+        setRain(collection);
+        setSelectedRainId(collection.features[0]?.id ?? null);
+      })
+      .catch(() => setRainError("The rainfall layer could not be loaded."));
+  }, []);
+
+  useEffect(() => {
+    fetch("/cop/v1/reports-april.geojson")
+      .then((response) => response.json())
+      .then((collection: ReportCollection) => {
+        setReports(collection);
+        setSelectedReportId(collection.features[0]?.id ?? null);
+      })
+      .catch(() => setReportError("The public-reports layer could not be loaded."));
+  }, []);
+
   /* Replay signals carry no geometry of their own: the countline id keys into
    * the coverage layer's line, so one geometry file serves every hour. */
   const cameraFeatures = useMemo(() => cameras?.features ?? [], [cameras]);
@@ -654,6 +701,9 @@ export default function MovementCanvas() {
   );
 
   const flightFeatures = useMemo(() => flights?.features ?? [], [flights]);
+  const rainFeatures = useMemo(() => rain?.features ?? [], [rain]);
+  const rainHourly = useMemo(() => rain?.hourly ?? [], [rain]);
+  const reportFeatures = useMemo(() => reports?.features ?? [], [reports]);
 
   /* The April case replays by hour, the same unit as August: 144 slots over
    * 18–23 Apr. Flight flags are true hourly events; road counts are daily
@@ -673,9 +723,9 @@ export default function MovementCanvas() {
   const caseModels = useMemo<Record<string, CaseModel | null>>(
     () => ({
       "aug-snapshot": buildAugCaseModel(replay, countlineGeometry),
-      "april-floods": buildAprilCaseModel(aprilMovement, roadFeatures, flightFeatures),
+      "april-floods": buildAprilCaseModel(aprilMovement, roadFeatures, flightFeatures, rainHourly),
     }),
-    [replay, countlineGeometry, aprilMovement, roadFeatures, flightFeatures],
+    [replay, countlineGeometry, aprilMovement, roadFeatures, flightFeatures, rainHourly],
   );
   const activeModel = caseModels[caseId] ?? null;
   const activeEvent = EVENTS.find((entry) => entry.id === caseId) ?? EVENTS[0];
@@ -723,6 +773,10 @@ export default function MovementCanvas() {
     roadFeatures.find((feature) => feature.id === selectedRoadId) ?? roadFeatures[0];
   const selectedFlight: FlightFeature | undefined =
     flightFeatures.find((feature) => feature.id === selectedFlightId) ?? flightFeatures[0];
+  const selectedRain: RainFeature | undefined =
+    rainFeatures.find((feature) => feature.id === selectedRainId) ?? rainFeatures[0];
+  const selectedReport: ReportFeature | undefined =
+    reportFeatures.find((feature) => feature.id === selectedReportId) ?? reportFeatures[0];
 
   const hoveredCamera =
     hover?.kind === "camera"
@@ -744,6 +798,14 @@ export default function MovementCanvas() {
     hover?.kind === "flight"
       ? flightFeatures.find((feature) => feature.id === hover.id)
       : undefined;
+  const hoveredRain =
+    hover?.kind === "rain"
+      ? rainFeatures.find((feature) => feature.id === hover.id)
+      : undefined;
+  const hoveredReport =
+    hover?.kind === "report"
+      ? reportFeatures.find((feature) => feature.id === hover.id)
+      : undefined;
 
   /* The investigate panel follows the pointer: hovering any glyph previews its
    * evidence, and the pinned selection returns when the pointer leaves. */
@@ -753,8 +815,11 @@ export default function MovementCanvas() {
   const panelTransit = hoveredTransit ?? selectedTransit;
   const panelRoad = hoveredRoad ?? selectedRoad;
   const panelFlight = hoveredFlight ?? selectedFlight;
+  const panelRain = hoveredRain ?? selectedRain;
+  const panelReport = hoveredReport ?? selectedReport;
   const previewing = Boolean(
-    hoveredSignal || hoveredCamera || hoveredTransit || hoveredRoad || hoveredFlight,
+    hoveredSignal || hoveredCamera || hoveredTransit || hoveredRoad || hoveredFlight ||
+    hoveredRain || hoveredReport,
   );
 
   /* Case-adaptive road figures: while a day-filtering case sits on a slot,
@@ -777,7 +842,7 @@ export default function MovementCanvas() {
   const panelSignalReview = panelSignalKey ? review.items[panelSignalKey] : undefined;
   const corroboration =
     caseId === "april-floods"
-      ? `${shownRoads.length} highway sites this day · air access ${
+      ? `rain ${activeCaseSlot?.rainMm ?? 0} mm/h · ${shownRoads.length} highway sites · air ${
           activeCaseSlot?.tick ? "flagged" : "normal"
         }`
       : "none in this window · missing ≠ contradicting";
@@ -797,6 +862,7 @@ export default function MovementCanvas() {
       cameras: split(cameraFeatures, (feature) => feature.geometry.coordinates, layers.cameras),
       transit: split(transitFeatures, (feature) => feature.geometry.coordinates, layers.transit),
       roads: split(shownRoads, (feature) => feature.geometry.coordinates, layers.roads),
+      reports: split(reportFeatures, (feature) => feature.geometry.coordinates, layers.reports),
     };
   };
 
@@ -812,6 +878,16 @@ export default function MovementCanvas() {
       const scale = glyphScale(view.zoom);
       const groups = clusterLayers(surface.width, surface.height);
       if (layers.coverage) drawCoverage(surface.context, project, coverage);
+      if (layers.rain) {
+        drawRain(
+          surface.context,
+          project,
+          rainFeatures,
+          selectedRain?.id ?? null,
+          hover?.kind === "rain" ? hover.id : null,
+          scale,
+        );
+      }
       if (layers.roads) {
         drawRoads(
           surface.context,
@@ -833,6 +909,17 @@ export default function MovementCanvas() {
           scale,
         );
         drawClusters(surface.context, groups.transit.clusters, "#2B5CAD");
+      }
+      if (layers.reports) {
+        drawReports(
+          surface.context,
+          project,
+          groups.reports.singles,
+          selectedReport?.id ?? null,
+          hover?.kind === "report" ? hover.id : null,
+          scale,
+        );
+        drawClusters(surface.context, groups.reports.clusters, "#77776F");
       }
       if (layers.flights) {
         drawFlights(
@@ -967,12 +1054,17 @@ export default function MovementCanvas() {
       layers.transit ? boundsOfPoints(transitFeatures) : null,
       layers.roads ? boundsOfPoints(roadFeatures) : null,
       layers.flights ? boundsOfPoints(flightFeatures) : null,
+      layers.rain ? boundsOfPoints(rainFeatures) : null,
+      layers.reports ? boundsOfPoints(reportFeatures) : null,
     );
     if (!bounds) return;
     autoFitRef.current = false;
     setHover(null);
     setView(fitView(bounds, size.width, size.height));
-  }, [stageSize, layers, coverage, cameraFeatures, transitFeatures, roadFeatures, flightFeatures]);
+  }, [
+    stageSize, layers, coverage, cameraFeatures, transitFeatures, roadFeatures,
+    flightFeatures, rainFeatures, reportFeatures,
+  ]);
 
   const toggleLayer = (id: LayerId) => {
     setHover(null);
@@ -1074,8 +1166,33 @@ export default function MovementCanvas() {
         });
       }
     }
+    for (const feature of rainFeatures) {
+      if (feature.properties.site_name.toLowerCase().includes(query)) {
+        hits.push({
+          kind: "rain",
+          id: feature.id,
+          label: feature.properties.site_name,
+          detail: "Rain gauge",
+          coordinate: feature.geometry.coordinates,
+        });
+      }
+    }
+    for (const feature of reportFeatures) {
+      if (feature.properties.street.toLowerCase().includes(query)) {
+        hits.push({
+          kind: "report",
+          id: feature.id,
+          label: `${feature.properties.street} report`,
+          detail: "Public report · synthetic",
+          coordinate: feature.geometry.coordinates,
+        });
+      }
+    }
     return hits.slice(0, SEARCH_LIMIT);
-  }, [search, shownSignals, cameraFeatures, transitFeatures, roadFeatures, flightFeatures]);
+  }, [
+    search, shownSignals, cameraFeatures, transitFeatures, roadFeatures,
+    flightFeatures, rainFeatures, reportFeatures,
+  ]);
 
   /** Picking a feature switches its layer on, so the pick is always visible. */
   const ensureLayer = (kind: Focus) => {
@@ -1088,7 +1205,11 @@ export default function MovementCanvas() {
             ? "transit"
             : kind === "road"
               ? "roads"
-              : "flights";
+              : kind === "rain"
+                ? "rain"
+                : kind === "report"
+                  ? "reports"
+                  : "flights";
     setLayers((current) => (current[id] ? current : { ...current, [id]: true }));
   };
 
@@ -1203,9 +1324,17 @@ export default function MovementCanvas() {
       const hit = pickNearest(groups.roads.singles, (feature) => feature.geometry.coordinates, project, point);
       if (hit) return place("road", hit.id, project(hit.geometry.coordinates));
     }
+    if (layers.reports) {
+      const hit = pickNearest(groups.reports.singles, (feature) => feature.geometry.coordinates, project, point);
+      if (hit) return place("report", hit.id, project(hit.geometry.coordinates));
+    }
     if (layers.flights) {
       const hit = pickNearest(flightFeatures, (feature) => feature.geometry.coordinates, project, point);
       if (hit) return place("flight", hit.id, project(hit.geometry.coordinates));
+    }
+    if (layers.rain) {
+      const hit = pickNearest(rainFeatures, (feature) => feature.geometry.coordinates, project, point);
+      if (hit) return place("rain", hit.id, project(hit.geometry.coordinates));
     }
     return null;
   };
@@ -1213,7 +1342,12 @@ export default function MovementCanvas() {
   /** Density bubble under the pointer, if any — clicking it zooms in a level. */
   const clusterAt = (point: Coordinate, size: { width: number; height: number }) => {
     const groups = clusterLayers(size.width, size.height);
-    for (const clusters of [groups.cameras.clusters, groups.transit.clusters, groups.roads.clusters]) {
+    for (const clusters of [
+      groups.cameras.clusters,
+      groups.transit.clusters,
+      groups.roads.clusters,
+      groups.reports.clusters,
+    ]) {
       for (const cluster of clusters) {
         const distance = Math.hypot(cluster.x - point[0], cluster.y - point[1]);
         if (distance <= clusterRadius(cluster.members.length) + 2) return cluster;
@@ -1293,6 +1427,12 @@ export default function MovementCanvas() {
     } else if (hit.kind === "flight") {
       setSelectedFlightId(hit.id);
       setFocus("flight");
+    } else if (hit.kind === "rain") {
+      setSelectedRainId(hit.id);
+      setFocus("rain");
+    } else if (hit.kind === "report") {
+      setSelectedReportId(hit.id);
+      setFocus("report");
     } else {
       setSelectedSignalId(hit.id);
       setFocus("signal");
@@ -1312,6 +1452,8 @@ export default function MovementCanvas() {
       layers.transit ? `${transitFeatures.length} Metlink anomaly hotspots` : null,
       layers.roads ? `${roadFeatures.length} state highway anomaly sites` : null,
       layers.flights ? `${flightFeatures.length} air access site` : null,
+      layers.rain ? `${rainFeatures.length} rain gauges` : null,
+      layers.reports ? `${reportFeatures.length} synthetic public reports` : null,
     ]
       .filter(Boolean)
       .join(", ") || "no layers switched on";
@@ -1436,6 +1578,10 @@ export default function MovementCanvas() {
                       1,
                       ...activeModel.slots.map((slot) => Math.max(slot.up, slot.down)),
                     );
+                    const maxRain = Math.max(
+                      1,
+                      ...activeModel.slots.map((slot) => slot.rainMm),
+                    );
                     return (
                       <>
                         {activeModel.eventHours > 0 ? (
@@ -1456,6 +1602,15 @@ export default function MovementCanvas() {
                         />
                         {activeModel.slots.map((slot, index) => (
                           <g key={slot.key}>
+                            {slot.rainMm > 0 ? (
+                              <rect
+                                className="rain-bar"
+                                x={index + 0.05}
+                                y={0}
+                                width={0.9}
+                                height={Math.max(0.6, (slot.rainMm / maxRain) * 6)}
+                              />
+                            ) : null}
                             {slot.wash > 0 ? (
                               <rect
                                 className="roads-bar"
@@ -1729,9 +1884,17 @@ export default function MovementCanvas() {
                 </>
               ) : null}
               {layers.flights ? <span><i className="flight" />Air access</span> : null}
+              {layers.rain ? <span><i className="rain" />Rain gauge</span> : null}
+              {layers.reports ? (
+                <>
+                  <span><i className="report" />Report</span>
+                  <span><i className="report-high" />Investigate level</span>
+                </>
+              ) : null}
             </div>
             {hover &&
-            (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad || hoveredFlight) ? (
+            (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad || hoveredFlight ||
+              hoveredRain || hoveredReport) ? (
               <div
                 className={`map-popup ${hover.above ? "above" : "below"}`}
                 style={
@@ -1825,6 +1988,25 @@ export default function MovementCanvas() {
                       <b>{hoveredFlight.properties.high_hours}</b> high ·{" "}
                       <b>{hoveredFlight.properties.medium_hours}</b> medium flagged hours ·
                       real April 2026 · OpenSky
+                    </span>
+                  </p>
+                ) : hoveredRain ? (
+                  <p>
+                    <strong>{hoveredRain.properties.site_name}</strong>
+                    <span>
+                      peak <b>{hoveredRain.properties.peak.value_mm} mm/h</b> ·{" "}
+                      <b>{hoveredRain.properties.heavy_hours}</b> heavy hours ·
+                      real April 2026 · GWRC
+                    </span>
+                  </p>
+                ) : hoveredReport ? (
+                  <p>
+                    <strong>{hoveredReport.properties.street}</strong>
+                    <span>
+                      {hoveredReport.properties.category.replace("_", " ")} · grade{" "}
+                      <b>{hoveredReport.properties.source_grade}</b> · cluster{" "}
+                      <b>{hoveredReport.properties.cluster_size}</b> ·{" "}
+                      {hoveredReport.properties.level} · synthetic
                     </span>
                   </p>
                 ) : null}
@@ -2201,6 +2383,151 @@ export default function MovementCanvas() {
                 {flightError ?? "Loading the air-access layer…"}
               </p>
             )
+          ) : panelFocus === "rain" ? (
+            panelRain ? (
+              <div className={`selected-evidence ${previewing ? "preview" : ""}`}>
+                <div className="evidence-heading">
+                  <span className="direction-chip rain">
+                    {panelRain.properties.heavy_hours} heavy hours
+                  </span>
+                  <span>Rain gauge</span>
+                </div>
+                <h3>{panelRain.properties.site_name}</h3>
+                <p>GWRC Hilltop · real April 2026 record</p>
+                <div className="count-comparison">
+                  <div>
+                    <span>Peak</span>
+                    <strong>{panelRain.properties.peak.value_mm.toLocaleString("en-NZ")}</strong>
+                  </div>
+                  <div>
+                    <span>Window total</span>
+                    <strong>{panelRain.properties.window_total_mm.toLocaleString("en-NZ")}</strong>
+                  </div>
+                  <div>
+                    <span>Violent hours</span>
+                    <strong>{panelRain.properties.violent_hours.toLocaleString("en-NZ")}</strong>
+                  </div>
+                </div>
+                {!previewing ? (
+                  <>
+                    <DailyStrip
+                      points={panelRain.properties.daily_totals.map((day) => ({
+                        date: day.date,
+                        value: day.mm,
+                        flagged: day.flagged,
+                      }))}
+                      label={`Daily rainfall at ${panelRain.properties.site_name}, 18–23 April 2026, heavy days highlighted`}
+                    />
+                    <dl className="evidence-metrics">
+                      <div>
+                        <dt>Peak hour</dt>
+                        <dd>
+                          {dayLabel(panelRain.properties.peak.observed_at.slice(0, 10))} ·{" "}
+                          {panelRain.properties.peak.observed_at.slice(11, 16)} ·{" "}
+                          {panelRain.properties.peak.value_mm} mm/h
+                        </dd>
+                      </div>
+                      <div><dt>Cadence</dt><dd>hourly totals</dd></div>
+                      <div>
+                        <dt>Position</dt>
+                        <dd>
+                          {panelRain.geometry.coordinates[1].toFixed(4)},{" "}
+                          {panelRain.geometry.coordinates[0].toFixed(4)}
+                        </dd>
+                      </div>
+                    </dl>
+                    <p className="evidence-note">
+                      Official gauge record. Intensity classes are WMO definitions,
+                      not detector output.
+                    </p>
+                    {evidenceOps(
+                      "rain",
+                      panelRain.geometry.coordinates,
+                      "/cop/v1/rain-april.geojson",
+                    )}
+                  </>
+                ) : null}
+              </div>
+            ) : (
+              <p className="empty-evidence">
+                {rainError ?? "Loading the rainfall layer…"}
+              </p>
+            )
+          ) : panelFocus === "report" ? (
+            panelReport ? (
+              <div className={`selected-evidence ${previewing ? "preview" : ""}`}>
+                <div className="evidence-heading">
+                  <span className={`direction-chip report-${panelReport.properties.level}`}>
+                    {panelReport.properties.level}
+                  </span>
+                  <span>{panelReport.properties.report_id}</span>
+                </div>
+                <h3>{panelReport.properties.street}</h3>
+                <p>
+                  {panelReport.properties.category.replace("_", " ")} ·{" "}
+                  {panelReport.properties.channel} · synthetic demonstration
+                </p>
+                <div className="count-comparison">
+                  <div>
+                    <span>Cluster</span>
+                    <strong>{panelReport.properties.cluster_size.toLocaleString("en-NZ")}</strong>
+                  </div>
+                  <div>
+                    <span>Source grade</span>
+                    <strong>{panelReport.properties.source_grade}</strong>
+                  </div>
+                  <div>
+                    <span>Corroborated</span>
+                    <strong>{panelReport.properties.corroborated ? "yes" : "no"}</strong>
+                  </div>
+                </div>
+                {!previewing ? (
+                  <>
+                    <dl className="evidence-metrics">
+                      <div>
+                        <dt>Logged</dt>
+                        <dd>
+                          {dayLabel(panelReport.properties.created_at.slice(0, 10))} ·{" "}
+                          {panelReport.properties.created_at.slice(11, 16)}
+                        </dd>
+                      </div>
+                      <div title="A report is corroborated when the movement detector holds a decrease signal for the same street within ±2 hours">
+                        <dt>Corroboration</dt>
+                        <dd>
+                          {panelReport.properties.corroborated_by ??
+                            "no independent stream in the window"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Level rule</dt>
+                        <dd>A/B source or 5+ cluster → investigate · 3+ → elevated</dd>
+                      </div>
+                      <div>
+                        <dt>Position</dt>
+                        <dd>
+                          {panelReport.geometry.coordinates[1].toFixed(4)},{" "}
+                          {panelReport.geometry.coordinates[0].toFixed(4)}
+                        </dd>
+                      </div>
+                    </dl>
+                    <p className="evidence-note">
+                      Synthetic records: enumerated categories, no personal
+                      information. A level means investigate, never a confirmed
+                      incident.
+                    </p>
+                    {evidenceOps(
+                      "report",
+                      panelReport.geometry.coordinates,
+                      "/cop/v1/reports-april.geojson",
+                    )}
+                  </>
+                ) : null}
+              </div>
+            ) : (
+              <p className="empty-evidence">
+                {reportError ?? "Loading the public-reports layer…"}
+              </p>
+            )
           ) : panelSignal ? (
             <div className={`selected-evidence ${previewing ? "preview" : ""}`}>
               <div className="evidence-heading">
@@ -2391,6 +2718,54 @@ export default function MovementCanvas() {
                 </span>
                 <em className={feature.properties.severity === "HIGH" ? "road-high" : "road"}>
                   {feature.properties.ratio.toFixed(2)}×
+                </em>
+              </button>
+            ))}
+            <p className="list-group">Rain gauges ({rainFeatures.length} · real)</p>
+            {rainFeatures.map((feature) => (
+              <button
+                type="button"
+                key={feature.id}
+                className={focus === "rain" && feature.id === selectedRain?.id ? "selected" : ""}
+                onClick={() => {
+                  setSelectedRainId(feature.id);
+                  setFocus("rain");
+                  ensureLayer("rain");
+                  revealOnMap(feature.geometry.coordinates);
+                }}
+              >
+                <span>
+                  <strong>{feature.properties.site_name}</strong>
+                  <small>
+                    peak {feature.properties.peak.value_mm} mm/h ·{" "}
+                    {feature.properties.heavy_hours} heavy h
+                  </small>
+                </span>
+                <em className="rain">{feature.properties.window_total_mm}mm</em>
+              </button>
+            ))}
+            <p className="list-group">Public reports ({reportFeatures.length} · synthetic)</p>
+            {reportFeatures.map((feature) => (
+              <button
+                type="button"
+                key={feature.id}
+                className={focus === "report" && feature.id === selectedReport?.id ? "selected" : ""}
+                onClick={() => {
+                  setSelectedReportId(feature.id);
+                  setFocus("report");
+                  ensureLayer("report");
+                  revealOnMap(feature.geometry.coordinates);
+                }}
+              >
+                <span>
+                  <strong>{feature.properties.street}</strong>
+                  <small>
+                    {feature.properties.category.replace("_", " ")} · grade{" "}
+                    {feature.properties.source_grade} · cluster {feature.properties.cluster_size}
+                  </small>
+                </span>
+                <em className={`report-${feature.properties.level}`}>
+                  {feature.properties.level}
                 </em>
               </button>
             ))}

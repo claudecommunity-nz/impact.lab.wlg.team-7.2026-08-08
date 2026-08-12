@@ -1,0 +1,1614 @@
+{
+ "type": "FeatureCollection",
+ "schema": "rain-april/v1",
+ "truth": "official_historical_observations",
+ "source_authority": "Greater Wellington Regional Council",
+ "window_start": "2026-04-18T00:00:00",
+ "window_end": "2026-04-23T00:00:00",
+ "station_count": 12,
+ "thresholds": {
+  "moderate_mm_per_hour": 2.5,
+  "heavy_mm_per_hour": 10.0,
+  "violent_mm_per_hour": 50.0,
+  "source": "WMO rainfall-intensity definitions"
+ },
+ "hourly": [
+  {
+   "hour": "2026-04-18T00:00:00",
+   "max_mm": 0.0,
+   "max_site": "Berhampore at Nursery",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-18T01:00:00",
+   "max_mm": 1.2,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-18T02:00:00",
+   "max_mm": 2.0,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-18T03:00:00",
+   "max_mm": 5.7,
+   "max_site": "Hutt River at Savage Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T04:00:00",
+   "max_mm": 6.5,
+   "max_site": "Porirua Stream at Seton Nossiter Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T05:00:00",
+   "max_mm": 3.1,
+   "max_site": "Hutt River at Savage Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T06:00:00",
+   "max_mm": 8.7,
+   "max_site": "Hutt River at Savage Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T07:00:00",
+   "max_mm": 21.5,
+   "max_site": "Hutt River at Savage Park",
+   "heavy_stations": 3,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-18T08:00:00",
+   "max_mm": 19.1,
+   "max_site": "Hutt River at Savage Park",
+   "heavy_stations": 3,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-18T09:00:00",
+   "max_mm": 28.2,
+   "max_site": "Pinehaven Stream at Pinehaven Reservoir",
+   "heavy_stations": 1,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-18T10:00:00",
+   "max_mm": 11.4,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 2,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-18T11:00:00",
+   "max_mm": 3.0,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T12:00:00",
+   "max_mm": 2.4,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-18T13:00:00",
+   "max_mm": 1.7,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-18T14:00:00",
+   "max_mm": 5.0,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T15:00:00",
+   "max_mm": 5.4,
+   "max_site": "Hutt River at Savage Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T16:00:00",
+   "max_mm": 6.1,
+   "max_site": "Kaiwharawhara Stream at Karori Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T17:00:00",
+   "max_mm": 4.5,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T18:00:00",
+   "max_mm": 3.2,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T19:00:00",
+   "max_mm": 4.3,
+   "max_site": "Kaiwharawhara Stream at Karori Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T20:00:00",
+   "max_mm": 6.1,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T21:00:00",
+   "max_mm": 3.5,
+   "max_site": "Hutt River at Savage Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T22:00:00",
+   "max_mm": 4.6,
+   "max_site": "Pinehaven Stream at Pinehaven Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-18T23:00:00",
+   "max_mm": 2.2,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T00:00:00",
+   "max_mm": 1.2,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T01:00:00",
+   "max_mm": 0.2,
+   "max_site": "Newtown at Carmichael Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T02:00:00",
+   "max_mm": 0.2,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T03:00:00",
+   "max_mm": 0.2,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T04:00:00",
+   "max_mm": 0.2,
+   "max_site": "Pinehaven Stream at Pinehaven Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T05:00:00",
+   "max_mm": 0.4,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T06:00:00",
+   "max_mm": 0.0,
+   "max_site": "Berhampore at Nursery",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T07:00:00",
+   "max_mm": 0.0,
+   "max_site": "Berhampore at Nursery",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T08:00:00",
+   "max_mm": 0.0,
+   "max_site": "Berhampore at Nursery",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T09:00:00",
+   "max_mm": 0.2,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T10:00:00",
+   "max_mm": 1.6,
+   "max_site": "Porirua Stream at Seton Nossiter Park",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T11:00:00",
+   "max_mm": 4.7,
+   "max_site": "Kaiwharawhara Stream at Karori Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-19T12:00:00",
+   "max_mm": 10.1,
+   "max_site": "Kaiwharawhara Stream at Karori Reservoir",
+   "heavy_stations": 1,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-19T13:00:00",
+   "max_mm": 2.2,
+   "max_site": "Porirua Stream at Seton Nossiter Park",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T14:00:00",
+   "max_mm": 1.8,
+   "max_site": "Porirua Stream at Seton Nossiter Park",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T15:00:00",
+   "max_mm": 1.1,
+   "max_site": "Hutt River at Birch Lane",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T16:00:00",
+   "max_mm": 0.2,
+   "max_site": "Porirua Stream at Seton Nossiter Park",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T17:00:00",
+   "max_mm": 0.2,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T18:00:00",
+   "max_mm": 0.1,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T19:00:00",
+   "max_mm": 1.4,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T20:00:00",
+   "max_mm": 1.6,
+   "max_site": "Hutt River at Savage Park",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-19T21:00:00",
+   "max_mm": 2.9,
+   "max_site": "Porirua Stream at Seton Nossiter Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-19T22:00:00",
+   "max_mm": 3.8,
+   "max_site": "Lake Kohangatera",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-19T23:00:00",
+   "max_mm": 6.8,
+   "max_site": "Newtown at Carmichael Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T00:00:00",
+   "max_mm": 3.2,
+   "max_site": "Berhampore at Nursery",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T01:00:00",
+   "max_mm": 1.8,
+   "max_site": "Wellington at Te Papa",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-20T02:00:00",
+   "max_mm": 5.3,
+   "max_site": "Newtown at Carmichael Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T03:00:00",
+   "max_mm": 3.6,
+   "max_site": "Pinehaven Stream at Pinehaven Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T04:00:00",
+   "max_mm": 77.1,
+   "max_site": "Berhampore at Nursery",
+   "heavy_stations": 4,
+   "class": "violent"
+  },
+  {
+   "hour": "2026-04-20T05:00:00",
+   "max_mm": 24.0,
+   "max_site": "Wellington at Te Papa",
+   "heavy_stations": 4,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T06:00:00",
+   "max_mm": 4.5,
+   "max_site": "Porirua Stream at Seton Nossiter Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T07:00:00",
+   "max_mm": 5.5,
+   "max_site": "Lake Kohangatera",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T08:00:00",
+   "max_mm": 4.5,
+   "max_site": "Porirua Stream at Seton Nossiter Park",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T09:00:00",
+   "max_mm": 2.2,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-20T10:00:00",
+   "max_mm": 3.7,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T11:00:00",
+   "max_mm": 10.1,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 1,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T12:00:00",
+   "max_mm": 7.6,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T13:00:00",
+   "max_mm": 22.4,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 1,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T14:00:00",
+   "max_mm": 23.8,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 4,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T15:00:00",
+   "max_mm": 9.8,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T16:00:00",
+   "max_mm": 10.6,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 1,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T17:00:00",
+   "max_mm": 13.9,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 1,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T18:00:00",
+   "max_mm": 14.2,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 2,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T19:00:00",
+   "max_mm": 10.2,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 1,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T20:00:00",
+   "max_mm": 8.3,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T21:00:00",
+   "max_mm": 10.0,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 1,
+   "class": "heavy"
+  },
+  {
+   "hour": "2026-04-20T22:00:00",
+   "max_mm": 8.3,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-20T23:00:00",
+   "max_mm": 6.8,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T00:00:00",
+   "max_mm": 5.6,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T01:00:00",
+   "max_mm": 4.9,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T02:00:00",
+   "max_mm": 3.6,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T03:00:00",
+   "max_mm": 2.9,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T04:00:00",
+   "max_mm": 1.7,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-21T05:00:00",
+   "max_mm": 1.2,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-21T06:00:00",
+   "max_mm": 1.4,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-21T07:00:00",
+   "max_mm": 2.9,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T08:00:00",
+   "max_mm": 2.0,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-21T09:00:00",
+   "max_mm": 5.5,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T10:00:00",
+   "max_mm": 4.8,
+   "max_site": "Newtown at Carmichael Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T11:00:00",
+   "max_mm": 3.4,
+   "max_site": "Berhampore at Nursery",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T12:00:00",
+   "max_mm": 3.9,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T13:00:00",
+   "max_mm": 5.9,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T14:00:00",
+   "max_mm": 3.3,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T15:00:00",
+   "max_mm": 3.6,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T16:00:00",
+   "max_mm": 3.2,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T17:00:00",
+   "max_mm": 1.6,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-21T18:00:00",
+   "max_mm": 2.4,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-21T19:00:00",
+   "max_mm": 4.6,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T20:00:00",
+   "max_mm": 6.4,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T21:00:00",
+   "max_mm": 3.8,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-21T22:00:00",
+   "max_mm": 2.2,
+   "max_site": "Wellington at Te Papa",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-21T23:00:00",
+   "max_mm": 2.4,
+   "max_site": "Newtown at Carmichael Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T00:00:00",
+   "max_mm": 1.1,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T01:00:00",
+   "max_mm": 0.8,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T02:00:00",
+   "max_mm": 2.3,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T03:00:00",
+   "max_mm": 1.8,
+   "max_site": "Hutt River at Birch Lane",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T04:00:00",
+   "max_mm": 1.1,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T05:00:00",
+   "max_mm": 2.8,
+   "max_site": "Kaiwharawhara Stream at Karori Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T06:00:00",
+   "max_mm": 2.5,
+   "max_site": "Kaiwharawhara Stream at Karori Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T07:00:00",
+   "max_mm": 5.3,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T08:00:00",
+   "max_mm": 6.4,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T09:00:00",
+   "max_mm": 3.5,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T10:00:00",
+   "max_mm": 3.9,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T11:00:00",
+   "max_mm": 3.9,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T12:00:00",
+   "max_mm": 2.9,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T13:00:00",
+   "max_mm": 1.8,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T14:00:00",
+   "max_mm": 1.2,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T15:00:00",
+   "max_mm": 4.0,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T16:00:00",
+   "max_mm": 1.1,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T17:00:00",
+   "max_mm": 0.6,
+   "max_site": "Pinehaven Stream at Pinehaven Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T18:00:00",
+   "max_mm": 0.4,
+   "max_site": "Hutt River at Kaitoke Headworks",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T19:00:00",
+   "max_mm": 1.8,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T20:00:00",
+   "max_mm": 2.4,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T21:00:00",
+   "max_mm": 2.8,
+   "max_site": "Kaiwharawhara Stream at Karori Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-22T22:00:00",
+   "max_mm": 2.0,
+   "max_site": "Mangaroa River at Maymorn Pump Station",
+   "heavy_stations": 0,
+   "class": "light"
+  },
+  {
+   "hour": "2026-04-22T23:00:00",
+   "max_mm": 3.2,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  },
+  {
+   "hour": "2026-04-23T00:00:00",
+   "max_mm": 6.6,
+   "max_site": "Wainuiomata River at Wainui Reservoir",
+   "heavy_stations": 0,
+   "class": "moderate"
+  }
+ ],
+ "limitations": [
+  "Real GWRC Hilltop rainfall record for 18-23 April 2026, published after the event; a validated backtest, never a live detector.",
+  "Rainfall corroborates a movement signal; it does not confirm flooding, disruption or loss of access."
+ ],
+ "features": [
+  {
+   "type": "Feature",
+   "id": "rain:berhampore-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.77164659,
+     -41.32322479
+    ]
+   },
+   "properties": {
+    "series_id": "berhampore-hourly-rainfall",
+    "site_name": "Berhampore at Nursery",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 213.4,
+    "peak": {
+     "observed_at": "2026-04-20T04:00:00",
+     "value_mm": 77.1
+    },
+    "heavy_hours": 2,
+    "violent_hours": 1,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 30.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 16.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 135.2,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 23.2,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 6.2,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 2.0,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:newtown-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.78786302,
+     -41.31589434
+    ]
+   },
+   "properties": {
+    "series_id": "newtown-hourly-rainfall",
+    "site_name": "Newtown at Carmichael Reservoir",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 181.6,
+    "peak": {
+     "observed_at": "2026-04-20T04:00:00",
+     "value_mm": 36.0
+    },
+    "heavy_hours": 2,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 21.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 19.5,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 99.3,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 32.8,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 6.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 2.2,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:te-papa-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.7813241,
+     -41.29029822
+    ]
+   },
+   "properties": {
+    "series_id": "te-papa-hourly-rainfall",
+    "site_name": "Wellington at Te Papa",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 164.5,
+    "peak": {
+     "observed_at": "2026-04-20T05:00:00",
+     "value_mm": 24.0
+    },
+    "heavy_hours": 2,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 27.0,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 17.2,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 82.9,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 29.7,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 5.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 2.1,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:karori-reservoir-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.75321612,
+     -41.29089198
+    ]
+   },
+   "properties": {
+    "series_id": "karori-reservoir-hourly-rainfall",
+    "site_name": "Kaiwharawhara Stream at Karori Reservoir",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 189.6,
+    "peak": {
+     "observed_at": "2026-04-20T04:00:00",
+     "value_mm": 30.6
+    },
+    "heavy_hours": 3,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 32.0,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 22.7,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 98.3,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 22.0,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 11.0,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 3.6,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:seton-nossiter-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.81638169,
+     -41.20957672
+    ]
+   },
+   "properties": {
+    "series_id": "seton-nossiter-hourly-rainfall",
+    "site_name": "Porirua Stream at Seton Nossiter Park",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 144.3,
+    "peak": {
+     "observed_at": "2026-04-20T14:00:00",
+     "value_mm": 10.3
+    },
+    "heavy_hours": 1,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 35.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 21.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 58.8,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 17.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 9.2,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 1.7,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:birch-lane-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.92087073,
+     -41.21260048
+    ]
+   },
+   "properties": {
+    "series_id": "birch-lane-hourly-rainfall",
+    "site_name": "Hutt River at Birch Lane",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 149.6,
+    "peak": {
+     "observed_at": "2026-04-20T14:00:00",
+     "value_mm": 10.8
+    },
+    "heavy_hours": 1,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 43.8,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 8.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 52.4,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 24.0,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 18.8,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 1.9,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:savage-park-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.07035545,
+     -41.12154048
+    ]
+   },
+   "properties": {
+    "series_id": "savage-park-hourly-rainfall",
+    "site_name": "Hutt River at Savage Park",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 192.4,
+    "peak": {
+     "observed_at": "2026-04-18T07:00:00",
+     "value_mm": 21.5
+    },
+    "heavy_hours": 3,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 109.6,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 7.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 42.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 16.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 12.9,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 3.3,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:pinehaven-reservoir-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.00861682,
+     -41.15776221
+    ]
+   },
+   "properties": {
+    "series_id": "pinehaven-reservoir-hourly-rainfall",
+    "site_name": "Pinehaven Stream at Pinehaven Reservoir",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 170.2,
+    "peak": {
+     "observed_at": "2026-04-18T09:00:00",
+     "value_mm": 28.2
+    },
+    "heavy_hours": 3,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 100.8,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 5.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 28.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 15.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 15.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 4.2,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:wainui-reservoir-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.9900481,
+     -41.26829647
+    ]
+   },
+   "properties": {
+    "series_id": "wainui-reservoir-hourly-rainfall",
+    "site_name": "Wainuiomata River at Wainui Reservoir",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 324.6,
+    "peak": {
+     "observed_at": "2026-04-20T13:00:00",
+     "value_mm": 22.4
+    },
+    "heavy_hours": 5,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 45.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 7.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 140.1,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 74.7,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 50.4,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 6.6,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:maymorn-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.13157346,
+     -41.10811976
+    ]
+   },
+   "properties": {
+    "series_id": "maymorn-hourly-rainfall",
+    "site_name": "Mangaroa River at Maymorn Pump Station",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 214.5,
+    "peak": {
+     "observed_at": "2026-04-18T08:00:00",
+     "value_mm": 19.1
+    },
+    "heavy_hours": 4,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 87.8,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 6.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 67.4,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 25.0,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 25.9,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 1.8,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:lake-kohangatera-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.86451878,
+     -41.37428665
+    ]
+   },
+   "properties": {
+    "series_id": "lake-kohangatera-hourly-rainfall",
+    "site_name": "Lake Kohangatera",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 92.6,
+    "peak": {
+     "observed_at": "2026-04-20T11:00:00",
+     "value_mm": 8.2
+    },
+    "heavy_hours": 0,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 16.8,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 13.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 39.8,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 16.8,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 3.8,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 1.8,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "rain:kaitoke-headworks-hourly-rainfall",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     175.18640867,
+     -41.05844383
+    ]
+   },
+   "properties": {
+    "series_id": "kaitoke-headworks-hourly-rainfall",
+    "site_name": "Hutt River at Kaitoke Headworks",
+    "unit": "mm",
+    "cadence_minutes": 60,
+    "window_total_mm": 246.0,
+    "peak": {
+     "observed_at": "2026-04-20T14:00:00",
+     "value_mm": 23.8
+    },
+    "heavy_hours": 4,
+    "violent_hours": 0,
+    "daily_totals": [
+     {
+      "date": "2026-04-18",
+      "mm": 75.0,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-19",
+      "mm": 7.0,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-20",
+      "mm": 117.2,
+      "flagged": true
+     },
+     {
+      "date": "2026-04-21",
+      "mm": 29.6,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-22",
+      "mm": 15.1,
+      "flagged": false
+     },
+     {
+      "date": "2026-04-23",
+      "mm": 2.0,
+      "flagged": false
+     }
+    ],
+    "attribution": "Greater Wellington Regional Council (Hilltop)",
+    "limitations": [
+     "Official historical gauge record, 18-23 April 2026; not a live feed.",
+     "Intensity classes are fixed WMO definitions, not detector output.",
+     "Point gauges; rainfall between gauges is not measured."
+    ]
+   }
+  }
+ ]
+}

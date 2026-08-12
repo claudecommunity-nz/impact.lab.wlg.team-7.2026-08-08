@@ -1,0 +1,1019 @@
+{
+ "type": "FeatureCollection",
+ "schema": "reports-april/v1",
+ "synthetic": true,
+ "truth": "synthetic_demonstration",
+ "window_start": "2026-04-20T05:00:00",
+ "window_end": "2026-04-21T17:53:00",
+ "report_count": 33,
+ "cluster_count": 11,
+ "escalation_rules": {
+  "investigate": "source grade A or B, or cluster size >= 5",
+  "elevated": "cluster size >= 3",
+  "low": "otherwise"
+ },
+ "corroboration_rule": {
+  "method": "decrease movement signal on the same street within the window",
+  "window_hours": 2,
+  "reference": "independent-stream verification (Waze/NWS flood studies)"
+ },
+ "automatic_incident": false,
+ "automatic_warning": false,
+ "limitations": [
+  "Synthetic demonstration of the service-desk ticket flow, shaped by the real April 2026 movement backtest; no record represents a real call.",
+  "A report level means investigate; no level confirms flooding, disruption or loss of access.",
+  "No personal information: enumerated categories, jittered street-level positions, no free text."
+ ],
+ "features": [
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-004",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.781881,
+     -41.30087
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-004",
+    "street": "Paterson St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T05:00:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:paterson-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Paterson St at 06:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 7,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-001",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.781608,
+     -41.301821
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-001",
+    "street": "Paterson St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T05:12:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:paterson-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Paterson St at 06:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 7,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-005",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.783503,
+     -41.301426
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-005",
+    "street": "Paterson St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T06:39:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:paterson-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Paterson St at 06:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 7,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-007",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.784511,
+     -41.30065
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-007",
+    "street": "Paterson St",
+    "category": "vehicle_stranded",
+    "channel": "police",
+    "source_grade": "B2",
+    "created_at": "2026-04-20T06:48:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:paterson-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Paterson St at 06:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 7,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-002",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.782511,
+     -41.300839
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-002",
+    "street": "Paterson St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T06:49:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:paterson-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Paterson St at 06:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 7,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-003",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.784003,
+     -41.300626
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-003",
+    "street": "Paterson St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T07:03:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:paterson-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Paterson St at 06:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 7,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-006",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.784584,
+     -41.300091
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-006",
+    "street": "Paterson St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T07:31:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:paterson-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Paterson St at 06:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 7,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-031",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.786799,
+     -41.241569
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-031",
+    "street": "Unmatched location A",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T15:12:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:lone:unmatched-location-a",
+    "corroborated": false,
+    "corroborated_by": null,
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 1,
+    "level": "low"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-032",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.767436,
+     -41.283273
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-032",
+    "street": "Unmatched location B",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T15:12:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:lone:unmatched-location-b",
+    "corroborated": false,
+    "corroborated_by": null,
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 1,
+    "level": "low"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-033",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.805256,
+     -41.321415
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-033",
+    "street": "Unmatched location C",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T15:12:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:lone:unmatched-location-c",
+    "corroborated": false,
+    "corroborated_by": null,
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 1,
+    "level": "low"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-017",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.774997,
+     -41.292387
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-017",
+    "street": "Dixon St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T16:14:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:dixon-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Dixon St at 17:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 4,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-014",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.776804,
+     -41.291814
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-014",
+    "street": "Dixon St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T16:19:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:dixon-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Dixon St at 17:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 4,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-023",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.773442,
+     -41.295315
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-023",
+    "street": "Vivian St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T17:16:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:vivian-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Vivian St at 18:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 1,
+    "level": "low"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-024",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.785122,
+     -41.295314
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-024",
+    "street": "Kent Terrace",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T17:18:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:kent-terrace",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Kent Terrace at 18:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 3,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-015",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.777426,
+     -41.291198
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-015",
+    "street": "Dixon St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T17:47:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:dixon-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Dixon St at 17:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 4,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-016",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.776574,
+     -41.292285
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-016",
+    "street": "Dixon St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T18:03:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:dixon-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Dixon St at 17:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 4,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-025",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.78432,
+     -41.293578
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-025",
+    "street": "Kent Terrace",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T18:28:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:kent-terrace",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Kent Terrace at 18:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 3,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260420-026",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.783948,
+     -41.294105
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260420-026",
+    "street": "Kent Terrace",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-20T19:51:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-20:kent-terrace",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Kent Terrace at 18:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 3,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-030",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.777762,
+     -41.28525
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-030",
+    "street": "Customhouse Quay",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T11:09:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:customhouse-quay",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Customhouse Quay at 12:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 4,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-027",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.777215,
+     -41.28534
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-027",
+    "street": "Customhouse Quay",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T11:14:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:customhouse-quay",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Customhouse Quay at 12:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 4,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-028",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.777569,
+     -41.286214
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-028",
+    "street": "Customhouse Quay",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T12:48:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:customhouse-quay",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Customhouse Quay at 12:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 4,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-029",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.777514,
+     -41.285717
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-029",
+    "street": "Customhouse Quay",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T13:05:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:customhouse-quay",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Customhouse Quay at 12:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 4,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-018",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.776299,
+     -41.281141
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-018",
+    "street": "Woodward St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T13:38:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:woodward-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Woodward St at 14:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 3,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-021",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.774889,
+     -41.294519
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-021",
+    "street": "Cuba St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T14:09:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:cuba-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Cuba St at 15:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 2,
+    "level": "low"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-019",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.775974,
+     -41.282315
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-019",
+    "street": "Woodward St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T14:28:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:woodward-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Woodward St at 14:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 3,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-020",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.775282,
+     -41.282577
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-020",
+    "street": "Woodward St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T15:00:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:woodward-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Woodward St at 14:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 3,
+    "level": "elevated"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-011",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.77022,
+     -41.294431
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-011",
+    "street": "Willis St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T15:11:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:willis-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Willis St at 16:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 6,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-022",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.774336,
+     -41.29424
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-022",
+    "street": "Cuba St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T15:27:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:cuba-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Cuba St at 15:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 2,
+    "level": "low"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-008",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.772393,
+     -41.294713
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-008",
+    "street": "Willis St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T15:36:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:willis-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Willis St at 16:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 6,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-012",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.77067,
+     -41.29506
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-012",
+    "street": "Willis St",
+    "category": "surface_flooding",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T16:16:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:willis-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Willis St at 16:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 6,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-009",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.772858,
+     -41.295059
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-009",
+    "street": "Willis St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T16:48:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:willis-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Willis St at 16:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 6,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-013",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.772517,
+     -41.294991
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-013",
+    "street": "Willis St",
+    "category": "vehicle_stranded",
+    "channel": "police",
+    "source_grade": "B2",
+    "created_at": "2026-04-21T16:48:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:willis-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Willis St at 16:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 6,
+    "level": "investigate"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "report:RPT-20260421-010",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.770537,
+     -41.294606
+    ]
+   },
+   "properties": {
+    "report_id": "RPT-20260421-010",
+    "street": "Willis St",
+    "category": "road_blocked",
+    "channel": "public call",
+    "source_grade": "F6",
+    "created_at": "2026-04-21T17:53:00+12:00",
+    "status": "logged",
+    "cluster_id": "cluster:2026-04-21:willis-st",
+    "corroborated": true,
+    "corroborated_by": "movement decrease on Willis St at 16:00",
+    "synthetic": true,
+    "limitations": [
+     "Synthetic demonstration record: no real call, caller or address.",
+     "Categories are enumerated; there is no free text and no personal information."
+    ],
+    "cluster_size": 6,
+    "level": "investigate"
+   }
+  }
+ ]
+}

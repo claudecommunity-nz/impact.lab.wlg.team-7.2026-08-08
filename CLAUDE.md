@@ -72,9 +72,22 @@ Rebuild the April movement backtest (stdlib only, reads `data/sensors/anomaly/cs
 python scripts\build_april_movement_layer.py
 ```
 
+Rebuild the April rainfall layer (stdlib only, reads `data/hydro/`):
+
+```powershell
+python scripts\build_rain_layer.py
+```
+
+Rebuild the synthetic public-reports layer (stdlib only, reads the committed
+April movement artifact — no gitignored inputs):
+
+```powershell
+python scripts\build_reports_layer.py
+```
+
 ## Architecture
 
-Two halves joined by nine committed JSON files. **Those files are the
+Two halves joined by eleven committed JSON files. **Those files are the
 contract**, not an intermediate: the site never runs Python, and the pipeline
 never renders.
 
@@ -95,8 +108,14 @@ NZTA/anomaly/csv ──▶ site/public/cop/v1/road-anomalies.geojson ───�
 data/planes/anomaly/csv ──▶ site/public/cop/v1/flight-anomalies.geojson ────────┤
    (local, REAL Apr 2026, OpenSky)  (scripts/build_flights_layer.py)            │
                                                                                 │
-data/sensors/anomaly/csv ──▶ site/public/cop/v1/movement-april.json ────────────┘
+data/sensors/anomaly/csv ──▶ site/public/cop/v1/movement-april.json ────────────┤
    (local, REAL Apr 2026 street aggregates)  (scripts/build_april_movement_layer.py)
+                                                                                │
+data/hydro/…hilltop… ──▶ site/public/cop/v1/rain-april.geojson ─────────────────┤
+   (local, REAL Apr 2026, GWRC)  (scripts/build_rain_layer.py)                  │
+                                                                                │
+movement-april.json ──▶ site/public/cop/v1/reports-april.geojson ───────────────┘
+   (committed input, SYNTHETIC ticket flow)  (scripts/build_reports_layer.py)
 ```
 
 `src/movement_anomaly/`, in call order:
@@ -172,7 +191,7 @@ toggleable layer, and visibility is **session state, never persisted**
 only, and every other layer is opt-in for that visit — picking a feature from
 a list or search switches its layer on via `ensureLayer`, and scrubbing the
 April timeline pulls the roads layer in the same way. Drawn tiles → coverage
-→ roads → transit → flights → signals → cameras. **Floating over the map's top edge** sits the timebar
+→ rain → roads → transit → reports → flights → signals → cameras. **Floating over the map's top edge** sits the timebar
 (`.replay-bar`, absolutely positioned inside `.map-stage`; its measured height
 feeds the `--timebar-h` CSS var that pushes the corner controls and layer
 drawer below it), which leads with an **investigation-case dropdown** (`EVENTS`, `.case-picker` — always
@@ -191,7 +210,9 @@ geometry; April's is built from `movement-april.json` — street-level signals
 from the same detector maths run as a **retrospective backtest** (baselines
 are April days outside the event window,
 `scripts/build_april_movement_layer.py`; a street centroid, not a countline)
-— plus the road plateau wash and flight ticks. Counts never sums; each case
+— plus the road plateau wash, flight ticks and rainfall top ticks (blue, from
+`rain-april.geojson`'s hourly aggregate, also the corroboration row's
+"rain N mm/h"). Counts never sums; each case
 remembers its own scrub position and opens on its `defaultIndex`. Scrubbing
 ensures the signal layer, and a case with `roadDayFilter` narrows the
 diamonds to the slot's day (`shownRoads`); the roads list and search keep the
@@ -234,6 +255,25 @@ Synthetic / Real · Apr 2026), a **local search** over loaded feature names
   OpenSky hourly movements, April 2026, scored per hour against a
   weekday-matched median + MAD. **Real data**, OpenSky attribution required.
   Its flagged 20–21 Apr drops corroborate the roads layer independently.
+- `rain` — GWRC Hilltop rain gauges for the April case, drawn as blue
+  **droplets** (`drawRain`), darker where the record holds violent-intensity
+  hours. Real official record, 18–23 Apr 2026, hourly. Flags are fixed **WMO
+  intensity classes** (moderate 2.5 / heavy 10 / violent 50 mm/h), never
+  detector output — the extract covers only the event window, so no baseline
+  can be fitted from it, and the artifact stores the thresholds. Its `hourly`
+  region aggregate feeds the April timebar and corroboration row.
+- `reports` — the **SYNTHETIC** public-reports demonstration of the
+  service-desk ticket flow, drawn as speech-bubble pins coloured by
+  escalation level (grey low, amber elevated, red investigate). Deterministic
+  records anchored on streets the April backtest genuinely flagged;
+  enumerated categories, **no free text, no personal information**. The
+  artifact carries `escalation_rules` (A/B-graded source or a cluster of 5+ →
+  investigate, 3+ → elevated — count raises confidence, after USGS DYFI and
+  UK s19 practice) and a `corroboration_rule` (corroborated iff the movement
+  detector holds a decrease for the same street within ±2 h) machine-readably;
+  the evidence panel states both. Synthetic labelling is contractual, as for
+  transit, and the contract test enforces the privacy floor (allowed fields
+  only).
 
 Hover state stores the popup's screen position at pick time, and every view
 change (pan, zoom, fit, reveal, layer toggle) clears it — stored coordinates

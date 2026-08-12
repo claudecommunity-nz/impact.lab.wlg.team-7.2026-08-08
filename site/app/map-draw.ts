@@ -214,6 +214,81 @@ export type FlightCollection = {
   features: FlightFeature[];
 };
 
+export type RainProperties = {
+  series_id: string;
+  site_name: string;
+  unit: string;
+  cadence_minutes: number;
+  window_total_mm: number;
+  peak: { observed_at: string; value_mm: number };
+  heavy_hours: number;
+  violent_hours: number;
+  daily_totals: { date: string; mm: number; flagged: boolean }[];
+  attribution: string;
+  limitations: string[];
+};
+
+export type RainFeature = {
+  id: string;
+  geometry: { type: "Point"; coordinates: Coordinate };
+  properties: RainProperties;
+};
+
+export type RainHourly = {
+  hour: string;
+  max_mm: number;
+  max_site: string;
+  heavy_stations: number;
+  class: string;
+};
+
+export type RainCollection = {
+  type: "FeatureCollection";
+  window_start: string;
+  window_end: string;
+  station_count: number;
+  thresholds: Record<string, number | string>;
+  hourly: RainHourly[];
+  limitations: string[];
+  features: RainFeature[];
+};
+
+export type ReportProperties = {
+  report_id: string;
+  street: string;
+  category: string;
+  channel: string;
+  source_grade: string;
+  created_at: string;
+  status: string;
+  cluster_id: string;
+  cluster_size: number;
+  level: string;
+  corroborated: boolean;
+  corroborated_by: string | null;
+  synthetic: boolean;
+  limitations: string[];
+};
+
+export type ReportFeature = {
+  id: string;
+  geometry: { type: "Point"; coordinates: Coordinate };
+  properties: ReportProperties;
+};
+
+export type ReportCollection = {
+  type: "FeatureCollection";
+  synthetic: boolean;
+  window_start: string;
+  window_end: string;
+  report_count: number;
+  cluster_count: number;
+  escalation_rules: Record<string, string>;
+  corroboration_rule: { method: string; window_hours: number; reference: string };
+  limitations: string[];
+  features: ReportFeature[];
+};
+
 export type AprilSignal = {
   id: string;
   street: string;
@@ -860,6 +935,95 @@ function tracePlane(
   context.lineTo(x - 1.2 * s, y - 2 * s);
   context.quadraticCurveTo(x - 1.4 * s, y - 4.4 * s, x, y - 6 * s);
   context.closePath();
+}
+
+/** Rain gauge: a droplet, darker where the record holds violent-intensity hours. */
+export function drawRain(
+  context: CanvasRenderingContext2D,
+  project: Projector,
+  stations: RainFeature[],
+  selectedId: string | null,
+  hoveredId: string | null = null,
+  baseScale = 1,
+) {
+  for (const feature of stations) {
+    const [x, y] = project(feature.geometry.coordinates);
+    const isSelected = feature.id === selectedId;
+    const isHovered = feature.id === hoveredId;
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.95;
+
+    if (isSelected) {
+      context.beginPath();
+      context.arc(x, y, 8.5 * scale, 0, Math.PI * 2);
+      context.strokeStyle = "#000000";
+      context.lineWidth = 2;
+      context.stroke();
+    }
+
+    context.beginPath();
+    context.moveTo(x, y - 5.6 * scale);
+    context.bezierCurveTo(
+      x + 4.6 * scale, y - 0.6 * scale,
+      x + 3.6 * scale, y + 4.6 * scale,
+      x, y + 4.6 * scale,
+    );
+    context.bezierCurveTo(
+      x - 3.6 * scale, y + 4.6 * scale,
+      x - 4.6 * scale, y - 0.6 * scale,
+      x, y - 5.6 * scale,
+    );
+    context.closePath();
+    context.fillStyle = feature.properties.violent_hours > 0 ? "#1E4F7A" : "#3B78A8";
+    context.fill();
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 1.3;
+    context.stroke();
+  }
+}
+
+/** Public report: a speech-bubble pin coloured by escalation level. */
+export function drawReports(
+  context: CanvasRenderingContext2D,
+  project: Projector,
+  reports: ReportFeature[],
+  selectedId: string | null,
+  hoveredId: string | null = null,
+  baseScale = 1,
+) {
+  for (const feature of reports) {
+    const [x, y] = project(feature.geometry.coordinates);
+    const isSelected = feature.id === selectedId;
+    const isHovered = feature.id === hoveredId;
+    const scale = (isSelected ? 1.35 : isHovered ? 1.2 : 1) * baseScale * 0.9;
+    const level = feature.properties.level;
+    const colour =
+      level === "investigate" ? "#B3261E" : level === "elevated" ? "#B26A00" : "#77776F";
+
+    if (isSelected) {
+      context.beginPath();
+      context.arc(x, y, 8.5 * scale, 0, Math.PI * 2);
+      context.strokeStyle = "#000000";
+      context.lineWidth = 2;
+      context.stroke();
+    }
+
+    traceRoundedRect(context, x - 4.4 * scale, y - 5.2 * scale, 8.8 * scale, 6.4 * scale, 2 * scale);
+    context.fillStyle = colour;
+    context.fill();
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 1.3;
+    context.stroke();
+    context.beginPath();
+    context.moveTo(x - 1.4 * scale, y + 1.1 * scale);
+    context.lineTo(x, y + 4.2 * scale);
+    context.lineTo(x + 2 * scale, y + 1.1 * scale);
+    context.closePath();
+    context.fillStyle = colour;
+    context.fill();
+    context.strokeStyle = "#FFFFFF";
+    context.lineWidth = 1;
+    context.stroke();
+  }
 }
 
 /** Tiny camera glyph: rounded body, lens, and a status-light dot. */

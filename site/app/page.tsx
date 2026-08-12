@@ -49,6 +49,14 @@ export default function Home() {
             <span>State highway layer (real April 2026 floods)</span>
             <code>/cop/v1/road-anomalies.geojson</code>
           </a>
+          <a href="/cop/v1/rain-april.geojson">
+            <span>Rainfall layer (real April 2026, GWRC Hilltop)</span>
+            <code>/cop/v1/rain-april.geojson</code>
+          </a>
+          <a href="/cop/v1/reports-april.geojson">
+            <span>Public reports layer (synthetic ticket flow)</span>
+            <code>/cop/v1/reports-april.geojson</code>
+          </a>
           <a href="/cop/v1/flight-anomalies.geojson">
             <span>Air access layer (real April 2026, OpenSky)</span>
             <code>/cop/v1/flight-anomalies.geojson</code>
