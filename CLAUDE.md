@@ -248,9 +248,13 @@ card). Rows: abnormal-record count, people and vehicle % change with
 observed/expected counts (across the in-view gated signals), worst in-view
 rain mm/h with the warning tag, in-view highway sites, hour-active bus stops
 (labelled synthetic), air access flagged/normal when the airport is in view,
-and cumulative in-view reports; labels and values only, no prose. Like the
-rail, panel and drawer it **folds away to an icon** (`murmur.status.open`
-flag store, icon-only controls) so it never has to cover records. The
+and cumulative in-view reports; labels and values only, no prose. Rows are
+**layer-adaptive**: a layer that is switched on contributes its own in-view
+row (signals rows only while the signals layer is on; coverage countline
+count, camera count with offline tally, buses, highways, air, reports), so
+the card grows with the picture. Like the rail, panel and drawer it **folds
+away to an icon** (`murmur.status.open` flag store, icon-only controls) so
+it never has to cover records. The
 auto popup never speaks for an out-of-frame rain gauge
 (`within_countline_frame`, computed against the coverage bounds like the
 cameras and test-asserted): Hutt Valley and Wainuiomata gauges stay drawn and

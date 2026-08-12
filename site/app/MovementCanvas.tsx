@@ -853,24 +853,42 @@ export default function MovementCanvas() {
         if (feature.properties.warning_by_hour?.[activeCaseSlot.key]) rainWarning = true;
       }
     }
-    const reports = timeSyncKey
+    /* Layer-adaptive rows: a layer that is switched on contributes its own
+     * in-view figures, so the card grows with the picture. */
+    const reports = layers.reports
       ? shownReports.filter((feature) => inView(feature.geometry.coordinates)).length
       : null;
-    const transit = timeSyncKey
-      ? shownTransit.filter((feature) => inView(feature.geometry.coordinates)).length
+    const transit = layers.transit
+      ? (timeSyncKey ? shownTransit : transitFeatures).filter((feature) =>
+          inView(feature.geometry.coordinates),
+        ).length
       : null;
-    const roads =
-      caseId === "april-floods"
-        ? shownRoads.filter((feature) => inView(feature.geometry.coordinates)).length
-        : null;
+    const roads = layers.roads
+      ? (caseId === "april-floods" ? shownRoads : roadFeatures).filter((feature) =>
+          inView(feature.geometry.coordinates),
+        ).length
+      : null;
+    const countlines = layers.coverage
+      ? coverage.filter((feature) => inView(feature.geometry.coordinates[0])).length
+      : null;
+    let camerasInView: { total: number; offline: number } | null = null;
+    if (layers.cameras) {
+      camerasInView = { total: 0, offline: 0 };
+      for (const feature of cameraFeatures) {
+        if (!inView(feature.geometry.coordinates)) continue;
+        camerasInView.total += 1;
+        if (feature.properties.offline) camerasInView.offline += 1;
+      }
+    }
     const airInView = flightFeatures.some((feature) => inView(feature.geometry.coordinates));
     const air =
-      caseId === "april-floods" && airInView
+      layers.flights && caseId === "april-floods" && airInView
         ? activeCaseSlot.tick
           ? "flagged"
           : "normal"
         : null;
     return {
+      signalsOn: layers.signals,
       up,
       down,
       people: summarise(groups.people),
@@ -880,11 +898,14 @@ export default function MovementCanvas() {
       reports,
       transit,
       roads,
+      countlines,
+      cameras: camerasInView,
       air,
     };
   }, [
     activeCaseSlot, view, caseId, rainFeatures, timeSyncKey, shownReports,
-    shownTransit, shownRoads, flightFeatures, stageBox,
+    shownTransit, transitFeatures, shownRoads, roadFeatures, coverage,
+    cameraFeatures, flightFeatures, layers, stageBox,
   ]);
 
   const filteredSignals = useMemo(() => shownSignals.filter((feature) => {
@@ -2167,38 +2188,63 @@ export default function MovementCanvas() {
                   </svg>
                 </button>
                 <p>{activeCaseSlot.label} · in view</p>
-                <div>
-                  <span>Abnormal records</span>
-                  <strong>{situation.up + situation.down}</strong>
-                </div>
-                <div>
-                  <span>People</span>
-                  <strong
-                    className={
-                      situation.people === null ? "" : situation.people.percent < 0 ? "down" : "up"
-                    }
-                  >
-                    {situation.people === null
-                      ? "–"
-                      : `${situation.people.percent > 0 ? "+" : ""}${situation.people.percent}% · ${situation.people.observed.toLocaleString("en-NZ")}/${situation.people.expected.toLocaleString("en-NZ")}`}
-                  </strong>
-                </div>
-                <div>
-                  <span>Vehicles</span>
-                  <strong
-                    className={
-                      situation.vehicles === null
-                        ? ""
-                        : situation.vehicles.percent < 0
-                          ? "down"
-                          : "up"
-                    }
-                  >
-                    {situation.vehicles === null
-                      ? "–"
-                      : `${situation.vehicles.percent > 0 ? "+" : ""}${situation.vehicles.percent}% · ${situation.vehicles.observed.toLocaleString("en-NZ")}/${situation.vehicles.expected.toLocaleString("en-NZ")}`}
-                  </strong>
-                </div>
+                {situation.signalsOn ? (
+                  <>
+                    <div>
+                      <span>Abnormal records</span>
+                      <strong>{situation.up + situation.down}</strong>
+                    </div>
+                    <div>
+                      <span>People</span>
+                      <strong
+                        className={
+                          situation.people === null
+                            ? ""
+                            : situation.people.percent < 0
+                              ? "down"
+                              : "up"
+                        }
+                      >
+                        {situation.people === null
+                          ? "–"
+                          : `${situation.people.percent > 0 ? "+" : ""}${situation.people.percent}% · ${situation.people.observed.toLocaleString("en-NZ")}/${situation.people.expected.toLocaleString("en-NZ")}`}
+                      </strong>
+                    </div>
+                    <div>
+                      <span>Vehicles</span>
+                      <strong
+                        className={
+                          situation.vehicles === null
+                            ? ""
+                            : situation.vehicles.percent < 0
+                              ? "down"
+                              : "up"
+                        }
+                      >
+                        {situation.vehicles === null
+                          ? "–"
+                          : `${situation.vehicles.percent > 0 ? "+" : ""}${situation.vehicles.percent}% · ${situation.vehicles.observed.toLocaleString("en-NZ")}/${situation.vehicles.expected.toLocaleString("en-NZ")}`}
+                      </strong>
+                    </div>
+                  </>
+                ) : null}
+                {situation.countlines !== null ? (
+                  <div>
+                    <span>Countlines</span>
+                    <strong>{situation.countlines}</strong>
+                  </div>
+                ) : null}
+                {situation.cameras !== null ? (
+                  <div>
+                    <span>Cameras</span>
+                    <strong>
+                      {situation.cameras.total}
+                      {situation.cameras.offline > 0
+                        ? ` · ${situation.cameras.offline} off`
+                        : ""}
+                    </strong>
+                  </div>
+                ) : null}
                 {caseId === "april-floods" ? (
                   <div>
                     <span>Rain</span>
