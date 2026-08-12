@@ -774,6 +774,45 @@ footer strong { color: var(--surface-page); }
 .agent-footnote { margin: 0; padding: 0 var(--space-4) var(--space-4); color: var(--wcc-grey-500); font-size: 11px; line-height: 1.5; }
 
 /* --------------------------------------------------------------- settings */
+/* Signal review: the browser-local triage queue. The list reuses the drawer's
+ * list look; the detail card reuses the evidence card. */
+.review-shell {
+  display: grid; grid-template-columns: minmax(300px, 400px) 1fr; gap: var(--space-5);
+  margin: var(--space-6) 0 var(--space-9); align-items: start;
+}
+.review-list-column { background: var(--surface-alt); border: 1px solid var(--border-hairline); }
+.review-views { margin: var(--space-3); background: var(--surface-page); }
+.review-views button { flex: 1; padding: 0 var(--space-2); }
+.signal-list.review-list { max-height: min(560px, 60vh); min-height: 280px; }
+.review-detail { background: var(--surface-page); border: 1px solid var(--border-hairline); min-height: 280px; }
+.review-detail .selected-evidence { border-bottom: 0; }
+.review-close-label {
+  margin: var(--space-4) 0 var(--space-1);
+  color: var(--wcc-grey-700); font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.review-outcomes { flex-wrap: wrap; }
+.review-note { display: block; margin-top: var(--space-4); }
+.review-note span {
+  display: block; margin-bottom: var(--space-1);
+  color: var(--wcc-grey-700); font-size: 12px; font-weight: 700;
+}
+.review-note textarea {
+  width: 100%; padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
+  background: var(--surface-page); color: inherit; font: inherit; font-size: var(--text-small);
+  resize: vertical;
+}
+.status-badge.review-new {
+  background: var(--surface-page); color: var(--wcc-grey-700);
+  box-shadow: inset 0 0 0 1px var(--border-hairline);
+}
+.status-badge.review-active { background: var(--wcc-info-surface); color: var(--wcc-info); }
+.status-badge.review-closed { background: var(--wcc-grey-100); color: var(--wcc-grey-700); }
+@media (max-width: 1024px) {
+  .review-shell { grid-template-columns: 1fr; }
+}
+
 .settings-intro {
   max-width: calc(var(--container-max) + 2 * var(--container-pad));
   margin-inline: auto; padding: var(--space-7) var(--container-pad) var(--space-6);

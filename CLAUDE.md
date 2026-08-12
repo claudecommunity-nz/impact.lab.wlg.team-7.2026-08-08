@@ -285,6 +285,26 @@ detection is the separate Streamlit app (`streamlit/traffic_camera/`), which is
 also the only place the NZTA endpoints and catalogue parsing are defined —
 `build_camera_layer.py` imports `nzta_client` rather than restating them.
 
+### Signal review
+
+`/review` is the triage surface over the published signals: queues New /
+Active / Closed / All, a status per signal (new → investigating → closed), an
+outcome on close (true/benign/false positive, undetermined) and notes. State
+lives in `app/review-store.ts` (`murmur.review.v1`, the settings-store
+pattern: subscribe/snapshot/write behind `useSyncExternalStore`); **only
+touched items are stored** — an untouched signal is implicitly New, so the
+queue always tracks the current artifact. `signalKey` is place-level
+(countline × class × direction): replay hours and the snapshot share one
+review item, and April street signals sent from the map appear under the
+facts captured at entry. The map integrates through three seams: a **Send to
+review** op in the signal evidence (becomes an "In review"/"Closed in review"
+link), an "in review"/"closed" suffix in the signal list, and a
+**Corroboration** metrics row (April: roads-day count + air-access tick;
+August: "none in this window · missing ≠ contradicting"). Browser-local
+working notes, never a Council record — the route copy and
+`rendered-html.test.mjs` both assert that boundary, and the review key is not
+part of the settings export.
+
 ### Shell, agent and settings
 
 `app/layout.tsx` wraps every route in one shell: `SideNav` (hideable rail, state

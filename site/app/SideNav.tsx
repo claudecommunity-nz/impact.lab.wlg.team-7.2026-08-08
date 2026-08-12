@@ -54,8 +54,23 @@ const SparkGlyph = (
   </svg>
 );
 
+const QueueGlyph = (
+  <svg viewBox="0 0 20 20" aria-hidden="true">
+    <path d="M3 4.5 4.4 6 7 3.2" className="stroke-only" />
+    <path d="M3 10.5 4.4 12 7 9.2" className="stroke-only" />
+    <path d="M3 16.5 4.4 18 7 15.2" className="stroke-only" />
+    <path d="M9 4.7h8M9 10.7h8M9 16.7h8" className="stroke-only" />
+  </svg>
+);
+
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Operating picture", detail: "One map, every source", glyph: MapGlyph },
+  {
+    href: "/review",
+    label: "Signal review",
+    detail: "Triage, status and outcomes",
+    glyph: QueueGlyph,
+  },
   {
     href: "/settings",
     label: "Data sources",

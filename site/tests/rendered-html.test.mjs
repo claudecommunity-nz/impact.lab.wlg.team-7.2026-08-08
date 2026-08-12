@@ -371,13 +371,14 @@ test("ships a camera layer on the same frame with its own attribution and limits
 });
 
 test("carries a hideable sidebar and the agent on every route", async () => {
-  for (const path of ["/", "/settings"]) {
+  for (const path of ["/", "/review", "/settings"]) {
     const response = await render(path);
     assert.equal(response.status, 200, `${path} should render`);
     const html = await response.text();
 
     assert.match(html, /aria-label="Murmur sections"/, `${path} should ship the navigator`);
     assert.match(html, /Operating picture/);
+    assert.match(html, /Signal review/);
     assert.match(html, /Data sources/);
     assert.match(html, /Integrations/);
     // The rail can be put away, and says which state it is in.
@@ -458,6 +459,28 @@ test("keeps source settings off the dashboard and on their own route", async () 
   }
   // Settings never adds a second map.
   assert.equal(settings.match(/<canvas/g), null);
+});
+
+test("ships a browser-local signal review queue on its own route", async () => {
+  const [dashboard, reviewPage] = await Promise.all([
+    render("/").then((response) => response.text()),
+    render("/review").then((response) => response.text()),
+  ]);
+
+  // Triage lives on its own route; the operating picture stays a picture.
+  assert.doesNotMatch(dashboard, /not a Council record/);
+  assert.doesNotMatch(dashboard, /aria-label="Review queues"/);
+
+  assert.match(reviewPage, /Signal review/);
+  // The truth boundaries: browser-local working notes, never a Council record.
+  assert.match(reviewPage, /not a Council record/);
+  assert.match(reviewPage, /stay in this browser/);
+  assert.match(reviewPage, /12 published signals/);
+  assert.match(reviewPage, /aria-label="Review queues"/);
+  // SSR ships the empty shell; the browser's queue arrives with the feed.
+  assert.match(reviewPage, /Loading the signal feed…|Select a signal to triage it\./);
+  // The queue never adds a second map.
+  assert.equal(reviewPage.match(/<canvas/g), null);
 });
 
 test("removes the disposable starter preview and its dependency", async () => {

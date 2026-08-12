@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -12,6 +14,13 @@ import {
 } from "react";
 
 import { createFlagStore } from "./flag-store";
+import {
+  openReview,
+  reviewSnapshot,
+  serverReviewSnapshot,
+  signalKey,
+  subscribeReview,
+} from "./review-store";
 import health from "../public/cop/v1/movement-health.json";
 
 import {
@@ -758,6 +767,19 @@ export default function MovementCanvas() {
   const panelRoadObserved = panelRoadDay?.observed ?? panelRoad?.properties.observed_count ?? 0;
   const panelRoadBaseline = panelRoadDay?.baseline ?? panelRoad?.properties.baseline_median ?? 0;
 
+  /* Review state for the selected signal: browser-local triage, never a
+   * Council record. What corroborates depends on the open case — April has
+   * the roads and flights backtests in-window; August has no second source. */
+  const review = useSyncExternalStore(subscribeReview, reviewSnapshot, serverReviewSnapshot);
+  const panelSignalKey = panelSignal ? signalKey(panelSignal.properties) : null;
+  const panelSignalReview = panelSignalKey ? review.items[panelSignalKey] : undefined;
+  const corroboration =
+    caseId === "april-floods"
+      ? `${shownRoads.length} highway sites this day · air access ${
+          activeCaseSlot?.tick ? "flagged" : "normal"
+        }`
+      : "none in this window · missing ≠ contradicting";
+
   /** Per-frame screen-space clustering of the three point layers. */
   const clusterLayers = (width: number, height: number) => {
     const project = createProjector(view, width, height);
@@ -956,7 +978,7 @@ export default function MovementCanvas() {
   };
 
   /** The drawer's operations row: the target adapts, the verbs stay constant. */
-  const evidenceOps = (kind: Focus, coordinate: Coordinate, feed: string) => (
+  const evidenceOps = (kind: Focus, coordinate: Coordinate, feed: string, extra?: ReactNode) => (
     <div className="evidence-ops">
       <button
         type="button"
@@ -971,6 +993,7 @@ export default function MovementCanvas() {
       <a href={feed} target="_blank" rel="noreferrer">
         Open feed
       </a>
+      {extra}
     </div>
   );
 
@@ -2224,12 +2247,34 @@ export default function MovementCanvas() {
                     </div>
                     <div><dt>History</dt><dd>{Number((panelSignal.properties.signal_confidence as Record<string, number>).history_samples)} matched hours</dd></div>
                     <div><dt>Baseline confidence</dt><dd>{String((panelSignal.properties.signal_confidence as Record<string, string>).level)}</dd></div>
+                    <div title="Other loaded sources in this case window; a missing source adds uncertainty, it does not clear the signal">
+                      <dt>Corroboration</dt>
+                      <dd>{corroboration}</dd>
+                    </div>
                   </dl>
                   <p className="evidence-note">No cause inferred. Check operational context before acting.</p>
                   {evidenceOps(
                     "signal",
                     panelSignal.geometry.coordinates[0],
                     activeModel?.feed ?? "/cop/v1/movement-signals.geojson",
+                    panelSignalReview ? (
+                      <Link href="/review">
+                        {panelSignalReview.status === "closed" ? "Closed in review" : "In review"}
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openReview(
+                            panelSignalKey!,
+                            String(panelSignal.properties.name),
+                            `${String(panelSignal.properties.transport_class)} · ${String(panelSignal.properties.direction)}`,
+                          )
+                        }
+                      >
+                        Send to review
+                      </button>
+                    ),
                   )}
                 </>
               ) : null}
@@ -2253,7 +2298,14 @@ export default function MovementCanvas() {
               >
                 <span>
                   <strong>{String(feature.properties.name)}</strong>
-                  <small>{String(feature.properties.transport_class)} · {String(feature.properties.direction)}</small>
+                  <small>
+                    {String(feature.properties.transport_class)} · {String(feature.properties.direction)}
+                    {(() => {
+                      const item = review.items[signalKey(feature.properties)];
+                      if (!item) return "";
+                      return item.status === "closed" ? " · closed" : " · in review";
+                    })()}
+                  </small>
                 </span>
                 <em className={String(feature.properties.change_direction)}>
                   {Number(feature.properties.robust_z) > 0 ? "+" : ""}{Number(feature.properties.robust_z).toFixed(1)}

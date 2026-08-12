@@ -285,6 +285,20 @@ from the first paint:
   toggle in the map's top-left corner, the canvas growing into the space. It is
   put away, not merely hidden: its controls leave the tab order.
 
+### Signal review
+
+`/review` (in the rail) is the triage queue over the published signals. Every
+signal starts **New**; an operator starts an investigation, closes it as
+**true positive, benign positive, false positive or undetermined**, and keeps
+notes. The four queues — New / Active / Closed / All — always track the current
+artifact, because only touched items are stored. On the map, signal evidence
+gains a **Send to review** operation, the signal list tags items already in
+review, and a **Corroboration** row states what the other loaded sources say
+for the case window — and when none covers it, "missing ≠ contradicting":
+absence adds uncertainty, it never clears a signal. Status and notes live in
+that browser's localStorage only — working notes for a shift, never a Council
+record, and no status confirms an incident.
+
 ### The Murmur agent
 
 A floating ✦ button on every page opens the chat; ⤢ expands it to full screen
