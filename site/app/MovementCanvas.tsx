@@ -782,6 +782,35 @@ export default function MovementCanvas() {
     );
   }, [reportFeatures, timeSyncKey]);
 
+  /* The corner situation card: what is happening right now, in plain numbers.
+   * People/vehicle percentages aggregate observed vs expected across the
+   * slot's gated signals — flagged sites only, which the tooltip says. */
+  const situation = useMemo(() => {
+    if (!activeCaseSlot) return null;
+    const groups = {
+      people: { observed: 0, expected: 0, count: 0 },
+      vehicles: { observed: 0, expected: 0, count: 0 },
+    };
+    for (const feature of activeCaseSlot.signals) {
+      const group = PEOPLE_CLASSES.has(String(feature.properties.transport_class))
+        ? groups.people
+        : groups.vehicles;
+      group.observed += Number(feature.properties.observed_count);
+      group.expected += Number(feature.properties.expected_count);
+      group.count += 1;
+    }
+    const percent = (group: typeof groups.people) =>
+      group.count === 0 || group.expected === 0
+        ? null
+        : Math.round(((group.observed - group.expected) / group.expected) * 100);
+    return {
+      up: activeCaseSlot.up,
+      down: activeCaseSlot.down,
+      people: percent(groups.people),
+      vehicles: percent(groups.vehicles),
+    };
+  }, [activeCaseSlot]);
+
   const filteredSignals = useMemo(() => shownSignals.filter((feature) => {
     const mode = String(feature.properties.transport_class);
     if (filter === "people") return PEOPLE_CLASSES.has(mode);
@@ -1988,6 +2017,57 @@ export default function MovementCanvas() {
                 </>
               ) : null}
             </div>
+            {activeCaseSlot && situation ? (
+              <div
+                className="map-status"
+                title="This hour at flagged sites: gated signals, observed vs expected aggregated per class"
+              >
+                <p>{activeCaseSlot.label}</p>
+                <div>
+                  <span>Abnormal records</span>
+                  <strong>{situation.up + situation.down}</strong>
+                </div>
+                <div>
+                  <span>People</span>
+                  <strong
+                    className={
+                      situation.people === null ? "" : situation.people < 0 ? "down" : "up"
+                    }
+                  >
+                    {situation.people === null
+                      ? "–"
+                      : `${situation.people > 0 ? "+" : ""}${situation.people}%`}
+                  </strong>
+                </div>
+                <div>
+                  <span>Vehicles</span>
+                  <strong
+                    className={
+                      situation.vehicles === null ? "" : situation.vehicles < 0 ? "down" : "up"
+                    }
+                  >
+                    {situation.vehicles === null
+                      ? "–"
+                      : `${situation.vehicles > 0 ? "+" : ""}${situation.vehicles}%`}
+                  </strong>
+                </div>
+                {caseId === "april-floods" ? (
+                  <div>
+                    <span>Rain</span>
+                    <strong className={activeCaseSlot.rainWarning ? "warn" : ""}>
+                      {activeCaseSlot.rainMm > 0 ? `${activeCaseSlot.rainMm} mm/h` : "none"}
+                      {activeCaseSlot.rainWarning ? " · warning" : ""}
+                    </strong>
+                  </div>
+                ) : null}
+                {timeSyncKey ? (
+                  <div>
+                    <span>Reports so far</span>
+                    <strong>{shownReports.length}</strong>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
             {hover &&
             (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad || hoveredFlight ||
               hoveredRain || hoveredReport) ? (

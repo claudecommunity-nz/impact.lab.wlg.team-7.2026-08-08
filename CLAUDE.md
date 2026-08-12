@@ -235,7 +235,12 @@ timeline filters the map, never the evidence. Every scrub or playback step
 also runs the **auto-popup adapter** (`severeFnRef`, gate `AUTO_POPUP_Z`):
 the hour's severest issue — a gauge at warning/torrential level first, else
 the biggest gated signal — opens the same callout a hover would, if it is on
-screen; a real hover, pan or zoom takes over exactly as before. The point layers (cameras, transit, roads)
+screen; a real hover, pan or zoom takes over exactly as before. The
+bottom-right **situation card** (`.map-status`) states the hour in plain
+numbers for a first-time reader: abnormal-record count, people and vehicle %
+change (observed vs expected aggregated across the slot's gated signals —
+flagged sites only, the tooltip says so), rain mm/h with the warning tag, and
+cumulative reports; labels and values only, no prose. The point layers (cameras, transit, roads)
 are **clustered per frame** in screen space (`clusterPoints`, `CLUSTER_CELL`):
 points sharing a cell merge into a density bubble with a count, clicking a
 bubble zooms into it, and zooming naturally dissolves clusters into glyphs.
