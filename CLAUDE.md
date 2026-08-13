@@ -105,6 +105,14 @@ committed April movement and rain artifacts):
 python scripts\build_live_sim_layer.py
 ```
 
+Refresh the NZTA road-events snapshot (stdlib only, network — queries the
+official Waka Kotahi TREIS FeatureServer for the Wellington envelope in
+WGS84; problem 05's road-closures clause):
+
+```powershell
+python scripts\build_road_events_layer.py
+```
+
 Capture live Metlink GTFS-RT (stdlib only, needs `METLINK_API_KEY`; realtime
 is ephemeral and Metlink keeps no archive — the April 2026 RT is
 unrecoverable, which is why the transit layer is synthetic; run this during
@@ -116,7 +124,7 @@ python scripts\capture_metlink_rt.py --interval 30 --hours 24
 
 ## Architecture
 
-Two halves joined by twelve committed JSON files. **Those files are the
+Two halves joined by thirteen committed JSON files. **Those files are the
 contract**, not an intermediate: the site never runs Python, and the pipeline
 never renders.
 
@@ -143,8 +151,11 @@ data/sensors/anomaly/csv ──▶ site/public/cop/v1/movement-april.json ──
 data/hydro/…hilltop… ──▶ site/public/cop/v1/rain-april.geojson ─────────────────┤
    (committed extract, REAL Apr 2026, GWRC)  (scripts/build_rain_layer.py)      │
                                                                                 │
-movement-april.json ──▶ site/public/cop/v1/reports-april.geojson ───────────────┘
-   (committed input, SYNTHETIC ticket flow)  (scripts/build_reports_layer.py)
+movement-april.json ──▶ site/public/cop/v1/reports-april.geojson ───────────────┤
+   (committed input, SYNTHETIC ticket flow)  (scripts/build_reports_layer.py)   │
+                                                                                │
+Waka Kotahi TREIS ──▶ site/public/cop/v1/road-events.geojson ───────────────────┘
+   (live official API)  (scripts/build_road_events_layer.py)
 ```
 
 `src/movement_anomaly/`, in call order:

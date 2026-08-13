@@ -159,7 +159,7 @@ picture. The map is a view; **the feed is the product**.
   in the visitor's browser and goes only to the provider. A test suite scans
   the repo for key-shaped strings on every build.
 - **No backend to fall over.** The site is static files plus the visitor's
-  browser — twelve committed GeoJSON/JSON contracts any COP, GIS client or
+  browser — thirteen committed GeoJSON/JSON contracts any COP, GIS client or
   teammate's prototype can consume directly.
 
 ### What we found
@@ -419,7 +419,7 @@ and falls back to the local answer.
 ### Settings: sources and integrations
 
 **Data sources** (`/settings`, deliberately not on the dashboard) lists the
-twelve committed feeds plus anything you add, with **measured** status per source —
+thirteen committed feeds plus anything you add, with **measured** status per source —
 reachable, reachable-with-odd-payload, or failed — last successful sync, latency
 and record count, a retry per row and **Test all**. Sources can be added by URL
 or imported from a file, and exported as **GeoJSON, JSON, CSV or NDJSON**.
@@ -430,7 +430,7 @@ generates the MCP client config and the A2A agent card for your own endpoint.
 
 ### The feeds
 
-Everything the site shows is served as twelve committed files, **hosted at**
+Everything the site shows is served as thirteen committed files, **hosted at**
 `https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08` —
 point any COP, GIS client or teammate's prototype at them:
 
@@ -446,6 +446,7 @@ point any COP, GIS client or teammate's prototype at them:
 | Air access (real April 2026, OpenSky) | `/cop/v1/flight-anomalies.geojson` |
 | Rainfall (real April 2026, GWRC Hilltop) | `/cop/v1/rain-april.geojson` |
 | Public reports (synthetic ticket flow) | `/cop/v1/reports-april.geojson` |
+| Road events and closures (NZTA TREIS, official snapshot) | `/cop/v1/road-events.geojson` |
 | Live-monitor simulation (synthetic, 48 h) | `/cop/v1/live-sim.json` |
 | Coverage and health | `/cop/v1/movement-health.json` |
 

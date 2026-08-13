@@ -1,0 +1,92 @@
+{
+ "type": "FeatureCollection",
+ "schema": "road-event-collection/v1",
+ "truth": "live_official_snapshot",
+ "retrieved_at": "2026-08-13T00:12:53+00:00",
+ "region_envelope_wgs84": [
+  174.5,
+  -41.7,
+  176.0,
+  -40.7
+ ],
+ "event_count": 2,
+ "closure_count": 0,
+ "attribution": "Waka Kotahi NZ Transport Agency, Traffic Road Event Information System",
+ "limitations": [
+  "Notable, officially verified events only: the absence of an event record is not evidence a road is open.",
+  "State-highway network focus; local-road closures are the council's record, not this feed.",
+  "A snapshot at retrieved_at, not a push feed; re-run the build script to refresh."
+ ],
+ "features": [
+  {
+   "type": "Feature",
+   "id": "road-event:555759",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.914897,
+     -41.107015
+    ]
+   },
+   "properties": {
+    "schema": "road-event/v1",
+    "event_id": "555759",
+    "event_type": "Road Work",
+    "description": "Road Construction",
+    "impact": "Caution",
+    "closed": false,
+    "status": "Active",
+    "planned": true,
+    "location": "SH 58 Pauatahanui, at the intersection with Joseph Banks Drive ",
+    "comments": "Due to footpath construction works, there will be a Stop/Go with a 30km/h temporary speed restriction in place on weekdays between 8.30am to 9.30am and 2.30pm to 3.30pm.  Plan your journey accordingly allowing extra time for travel.",
+    "alternative_route": "Not Applicable",
+    "expected_resolution": "Until further notice",
+    "start_at": "2026-07-21T19:25:00Z",
+    "end_at": "2026-10-30T05:00:00Z",
+    "supplier": "Official",
+    "information_source": "NZTA",
+    "attribution": "Waka Kotahi NZ Transport Agency, Traffic Road Event Information System",
+    "limitations": [
+     "Notable, officially verified events only: the absence of an event record is not evidence a road is open.",
+     "State-highway network focus; local-road closures are the council's record, not this feed.",
+     "A snapshot at retrieved_at, not a push feed; re-run the build script to refresh."
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "road-event:557837",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     174.948722,
+     -40.991952
+    ]
+   },
+   "properties": {
+    "schema": "road-event/v1",
+    "event_id": "557837",
+    "event_type": "Road Work",
+    "description": "Services",
+    "impact": "Caution",
+    "closed": false,
+    "status": "Active",
+    "planned": true,
+    "location": "SH 59 Paekakariki, between Paekakariki Hill Road and Ames Street",
+    "comments": "Due to vegetation works, there is stop/go traffic management with a 30km/h temporary speed restriction in place. Take extra care and stop on request.",
+    "alternative_route": "Not Applicable",
+    "expected_resolution": "13/08/2026 16:30",
+    "start_at": "2026-08-12T18:30:00Z",
+    "end_at": "2026-08-13T04:30:00Z",
+    "supplier": "Official",
+    "information_source": "NZTA",
+    "attribution": "Waka Kotahi NZ Transport Agency, Traffic Road Event Information System",
+    "limitations": [
+     "Notable, officially verified events only: the absence of an event record is not evidence a road is open.",
+     "State-highway network focus; local-road closures are the council's record, not this feed.",
+     "A snapshot at retrieved_at, not a push feed; re-run the build script to refresh."
+    ]
+   }
+  }
+ ]
+}

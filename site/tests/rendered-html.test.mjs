@@ -464,6 +464,7 @@ test("keeps source settings off the dashboard and on their own route", async () 
     "/cop/v1/flight-anomalies.geojson",
     "/cop/v1/rain-april.geojson",
     "/cop/v1/reports-april.geojson",
+    "/cop/v1/road-events.geojson",
     "/cop/v1/live-sim.json",
     "/cop/v1/movement-health.json",
   ]) {
@@ -476,6 +477,31 @@ test("keeps source settings off the dashboard and on their own route", async () 
   }
   // Settings never adds a second map.
   assert.equal(settings.match(/<canvas/g), null);
+});
+
+test("ships the road-events snapshot as a verified official contract", async () => {
+  const events = JSON.parse(
+    await readFile(new URL("../public/cop/v1/road-events.geojson", import.meta.url), "utf8"),
+  );
+  assert.equal(events.schema, "road-event-collection/v1");
+  assert.equal(events.truth, "live_official_snapshot");
+  assert.match(events.attribution, /Waka Kotahi/);
+  assert.ok(events.limitations.some((entry) => /not evidence a road is open/.test(entry)));
+  assert.equal(events.features.length, events.event_count);
+  assert.equal(
+    events.features.filter((feature) => feature.properties.closed).length,
+    events.closure_count,
+  );
+  const [west, south, east, north] = events.region_envelope_wgs84;
+  for (const feature of events.features) {
+    const [longitude, latitude] = feature.geometry.coordinates;
+    assert.ok(longitude >= west && longitude <= east && latitude >= south && latitude <= north);
+    assert.equal(
+      feature.properties.closed,
+      String(feature.properties.impact).toLowerCase().includes("closed"),
+    );
+    assert.match(String(feature.properties.supplier), /Official/);
+  }
 });
 
 test("ships a browser-local signal review queue on its own route", async () => {

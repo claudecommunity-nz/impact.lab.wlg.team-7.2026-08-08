@@ -7,7 +7,7 @@
 <meta name="description" content="Movement-change signals from Wellington City Council transport sensors: quiet hours quiet, storms unmistakable, missing data shown as missing.">
 <link rel="icon" href="murmur-favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="Murmur — movement signals for Wellington">
-<meta property="og:description" content="Measuring the city's heartbeat and detecting irregularities. Live demo and twelve open COP feeds.">
+<meta property="og:description" content="Measuring the city's heartbeat and detecting irregularities. Live demo and thirteen open COP feeds.">
 <meta property="og:image" content="https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08/og-card.png">
 <style>
   :root {
@@ -169,7 +169,7 @@
 
   <section class="feeds">
     <h2>The feeds</h2>
-    <p class="note">The map is a view; the feed is the product. Twelve files, each carrying
+    <p class="note">The map is a view; the feed is the product. Thirteen files, each carrying
     its schema id, confidence and <code>limitations[]</code> — point any COP or GIS client at them.</p>
     <table>
       <tr><td>Movement signals</td><td class="path"><a href="cop/v1/movement-signals.geojson">cop/v1/movement-signals.geojson</a></td><td class="badge-cell"><span class="badge replay">Batch replay</span></td></tr>
@@ -182,6 +182,7 @@
       <tr><td>Air access · OpenSky</td><td class="path"><a href="cop/v1/flight-anomalies.geojson">cop/v1/flight-anomalies.geojson</a></td><td class="badge-cell"><span class="badge real">Real · Apr 2026</span></td></tr>
       <tr><td>Rainfall · GWRC Hilltop</td><td class="path"><a href="cop/v1/rain-april.geojson">cop/v1/rain-april.geojson</a></td><td class="badge-cell"><span class="badge real">Real · Apr 2026</span></td></tr>
       <tr><td>Public reports</td><td class="path"><a href="cop/v1/reports-april.geojson">cop/v1/reports-april.geojson</a></td><td class="badge-cell"><span class="badge synthetic">Synthetic</span></td></tr>
+      <tr><td>Road events and closures · NZTA TREIS</td><td class="path"><a href="cop/v1/road-events.geojson">cop/v1/road-events.geojson</a></td><td class="badge-cell"><span class="badge live">Official snapshot</span></td></tr>
       <tr><td>Live-monitor simulation</td><td class="path"><a href="cop/v1/live-sim.json">cop/v1/live-sim.json</a></td><td class="badge-cell"><span class="badge synthetic">Synthetic</span></td></tr>
       <tr><td>Coverage and health</td><td class="path"><a href="cop/v1/movement-health.json">cop/v1/movement-health.json</a></td><td class="badge-cell"><span class="badge replay">Batch replay</span></td></tr>
     </table>

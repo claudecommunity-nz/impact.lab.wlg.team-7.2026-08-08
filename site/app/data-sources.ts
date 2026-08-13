@@ -218,6 +218,16 @@ export const BUILTIN_SOURCES: DataSource[] = [
     note: "No live sensor API exists; a storm ramp cloned from the April record.",
   },
   {
+    id: "road-events",
+    label: "Road events and closures",
+    publisher: "Waka Kotahi NZTA (TREIS)",
+    url: "/cop/v1/road-events.geojson",
+    format: "geojson",
+    kind: "builtin",
+    cadence: "official snapshot · rebuild to refresh",
+    note: "Verified notable events only; no record is not an open road.",
+  },
+  {
     id: "countline-coverage",
     label: "Sensor coverage",
     publisher: "Wellington City Council Transport Sensors",

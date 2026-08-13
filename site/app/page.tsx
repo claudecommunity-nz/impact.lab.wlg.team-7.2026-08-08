@@ -49,6 +49,10 @@ export default function Home() {
             <span>State highway layer (real April 2026 floods)</span>
             <code>/cop/v1/road-anomalies.geojson</code>
           </a>
+          <a href="/cop/v1/road-events.geojson">
+            <span>Road events and closures (NZTA TREIS snapshot)</span>
+            <code>/cop/v1/road-events.geojson</code>
+          </a>
           <a href="/cop/v1/rain-april.geojson">
             <span>Rainfall layer (real April 2026, GWRC Hilltop)</span>
             <code>/cop/v1/rain-april.geojson</code>
