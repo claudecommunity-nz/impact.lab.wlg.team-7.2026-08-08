@@ -211,7 +211,8 @@ export default function MovementCanvas() {
   // The chosen investigation case is its own state: hand-toggling layers
   // afterwards changes the picture, never which case is open. Each case
   // remembers its own scrub position; -1 or absent means the case default.
-  const [caseId, setCaseId] = useState<string>(EVENTS[0].id);
+  /* The site opens on the flagship: the real April storm investigation. */
+  const [caseId, setCaseId] = useState<string>("april-floods");
   const [slotIndices, setSlotIndices] = useState<Record<string, number>>({});
   const [speed, setSpeed] = useState(1);
   // Hover stores the popup position at pick time; every view change clears it,

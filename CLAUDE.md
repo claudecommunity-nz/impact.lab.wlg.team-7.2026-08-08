@@ -482,10 +482,10 @@ chrome costs nothing when it is closed. `app/flag-store.ts`
 (`createFlagStore(key, defaultOn)`) is the shared pattern behind them: a
 remembered boolean exposed as `subscribe`/`snapshot`/`serverSnapshot`/`toggle`
 for `useSyncExternalStore`. Use it for the next collapsible thing rather than
-another bespoke effect. There is no hero band: the snapshot facts (signals,
-data gaps, data age) live in the title bar (`SiteHeader`, `.watch-facts`,
-single text nodes so the test-asserted literals survive RSC markup) and the
-map takes the viewport directly under the timebar. Server snapshots keep every
+another bespoke effect. There is no hero band and no header fact strip: the
+title bar is brand + Batch replay chip only, the numbers live in the
+artifacts (and the review page's lede), and the map takes the viewport
+directly under the timebar. Server snapshots keep every
 flag open for SSR, so the panel and the rail are present in the rendered HTML
 and the tests can assert them.
 
@@ -554,16 +554,17 @@ prototype, and `insufficient_baseline` forces `signal_confidence.level` to
 `low`. `low_baseline` is a gated deviation whose expected count is under 5:
 counted in health (`low_baseline_count`), never queued as a signal.
 
-### Demo numbers are hardcoded in three places
+### Demo numbers are hardcoded in two places
 
 7 signals, 207 data gaps, 414 countlines, data through 6 Aug 2026. They appear
-in the artifacts, in the title-bar facts (`site/app/SiteChrome.tsx`), and as
-assertions in `site/tests/rendered-html.test.mjs`. Rebuilding artifacts for a
-different `--target-at` means updating all three or the site test fails — and
+in the artifacts and as assertions in `site/tests/rendered-html.test.mjs`
+(the review page renders `health.candidate_count` as "7 published signals";
+the header carries no fact strip). Rebuilding artifacts for a different
+`--target-at` means updating both or the site test fails — and
 `movement-replay.json` must be rebuilt with it: the test suite asserts the
-replay's default slot matches `movement-health.json` number for number, and
-the timebar's server-rendered label ("Thu 6 Aug · 12:00") comes from
-`health.target_at`. The committed August artifacts additionally carry the
+replay's default slot matches `movement-health.json` number for number. The
+site opens on the April case (`caseId` initial state "april-floods"), so the
+server-rendered timebar readout is the April fallback, not the August hour. The committed August artifacts additionally carry the
 low-baseline migration (`scripts/reclassify_low_baseline.py`, idempotent) —
 the source Parquet is no longer on hand, so a fresh `build_demo.py` run on
 new data supersedes it, and nothing may re-run the old pre-gate build.

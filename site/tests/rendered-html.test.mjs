@@ -34,10 +34,8 @@ test("server-renders the movement investigation surface with truthful batch stat
   );
   assert.match(html, /Movement changes worth investigating/);
   assert.match(html, /Batch replay/);
-  assert.match(html, /7 signals/);
-  assert.match(html, /207 data gaps/);
-  assert.match(html, /Data through/);
-  assert.match(html, /6 Aug 2026/);
+  // The header carries no fact strip; the numbers live in the artifacts.
+  assert.doesNotMatch(html, /watch-facts|Data through/);
   assert.ok(html.includes("/cop/v1/movement-signals.geojson"));
   assert.ok(html.includes("/cop/v1/movement-replay.json"));
   assert.ok(html.includes("/cop/v1/movement-health.json"));
@@ -47,12 +45,12 @@ test("server-renders the movement investigation surface with truthful batch stat
   assert.ok(html.includes("/cop/v1/rain-april.geojson"));
   assert.ok(html.includes("/cop/v1/reports-april.geojson"));
   assert.ok(html.includes("/cop/v1/live-sim.json"));
-  // The replay timebar server-renders on the default published hour.
+  // The timebar server-renders on the default case: the April storm.
   assert.match(html, /aria-label="Batch replay timeline"/);
   assert.match(html, /aria-label="Replay hour"/);
   assert.match(html, /aria-label="Playback speed"/);
   assert.match(html, /Play the replay/);
-  assert.match(html, /Thu 6 Aug · 12:00/);
+  assert.match(html, /18–22 Apr 2026/);
   assert.match(html, /Not live emergency information/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|taking shape/i);
 });
@@ -406,11 +404,12 @@ test("carries a hideable sidebar and the agent on every route", async () => {
   }
 });
 
-test("folds the problem brief into the title bar so the map keeps the viewport", async () => {
+test("keeps the title bar to brand and mode so the map keeps the viewport", async () => {
   const html = await render("/").then((response) => response.text());
 
-  // The snapshot facts live in the header on every visit; no hero band remains.
-  assert.match(html, /aria-label="Snapshot summary"/);
+  // Brand + Batch replay chip only; no hero band, no fact strip.
+  assert.doesNotMatch(html, /aria-label="Snapshot summary"/);
+  assert.match(html, /aria-label="Publisher mode: batch replay"/);
   assert.match(html, /Movement changes worth investigating/);
   assert.doesNotMatch(html, /Hide the brief|Show the brief/);
   assert.doesNotMatch(html, /Problem 05 ·/);
