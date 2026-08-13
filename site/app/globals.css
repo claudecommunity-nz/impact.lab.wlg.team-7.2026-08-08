@@ -624,6 +624,7 @@ h3 { font-size: var(--text-h3); }
 .direction-chip.report-low { background: #77776F; }
 .direction-chip.report-elevated { background: #B26A00; }
 .direction-chip.report-investigate { background: #B3261E; }
+.caveat-chip { padding: var(--space-1) var(--space-3); border-radius: var(--radius-pill); background: #e3f1fa; color: #0d5c8c; font-weight: 700; }
 .selected-evidence h3 { margin-top: var(--space-4); }
 .selected-evidence > p { color: var(--wcc-grey-700); }
 .count-comparison { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin: var(--space-5) 0; border-block: 1px solid var(--border-hairline); }

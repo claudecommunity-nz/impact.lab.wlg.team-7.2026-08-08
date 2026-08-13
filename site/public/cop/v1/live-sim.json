@@ -26,6 +26,9 @@
    "signals": [
     {
      "id": "sim:2026-08-11T10:Queens Wharf:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Queens Wharf",
      "name": "Queens Wharf",
      "transport_class": "Vehicle",
@@ -77,6 +80,7 @@
     },
     {
      "id": "sim:2026-08-11T10:Commonwealth:Cyclist",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Cyclist",
@@ -136,6 +140,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T11:Commonwealth:Pedestrian",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Pedestrian",
@@ -187,6 +192,7 @@
     },
     {
      "id": "sim:2026-08-11T11:Karori Rd:Cyclist",
+     "caveats": [],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Cyclist",
@@ -238,6 +244,7 @@
     },
     {
      "id": "sim:2026-08-11T11:Queens Wharf:Vehicle",
+     "caveats": [],
      "street": "Queens Wharf",
      "name": "Queens Wharf",
      "transport_class": "Vehicle",
@@ -289,6 +296,7 @@
     },
     {
      "id": "sim:2026-08-11T11:Karori Rd:Pedestrian",
+     "caveats": [],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Pedestrian",
@@ -340,6 +348,7 @@
     },
     {
      "id": "sim:2026-08-11T11:Commonwealth:Cyclist",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Cyclist",
@@ -399,6 +408,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T12:Riddiford St:Cyclist",
+     "caveats": [],
      "street": "Riddiford St",
      "name": "Riddiford St",
      "transport_class": "Cyclist",
@@ -450,6 +460,7 @@
     },
     {
      "id": "sim:2026-08-11T12:Commonwealth:Pedestrian",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Pedestrian",
@@ -501,6 +512,7 @@
     },
     {
      "id": "sim:2026-08-11T12:Elizabeth St:Pedestrian",
+     "caveats": [],
      "street": "Elizabeth St",
      "name": "Elizabeth St",
      "transport_class": "Pedestrian",
@@ -552,6 +564,7 @@
     },
     {
      "id": "sim:2026-08-11T12:Commonwealth:Vehicle",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Vehicle",
@@ -603,6 +616,7 @@
     },
     {
      "id": "sim:2026-08-11T12:Queens Wharf:Vehicle",
+     "caveats": [],
      "street": "Queens Wharf",
      "name": "Queens Wharf",
      "transport_class": "Vehicle",
@@ -662,6 +676,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T13:Rintoul St:Vehicle",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Vehicle",
@@ -713,6 +728,7 @@
     },
     {
      "id": "sim:2026-08-11T13:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -772,6 +788,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T14:Rintoul St:Vehicle",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Vehicle",
@@ -823,6 +840,7 @@
     },
     {
      "id": "sim:2026-08-11T14:Tawa St:Pedestrian",
+     "caveats": [],
      "street": "Tawa St",
      "name": "Tawa St",
      "transport_class": "Pedestrian",
@@ -889,6 +907,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T16:Kent Terrace:Pedestrian",
+     "caveats": [],
      "street": "Kent Terrace",
      "name": "Kent Terrace",
      "transport_class": "Pedestrian",
@@ -948,6 +967,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T17:Customhouse Quay:Cyclist",
+     "caveats": [],
      "street": "Customhouse Quay",
      "name": "Customhouse Quay",
      "transport_class": "Cyclist",
@@ -999,6 +1019,7 @@
     },
     {
      "id": "sim:2026-08-11T17:Riddiford St:Cyclist",
+     "caveats": [],
      "street": "Riddiford St",
      "name": "Riddiford St",
      "transport_class": "Cyclist",
@@ -1050,6 +1071,7 @@
     },
     {
      "id": "sim:2026-08-11T17:Park St:Pedestrian",
+     "caveats": [],
      "street": "Park St",
      "name": "Park St",
      "transport_class": "Pedestrian",
@@ -1109,6 +1131,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T18:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -1160,6 +1183,7 @@
     },
     {
      "id": "sim:2026-08-11T18:Customhouse Quay:Cyclist",
+     "caveats": [],
      "street": "Customhouse Quay",
      "name": "Customhouse Quay",
      "transport_class": "Cyclist",
@@ -1211,6 +1235,7 @@
     },
     {
      "id": "sim:2026-08-11T18:Ara Moana:Pedestrian",
+     "caveats": [],
      "street": "Ara Moana",
      "name": "Ara Moana",
      "transport_class": "Pedestrian",
@@ -1262,6 +1287,7 @@
     },
     {
      "id": "sim:2026-08-11T18:Karori Rd:Pedestrian",
+     "caveats": [],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Pedestrian",
@@ -1321,6 +1347,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T19:Hutt Rd:Pedestrian",
+     "caveats": [],
      "street": "Hutt Rd",
      "name": "Hutt Rd",
      "transport_class": "Pedestrian",
@@ -1372,6 +1399,7 @@
     },
     {
      "id": "sim:2026-08-11T19:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -1423,6 +1451,7 @@
     },
     {
      "id": "sim:2026-08-11T19:Customhouse Quay:Cyclist",
+     "caveats": [],
      "street": "Customhouse Quay",
      "name": "Customhouse Quay",
      "transport_class": "Cyclist",
@@ -1482,6 +1511,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T20:Customhouse Quay:Cyclist",
+     "caveats": [],
      "street": "Customhouse Quay",
      "name": "Customhouse Quay",
      "transport_class": "Cyclist",
@@ -1533,6 +1563,7 @@
     },
     {
      "id": "sim:2026-08-11T20:Vivian St:Cyclist",
+     "caveats": [],
      "street": "Vivian St",
      "name": "Vivian St",
      "transport_class": "Cyclist",
@@ -1584,6 +1615,7 @@
     },
     {
      "id": "sim:2026-08-11T20:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -1635,6 +1667,7 @@
     },
     {
      "id": "sim:2026-08-11T20:Karori Rd:Vehicle",
+     "caveats": [],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Vehicle",
@@ -1694,6 +1727,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T21:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -1745,6 +1779,7 @@
     },
     {
      "id": "sim:2026-08-11T21:Customhouse Quay:Cyclist",
+     "caveats": [],
      "street": "Customhouse Quay",
      "name": "Customhouse Quay",
      "transport_class": "Cyclist",
@@ -1796,6 +1831,7 @@
     },
     {
      "id": "sim:2026-08-11T21:Hutt Rd:Pedestrian",
+     "caveats": [],
      "street": "Hutt Rd",
      "name": "Hutt Rd",
      "transport_class": "Pedestrian",
@@ -1855,6 +1891,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T22:Hutt Rd:Cyclist",
+     "caveats": [],
      "street": "Hutt Rd",
      "name": "Hutt Rd",
      "transport_class": "Cyclist",
@@ -1906,6 +1943,7 @@
     },
     {
      "id": "sim:2026-08-11T22:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -1965,6 +2003,7 @@
    "signals": [
     {
      "id": "sim:2026-08-11T23:Hutt Rd:Cyclist",
+     "caveats": [],
      "street": "Hutt Rd",
      "name": "Hutt Rd",
      "transport_class": "Cyclist",
@@ -2016,6 +2055,7 @@
     },
     {
      "id": "sim:2026-08-11T23:Waterloo Quay:Cyclist",
+     "caveats": [],
      "street": "Waterloo Quay",
      "name": "Waterloo Quay",
      "transport_class": "Cyclist",
@@ -2103,6 +2143,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T04:Rintoul St:Vehicle",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Vehicle",
@@ -2162,6 +2203,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T05:Commonwealth:Vehicle",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Vehicle",
@@ -2213,6 +2255,7 @@
     },
     {
      "id": "sim:2026-08-12T05:Commonwealth:Cyclist",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Cyclist",
@@ -2272,6 +2315,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T06:Commonwealth:Vehicle",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Vehicle",
@@ -2323,6 +2367,7 @@
     },
     {
      "id": "sim:2026-08-12T06:Ara Moana:Cyclist",
+     "caveats": [],
      "street": "Ara Moana",
      "name": "Ara Moana",
      "transport_class": "Cyclist",
@@ -2374,6 +2419,7 @@
     },
     {
      "id": "sim:2026-08-12T06:Commonwealth:Pedestrian",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Pedestrian",
@@ -2425,6 +2471,7 @@
     },
     {
      "id": "sim:2026-08-12T06:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -2476,6 +2523,7 @@
     },
     {
      "id": "sim:2026-08-12T06:Lady Elizabeth:Pedestrian",
+     "caveats": [],
      "street": "Lady Elizabeth",
      "name": "Lady Elizabeth",
      "transport_class": "Pedestrian",
@@ -2542,6 +2590,9 @@
    "signals": [
     {
      "id": "sim:2026-08-12T08:Ara Moana:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Ara Moana",
      "name": "Ara Moana",
      "transport_class": "Vehicle",
@@ -2601,6 +2652,9 @@
    "signals": [
     {
      "id": "sim:2026-08-12T09:Queens Wharf:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Queens Wharf",
      "name": "Queens Wharf",
      "transport_class": "Vehicle",
@@ -2652,6 +2706,7 @@
     },
     {
      "id": "sim:2026-08-12T09:Evans Bay:Pedestrian",
+     "caveats": [],
      "street": "Evans Bay",
      "name": "Evans Bay",
      "transport_class": "Pedestrian",
@@ -2703,6 +2758,7 @@
     },
     {
      "id": "sim:2026-08-12T09:Shelly Bay Rd:Cyclist",
+     "caveats": [],
      "street": "Shelly Bay Rd",
      "name": "Shelly Bay Rd",
      "transport_class": "Cyclist",
@@ -2754,6 +2810,9 @@
     },
     {
      "id": "sim:2026-08-12T09:Thorndon Quay:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Thorndon Quay",
      "name": "Thorndon Quay",
      "transport_class": "Vehicle",
@@ -2805,6 +2864,7 @@
     },
     {
      "id": "sim:2026-08-12T09:Birdwood St:Pedestrian",
+     "caveats": [],
      "street": "Birdwood St",
      "name": "Birdwood St",
      "transport_class": "Pedestrian",
@@ -2856,6 +2916,9 @@
     },
     {
      "id": "sim:2026-08-12T09:Customhouse Quay:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Customhouse Quay",
      "name": "Customhouse Quay",
      "transport_class": "Vehicle",
@@ -2915,6 +2978,9 @@
    "signals": [
     {
      "id": "sim:2026-08-12T10:Queens Wharf:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Queens Wharf",
      "name": "Queens Wharf",
      "transport_class": "Vehicle",
@@ -2966,6 +3032,7 @@
     },
     {
      "id": "sim:2026-08-12T10:Commonwealth:Cyclist",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Cyclist",
@@ -3025,6 +3092,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T11:Commonwealth:Pedestrian",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Pedestrian",
@@ -3076,6 +3144,7 @@
     },
     {
      "id": "sim:2026-08-12T11:Karori Rd:Cyclist",
+     "caveats": [],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Cyclist",
@@ -3127,6 +3196,7 @@
     },
     {
      "id": "sim:2026-08-12T11:Queens Wharf:Vehicle",
+     "caveats": [],
      "street": "Queens Wharf",
      "name": "Queens Wharf",
      "transport_class": "Vehicle",
@@ -3178,6 +3248,7 @@
     },
     {
      "id": "sim:2026-08-12T11:Karori Rd:Pedestrian",
+     "caveats": [],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Pedestrian",
@@ -3229,6 +3300,7 @@
     },
     {
      "id": "sim:2026-08-12T11:Commonwealth:Cyclist",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Cyclist",
@@ -3288,6 +3360,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T12:Riddiford St:Cyclist",
+     "caveats": [],
      "street": "Riddiford St",
      "name": "Riddiford St",
      "transport_class": "Cyclist",
@@ -3339,6 +3412,7 @@
     },
     {
      "id": "sim:2026-08-12T12:Commonwealth:Pedestrian",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Pedestrian",
@@ -3390,6 +3464,7 @@
     },
     {
      "id": "sim:2026-08-12T12:Elizabeth St:Pedestrian",
+     "caveats": [],
      "street": "Elizabeth St",
      "name": "Elizabeth St",
      "transport_class": "Pedestrian",
@@ -3441,6 +3516,7 @@
     },
     {
      "id": "sim:2026-08-12T12:Commonwealth:Vehicle",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Vehicle",
@@ -3492,6 +3568,7 @@
     },
     {
      "id": "sim:2026-08-12T12:Queens Wharf:Vehicle",
+     "caveats": [],
      "street": "Queens Wharf",
      "name": "Queens Wharf",
      "transport_class": "Vehicle",
@@ -3551,6 +3628,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T13:Rintoul St:Vehicle",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Vehicle",
@@ -3602,6 +3680,7 @@
     },
     {
      "id": "sim:2026-08-12T13:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -3661,6 +3740,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T14:Rintoul St:Vehicle",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Vehicle",
@@ -3712,6 +3792,7 @@
     },
     {
      "id": "sim:2026-08-12T14:Tawa St:Pedestrian",
+     "caveats": [],
      "street": "Tawa St",
      "name": "Tawa St",
      "transport_class": "Pedestrian",
@@ -3778,6 +3859,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T16:Kent Terrace:Pedestrian",
+     "caveats": [],
      "street": "Kent Terrace",
      "name": "Kent Terrace",
      "transport_class": "Pedestrian",
@@ -3837,6 +3919,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T17:Customhouse Quay:Cyclist",
+     "caveats": [],
      "street": "Customhouse Quay",
      "name": "Customhouse Quay",
      "transport_class": "Cyclist",
@@ -3888,6 +3971,7 @@
     },
     {
      "id": "sim:2026-08-12T17:Riddiford St:Cyclist",
+     "caveats": [],
      "street": "Riddiford St",
      "name": "Riddiford St",
      "transport_class": "Cyclist",
@@ -3939,6 +4023,7 @@
     },
     {
      "id": "sim:2026-08-12T17:Park St:Pedestrian",
+     "caveats": [],
      "street": "Park St",
      "name": "Park St",
      "transport_class": "Pedestrian",
@@ -3998,6 +4083,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T18:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -4049,6 +4135,7 @@
     },
     {
      "id": "sim:2026-08-12T18:Vivian St:Cyclist",
+     "caveats": [],
      "street": "Vivian St",
      "name": "Vivian St",
      "transport_class": "Cyclist",
@@ -4100,6 +4187,7 @@
     },
     {
      "id": "sim:2026-08-12T18:Kent Terrace:Pedestrian",
+     "caveats": [],
      "street": "Kent Terrace",
      "name": "Kent Terrace",
      "transport_class": "Pedestrian",
@@ -4166,6 +4254,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T20:Vivian St:Cyclist",
+     "caveats": [],
      "street": "Vivian St",
      "name": "Vivian St",
      "transport_class": "Cyclist",
@@ -4261,6 +4350,7 @@
     },
     {
      "id": "sim:2026-08-12T20:Commonwealth:Vehicle",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Vehicle",
@@ -4360,6 +4450,7 @@
     },
     {
      "id": "sim:2026-08-12T20:Ara Moana:Pedestrian",
+     "caveats": [],
      "street": "Ara Moana",
      "name": "Ara Moana",
      "transport_class": "Pedestrian",
@@ -4467,6 +4558,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T21:Kaiwharawhara Rd:Vehicle",
+     "caveats": [],
      "street": "Kaiwharawhara Rd",
      "name": "Kaiwharawhara Rd",
      "transport_class": "Vehicle",
@@ -4581,6 +4673,7 @@
    "signals": [
     {
      "id": "sim:2026-08-12T23:Commonwealth:Vehicle",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Vehicle",
@@ -4672,6 +4765,9 @@
    "signals": [
     {
      "id": "sim:2026-08-13T00:Commonwealth:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Vehicle",
@@ -4767,6 +4863,9 @@
     },
     {
      "id": "sim:2026-08-13T00:Elizabeth St:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Elizabeth St",
      "name": "Elizabeth St",
      "transport_class": "Vehicle",
@@ -4862,6 +4961,9 @@
     },
     {
      "id": "sim:2026-08-13T00:Riddiford St:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Riddiford St",
      "name": "Riddiford St",
      "transport_class": "Vehicle",
@@ -4969,6 +5071,9 @@
    "signals": [
     {
      "id": "sim:2026-08-13T01:Karori Rd:Cyclist",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Cyclist",
@@ -5068,6 +5173,9 @@
     },
     {
      "id": "sim:2026-08-13T01:Riddiford St:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Riddiford St",
      "name": "Riddiford St",
      "transport_class": "Vehicle",
@@ -5167,6 +5275,9 @@
     },
     {
      "id": "sim:2026-08-13T01:Taranaki St:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Taranaki St",
      "name": "Taranaki St",
      "transport_class": "Vehicle",
@@ -5266,6 +5377,9 @@
     },
     {
      "id": "sim:2026-08-13T01:Luxford St:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Luxford St",
      "name": "Luxford St",
      "transport_class": "Vehicle",
@@ -5373,6 +5487,7 @@
    "signals": [
     {
      "id": "sim:2026-08-13T02:Paterson St:Vehicle",
+     "caveats": [],
      "street": "Paterson St",
      "name": "Paterson St",
      "transport_class": "Vehicle",
@@ -5472,6 +5587,7 @@
     },
     {
      "id": "sim:2026-08-13T02:The Parade:Vehicle",
+     "caveats": [],
      "street": "The Parade",
      "name": "The Parade",
      "transport_class": "Vehicle",
@@ -5571,6 +5687,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Tinakori Rd:Vehicle",
+     "caveats": [],
      "street": "Tinakori Rd",
      "name": "Tinakori Rd",
      "transport_class": "Vehicle",
@@ -5670,6 +5787,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Karo Dr:Vehicle",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Vehicle",
@@ -5769,6 +5887,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Bowen St:Vehicle",
+     "caveats": [],
      "street": "Bowen St",
      "name": "Bowen St",
      "transport_class": "Vehicle",
@@ -5868,6 +5987,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Middleton Rd:Vehicle",
+     "caveats": [],
      "street": "Middleton Rd",
      "name": "Middleton Rd",
      "transport_class": "Vehicle",
@@ -5967,6 +6087,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Aro St:Vehicle",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Vehicle",
@@ -6066,6 +6187,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Commonwealth:Pedestrian",
+     "caveats": [],
      "street": "Commonwealth",
      "name": "Commonwealth",
      "transport_class": "Pedestrian",
@@ -6165,6 +6287,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Boulcott St:Vehicle",
+     "caveats": [],
      "street": "Boulcott St",
      "name": "Boulcott St",
      "transport_class": "Vehicle",
@@ -6264,6 +6387,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Park St:Pedestrian",
+     "caveats": [],
      "street": "Park St",
      "name": "Park St",
      "transport_class": "Pedestrian",
@@ -6359,6 +6483,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Taranaki St:Vehicle",
+     "caveats": [],
      "street": "Taranaki St",
      "name": "Taranaki St",
      "transport_class": "Vehicle",
@@ -6458,6 +6583,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Park St:Vehicle",
+     "caveats": [],
      "street": "Park St",
      "name": "Park St",
      "transport_class": "Vehicle",
@@ -6557,6 +6683,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Cambridge Ter:Pedestrian",
+     "caveats": [],
      "street": "Cambridge Ter",
      "name": "Cambridge Ter",
      "transport_class": "Pedestrian",
@@ -6656,6 +6783,7 @@
     },
     {
      "id": "sim:2026-08-13T02:Cuba St:Pedestrian",
+     "caveats": [],
      "street": "Cuba St",
      "name": "Cuba St",
      "transport_class": "Pedestrian",
@@ -6763,6 +6891,7 @@
    "signals": [
     {
      "id": "sim:2026-08-13T03:Rintoul St:Pedestrian",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Pedestrian",
@@ -6862,6 +6991,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Paterson St:Vehicle",
+     "caveats": [],
      "street": "Paterson St",
      "name": "Paterson St",
      "transport_class": "Vehicle",
@@ -6949,6 +7079,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Lambton Quay Turning:Pedestrian",
+     "caveats": [],
      "street": "Lambton Quay Turning",
      "name": "Lambton Quay Turning",
      "transport_class": "Pedestrian",
@@ -7048,6 +7179,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Miramar Ave:Cyclist",
+     "caveats": [],
      "street": "Miramar Ave",
      "name": "Miramar Ave",
      "transport_class": "Cyclist",
@@ -7147,6 +7279,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Cuba St:Pedestrian",
+     "caveats": [],
      "street": "Cuba St",
      "name": "Cuba St",
      "transport_class": "Pedestrian",
@@ -7246,6 +7379,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Taranaki St:Vehicle",
+     "caveats": [],
      "street": "Taranaki St",
      "name": "Taranaki St",
      "transport_class": "Vehicle",
@@ -7345,6 +7479,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Aro St:Cyclist",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Cyclist",
@@ -7444,6 +7579,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Manners St:Pedestrian",
+     "caveats": [],
      "street": "Manners St",
      "name": "Manners St",
      "transport_class": "Pedestrian",
@@ -7543,6 +7679,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Tawa St:Vehicle",
+     "caveats": [],
      "street": "Tawa St",
      "name": "Tawa St",
      "transport_class": "Vehicle",
@@ -7638,6 +7775,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Ghuznee St:Cyclist",
+     "caveats": [],
      "street": "Ghuznee St",
      "name": "Ghuznee St",
      "transport_class": "Cyclist",
@@ -7737,6 +7875,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Aro St:Pedestrian",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Pedestrian",
@@ -7836,6 +7975,7 @@
     },
     {
      "id": "sim:2026-08-13T03:Waterloo Quay:Pedestrian",
+     "caveats": [],
      "street": "Waterloo Quay",
      "name": "Waterloo Quay",
      "transport_class": "Pedestrian",
@@ -7943,6 +8083,7 @@
    "signals": [
     {
      "id": "sim:2026-08-13T04:Rintoul St:Pedestrian",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Pedestrian",
@@ -8042,6 +8183,7 @@
     },
     {
      "id": "sim:2026-08-13T04:Lambton Quay Turning:Pedestrian",
+     "caveats": [],
      "street": "Lambton Quay Turning",
      "name": "Lambton Quay Turning",
      "transport_class": "Pedestrian",
@@ -8141,6 +8283,7 @@
     },
     {
      "id": "sim:2026-08-13T04:Paterson St:Vehicle",
+     "caveats": [],
      "street": "Paterson St",
      "name": "Paterson St",
      "transport_class": "Vehicle",
@@ -8228,6 +8371,7 @@
     },
     {
      "id": "sim:2026-08-13T04:Ara Moana:Cyclist",
+     "caveats": [],
      "street": "Ara Moana",
      "name": "Ara Moana",
      "transport_class": "Cyclist",
@@ -8331,6 +8475,7 @@
    "signals": [
     {
      "id": "sim:2026-08-13T05:Paterson St:Vehicle",
+     "caveats": [],
      "street": "Paterson St",
      "name": "Paterson St",
      "transport_class": "Vehicle",
@@ -8422,6 +8567,7 @@
     },
     {
      "id": "sim:2026-08-13T05:Rintoul St:Pedestrian",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Pedestrian",
@@ -8521,6 +8667,7 @@
     },
     {
      "id": "sim:2026-08-13T05:Elizabeth St:Vehicle",
+     "caveats": [],
      "street": "Elizabeth St",
      "name": "Elizabeth St",
      "transport_class": "Vehicle",
@@ -8612,6 +8759,7 @@
     },
     {
      "id": "sim:2026-08-13T05:Waterloo Quay:Pedestrian",
+     "caveats": [],
      "street": "Waterloo Quay",
      "name": "Waterloo Quay",
      "transport_class": "Pedestrian",
@@ -8711,6 +8859,7 @@
     },
     {
      "id": "sim:2026-08-13T05:Lady Elizabeth:Cyclist",
+     "caveats": [],
      "street": "Lady Elizabeth",
      "name": "Lady Elizabeth",
      "transport_class": "Cyclist",
@@ -8818,6 +8967,7 @@
    "signals": [
     {
      "id": "sim:2026-08-13T06:Rintoul St:Pedestrian",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Pedestrian",
@@ -8917,6 +9067,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Paterson St:Vehicle",
+     "caveats": [],
      "street": "Paterson St",
      "name": "Paterson St",
      "transport_class": "Vehicle",
@@ -9012,6 +9163,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Aro St:Vehicle",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Vehicle",
@@ -9111,6 +9263,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Lambton Quay:Pedestrian",
+     "caveats": [],
      "street": "Lambton Quay",
      "name": "Lambton Quay",
      "transport_class": "Pedestrian",
@@ -9210,6 +9363,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Woodward St:Pedestrian",
+     "caveats": [],
      "street": "Woodward St",
      "name": "Woodward St",
      "transport_class": "Pedestrian",
@@ -9309,6 +9463,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Lady Elizabeth:Vehicle",
+     "caveats": [],
      "street": "Lady Elizabeth",
      "name": "Lady Elizabeth",
      "transport_class": "Vehicle",
@@ -9408,6 +9563,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Waterloo Quay:Pedestrian",
+     "caveats": [],
      "street": "Waterloo Quay",
      "name": "Waterloo Quay",
      "transport_class": "Pedestrian",
@@ -9507,6 +9663,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Taranaki St:Pedestrian",
+     "caveats": [],
      "street": "Taranaki St",
      "name": "Taranaki St",
      "transport_class": "Pedestrian",
@@ -9606,6 +9763,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Cambridge Ter:Cyclist",
+     "caveats": [],
      "street": "Cambridge Ter",
      "name": "Cambridge Ter",
      "transport_class": "Cyclist",
@@ -9705,6 +9863,7 @@
     },
     {
      "id": "sim:2026-08-13T06:Dixon St:Pedestrian",
+     "caveats": [],
      "street": "Dixon St",
      "name": "Dixon St",
      "transport_class": "Pedestrian",
@@ -9812,6 +9971,9 @@
    "signals": [
     {
      "id": "sim:2026-08-13T07:Rintoul St:Pedestrian",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Pedestrian",
@@ -9911,6 +10073,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Paterson St:Vehicle",
+     "caveats": [],
      "street": "Paterson St",
      "name": "Paterson St",
      "transport_class": "Vehicle",
@@ -10006,6 +10169,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Aro St:Pedestrian",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Pedestrian",
@@ -10105,6 +10269,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Aro St:Vehicle",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Vehicle",
@@ -10204,6 +10369,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Taranaki St:Pedestrian",
+     "caveats": [],
      "street": "Taranaki St",
      "name": "Taranaki St",
      "transport_class": "Pedestrian",
@@ -10303,6 +10469,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Vivian St:Pedestrian",
+     "caveats": [],
      "street": "Vivian St",
      "name": "Vivian St",
      "transport_class": "Pedestrian",
@@ -10402,6 +10569,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Victoria St:Pedestrian",
+     "caveats": [],
      "street": "Victoria St",
      "name": "Victoria St",
      "transport_class": "Pedestrian",
@@ -10501,6 +10669,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Karori Rd:Pedestrian",
+     "caveats": [],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Pedestrian",
@@ -10600,6 +10769,7 @@
     },
     {
      "id": "sim:2026-08-13T07:New Zealand State Highway1:Pedestrian",
+     "caveats": [],
      "street": "New Zealand State Highway1",
      "name": "New Zealand State Highway1",
      "transport_class": "Pedestrian",
@@ -10699,6 +10869,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Lambton Quay:Pedestrian",
+     "caveats": [],
      "street": "Lambton Quay",
      "name": "Lambton Quay",
      "transport_class": "Pedestrian",
@@ -10798,6 +10969,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Johnston St:Pedestrian",
+     "caveats": [],
      "street": "Johnston St",
      "name": "Johnston St",
      "transport_class": "Pedestrian",
@@ -10897,6 +11069,7 @@
     },
     {
      "id": "sim:2026-08-13T07:Abel Smith St:Pedestrian",
+     "caveats": [],
      "street": "Abel Smith St",
      "name": "Abel Smith St",
      "transport_class": "Pedestrian",
@@ -11004,6 +11177,7 @@
    "signals": [
     {
      "id": "sim:2026-08-13T08:Rintoul St:Pedestrian",
+     "caveats": [],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Pedestrian",
@@ -11103,6 +11277,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Paterson St:Vehicle",
+     "caveats": [],
      "street": "Paterson St",
      "name": "Paterson St",
      "transport_class": "Vehicle",
@@ -11198,6 +11373,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Aro St:Pedestrian",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Pedestrian",
@@ -11297,6 +11473,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Customhouse Quay:Pedestrian",
+     "caveats": [],
      "street": "Customhouse Quay",
      "name": "Customhouse Quay",
      "transport_class": "Pedestrian",
@@ -11396,6 +11573,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Vivian St:Pedestrian",
+     "caveats": [],
      "street": "Vivian St",
      "name": "Vivian St",
      "transport_class": "Pedestrian",
@@ -11495,6 +11673,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Willis St:Pedestrian",
+     "caveats": [],
      "street": "Willis St",
      "name": "Willis St",
      "transport_class": "Pedestrian",
@@ -11594,6 +11773,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Dixon St:Pedestrian",
+     "caveats": [],
      "street": "Dixon St",
      "name": "Dixon St",
      "transport_class": "Pedestrian",
@@ -11693,6 +11873,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Woodward St:Pedestrian",
+     "caveats": [],
      "street": "Woodward St",
      "name": "Woodward St",
      "transport_class": "Pedestrian",
@@ -11792,6 +11973,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Cuba St:Cyclist",
+     "caveats": [],
      "street": "Cuba St",
      "name": "Cuba St",
      "transport_class": "Cyclist",
@@ -11891,6 +12073,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Lambton Quay:Pedestrian",
+     "caveats": [],
      "street": "Lambton Quay",
      "name": "Lambton Quay",
      "transport_class": "Pedestrian",
@@ -11990,6 +12173,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Cambridge Ter:Pedestrian",
+     "caveats": [],
      "street": "Cambridge Ter",
      "name": "Cambridge Ter",
      "transport_class": "Pedestrian",
@@ -12089,6 +12273,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Park St:Pedestrian",
+     "caveats": [],
      "street": "Park St",
      "name": "Park St",
      "transport_class": "Pedestrian",
@@ -12188,6 +12373,7 @@
     },
     {
      "id": "sim:2026-08-13T08:New Zealand State Highway1:Pedestrian",
+     "caveats": [],
      "street": "New Zealand State Highway1",
      "name": "New Zealand State Highway1",
      "transport_class": "Pedestrian",
@@ -12287,6 +12473,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Karo Dr:Pedestrian",
+     "caveats": [],
      "street": "Karo Dr",
      "name": "Karo Dr",
      "transport_class": "Pedestrian",
@@ -12386,6 +12573,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Taranaki St:Pedestrian",
+     "caveats": [],
      "street": "Taranaki St",
      "name": "Taranaki St",
      "transport_class": "Pedestrian",
@@ -12485,6 +12673,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Aro St:Vehicle",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Vehicle",
@@ -12584,6 +12773,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Victoria St:Pedestrian",
+     "caveats": [],
      "street": "Victoria St",
      "name": "Victoria St",
      "transport_class": "Pedestrian",
@@ -12683,6 +12873,7 @@
     },
     {
      "id": "sim:2026-08-13T08:Johnston St:Pedestrian",
+     "caveats": [],
      "street": "Johnston St",
      "name": "Johnston St",
      "transport_class": "Pedestrian",
@@ -12790,6 +12981,9 @@
    "signals": [
     {
      "id": "sim:2026-08-13T09:Rintoul St:Pedestrian",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Rintoul St",
      "name": "Rintoul St",
      "transport_class": "Pedestrian",
@@ -12889,6 +13083,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Willis St:Vehicle",
+     "caveats": [],
      "street": "Willis St",
      "name": "Willis St",
      "transport_class": "Vehicle",
@@ -12988,6 +13183,9 @@
     },
     {
      "id": "sim:2026-08-13T09:Elizabeth St:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Elizabeth St",
      "name": "Elizabeth St",
      "transport_class": "Vehicle",
@@ -13083,6 +13281,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Dixon St:Pedestrian",
+     "caveats": [],
      "street": "Dixon St",
      "name": "Dixon St",
      "transport_class": "Pedestrian",
@@ -13182,6 +13381,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Paterson St:Vehicle",
+     "caveats": [],
      "street": "Paterson St",
      "name": "Paterson St",
      "transport_class": "Vehicle",
@@ -13277,6 +13477,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Lady Elizabeth:Cyclist",
+     "caveats": [],
      "street": "Lady Elizabeth",
      "name": "Lady Elizabeth",
      "transport_class": "Cyclist",
@@ -13376,6 +13577,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Woodward St:Pedestrian",
+     "caveats": [],
      "street": "Woodward St",
      "name": "Woodward St",
      "transport_class": "Pedestrian",
@@ -13475,6 +13677,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Vivian St:Pedestrian",
+     "caveats": [],
      "street": "Vivian St",
      "name": "Vivian St",
      "transport_class": "Pedestrian",
@@ -13574,6 +13777,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Cambridge Ter:Pedestrian",
+     "caveats": [],
      "street": "Cambridge Ter",
      "name": "Cambridge Ter",
      "transport_class": "Pedestrian",
@@ -13673,6 +13877,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Lambton Quay:Pedestrian",
+     "caveats": [],
      "street": "Lambton Quay",
      "name": "Lambton Quay",
      "transport_class": "Pedestrian",
@@ -13772,6 +13977,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Karori Rd:Pedestrian",
+     "caveats": [],
      "street": "Karori Rd",
      "name": "Karori Rd",
      "transport_class": "Pedestrian",
@@ -13871,6 +14077,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Evans Bay:Pedestrian",
+     "caveats": [],
      "street": "Evans Bay",
      "name": "Evans Bay",
      "transport_class": "Pedestrian",
@@ -13970,6 +14177,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Aro St:Pedestrian",
+     "caveats": [],
      "street": "Aro St",
      "name": "Aro St",
      "transport_class": "Pedestrian",
@@ -14069,6 +14277,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Taranaki St:Cyclist",
+     "caveats": [],
      "street": "Taranaki St",
      "name": "Taranaki St",
      "transport_class": "Cyclist",
@@ -14168,6 +14377,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Taranaki St:Pedestrian",
+     "caveats": [],
      "street": "Taranaki St",
      "name": "Taranaki St",
      "transport_class": "Pedestrian",
@@ -14267,6 +14477,9 @@
     },
     {
      "id": "sim:2026-08-13T09:Boulcott St:Vehicle",
+     "caveats": [
+      "heavy_rain_hour"
+     ],
      "street": "Boulcott St",
      "name": "Boulcott St",
      "transport_class": "Vehicle",
@@ -14366,6 +14579,7 @@
     },
     {
      "id": "sim:2026-08-13T09:Elizabeth St:Pedestrian",
+     "caveats": [],
      "street": "Elizabeth St",
      "name": "Elizabeth St",
      "transport_class": "Pedestrian",

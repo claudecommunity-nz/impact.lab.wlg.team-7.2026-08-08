@@ -46,9 +46,14 @@ MODES = [
 
 ATTRIBUTION = "Wellington City Council Transport Sensors"
 
+HEAVY_RAIN_MM = 10.0  # WMO heavy-rain intensity threshold, mm/h
+
 LIMITATIONS = [
     "Retrospective backtest: baselines use April days outside the 18-23 April "
     "event window, including days after it. Never event-time evidence.",
+    "An increase in an hour where any gauge reached 10 mm/h (WMO heavy) "
+    "carries the heavy_rain_hour caveat: heavy rain can degrade optical "
+    "counting, so the rise may be sensor artifact, not movement.",
     "Street-level aggregates of real countline counts; the street name is a "
     "grouping heuristic and the point is a centroid, not a countline.",
     "Weekend baselines carry six April days, weekday baselines up to sixteen; "
@@ -69,7 +74,20 @@ def _confidence(samples: int) -> dict:
     }
 
 
-def build(hourly_path: Path, dim_path: Path, output_path: Path) -> dict:
+def load_heavy_rain_hours(rain_path: Path) -> dict[str, float]:
+    """Map 'YYYY-MM-DDTHH' -> max mm/h for hours at or above the WMO heavy rate."""
+    if not rain_path.exists():
+        return {}
+    collection = json.loads(rain_path.read_text(encoding="utf-8"))
+    return {
+        row["hour"][:13]: float(row["max_mm"])
+        for row in collection.get("hourly", [])
+        if float(row["max_mm"]) >= HEAVY_RAIN_MM
+    }
+
+
+def build(hourly_path: Path, dim_path: Path, output_path: Path, rain_path: Path) -> dict:
+    heavy_hours = load_heavy_rain_hours(rain_path)
     centroids: dict[str, list[float]] = {}
     countline_counts: dict[str, int] = {}
     with dim_path.open(newline="", encoding="utf-8") as handle:
@@ -125,9 +143,16 @@ def build(hourly_path: Path, dim_path: Path, output_path: Path) -> dict:
                 low_baseline += 1
                 continue
             observed_at = f"{date}T{hour:02d}:00:00+12:00"
-            slots.setdefault(f"{date}T{hour:02d}", []).append(
+            slot_hour = f"{date}T{hour:02d}"
+            caveats = (
+                ["heavy_rain_hour"]
+                if observed > expected and slot_hour in heavy_hours
+                else []
+            )
+            slots.setdefault(slot_hour, []).append(
                 {
                     "id": f"april-movement:{street}:{transport_class}:{observed_at}",
+                    "caveats": caveats,
                     "street": street,
                     "name": street,
                     "transport_class": transport_class,
@@ -179,6 +204,13 @@ def build(hourly_path: Path, dim_path: Path, output_path: Path) -> dict:
             "min_expected_count": MIN_EXPECTED_COUNT,
             "scale_floor": SCALE_FLOOR,
         },
+        "caveat_rules": {
+            "heavy_rain_hour": (
+                "change_direction == increase and any gauge in the hour at or "
+                f"above {HEAVY_RAIN_MM} mm/h (WMO heavy): the rise may be "
+                "precipitation-degraded counting, not movement"
+            )
+        },
         "scored_observations": scored_groups,
         "insufficient_baseline_observations": insufficient,
         "low_baseline_observations": low_baseline,
@@ -214,9 +246,14 @@ def main() -> None:
         type=Path,
         default=ROOT / "site" / "public" / "cop" / "v1" / "movement-april.json",
     )
+    parser.add_argument(
+        "--rain",
+        type=Path,
+        default=ROOT / "site" / "public" / "cop" / "v1" / "rain-april.geojson",
+    )
     args = parser.parse_args()
 
-    collection = build(args.hourly, args.dim, args.output)
+    collection = build(args.hourly, args.dim, args.output, args.rain)
     worst = max(
         (signal for slot in collection["slots"] for signal in slot["signals"]),
         key=lambda signal: abs(signal["robust_z"]),

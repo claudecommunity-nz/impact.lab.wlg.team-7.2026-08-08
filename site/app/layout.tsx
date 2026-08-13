@@ -3,7 +3,7 @@ import AgentChat from "./AgentChat";
 import SideNav from "./SideNav";
 import "./globals.css";
 
-const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
+const siteUrl = process.env.SITE_URL ?? "https://murmur.asun28.workers.dev";
 const description =
   "Measuring the city’s heartbeat and detecting irregularities: transparent movement-change signals from WCC transport countlines.";
 

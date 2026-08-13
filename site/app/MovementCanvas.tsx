@@ -3128,6 +3128,15 @@ export default function MovementCanvas() {
                     {panelSignal.properties.change_direction === "decrease" ? "↓" : "↑"}
                   </span>
                 </span>
+                {Array.isArray(panelSignal.properties.caveats) &&
+                (panelSignal.properties.caveats as string[]).includes("heavy_rain_hour") ? (
+                  <span
+                    className="caveat-chip"
+                    title="Any gauge at or above 10 mm/h (WMO heavy) this hour: the rise may be sensor degradation, not movement"
+                  >
+                    heavy-rain hour
+                  </span>
+                ) : null}
                 <span>Investigate</span>
               </div>
               <h3>{String(panelSignal.properties.name)}</h3>
@@ -3225,6 +3234,10 @@ export default function MovementCanvas() {
                       if (!item) return "";
                       return item.status === "closed" ? " · closed" : " · in review";
                     })()}
+                    {Array.isArray(feature.properties.caveats) &&
+                    (feature.properties.caveats as string[]).includes("heavy_rain_hour")
+                      ? " · heavy-rain hour"
+                      : ""}
                   </small>
                 </span>
                 <em className={String(feature.properties.change_direction)}>

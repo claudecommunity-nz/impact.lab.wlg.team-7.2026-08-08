@@ -25,22 +25,49 @@ interface ExecutionContext {
 // dangerouslyAllowSVG: true in next.config.js and uncomment below:
 // const imageConfig: ImageConfig = { dangerouslyAllowSVG: true };
 
+/** The COP feeds are the product: any origin may read them. */
+const FEED_PATHS = /^\/cop\//;
+
+function withResponseHeaders(response: Response, url: URL): Response {
+  const headers = new Headers(response.headers);
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("X-Frame-Options", "SAMEORIGIN");
+  headers.set("Permissions-Policy", "geolocation=(self), camera=(), microphone=(), payment=()");
+  if (FEED_PATHS.test(url.pathname)) {
+    headers.set("Access-Control-Allow-Origin", "*");
+    headers.set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+    headers.set("Access-Control-Allow-Headers", "Content-Type");
+    headers.set("Access-Control-Max-Age", "86400");
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
+    if (FEED_PATHS.test(url.pathname) && request.method === "OPTIONS") {
+      return withResponseHeaders(new Response(null, { status: 204 }), url);
+    }
+
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
-      return handleImageOptimization(request, {
+      const optimized = await handleImageOptimization(request, {
         fetchAsset: (path) => env.ASSETS.fetch(new Request(new URL(path, request.url))),
         transformImage: async (body, { width, format, quality }) => {
           const result = await env.IMAGES.input(body).transform(width > 0 ? { width } : {}).output({ format, quality });
           return result.response();
         },
       }, allowedWidths);
+      return withResponseHeaders(optimized, url);
     }
 
-    return handler.fetch(request, env, ctx);
+    return withResponseHeaders(await handler.fetch(request, env, ctx), url);
   },
 };
 

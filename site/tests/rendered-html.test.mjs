@@ -29,7 +29,7 @@ test("server-renders the movement investigation surface with truthful batch stat
   assert.doesNotMatch(html, /brand-mark|>M05</);
   assert.ok(
     html.includes(
-      '<meta property="og:image" content="http://localhost:3000/og-card.png"',
+      '<meta property="og:image" content="https://murmur.asun28.workers.dev/og-card.png"',
     ),
   );
   assert.match(html, /Movement changes worth investigating/);
@@ -268,6 +268,7 @@ test("ships the April movement backtest as an honestly bounded contract", async 
   assert.equal(april.automatic_incident, false);
 
   let total = 0;
+  let rainCaveats = 0;
   for (const slot of april.slots) {
     // Every slot sits inside the declared window and is internally consistent.
     const date = slot.target_at.slice(0, 10);
@@ -286,10 +287,18 @@ test("ships the April movement backtest as an honestly bounded contract", async 
         const historyDate = point.observed_at.slice(0, 10);
         assert.ok(historyDate < april.window_start || historyDate > april.window_end);
       }
+      // The precipitation caveat marks increases only.
+      if ((signal.caveats ?? []).includes("heavy_rain_hour")) {
+        rainCaveats += 1;
+        assert.equal(signal.change_direction, "increase");
+      }
     }
   }
   assert.equal(april.candidate_count, total);
   assert.ok(total > 0);
+  // The caveat rule ships machine-readably and fired on the storm's increases.
+  assert.match(april.caveat_rules.heavy_rain_hour, /10(\.0)? mm\/h/);
+  assert.ok(rainCaveats > 0);
 });
 
 test("ships the air-access layer as a real, attributed OpenSky backtest", async () => {
