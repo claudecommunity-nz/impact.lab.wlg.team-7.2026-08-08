@@ -22,7 +22,22 @@ import {
   signalKey,
   subscribeReview,
 } from "./review-store";
-import health from "../public/cop/v1/movement-health.json";
+import {
+  type CaseModel,
+  type Filter,
+  type Focus,
+  type LayerId,
+  type Layers,
+  type SearchHit,
+  EVENTS,
+  buildAprilCaseModel,
+  buildAugCaseModel,
+  buildLiveSimCaseModel,
+  compass,
+  dayLabel,
+  shortDate,
+} from "./case-model";
+import { DailyStrip, TrendSparkline } from "./EvidenceStrips";
 
 import {
   type AprilMovementCollection,
@@ -38,7 +53,6 @@ import {
   type MapView,
   type RainCollection,
   type RainFeature,
-  type RainHourly,
   type ReplayCollection,
   type ReportCollection,
   type ReportFeature,
@@ -75,10 +89,6 @@ import {
   zoomAround,
 } from "./map-draw";
 
-type Filter = "all" | "people" | "vehicles";
-type LayerId = "signals" | "coverage" | "cameras" | "transit" | "roads" | "flights" | "rain" | "reports";
-type Layers = Record<LayerId, boolean>;
-type Focus = "signal" | "camera" | "transit" | "road" | "flight" | "rain" | "report";
 type Hover = {
   kind: Focus;
   id: string;
@@ -151,403 +161,9 @@ const LAYERS: {
   { id: "reports", label: "Public reports", publisher: "WCC service desk", badge: "Synthetic", tone: "synthetic" },
 ];
 
-type SearchHit = { kind: Focus; id: string; label: string; detail: string; coordinate: Coordinate };
-
-/** Compass tokens from the source data, spelt out for the popup meta line. */
-const COMPASS: Record<string, string> = {
-  N: "north", NE: "north-east", E: "east", SE: "south-east",
-  S: "south", SW: "south-west", W: "west", NW: "north-west",
-};
-const compass = (direction: string) => COMPASS[direction] ?? direction;
-
 const PLAY_INTERVAL_MS = 900;
 /** Multipliers on the base tick: one published slot per tick, faster or slower. */
 const PLAY_SPEEDS = [0.5, 1, 2, 4, 5];
-
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-/* Slot timestamps are Wellington wall-clock ISO strings; the label is read off
- * the string itself so a viewer in another timezone sees the published hour. */
-function slotDateParts(targetAt: string) {
-  const [datePart, timePart = "00:00"] = targetAt.split("T");
-  const [year, month, day] = datePart.split("-").map(Number);
-  return { year, month, day, time: timePart.slice(0, 5) };
-}
-
-function dayLabel(date: string) {
-  const { year, month, day } = slotDateParts(date);
-  const weekday = WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
-  return `${weekday} ${day} ${MONTHS[month - 1]}`;
-}
-
-function slotLabel(targetAt: string) {
-  return `${dayLabel(targetAt)} · ${slotDateParts(targetAt).time}`;
-}
-
-function shortDate(targetAt: string) {
-  const { month, day } = slotDateParts(targetAt);
-  return `${day} ${MONTHS[month - 1]}`;
-}
-
-/** A month of daily values as bars: flagged days highlighted, an optional
- * baseline as a dashed reference line. Reported days only — gaps stay gaps. */
-function DailyStrip({
-  points,
-  reference,
-  label,
-}: {
-  points: { date: string; value: number; flagged: boolean }[];
-  reference?: number;
-  label: string;
-}) {
-  if (points.length === 0) return null;
-  const width = 232;
-  const height = 44;
-  const gap = 1.5;
-  const max = Math.max(...points.map((point) => point.value), reference ?? 0, 1);
-  const barWidth = (width - gap * (points.length - 1)) / points.length;
-  const barHeight = (value: number) => Math.max((value / max) * (height - 2), 1);
-  return (
-    <figure className="trend-spark">
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={label}>
-        {points.map((point, index) => (
-          <rect
-            key={point.date}
-            className={point.flagged ? "bar now decrease" : "bar"}
-            x={index * (barWidth + gap)}
-            y={height - barHeight(point.value)}
-            width={barWidth}
-            height={barHeight(point.value)}
-          />
-        ))}
-        {reference !== undefined ? (
-          <line
-            className="expected-line"
-            x1={0}
-            y1={height - (reference / max) * (height - 2)}
-            x2={width}
-            y2={height - (reference / max) * (height - 2)}
-          />
-        ) : null}
-      </svg>
-      <figcaption aria-hidden="true">
-        <span>{shortDate(points[0].date)}</span>
-        {reference !== undefined ? <span>usual {reference.toLocaleString("en-NZ")}</span> : null}
-        <span>{shortDate(points[points.length - 1].date)}</span>
-      </figcaption>
-    </figure>
-  );
-}
-
-/** Prior matched weekday/hour counts as bars, the observed hour highlighted,
- * and the expected median as a dashed reference line. */
-function TrendSparkline({
-  history,
-  observed,
-  expected,
-  changeDirection,
-}: {
-  history: SignalTrendPoint[];
-  observed: number;
-  expected: number;
-  changeDirection: string;
-}) {
-  if (history.length === 0) return null;
-  const width = 232;
-  const height = 44;
-  const gap = 2;
-  const counts = [...history.map((point) => point.observed_count), observed];
-  const max = Math.max(...counts, expected, 1);
-  const barWidth = (width - gap * (counts.length - 1)) / counts.length;
-  const barHeight = (count: number) => Math.max((count / max) * (height - 2), 1);
-  const expectedY = height - (expected / max) * (height - 2);
-  return (
-    <figure className="trend-spark">
-      <svg
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        aria-label={`Observed ${observed.toLocaleString("en-NZ")} against ${history.length} prior matched hours, expected ${expected.toLocaleString("en-NZ")}`}
-      >
-        {counts.map((count, index) => {
-          const now = index === counts.length - 1;
-          return (
-            <rect
-              key={index}
-              className={now ? `bar now ${changeDirection}` : "bar"}
-              x={index * (barWidth + gap)}
-              y={height - barHeight(count)}
-              width={barWidth}
-              height={barHeight(count)}
-            />
-          );
-        })}
-        <line className="expected-line" x1={0} y1={expectedY} x2={width} y2={expectedY} />
-      </svg>
-      <figcaption aria-hidden="true">
-        <span>{shortDate(history[0].observed_at)}</span>
-        <span>expected {expected.toLocaleString("en-NZ")}</span>
-        <span>now</span>
-      </figcaption>
-    </figure>
-  );
-}
-
-/** Investigation cases: each frames one published window by switching on
- * exactly the layers that hold data for it. Every case loads through the
- * same adapter — a `CaseModel` built from its own artifacts — so the timebar,
- * histogram, readout and signal layer are one code path per case. */
-const EVENTS: {
-  id: string;
-  label: string;
-  window: string;
-  badge: string;
-  tone: "replay" | "real" | "synthetic";
-  layers: Partial<Record<LayerId, boolean>>;
-  focus: Focus;
-  /** Readout copy while the case's artifacts are still loading. */
-  fallbackLabel: string;
-  fallbackNote: string;
-}[] = [
-  {
-    id: "aug-snapshot",
-    label: "Movement snapshot",
-    window: "1–6 Aug 2026",
-    badge: "Batch replay",
-    tone: "replay",
-    /* The standard view: movement signals only; everything else is opt-in. */
-    layers: {
-      signals: true,
-      coverage: false,
-      cameras: false,
-      roads: false,
-      flights: false,
-      transit: false,
-    },
-    focus: "signal",
-    fallbackLabel: slotLabel(health.target_at),
-    fallbackNote: `${health.candidate_count} signals`,
-  },
-  {
-    id: "april-floods",
-    label: "Floods and storm",
-    window: "18–22 Apr 2026",
-    badge: "Real",
-    tone: "real",
-    /* Same standard start as every case: signals only. The April layers
-     * (roads, flights, synthetic transit) come in when picked from the
-     * drawer or a list, or the moment the April timeline is scrubbed. */
-    layers: {
-      signals: true,
-      coverage: false,
-      cameras: false,
-      roads: false,
-      flights: false,
-      transit: false,
-    },
-    focus: "road",
-    fallbackLabel: "18–22 Apr 2026",
-    fallbackNote: "real event",
-  },
-  {
-    id: "live-sim",
-    label: "Live monitor",
-    window: "simulated now",
-    badge: "Synthetic",
-    tone: "synthetic",
-    /* The monitor mode: a simulated live feed, signals only like every case. */
-    layers: {
-      signals: true,
-      coverage: false,
-      cameras: false,
-      roads: false,
-      flights: false,
-      transit: false,
-    },
-    focus: "signal",
-    fallbackLabel: "simulated now",
-    fallbackNote: "synthetic feed",
-  },
-];
-
-/* ==================== the case-load adapter ====================
- * One normalized shape per case: hourly slots carrying the signal features
- * to draw, the up/down split, an optional daily background band, an optional
- * corroboration tick, and how the case filters the road diamonds. Adding a
- * case is one EVENTS entry plus one builder that returns this shape. */
-
-type CaseSlot = {
-  key: string;
-  date: string;
-  label: string;
-  up: number;
-  down: number;
-  /** 0..1 daily background band (e.g. flagged road sites, day resolution). */
-  wash: number;
-  /** Hourly corroboration tick (e.g. a flagged airport hour). */
-  tick: boolean;
-  /** Peak gauge rainfall for the hour, mm/h; 0 when no rain layer exists. */
-  rainMm: number;
-  /** True when any gauge hit the WMO heavy class (>= 10 mm/h) this hour. */
-  rainFlag: boolean;
-  /** True when any gauge's rolling totals met the MetService warning criteria. */
-  rainWarning: boolean;
-  signals: LineFeature[];
-};
-
-type CaseModel = {
-  slots: CaseSlot[];
-  defaultIndex: number;
-  /** Slots from the start shaded as the event window; 0 = no shading. */
-  eventHours: number;
-  /** The signal drawer's Open feed target for this case. */
-  feed: string;
-  /** Whether scrubbing filters the road diamonds to the slot's day. */
-  roadDayFilter: boolean;
-};
-
-function buildAugCaseModel(
-  replay: ReplayCollection | null,
-  countlineGeometry: Map<string, Coordinate[]>,
-): CaseModel | null {
-  if (!replay || countlineGeometry.size === 0) return null;
-  const slots = replay.slots.map((slot) => ({
-    key: slot.target_at.slice(0, 13),
-    date: slot.target_at.slice(0, 10),
-    label: slotLabel(slot.target_at),
-    up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
-    down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
-    wash: 0,
-    tick: false,
-    rainMm: 0,
-    rainFlag: false,
-    rainWarning: false,
-    signals: slot.signals.flatMap((signal) => {
-      const coordinates = countlineGeometry.get(signal.countline_id);
-      if (!coordinates) return [];
-      return [
-        {
-          id: signal.id,
-          geometry: { type: "LineString" as const, coordinates },
-          properties: { ...signal },
-        },
-      ];
-    }),
-  }));
-  return {
-    slots,
-    defaultIndex: Math.max(
-      replay.slots.findIndex((slot) => slot.target_at === replay.default_target_at),
-      0,
-    ),
-    eventHours: 0,
-    feed: "/cop/v1/movement-signals.geojson",
-    roadDayFilter: false,
-  };
-}
-
-function buildAprilCaseModel(
-  aprilMovement: AprilMovementCollection | null,
-  roadFeatures: RoadFeature[],
-  flightFeatures: FlightFeature[],
-  rainHourly: RainHourly[],
-): CaseModel | null {
-  if (!aprilMovement && roadFeatures.length === 0 && flightFeatures.length === 0) return null;
-  const rainByHour = new Map(rainHourly.map((entry) => [entry.hour.slice(0, 13), entry]));
-  const dates = ["2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23"];
-  const roadsByDate = new Map<string, number>();
-  for (const feature of roadFeatures) {
-    for (const day of feature.properties.daily_history ?? []) {
-      if (day.flagged) roadsByDate.set(day.date, (roadsByDate.get(day.date) ?? 0) + 1);
-    }
-  }
-  const maxRoads = Math.max(1, ...roadsByDate.values());
-  const flightByHour = new Set<string>();
-  for (const feature of flightFeatures) {
-    for (const hour of feature.properties.flagged_hours) {
-      flightByHour.add(`${hour.date}T${String(hour.hour).padStart(2, "0")}`);
-    }
-  }
-  const signalsByHour = new Map<string, LineFeature[]>();
-  for (const slot of aprilMovement?.slots ?? []) {
-    signalsByHour.set(
-      slot.target_at.slice(0, 13),
-      slot.signals.map((signal) => {
-        const { coordinates, ...properties } = signal;
-        return {
-          id: signal.id,
-          geometry: { type: "LineString" as const, coordinates: [coordinates, coordinates] },
-          properties,
-        };
-      }),
-    );
-  }
-  const slots = dates.flatMap((date) =>
-    Array.from({ length: 24 }, (_, hour) => {
-      const key = `${date}T${String(hour).padStart(2, "0")}`;
-      const signals = signalsByHour.get(key) ?? [];
-      return {
-        key,
-        date,
-        label: `${dayLabel(date)} · ${String(hour).padStart(2, "0")}:00`,
-        up: signals.filter(
-          (signal) => signal.properties.change_direction === "increase",
-        ).length,
-        down: signals.filter(
-          (signal) => signal.properties.change_direction === "decrease",
-        ).length,
-        wash: (roadsByDate.get(date) ?? 0) / maxRoads,
-        tick: flightByHour.has(key),
-        rainMm: rainByHour.get(key)?.max_mm ?? 0,
-        rainFlag: ["heavy", "violent"].includes(rainByHour.get(key)?.class ?? ""),
-        rainWarning: (rainByHour.get(key)?.warning_stations ?? 0) > 0,
-        signals,
-      };
-    }),
-  );
-  return {
-    slots,
-    defaultIndex: Math.max(
-      slots.findIndex((slot) => slot.key === "2026-04-20T14"),
-      0,
-    ),
-    eventHours: slots.filter((slot) => slot.date <= "2026-04-22").length,
-    feed: "/cop/v1/movement-april.json",
-    roadDayFilter: true,
-  };
-}
-
-function buildLiveSimCaseModel(liveSim: LiveSimCollection | null): CaseModel | null {
-  if (!liveSim) return null;
-  const slots = liveSim.slots.map((slot) => ({
-    key: slot.target_at.slice(0, 13),
-    date: slot.target_at.slice(0, 10),
-    label: slotLabel(slot.target_at),
-    up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
-    down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
-    wash: 0,
-    tick: false,
-    rainMm: slot.rain_max_mm,
-    rainFlag: slot.rain_max_mm >= 10,
-    rainWarning: slot.rain_warning_stations > 0,
-    signals: slot.signals.map((signal) => {
-      const { coordinates, ...properties } = signal;
-      return {
-        id: signal.id,
-        geometry: { type: "LineString" as const, coordinates: [coordinates, coordinates] },
-        properties,
-      };
-    }),
-  }));
-  return {
-    slots,
-    // The monitor opens on "now": the last simulated hour.
-    defaultIndex: Math.max(slots.length - 1, 0),
-    eventHours: 0,
-    feed: "/cop/v1/live-sim.json",
-    roadDayFilter: false,
-  };
-}
 
 export default function MovementCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);

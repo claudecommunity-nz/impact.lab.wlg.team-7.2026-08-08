@@ -201,7 +201,13 @@ and `xgboost` live in the optional `benchmark` extra and nothing else imports th
 (`worker/index.ts`), not `next dev`. `app/page.tsx` is a server component that
 imports `movement-health.json` at build time; `app/MovementCanvas.tsx` is the
 only `"use client"` boundary and `fetch`es the three GeoJSON files at runtime,
-drawing them onto a hand-rolled 2D canvas. Everything map-shaped lives in
+drawing them onto a hand-rolled 2D canvas. The component is being split along
+the case-adapter seam: `app/case-model.ts` holds the shared types (Filter,
+LayerId, Layers, Focus, SearchHit), the wall-clock label helpers, `EVENTS`,
+`CaseSlot`/`CaseModel` and the three case builders; `app/EvidenceStrips.tsx`
+holds `DailyStrip` and `TrendSparkline`. Continue extractions behind that
+seam (situation computation, popups, the layer drawer) — one module per PR,
+tests green between each. Everything map-shaped lives in
 `app/map-draw.ts` — a plain module, not a component, and still **no map
 library**: Web Mercator by hand, raster tiles via `drawImage`.
 
