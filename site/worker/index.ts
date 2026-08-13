@@ -51,8 +51,13 @@ const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
-    if (FEED_PATHS.test(url.pathname) && request.method === "OPTIONS") {
-      return withResponseHeaders(new Response(null, { status: 204 }), url);
+    if (FEED_PATHS.test(url.pathname)) {
+      if (request.method === "OPTIONS") {
+        return withResponseHeaders(new Response(null, { status: 204 }), url);
+      }
+      // Feeds are static assets; assets.run_worker_first routes them here so
+      // the response can carry the CORS headers the COP story depends on.
+      return withResponseHeaders(await env.ASSETS.fetch(request), url);
     }
 
     if (url.pathname === "/_vinext/image") {

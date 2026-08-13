@@ -9,8 +9,11 @@ Wellington City Council Emergency Management, Saturday 8 August 2026. One
 prototype, demoed in four minutes at 16:30.
 
 **Live demo**: https://murmur.asun28.workers.dev — Cloudflare Workers, free
-tier; redeploy with `npm run build && npx wrangler deploy -c dist/server/wrangler.json`
-from `site/` (wrangler OAuth on this machine). The COP feeds are also on
+tier; redeploy with `npm run deploy` from `site/` (wrangler OAuth on this
+machine). The deploy script patches the generated `dist/server/wrangler.json`
+(`scripts/patch-wrangler.mjs`: ASSETS binding + `run_worker_first` for
+`/cop/*`) so the worker can put CORS on the feeds — deploying without the
+patch silently serves the feeds CORS-less. The COP feeds are also on
 GitHub Pages at
 https://claudecommunity-nz.github.io/impact.lab.wlg.team-7.2026-08-08/
 (`.github/workflows/pages.yml`, redeploys on any `site/public/**` push). The
