@@ -456,13 +456,25 @@ h3 { font-size: var(--text-h3); }
 .map-status-toggle:hover { background: var(--wcc-yellow); color: var(--wcc-black); }
 
 .map-popup {
-  position: absolute; z-index: 4; width: 248px; pointer-events: none;
+  position: absolute; z-index: 4; pointer-events: none;
   background: var(--surface-page); border: 1px solid var(--wcc-black); box-shadow: var(--shadow-2);
 }
-.map-popup.above { transform: translateY(calc(-100% - 12px)); }
-.map-popup.below { transform: translateY(12px); }
+/* The callout docks top-right under the timebar rather than riding the
+ * glyph — it never sits under the pointer or the finger, it stays clear of
+ * the layer drawer, and the anchor it speaks for stays visible. On a phone
+ * the max-width stretches it between the two control columns. */
+.map-popup.sheet {
+  /* Above the drawer and the corner buttons: the card is transient and
+     click-transparent, so nothing underneath is ever blocked. */
+  z-index: 5;
+  right: calc(var(--space-3) + var(--touch-min) + var(--space-2));
+  top: calc(var(--timebar-h, 62px) + var(--space-2));
+  width: 420px;
+  max-width: calc(100% - 2 * (var(--space-3) + var(--touch-min) + var(--space-2)));
+}
 /* Auto callouts run narrow and small so they cover fewer records. */
-.map-popup.compact { width: 186px; }
+.map-popup.sheet.compact { width: 320px; }
+.map-popup.sheet .popup-media img { max-height: 180px; }
 .map-popup.compact p {
   padding: var(--space-1) var(--space-2) var(--space-2);
   font-size: 12px; line-height: 1.4;
@@ -493,20 +505,6 @@ h3 { font-size: var(--text-h3); }
 /* Tinted like the drawer's status badges: dark ink on a light wash. */
 .popup-chip.increase { background: #fbf0dc; color: var(--wcc-warning); }
 .popup-chip.decrease { background: #f9e5e3; color: var(--wcc-error); }
-/* Beak: aimed at the hovered glyph so the callout owns exactly one anchor. */
-.map-popup::after {
-  content: ""; position: absolute; width: 10px; height: 10px;
-  background: var(--surface-page); transform: rotate(45deg);
-  left: calc(var(--beak-x, 124px) - 5px);
-}
-.map-popup.above::after {
-  bottom: -6px;
-  border-right: 1px solid var(--wcc-black); border-bottom: 1px solid var(--wcc-black);
-}
-.map-popup.below::after {
-  top: -6px;
-  border-left: 1px solid var(--wcc-black); border-top: 1px solid var(--wcc-black);
-}
 .map-message { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--wcc-grey-700); }
 .map-message.error { color: var(--wcc-error); }
 .map-caption { margin: var(--space-3) 0 0; color: var(--wcc-grey-700); font-size: var(--text-small); }
@@ -1162,16 +1160,6 @@ footer strong { color: var(--surface-page); }
   .map-key { display: none; }
   .map-attribution { right: auto; left: calc(var(--space-3) + 56px); }
   .map-status, .map-status-toggle { bottom: calc(var(--space-3) + 68px); }
-  /* Callouts dock as a sheet under the timebar, between the corner controls:
-     the finger is on the glyph, so the card moves out from under it. */
-  .map-popup.sheet {
-    left: calc(var(--space-3) + var(--touch-min) + var(--space-2));
-    right: calc(var(--space-3) + var(--touch-min) + var(--space-2));
-    top: calc(var(--timebar-h, 62px) + var(--space-2));
-    width: auto; transform: none;
-  }
-  .map-popup.sheet::after { display: none; }
-  .map-popup.sheet .popup-media img { max-height: 180px; }
 }
 @media (max-width: 640px) {
   .map-stage {

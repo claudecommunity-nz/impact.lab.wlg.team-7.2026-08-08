@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import {
-  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
   useCallback,
@@ -14,11 +13,6 @@ import {
 } from "react";
 
 import { createFlagStore } from "./flag-store";
-import {
-  serverSmallScreenSnapshot,
-  smallScreenSnapshot,
-  subscribeSmallScreen,
-} from "./small-screen";
 import { matchAnalogue, matchPeriod, slotVectors } from "./analogue";
 import {
   openReview,
@@ -169,11 +163,9 @@ const LAYERS: {
 ];
 
 /* One slot per tick. A slot changes the label, the counts, the glyphs and
- * possibly a callout at once; reading that takes about two seconds, longer on
- * a phone where the callout also covers map. The speed picker still scales
- * both ways. */
-const PLAY_INTERVAL_MS = 1800;
-const PLAY_INTERVAL_SMALL_MS = 2400;
+ * possibly a callout at once; reading that takes about two and a half
+ * seconds. The speed picker still scales both ways. */
+const PLAY_INTERVAL_MS = 2400;
 /** Multipliers on the base tick: one published slot per tick, faster or slower. */
 const PLAY_SPEEDS = [0.5, 1, 2, 4, 5];
 
@@ -270,11 +262,6 @@ export default function MovementCanvas() {
       autoPopupStore.snapshot,
       autoPopupStore.serverSnapshot,
     ) === "1";
-  const smallScreen = useSyncExternalStore(
-    subscribeSmallScreen,
-    smallScreenSnapshot,
-    serverSmallScreenSnapshot,
-  );
 
   const stageSize = useCallback(() => {
     const rect = canvasRef.current?.getBoundingClientRect();
@@ -962,9 +949,9 @@ export default function MovementCanvas() {
       const next = indexRef.current + 1;
       setSlotIndices((current) => ({ ...current, [caseId]: next }));
       severeFnRef.current(next);
-    }, (smallScreen ? PLAY_INTERVAL_SMALL_MS : PLAY_INTERVAL_MS) / speed);
+    }, PLAY_INTERVAL_MS / speed);
     return () => clearInterval(interval);
-  }, [playing, activeModel, caseId, speed, smallScreen]);
+  }, [playing, activeModel, caseId, speed]);
 
   // While a camera popup is open, re-request its frame so the preview stays a
   // stream of pictures rather than one stale snapshot.
@@ -2156,18 +2143,7 @@ export default function MovementCanvas() {
             (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad || hoveredFlight ||
               hoveredRain || hoveredReport) ? (
               <div
-                className={`map-popup ${
-                  smallScreen ? "sheet" : hover.above ? "above" : "below"
-                } ${hover.compact ? "compact" : ""}`}
-                style={
-                  smallScreen
-                    ? undefined
-                    : ({
-                        left: hover.left,
-                        top: hover.top,
-                        "--beak-x": `${hover.beakX}px`,
-                      } as CSSProperties)
-                }
+                className={`map-popup sheet ${hover.compact ? "compact" : ""}`}
                 role="status"
               >
                 {hoveredCamera ? (

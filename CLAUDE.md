@@ -295,9 +295,12 @@ timeline filters the map, never the evidence. Every scrub or playback step
 also runs the **auto-popup adapter** (`severeFnRef`, gate `AUTO_POPUP_Z`):
 the hour's severest issue — a gauge at warning/torrential level first, else
 the biggest gated signal — opens the same callout a hover would, if it is on
-screen; a real hover, pan or zoom takes over exactly as before. Auto
-callouts render the **compact popup** (`COMPACT_POPUP_WIDTH`,
-`.map-popup.compact`) so they cover fewer records, and the timebar carries an
+screen; a real hover, pan or zoom takes over exactly as before. Every
+callout — hover, tap or auto — **docks as a top sheet** (`.map-popup.sheet`)
+under the timebar, centred between the corner controls, so it never sits
+under the pointer or the finger; auto callouts render the **compact
+variant** (`.map-popup.compact`, narrower and smaller) so they cover fewer
+records, and the timebar carries an
 icon toggle (`murmur.autopopup.on` flag store, speech-bubble glyph, slashed
 when off) that switches them off entirely. The
 bottom-right **situation card** (`.map-status`) states the hour in plain
