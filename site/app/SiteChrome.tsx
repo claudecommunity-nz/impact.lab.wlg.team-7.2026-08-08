@@ -4,16 +4,14 @@
  * render in the HTML rather than waiting on the client.
  */
 
-import Link from "next/link";
-
 export function SiteHeader() {
   return (
     <header className="watch-header">
-      <Link className="watch-brand" href="/" aria-label="Murmur home">
+      <a className="watch-brand" href="/" aria-label="Murmur home">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="brand-logo" src="/murmur-logo.svg" alt="Murmur" />
         <small>Measuring the city’s heartbeat and detecting irregularities</small>
-      </Link>
+      </a>
       <div className="batch-status" aria-label="Publisher mode: batch replay">
         <span className="status-beacon" aria-hidden="true" />
         Batch replay

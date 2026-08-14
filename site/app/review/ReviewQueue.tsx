@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 
 import { download } from "../data-sources";
@@ -305,7 +304,7 @@ export default function ReviewQueue() {
               <a href="/cop/v1/movement-signals.geojson" target="_blank" rel="noreferrer">
                 Open feed
               </a>
-              <Link href="/">Operating picture</Link>
+              <a href="/">Operating picture</a>
             </div>
           </div>
         ) : (

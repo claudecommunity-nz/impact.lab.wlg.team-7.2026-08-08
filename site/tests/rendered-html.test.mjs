@@ -675,3 +675,24 @@ test("keeps provider API keys and other secrets out of the repo", async () => {
   }
   assert.deepEqual(offences, [], `Secret-shaped strings found:\n${offences.join("\n")}`);
 });
+
+test("routes navigate by plain anchor, never next/link", async () => {
+  // vinext's client-side Link navigation is broken in production builds (the
+  // RSC prefetch chunk loses its exports, and clicks silently go nowhere), so
+  // every route change is a full page load. This scan keeps Link from
+  // creeping back in.
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  const root = path.join(here, "..", "app");
+  const offences = [];
+  const entries = await readdir(root, { recursive: true, withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isFile()) continue;
+    if (![".ts", ".tsx"].includes(path.extname(entry.name).toLowerCase())) continue;
+    const full = path.join(entry.parentPath ?? entry.path, entry.name);
+    const text = await readFile(full, "utf8");
+    if (text.includes('from "next/link"')) {
+      offences.push(path.relative(root, full));
+    }
+  }
+  assert.deepEqual(offences, [], `next/link imported by:\n${offences.join("\n")}`);
+});

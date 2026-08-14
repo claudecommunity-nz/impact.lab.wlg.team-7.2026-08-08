@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
@@ -2861,9 +2860,9 @@ export default function MovementCanvas() {
                     panelSignal.geometry.coordinates[0],
                     activeModel?.feed ?? "/cop/v1/movement-signals.geojson",
                     panelSignalReview ? (
-                      <Link href="/review">
+                      <a href="/review">
                         {panelSignalReview.status === "closed" ? "Closed in review" : "In review"}
-                      </Link>
+                      </a>
                     ) : (
                       <button
                         type="button"

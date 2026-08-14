@@ -23,6 +23,14 @@ const eslintConfig = defineConfig([
   jsxA11y.flatConfigs.recommended,
   next.configs["core-web-vitals"],
   {
+    rules: {
+      // Plain anchors on purpose: vinext's client-side Link navigation is
+      // broken in production builds, so route changes are full page loads.
+      // The test suite scans for next/link imports creeping back in.
+      "@next/next/no-html-link-for-pages": "off",
+    },
+  },
+  {
     languageOptions: {
       globals: {
         ...globals.browser,

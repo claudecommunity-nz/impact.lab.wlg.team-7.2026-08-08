@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useSyncExternalStore } from "react";
 
@@ -176,7 +175,10 @@ export default function SideNav() {
       <ul className="nav-items">
         {NAV_ITEMS.map((item) => (
           <li key={item.href}>
-            <Link
+            {/* Plain anchors on purpose: vinext's client-side Link navigation
+                is broken in production builds (the RSC prefetch chunk loses
+                its exports), so every route change is a full page load. */}
+            <a
               href={item.href}
               className={isActive(item.href) ? "active" : ""}
               aria-current={isActive(item.href) ? "page" : undefined}
@@ -188,7 +190,7 @@ export default function SideNav() {
                 <strong>{item.label}</strong>
                 <small>{item.detail}</small>
               </span>
-            </Link>
+            </a>
           </li>
         ))}
         <li>
