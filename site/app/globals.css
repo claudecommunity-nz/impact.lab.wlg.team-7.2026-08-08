@@ -182,6 +182,18 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   font-size: var(--text-small); font-weight: 700;
 }
 .status-beacon { width: 8px; height: 8px; border-radius: 50%; background: var(--wcc-black); }
+/* The mode beacon breathes and the play control announces itself three times
+ * on load; prefers-reduced-motion silences both. */
+@keyframes beacon-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.55; }
+}
+.status-beacon { animation: beacon-pulse 2s var(--ease-standard) infinite; }
+@keyframes play-ring {
+  0% { box-shadow: 0 0 0 0 rgba(255, 221, 0, 0.9); }
+  100% { box-shadow: 0 0 0 14px rgba(255, 221, 0, 0); }
+}
+.replay-bar > button.replay-play { animation: play-ring 1.5s var(--ease-standard) 1s 3; }
 
 .eyebrow {
   margin: 0 0 var(--space-2);
@@ -1088,6 +1100,16 @@ footer strong { color: var(--surface-page); }
   .layer-drawer { max-height: calc(100% - var(--timebar-h, 62px) - var(--touch-min) - 3 * var(--space-3)); }
   .limit-grid { grid-template-columns: 1fr; }
   .limit-grid p + p { border-left: 0; border-top: 1px solid var(--border-hairline); padding-left: 0; }
+  /* The text under the map reads as a phone page: stacked feed rows, roomier
+     small print. */
+  .map-caption { font-size: 12px; line-height: 1.5; }
+  .handoff-section, .limits-section { padding-bottom: var(--space-7); }
+  .endpoint-list a { flex-direction: column; gap: var(--space-1); }
+  /* The corner fabs float over the page end; the footer keeps clear of them. */
+  footer {
+    padding: var(--space-5) var(--space-4) calc(var(--space-5) + 64px);
+    font-size: 13px; line-height: 1.7;
+  }
 }
 /* Below tablet the rail becomes a drawer over the page's left edge: closed it
  * costs the map nothing, open it is the full desktop rail. The nav-handle is
@@ -1140,6 +1162,16 @@ footer strong { color: var(--surface-page); }
   .map-key { display: none; }
   .map-attribution { right: auto; left: calc(var(--space-3) + 56px); }
   .map-status, .map-status-toggle { bottom: calc(var(--space-3) + 68px); }
+  /* Callouts dock as a sheet under the timebar, between the corner controls:
+     the finger is on the glyph, so the card moves out from under it. */
+  .map-popup.sheet {
+    left: calc(var(--space-3) + var(--touch-min) + var(--space-2));
+    right: calc(var(--space-3) + var(--touch-min) + var(--space-2));
+    top: calc(var(--timebar-h, 62px) + var(--space-2));
+    width: auto; transform: none;
+  }
+  .map-popup.sheet::after { display: none; }
+  .map-popup.sheet .popup-media img { max-height: 180px; }
 }
 @media (max-width: 640px) {
   .map-stage {

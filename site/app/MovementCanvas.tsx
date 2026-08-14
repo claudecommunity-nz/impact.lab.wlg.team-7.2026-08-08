@@ -14,6 +14,11 @@ import {
 } from "react";
 
 import { createFlagStore } from "./flag-store";
+import {
+  serverSmallScreenSnapshot,
+  smallScreenSnapshot,
+  subscribeSmallScreen,
+} from "./small-screen";
 import { matchAnalogue, matchPeriod, slotVectors } from "./analogue";
 import {
   openReview,
@@ -163,7 +168,12 @@ const LAYERS: {
   { id: "reports", label: "Public reports", publisher: "WCC service desk", badge: "Synthetic", tone: "synthetic" },
 ];
 
-const PLAY_INTERVAL_MS = 900;
+/* One slot per tick. A slot changes the label, the counts, the glyphs and
+ * possibly a callout at once; reading that takes about two seconds, longer on
+ * a phone where the callout also covers map. The speed picker still scales
+ * both ways. */
+const PLAY_INTERVAL_MS = 1800;
+const PLAY_INTERVAL_SMALL_MS = 2400;
 /** Multipliers on the base tick: one published slot per tick, faster or slower. */
 const PLAY_SPEEDS = [0.5, 1, 2, 4, 5];
 
@@ -232,6 +242,10 @@ export default function MovementCanvas() {
   // over (pan, zoom, locate, reveal) — then their framing wins, resize included.
   const autoFitRef = useRef(true);
   const autoFitFnRef = useRef<() => void>(() => {});
+  // Active touches on the canvas; two of them make the gesture a pinch, and
+  // pinchRef holds the finger spread the next zoom step is measured against.
+  const pointersRef = useRef<Map<number, Coordinate>>(new Map());
+  const pinchRef = useRef<number | null>(null);
   const evidenceOpen =
     useSyncExternalStore(
       evidenceStore.subscribe,
@@ -256,6 +270,11 @@ export default function MovementCanvas() {
       autoPopupStore.snapshot,
       autoPopupStore.serverSnapshot,
     ) === "1";
+  const smallScreen = useSyncExternalStore(
+    subscribeSmallScreen,
+    smallScreenSnapshot,
+    serverSmallScreenSnapshot,
+  );
 
   const stageSize = useCallback(() => {
     const rect = canvasRef.current?.getBoundingClientRect();
@@ -943,9 +962,9 @@ export default function MovementCanvas() {
       const next = indexRef.current + 1;
       setSlotIndices((current) => ({ ...current, [caseId]: next }));
       severeFnRef.current(next);
-    }, PLAY_INTERVAL_MS / speed);
+    }, (smallScreen ? PLAY_INTERVAL_SMALL_MS : PLAY_INTERVAL_MS) / speed);
     return () => clearInterval(interval);
-  }, [playing, activeModel, caseId, speed]);
+  }, [playing, activeModel, caseId, speed, smallScreen]);
 
   // While a camera popup is open, re-request its frame so the preview stays a
   // stream of pictures rather than one stale snapshot.
@@ -1300,10 +1319,42 @@ export default function MovementCanvas() {
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLCanvasElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
+    pointersRef.current.set(event.pointerId, [event.clientX, event.clientY]);
+    if (pointersRef.current.size === 2) {
+      // A second finger turns the gesture into a pinch, not a drag or a click.
+      dragRef.current = null;
+      setHover(null);
+      const [a, b] = [...pointersRef.current.values()];
+      pinchRef.current = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      return;
+    }
     dragRef.current = { x: event.clientX, y: event.clientY, moved: false };
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+    if (pointersRef.current.has(event.pointerId)) {
+      pointersRef.current.set(event.pointerId, [event.clientX, event.clientY]);
+    }
+    // Pinch: whole zoom levels like the wheel, one step per third of spread,
+    // anchored on the midpoint between the fingers.
+    if (pinchRef.current !== null && pointersRef.current.size >= 2) {
+      const [a, b] = [...pointersRef.current.values()];
+      const distance = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      const ratio = distance / pinchRef.current;
+      if (ratio > 1.3 || ratio < 1 / 1.3) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const anchor: Coordinate = [
+          (a[0] + b[0]) / 2 - rect.left,
+          (a[1] + b[1]) / 2 - rect.top,
+        ];
+        autoFitRef.current = false;
+        pinchRef.current = distance;
+        setView((current) =>
+          zoomAround(current, ratio > 1 ? 1 : -1, anchor, rect.width, rect.height),
+        );
+      }
+      return;
+    }
     const drag = dragRef.current;
     if (drag) {
       const dx = event.clientX - drag.x;
@@ -1341,6 +1392,12 @@ export default function MovementCanvas() {
   // A press that never moved is a click: select the nearest feature under it,
   // or zoom into the density bubble under it.
   const handlePointerUp = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+    pointersRef.current.delete(event.pointerId);
+    if (pinchRef.current !== null) {
+      // The pinch owns this gesture until the last finger lifts.
+      if (pointersRef.current.size < 2) pinchRef.current = null;
+      return;
+    }
     const drag = dragRef.current;
     dragRef.current = null;
     const size = stageSize();
@@ -1354,9 +1411,14 @@ export default function MovementCanvas() {
         autoFitRef.current = false;
         setHover(null);
         setView((current) => zoomAround(current, 1, [cluster.x, cluster.y], size.width, size.height));
+        return;
       }
+      // A tap on empty map puts the callout away; a mouse never lingers here.
+      setHover(null);
       return;
     }
+    // A tap opens the same callout a hover would, so touch gets feedback too.
+    setHover(hit);
     if (hit.kind === "camera") {
       setSelectedCameraId(hit.id);
       setFocus("camera");
@@ -1723,8 +1785,16 @@ export default function MovementCanvas() {
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
-              onPointerCancel={() => { dragRef.current = null; }}
-              onPointerLeave={() => setHover(null)}
+              onPointerCancel={(event) => {
+                dragRef.current = null;
+                pointersRef.current.delete(event.pointerId);
+                pinchRef.current = null;
+              }}
+              onPointerLeave={(event) => {
+                // Touch fires leave right after every tap; the tap callout
+                // stays until the next tap or view change puts it away.
+                if (event.pointerType !== "touch") setHover(null);
+              }}
             />
             <button
               type="button"
@@ -2086,13 +2156,17 @@ export default function MovementCanvas() {
             (hoveredCamera || hoveredSignal || hoveredTransit || hoveredRoad || hoveredFlight ||
               hoveredRain || hoveredReport) ? (
               <div
-                className={`map-popup ${hover.above ? "above" : "below"} ${hover.compact ? "compact" : ""}`}
+                className={`map-popup ${
+                  smallScreen ? "sheet" : hover.above ? "above" : "below"
+                } ${hover.compact ? "compact" : ""}`}
                 style={
-                  {
-                    left: hover.left,
-                    top: hover.top,
-                    "--beak-x": `${hover.beakX}px`,
-                  } as CSSProperties
+                  smallScreen
+                    ? undefined
+                    : ({
+                        left: hover.left,
+                        top: hover.top,
+                        "--beak-x": `${hover.beakX}px`,
+                      } as CSSProperties)
                 }
                 role="status"
               >
