@@ -140,6 +140,8 @@ export type CaseSlot = {
   down: number;
   /** 0..1 daily background band (e.g. flagged road sites, day resolution). */
   wash: number;
+  /** Flagged state-highway sites on the slot's day; 0 when no roads layer. */
+  roadSites: number;
   /** Hourly corroboration tick (e.g. a flagged airport hour). */
   tick: boolean;
   /** Peak gauge rainfall for the hour, mm/h; 0 when no rain layer exists. */
@@ -174,6 +176,7 @@ export function buildAugCaseModel(
     up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
     down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
     wash: 0,
+    roadSites: 0,
     tick: false,
     rainMm: 0,
     rainFlag: false,
@@ -253,6 +256,7 @@ export function buildAprilCaseModel(
           (signal) => signal.properties.change_direction === "decrease",
         ).length,
         wash: (roadsByDate.get(date) ?? 0) / maxRoads,
+        roadSites: roadsByDate.get(date) ?? 0,
         tick: flightByHour.has(key),
         rainMm: rainByHour.get(key)?.max_mm ?? 0,
         rainFlag: ["heavy", "violent"].includes(rainByHour.get(key)?.class ?? ""),
@@ -282,6 +286,7 @@ export function buildLiveSimCaseModel(liveSim: LiveSimCollection | null): CaseMo
     up: slot.signals.filter((signal) => signal.change_direction === "increase").length,
     down: slot.signals.filter((signal) => signal.change_direction === "decrease").length,
     wash: 0,
+    roadSites: 0,
     tick: false,
     rainMm: slot.rain_max_mm,
     rainFlag: slot.rain_max_mm >= 10,

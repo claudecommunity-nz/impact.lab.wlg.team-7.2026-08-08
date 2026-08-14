@@ -36,6 +36,7 @@ import {
   shortDate,
 } from "./case-model";
 import { DailyStrip, TrendSparkline } from "./EvidenceStrips";
+import CaseCharts from "./CaseCharts";
 
 import {
   type AprilMovementCollection,
@@ -3075,6 +3076,12 @@ export default function MovementCanvas() {
           </div>
         </aside>
       </section>
+      <CaseCharts
+        event={activeEvent}
+        model={activeModel}
+        index={effectiveIndex}
+        onScrub={scrubTo}
+      />
     </div>
   );
 }

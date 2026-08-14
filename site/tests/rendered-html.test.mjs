@@ -427,6 +427,26 @@ test("puts the investigate panel beside the map and lets it slide away", async (
   assert.equal(html.match(/<canvas/g)?.length, 1);
 });
 
+test("renders the case charts band after the map with the snapshot fallback", async () => {
+  const html = await render("/").then((response) => response.text());
+
+  // The band follows the map inside the investigation shell.
+  assert.match(html, /id="case-charts-heading"/);
+  assert.ok(html.indexOf('id="case-charts-heading"') > html.indexOf('id="map-heading"'));
+  assert.match(html, /Case charts/);
+  // Headed by the active case: the April storm on first load.
+  assert.match(html, /Floods and storm/);
+  // Before any case model loads, the tiles carry the committed snapshot
+  // facts, each label naming its own window so the April heading cannot
+  // claim the August numbers.
+  assert.match(html, /Signals · 1–6 Aug 2026/);
+  assert.match(html, /Data gaps · 1–6 Aug 2026/);
+  assert.match(html, /tile-value">7</);
+  assert.match(html, /tile-value">207</);
+  // Charts are SVG and HTML only; the map keeps the page's single canvas.
+  assert.equal(html.match(/<canvas/g)?.length, 1);
+});
+
 test("keeps source settings off the dashboard and on their own route", async () => {
   const [dashboard, settings] = await Promise.all([
     render("/").then((response) => response.text()),

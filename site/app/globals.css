@@ -609,6 +609,93 @@ h3 { font-size: var(--text-h3); }
   font-variant-numeric: tabular-nums;
 }
 
+/* The case charts band after the map: KPI tiles, the diverging deviations
+ * chart, corroboration lanes and the class split — one shared hover cursor,
+ * every mark SVG or HTML so the map keeps the page's only canvas. */
+.case-charts { margin: 0 0 var(--space-9); display: grid; gap: var(--space-4); }
+.case-charts-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); }
+.case-charts-head .eyebrow { margin-bottom: var(--space-1); }
+.chart-badge {
+  border: 1px solid var(--wcc-black); border-radius: 999px;
+  padding: 2px 10px; font-size: var(--text-small); font-weight: 700; white-space: nowrap;
+}
+.chart-badge.real { background: var(--wcc-yellow); }
+.chart-badge.replay { background: var(--surface-page); }
+.chart-badge.synthetic { background: var(--wcc-grey-100); border-color: var(--wcc-grey-500); color: var(--wcc-grey-700); }
+.chart-tiles { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chart-tile {
+  flex: 1 1 148px; min-width: 148px; display: grid; gap: 2px; align-content: start;
+  border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
+  background: var(--surface-alt); padding: var(--space-2) var(--space-3);
+  text-align: left; font: inherit; color: inherit;
+}
+button.chart-tile { cursor: pointer; }
+button.chart-tile:hover { background: var(--wcc-yellow); border-color: var(--wcc-black); }
+.tile-label { font-size: var(--text-small); color: var(--wcc-grey-700); font-weight: 700; }
+.tile-value { font-size: var(--text-h3); line-height: 1.15; font-variant-numeric: tabular-nums; }
+.tile-sub { font-size: var(--text-small); color: var(--wcc-grey-700); font-variant-numeric: tabular-nums; }
+.case-chart {
+  margin: 0; border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
+  background: var(--surface-page); padding: var(--space-3); display: grid; gap: var(--space-2);
+}
+.chart-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); }
+.chart-readout {
+  margin-left: auto; font-size: var(--text-small); color: var(--wcc-grey-900);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.chart-legend {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  font-size: var(--text-small); color: var(--wcc-grey-700);
+}
+.chart-legend .swatch { width: 10px; height: 10px; border-radius: 2px; }
+.swatch.up { background: var(--wcc-warning); }
+.swatch.down { background: var(--wcc-error); }
+.swatch.people { background: var(--wcc-grey-900); }
+.swatch.vehicles { background: var(--wcc-grey-300); border: 1px solid var(--wcc-grey-500); }
+.chart-svg { display: block; width: 100%; cursor: pointer; touch-action: pan-y; }
+.chart-svg.deviations { height: 132px; }
+.chart-svg.lane-svg { height: 44px; }
+.case-chart .up { fill: var(--wcc-warning); }
+.case-chart .down { fill: var(--wcc-error); }
+.case-chart .axis { stroke: var(--wcc-grey-500); stroke-width: 1; }
+.case-chart .day-line { stroke: var(--wcc-grey-300); stroke-width: 1; }
+.case-chart .event-window { fill: rgba(255, 221, 0, 0.2); }
+.case-chart .cursor { fill: rgba(28, 28, 26, 0.18); }
+.case-chart .hover-cursor { fill: rgba(28, 28, 26, 0.08); }
+.case-chart .rain-bar { fill: #1e90cf; opacity: 0.85; }
+.case-chart .rain-bar.warning { fill: #d9640a; opacity: 1; }
+.case-chart .roads-bar { fill: #5b4a8a; opacity: 0.55; }
+.case-chart .flights-bar { fill: #0e6b72; opacity: 0.85; }
+.chart-days { display: flex; font-size: var(--text-small); color: var(--wcc-grey-700); }
+.chart-days span {
+  flex: 1 0 0; border-left: 1px solid var(--wcc-grey-300); padding-left: 4px;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.chart-days span:first-child { border-left: 0; padding-left: 0; }
+.lane { display: grid; gap: 2px; }
+.lane-head { display: flex; align-items: baseline; gap: var(--space-2); font-size: var(--text-small); }
+.lane-head .chart-badge { padding: 0 8px; font-size: 11px; }
+.lane-readout {
+  margin-left: auto; font-variant-numeric: tabular-nums;
+  color: var(--wcc-grey-900); white-space: nowrap;
+}
+.lane-warning { font-style: normal; font-weight: 700; color: #a64a08; }
+.class-bars { display: flex; gap: var(--space-3); align-items: stretch; height: 112px; padding-top: 16px; }
+.class-day { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.class-pair { display: flex; gap: 3px; align-items: flex-end; flex: 1; }
+.class-bar { position: relative; flex: 1 1 0; border-radius: 2px 2px 0 0; min-height: 1px; }
+.class-bar.people { background: var(--wcc-grey-900); }
+.class-bar.vehicles { background: var(--wcc-grey-300); }
+.class-bar::after {
+  content: attr(data-value); position: absolute; bottom: 100%; left: 50%;
+  transform: translateX(-50%); font-size: 11px; color: var(--wcc-grey-700);
+  font-variant-numeric: tabular-nums;
+}
+.class-day-label {
+  font-size: var(--text-small); color: var(--wcc-grey-700); text-align: center;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+
 .evidence-column {
   order: -1; /* left of the map, while the DOM keeps the map first */
   min-width: 0; min-height: 0; overflow: hidden;

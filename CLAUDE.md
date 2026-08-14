@@ -434,6 +434,30 @@ hidden controls out of the tab order rather than leaving them focusable behind a
 zero-width clip. Below 1024px there is no track to animate: the layout stacks,
 the map leads, and a closed panel is simply `display: none`.
 
+### The case charts band
+
+`app/CaseCharts.tsx` renders below the investigation frame — one band per
+active case, fed by the same `CaseModel` the timebar drives (plus
+`CaseSlot.roadSites`, the slot day's flagged-site count), so it scrub-syncs
+for free. Four blocks, lieflat-"Glance" spirit, hand-rolled SVG/HTML only —
+the map keeps the page's single canvas, test-asserted: KPI tiles (this
+hour, window totals, worst hour, peak rain, highway sites, air access — the
+Worst hour and Peak rain tiles are buttons that scrub there), the diverging
+deviations-by-hour chart (increases up in amber, decreases down in red, the
+current hour a grey cursor, click scrubs through the same `scrubTo` path as
+the timebar), corroboration lanes (rain / highway sites / air access as
+small multiples on one shared time axis — never a second y-axis; up/down is
+encoded by position, not colour alone), and a people-vs-vehicles day split
+(one hue, two shades, direct-labelled). Tiles and lanes are layer-shaped
+like the situation card: a source appears only when the case holds its
+data, and each lane wears the case's tone badge (real / synthetic). One
+shared hover index drives every readout. With no case model loaded the band
+falls back to the committed snapshot tiles, each label naming its own
+window ("Signals · 1–6 Aug 2026") so the April heading cannot claim the
+August numbers — that fallback is the server-rendered state the render test
+asserts. The label "Data through" is banned by the no-fact-strip test
+assertion; the fallback tile says "As of".
+
 `within_countline_frame` is metadata, not a drawing rule: it records whether a
 camera sits inside the WCC countline bounding box, the list orders on-frame
 cameras first, and the site test asserts the flag against the coverage bounds —
