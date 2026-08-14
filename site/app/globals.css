@@ -696,6 +696,46 @@ button.chart-tile:hover { background: var(--wcc-yellow); border-color: var(--wcc
   overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
 }
 
+/* The city ontology route: the WCO concept in Murmur's own tokens — grey
+ * ladder for data, WCC yellow for the single accent. Small screens drop the
+ * detail lines (.wco-hide-s), never the numbers. */
+.wco { display: grid; gap: var(--space-4); padding-block: var(--space-5) var(--space-9); }
+.wco-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+.wco-card {
+  min-width: 0; border: 1px solid var(--border-hairline); border-radius: var(--radius-md);
+  background: var(--surface-page); padding: var(--space-4);
+}
+.wco-card.dark { background: var(--wcc-black); color: var(--surface-page); border-color: var(--wcc-black); }
+.wco-card h2 { font-size: var(--text-h3); margin-bottom: 2px; }
+.wco-sub { font-size: var(--text-small); color: var(--wcc-grey-700); margin-bottom: var(--space-3); }
+.wco-card.dark .wco-sub { color: var(--wcc-grey-500); }
+.wco-src {
+  font-size: 11px; color: var(--wcc-grey-500); margin-top: var(--space-2);
+  letter-spacing: .06em; text-transform: uppercase; line-height: 1.7;
+}
+.wco-scroll { overflow-x: auto; }
+.wco-scroll svg { display: block; }
+.wco-contract { display: grid; grid-template-columns: auto 1fr; gap: 7px 18px; font-size: 13px; line-height: 1.5; }
+.wco-contract dt {
+  color: var(--wcc-grey-500); font-weight: 600; font-size: 10.5px;
+  letter-spacing: .06em; text-transform: uppercase; padding-top: 2px;
+}
+.wco-contract dd { margin: 0; font-weight: 600; }
+.wco-contract dd small { display: block; font-weight: 400; color: var(--wcc-grey-700); font-size: 12px; }
+.wco-next { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); font-size: 13px; line-height: 1.5; }
+.wco-next li { padding-left: 16px; position: relative; font-weight: 600; }
+.wco-next li::before {
+  content: ''; position: absolute; left: 0; top: 6px;
+  width: 8px; height: 8px; background: var(--wcc-yellow); border: 1px solid var(--wcc-black);
+}
+.wco-next li small { display: block; font-weight: 400; color: var(--wcc-grey-700); font-size: 12px; }
+.ontology-link { font-weight: 700; color: var(--wcc-black); }
+@media (max-width: 900px) { .wco-grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) {
+  .wco-hide-s { display: none !important; }
+  .wco-card { padding: var(--space-3); }
+}
+
 .evidence-column {
   order: -1; /* left of the map, while the DOM keeps the map first */
   min-width: 0; min-height: 0; overflow: hidden;

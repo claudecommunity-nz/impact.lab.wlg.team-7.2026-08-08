@@ -23,6 +23,11 @@ export default function Home() {
             WGS84 GeoJSON with counts, robust score, confidence, attribution
             and limitations.
           </p>
+          <p>
+            <a className="ontology-link" href="/ontology">
+              City ontology · 87 sources, one typed graph
+            </a>
+          </p>
         </div>
         <div className="endpoint-list">
           <a href="/cop/v1/movement-signals.geojson">

@@ -383,7 +383,7 @@ test("ships a camera layer on the same frame with its own attribution and limits
 });
 
 test("carries a hideable sidebar and the agent on every route", async () => {
-  for (const path of ["/", "/review", "/settings"]) {
+  for (const path of ["/", "/review", "/settings", "/ontology"]) {
     const response = await render(path);
     assert.equal(response.status, 200, `${path} should render`);
     const html = await response.text();
@@ -391,6 +391,7 @@ test("carries a hideable sidebar and the agent on every route", async () => {
     assert.match(html, /aria-label="Murmur sections"/, `${path} should ship the navigator`);
     assert.match(html, /Operating picture/);
     assert.match(html, /Signal review/);
+    assert.match(html, /City ontology/);
     assert.match(html, /Data sources/);
     assert.match(html, /Integrations/);
     // The rail can be put away, and says which state it is in.
@@ -425,6 +426,26 @@ test("puts the investigate panel beside the map and lets it slide away", async (
   assert.doesNotMatch(html, /Show investigate panel/);
   // Still one canvas and one projection after the layout swap.
   assert.equal(html.match(/<canvas/g)?.length, 1);
+});
+
+test("introduces the city ontology on its own route, terse and canvas-free", async () => {
+  const html = await render("/ontology").then((response) => response.text());
+
+  // The concept page: the typed graph over catalogue + COP sources.
+  assert.match(html, /Wellington City Ontology/);
+  assert.match(html, /Seven classes, one loop/);
+  assert.match(html, /55 of 87 sources map risk/);
+  assert.match(html, /7 of 87 speak in real time/);
+  assert.match(html, /One storm through the graph/);
+  // Truth boundaries and credits stay.
+  assert.match(html, /not a Council standard/);
+  assert.match(html, /lieflat-charts/);
+  assert.match(html, /call 111/);
+  // The dashboard link and the rail entry point here.
+  const home = await render("/").then((response) => response.text());
+  assert.match(home, /href="\/ontology"/);
+  // Charts are SVG only; the map keeps the site's single canvas.
+  assert.equal(html.match(/<canvas/g), null);
 });
 
 test("renders the case charts band after the map with the snapshot fallback", async () => {

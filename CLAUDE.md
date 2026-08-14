@@ -493,6 +493,28 @@ part of the settings export. **Export queue (JSON)** downloads the queue as a
 settings export) with `browser_local: true` and the truth boundaries in its
 `limitations` — the composable-output story, not a published artifact.
 
+### City ontology
+
+`/ontology` (`app/ontology/page.tsx`, server component, no client JS) presents
+the **WCO concept**: one typed graph over 87 sources — the 74 layers of the
+WCC emergency-GIS catalogue plus the 13 COP feeds — in seven classes (Hazard
+55 · Movement & Observation 14 · Ground & Land 5 · Lifelines 5 · Warnings 4 ·
+Response 3 · People 1) with six properties per node (class, authority, truth,
+cadence, geometry, licence). Five hand-authored SVG cards in Murmur tokens
+(grey ladder for data, WCC yellow as the single accent, amber/red only for
+increase/decrease): the class network on a black card, class × authority
+bars, truth dots (7 live of 87; synthetic drawn hollow), the April storm as
+instances, and the node contract + adoption moves. Chart grammar follows
+lieflat-charts (credited in the page footer); counts were computed from the
+real catalogue.json, so re-derive them if the catalogue changes. Small
+screens drop every `.wco-hide-s` detail line — numbers stay — and each
+diagram scrolls inside its own card. Two entry points: the rail's graph
+glyph and an `ontology-link` anchor in the home handoff section. The SVG
+`<title>` tooltips must keep **single-string children** (template literals,
+never `{x} · text` siblings) — React 19 hydration breaks on multi-child
+titles, and that bug shipped once. The route test asserts the headings, the
+"not a Council standard" boundary, the lieflat credit and zero `<canvas>`.
+
 ### Shell, agent and settings
 
 `app/layout.tsx` wraps every route in one shell: `SideNav` (hideable rail, state

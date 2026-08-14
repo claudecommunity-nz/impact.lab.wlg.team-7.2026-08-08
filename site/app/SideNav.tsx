@@ -57,6 +57,17 @@ const SparkGlyph = (
   </svg>
 );
 
+const GraphGlyph = (
+  <svg viewBox="0 0 20 20" aria-hidden="true">
+    <path d="M10 4.5 5 9m5-4.5L15 9M6 14.5l3-3.5m5 3.5-3-3.5" className="stroke-only" />
+    <circle cx="10" cy="4" r="2.1" />
+    <circle cx="4.5" cy="10" r="2.1" />
+    <circle cx="15.5" cy="10" r="2.1" />
+    <circle cx="7" cy="16" r="2.1" />
+    <circle cx="13" cy="16" r="2.1" />
+  </svg>
+);
+
 const QueueGlyph = (
   <svg viewBox="0 0 20 20" aria-hidden="true">
     <path d="M3 4.5 4.4 6 7 3.2" className="stroke-only" />
@@ -73,6 +84,12 @@ const NAV_ITEMS: NavItem[] = [
     label: "Signal review",
     detail: "Triage, status and outcomes",
     glyph: QueueGlyph,
+  },
+  {
+    href: "/ontology",
+    label: "City ontology",
+    detail: "87 sources, one typed graph",
+    glyph: GraphGlyph,
   },
   {
     href: "/settings",
