@@ -271,7 +271,12 @@ export default function MovementCanvas() {
       if (!size) return;
       const bounds = boundsOfLines(features);
       if (!bounds) return;
-      setView(fitView(bounds, size.width, size.height));
+      const fitted = fitView(bounds, size.width, size.height);
+      /* A phone-portrait fit lands a level out, where street glyphs crowd;
+         the small-screen first frame starts at z12. The Fit button and
+         reveals still use the exact fit. */
+      const floor = window.matchMedia("(max-width: 900px)").matches ? 12 : MIN_ZOOM;
+      setView(fitted.zoom < floor ? { ...fitted, zoom: floor } : fitted);
     },
     [stageSize],
   );

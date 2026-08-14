@@ -97,6 +97,18 @@ body {
   font-family: var(--wcc-font-sans);
   font-size: var(--text-body-size);
   line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+/* Tactile press on the icon controls: transform only, fast, interruptible. */
+.map-controls button, .replay-bar > button, .evidence-toggle, .drawer-toggle,
+.map-status-toggle, .status-close, .nav-toggle, .map-search .locate, .icon-button {
+  transition: transform 100ms var(--ease-standard);
+}
+.map-controls button:active:not(:disabled), .replay-bar > button:active:not(:disabled),
+.evidence-toggle:active, .drawer-toggle:active, .map-status-toggle:active,
+.status-close:active, .nav-toggle:active, .map-search .locate:active,
+.icon-button:active, .nav-handle:active, .agent-fab:active {
+  transform: scale(0.96);
 }
 button, a { font: inherit; }
 a { color: var(--wcc-link); }
@@ -801,6 +813,7 @@ footer strong { color: var(--surface-page); }
   box-shadow: var(--shadow-3);
 }
 .nav-handle:hover { background: var(--wcc-yellow); }
+.nav-handle { transition: transform 100ms var(--ease-standard); }
 
 /* ------------------------------------------------------------ agent chat */
 .agent-fab {
@@ -1061,8 +1074,12 @@ footer strong { color: var(--surface-page); }
   .limit-grid p:nth-child(odd) { border-left: 0; padding-left: 0; }
 }
 @media (max-width: 640px) {
-  .watch-header { position: static; }
+  /* Slim title bar: brand and mode only, at chip scale. */
+  .watch-header { position: static; min-height: 44px; padding: var(--space-1) var(--space-3); }
   .watch-brand small { display: none; }
+  .brand-logo { height: 22px; }
+  .batch-status { min-height: 0; padding: var(--space-1) var(--space-2); font-size: 12px; }
+  .status-beacon { width: 6px; height: 6px; }
   .filter-group button { flex: 1; }
   .investigation-shell { padding-inline: var(--space-2); }
   .investigation-frame { margin: var(--space-2) 0 var(--space-8); }
@@ -1099,6 +1116,11 @@ footer strong { color: var(--surface-page); }
     justify-content: flex-start; padding: var(--space-2) var(--space-3);
   }
   .nav-handle { display: grid; }
+  /* Touch-size hit areas: 40px minimum on everything tappable over the map. */
+  .drawer-toggle { min-width: 40px; min-height: 40px; }
+  .map-search input, .map-search .locate { min-height: 40px; }
+  .map-search .locate { min-width: 40px; }
+  .status-close::after { content: ""; position: absolute; inset: -11px; }
   .agent-panel { right: var(--space-2); left: var(--space-2); width: auto; max-height: 70vh; }
   .agent-fab { right: var(--space-3); bottom: var(--space-3); }
   .source-table { display: block; overflow-x: auto; white-space: nowrap; }
@@ -1121,8 +1143,8 @@ footer strong { color: var(--surface-page); }
 }
 @media (max-width: 640px) {
   .map-stage {
-    min-height: max(380px, calc(100vh - 80px));
-    min-height: max(380px, calc(100svh - 80px));
+    min-height: max(380px, calc(100vh - 64px));
+    min-height: max(380px, calc(100svh - 64px));
   }
 }
 @media (prefers-reduced-motion: reduce) {
