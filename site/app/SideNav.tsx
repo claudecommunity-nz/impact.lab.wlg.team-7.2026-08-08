@@ -6,9 +6,11 @@ import { useCallback, useSyncExternalStore } from "react";
 import { OPEN_AGENT_EVENT } from "./AgentChat";
 import { createFlagStore } from "./flag-store";
 
-/* Same key the bespoke store used, so remembered choices carry over. On a
- * small screen the rail is an over-map drawer, so it starts collapsed there. */
-const collapseStore = createFlagStore("murmur.nav.collapsed", false, true);
+/* Same key the bespoke store used, so remembered choices carry over. The rail
+ * starts collapsed everywhere — an icon rail on desktop, an off-canvas drawer
+ * on a small screen — and the server snapshot agrees, so it never renders
+ * expanded first and folds after hydration. A stored choice still wins. */
+const collapseStore = createFlagStore("murmur.nav.collapsed", true);
 
 type NavItem = {
   href: string;

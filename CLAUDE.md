@@ -489,8 +489,9 @@ another bespoke effect. There is no hero band and no header fact strip: the
 title bar is brand + Batch replay chip only, the numbers live in the
 artifacts (and the review page's lede), and the map takes the viewport
 directly under the timebar. Server snapshots keep every
-flag open for SSR, so the panel and the rail are present in the rendered HTML
-and the tests can assert them.
+flag open for SSR — except the rail, which defaults collapsed everywhere so
+it never renders expanded and then folds — and the panel and the rail are
+present in the rendered HTML either way, so the tests can assert them.
 
 `AgentChat` (the **Murmur agent**) is a fab on every route; ⤢ maximises the
 panel to the viewport and Escape backs out one step (full screen, then the
