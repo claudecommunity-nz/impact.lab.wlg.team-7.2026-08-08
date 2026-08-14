@@ -5,9 +5,11 @@ import { usePathname } from "next/navigation";
 import { useCallback, useSyncExternalStore } from "react";
 
 import { OPEN_AGENT_EVENT } from "./AgentChat";
+import { createFlagStore } from "./flag-store";
 
-const COLLAPSE_KEY = "murmur.nav.collapsed";
-const COLLAPSE_EVENT = "murmur:nav-collapse";
+/* Same key the bespoke store used, so remembered choices carry over. On a
+ * small screen the rail is an over-map drawer, so it starts collapsed there. */
+const collapseStore = createFlagStore("murmur.nav.collapsed", false, true);
 
 type NavItem = {
   href: string;
@@ -91,39 +93,25 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
-/* The collapsed flag lives in localStorage and is read through a store, so the
- * rail never has to set state from an effect to learn its own width. */
-function subscribeCollapse(listener: () => void) {
-  window.addEventListener(COLLAPSE_EVENT, listener);
-  window.addEventListener("storage", listener);
-  return () => {
-    window.removeEventListener(COLLAPSE_EVENT, listener);
-    window.removeEventListener("storage", listener);
-  };
-}
-
-function collapseSnapshot(): string {
-  try {
-    return window.localStorage.getItem(COLLAPSE_KEY) ?? "0";
-  } catch {
-    return "0";
-  }
-}
-
-const serverCollapseSnapshot = () => "0";
-
 export default function SideNav() {
   const pathname = usePathname();
   const collapsed =
-    useSyncExternalStore(subscribeCollapse, collapseSnapshot, serverCollapseSnapshot) === "1";
+    useSyncExternalStore(
+      collapseStore.subscribe,
+      collapseStore.snapshot,
+      collapseStore.serverSnapshot,
+    ) === "1";
 
   const toggle = useCallback(() => {
-    try {
-      window.localStorage.setItem(COLLAPSE_KEY, collapsed ? "0" : "1");
-    } catch {
-      /* private mode: the choice simply does not persist */
+    collapseStore.toggle(collapsed);
+  }, [collapsed]);
+
+  /* On a small screen the open rail covers the map, so following a link also
+   * puts it away; on desktop the rail stays. */
+  const closeOnSmallScreen = useCallback(() => {
+    if (!collapsed && window.matchMedia("(max-width: 900px)").matches) {
+      collapseStore.toggle(false);
     }
-    window.dispatchEvent(new CustomEvent(COLLAPSE_EVENT));
   }, [collapsed]);
 
   const isActive = (href: string) => {
@@ -132,7 +120,40 @@ export default function SideNav() {
   };
 
   return (
+    <>
+    <button
+      type="button"
+      className="nav-handle"
+      onClick={toggle}
+      aria-expanded={!collapsed}
+      aria-controls="site-nav"
+      title={collapsed ? "Show the navigator" : "Hide the navigator"}
+    >
+      <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+        {collapsed ? (
+          <path
+            d="M3 5h14M3 10h14M3 15h14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        ) : (
+          <path
+            d="M5 5l10 10M15 5L5 15"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        )}
+      </svg>
+      <span className="visually-hidden">
+        {collapsed ? "Show the navigator" : "Hide the navigator"}
+      </span>
+    </button>
     <nav
+      id="site-nav"
       className={`app-sidebar ${collapsed ? "collapsed" : ""}`}
       aria-label="Murmur sections"
       data-collapsed={collapsed ? "true" : "false"}
@@ -160,6 +181,7 @@ export default function SideNav() {
               className={isActive(item.href) ? "active" : ""}
               aria-current={isActive(item.href) ? "page" : undefined}
               title={collapsed ? item.label : undefined}
+              onClick={closeOnSmallScreen}
             >
               <span className="nav-glyph">{item.glyph}</span>
               <span className="nav-copy">
@@ -173,7 +195,10 @@ export default function SideNav() {
           <button
             type="button"
             className="nav-agent"
-            onClick={() => window.dispatchEvent(new CustomEvent(OPEN_AGENT_EVENT))}
+            onClick={() => {
+              closeOnSmallScreen();
+              window.dispatchEvent(new CustomEvent(OPEN_AGENT_EVENT));
+            }}
             title={collapsed ? "Ask the Murmur agent" : undefined}
           >
             <span className="nav-glyph">{AgentGlyph}</span>
@@ -190,5 +215,6 @@ export default function SideNav() {
         <small>Not live emergency information</small>
       </p>
     </nav>
+    </>
   );
 }

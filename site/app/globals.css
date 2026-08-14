@@ -791,6 +791,16 @@ footer strong { color: var(--surface-page); }
 }
 .nav-foot span { display: block; font-weight: 700; color: var(--wcc-grey-700); }
 .app-sidebar.collapsed .nav-foot { display: none; }
+/* Small screens only: a fixed round handle in the map's free corner opens the
+ * rail, mirroring the agent fab on the opposite side. */
+.nav-handle {
+  display: none; position: fixed; left: var(--space-3); bottom: var(--space-3); z-index: 50;
+  width: 48px; height: 48px; place-items: center;
+  border: 2px solid var(--wcc-black); border-radius: 50%;
+  background: var(--surface-page); color: var(--wcc-black); cursor: pointer;
+  box-shadow: var(--shadow-3);
+}
+.nav-handle:hover { background: var(--wcc-yellow); }
 
 /* ------------------------------------------------------------ agent chat */
 .agent-fab {
@@ -1057,24 +1067,38 @@ footer strong { color: var(--surface-page); }
   .investigation-shell { padding-inline: var(--space-2); }
   .investigation-frame { margin: var(--space-2) 0 var(--space-8); }
   .map-column { padding: var(--space-2); }
-  .app-sidebar { padding: var(--space-1) var(--space-2); }
   .replay-bar { padding: var(--space-1) var(--space-2); gap: var(--space-1) var(--space-2); }
   .layer-drawer { max-height: calc(100% - var(--timebar-h, 62px) - var(--touch-min) - 3 * var(--space-3)); }
   .limit-grid { grid-template-columns: 1fr; }
   .limit-grid p + p { border-left: 0; border-top: 1px solid var(--border-hairline); padding-left: 0; }
 }
-/* Below tablet the rail becomes a scrollable strip above the page: same links,
- * no horizontal budget spent on chrome. */
+/* Below tablet the rail becomes a drawer over the page's left edge: closed it
+ * costs the map nothing, open it is the full desktop rail. The nav-handle is
+ * its only launcher, so the map keeps every row of the screen. */
 @media (max-width: 900px) {
   .app-frame { display: block; }
   .app-sidebar {
-    width: auto; height: auto; position: static; flex-direction: row; align-items: center;
-    gap: var(--space-2); overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--border-hairline);
+    position: fixed; left: 0; top: 0; bottom: 0; z-index: 45;
+    width: min(280px, 84vw); height: 100vh; height: 100dvh;
+    /* The handle sits over the drawer's bottom-left; the foot stays above it. */
+    padding-bottom: calc(var(--space-3) + 56px);
+    box-shadow: var(--shadow-3);
+    transition: transform var(--dur-base) var(--ease-standard);
   }
-  .app-sidebar.collapsed { width: auto; }
-  .nav-items { flex-direction: row; }
-  .nav-items a, .nav-agent { white-space: nowrap; }
-  .nav-copy small, .nav-foot { display: none; }
+  /* Visibility flips after the slide, taking the off-screen links out of the
+     tab order — the evidence column's pattern. */
+  .app-sidebar.collapsed {
+    width: min(280px, 84vw); transform: translateX(-100%);
+    box-shadow: none; visibility: hidden;
+    transition: transform var(--dur-base) var(--ease-standard),
+      visibility 0s linear var(--dur-base);
+  }
+  .app-sidebar.collapsed .nav-copy { display: block; }
+  .app-sidebar.collapsed .nav-foot { display: block; }
+  .app-sidebar.collapsed .nav-items a, .app-sidebar.collapsed .nav-agent {
+    justify-content: flex-start; padding: var(--space-2) var(--space-3);
+  }
+  .nav-handle { display: grid; }
   .agent-panel { right: var(--space-2); left: var(--space-2); width: auto; max-height: 70vh; }
   .agent-fab { right: var(--space-3); bottom: var(--space-3); }
   .source-table { display: block; overflow-x: auto; white-space: nowrap; }
@@ -1085,20 +1109,20 @@ footer strong { color: var(--surface-page); }
  * map's bottom edge. These sit after the 900px block so the 640px numbers win. */
 @media (max-width: 900px) {
   .map-stage {
-    min-height: max(380px, calc(100vh - 172px));
-    min-height: max(380px, calc(100svh - 172px));
+    min-height: max(380px, calc(100vh - 104px));
+    min-height: max(380px, calc(100svh - 104px));
   }
-  /* The agent fab owns the bottom-right corner here, so the required
-     attribution moves opposite it, the situation card rises above it and the
-     decorative legend yields the space. */
+  /* The fabs own the bottom corners here, so the required attribution moves
+     between them, the situation card rises clear and the decorative legend
+     yields the space. */
   .map-key { display: none; }
-  .map-attribution { right: auto; left: var(--space-3); }
+  .map-attribution { right: auto; left: calc(var(--space-3) + 56px); }
   .map-status, .map-status-toggle { bottom: calc(var(--space-3) + 68px); }
 }
 @media (max-width: 640px) {
   .map-stage {
-    min-height: max(380px, calc(100vh - 132px));
-    min-height: max(380px, calc(100svh - 132px));
+    min-height: max(380px, calc(100vh - 80px));
+    min-height: max(380px, calc(100svh - 80px));
   }
 }
 @media (prefers-reduced-motion: reduce) {
