@@ -561,7 +561,7 @@ h3 { font-size: var(--text-h3); }
 /* Always-on rain readout in the timebar: fixed width so playback never
  * resizes the track. */
 .replay-rain {
-  margin: 0; flex: none; width: 132px;
+  margin: 0; flex: none; width: 152px;
   display: flex; align-items: center; gap: 6px;
   font-size: 12px; color: var(--wcc-grey-700);
   font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden;
@@ -1054,9 +1054,11 @@ footer strong { color: var(--surface-page); }
   .watch-header { position: static; }
   .watch-brand small { display: none; }
   .filter-group button { flex: 1; }
-  .map-stage { min-height: 400px; }
   .investigation-shell { padding-inline: var(--space-2); }
-  .investigation-frame { margin-bottom: var(--space-8); }
+  .investigation-frame { margin: var(--space-2) 0 var(--space-8); }
+  .map-column { padding: var(--space-2); }
+  .app-sidebar { padding: var(--space-1) var(--space-2); }
+  .replay-bar { padding: var(--space-1) var(--space-2); gap: var(--space-1) var(--space-2); }
   .layer-drawer { max-height: calc(100% - var(--timebar-h, 62px) - var(--touch-min) - 3 * var(--space-3)); }
   .limit-grid { grid-template-columns: 1fr; }
   .limit-grid p + p { border-left: 0; border-top: 1px solid var(--border-hairline); padding-left: 0; }
@@ -1077,6 +1079,27 @@ footer strong { color: var(--surface-page); }
   .agent-fab { right: var(--space-3); bottom: var(--space-3); }
   .source-table { display: block; overflow-x: auto; white-space: nowrap; }
   .source-table code, .source-table small { white-space: normal; }
+}
+/* Small screens: the map is the page. The stage takes what the header and the
+ * nav strip leave of the first screen; svh so the browser bar never hides the
+ * map's bottom edge. These sit after the 900px block so the 640px numbers win. */
+@media (max-width: 900px) {
+  .map-stage {
+    min-height: max(380px, calc(100vh - 172px));
+    min-height: max(380px, calc(100svh - 172px));
+  }
+  /* The agent fab owns the bottom-right corner here, so the required
+     attribution moves opposite it, the situation card rises above it and the
+     decorative legend yields the space. */
+  .map-key { display: none; }
+  .map-attribution { right: auto; left: var(--space-3); }
+  .map-status, .map-status-toggle { bottom: calc(var(--space-3) + 68px); }
+}
+@media (max-width: 640px) {
+  .map-stage {
+    min-height: max(380px, calc(100vh - 132px));
+    min-height: max(380px, calc(100svh - 132px));
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

@@ -122,12 +122,14 @@ const SEARCH_LIMIT = 8;
 const AUTO_POPUP_Z = 8;
 
 /* The evidence column slides away rather than disappearing, so the map can grow
- * to the full frame when someone is scanning rather than investigating. */
-const evidenceStore = createFlagStore("murmur.evidence.open", true);
+ * to the full frame when someone is scanning rather than investigating. On a
+ * small screen these three default closed: the first paint is the map alone,
+ * every panel one icon tap away. */
+const evidenceStore = createFlagStore("murmur.evidence.open", true, false);
 /* Same remembered-flag pattern for the floating layer menu. */
-const layerMenuStore = createFlagStore("murmur.layers.open", true);
+const layerMenuStore = createFlagStore("murmur.layers.open", true, false);
 /* And for the corner situation card, which folds away to an icon. */
-const statusStore = createFlagStore("murmur.status.open", true);
+const statusStore = createFlagStore("murmur.status.open", true, false);
 /* Auto callouts during playback can be switched off from the timebar. */
 const autoPopupStore = createFlagStore("murmur.autopopup.on", true);
 /* Layer visibility is session state, never persisted: every load starts with
